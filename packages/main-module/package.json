@@ -1,0 +1,47 @@
+{
+  "name": "@vitacore/main-module",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@vitacore/shared-ui": "^1.0.0",
+    "@vitacore/contracts-module": "^1.0.0",
+    "@vitacore/refunds-module": "^1.0.0",
+    "axios": "^0.18.0",
+    "connected-react-router": "^5.0.1",
+    "history": "^4.7.2",
+    "i18next": "^12.1.0",
+    "normalize.css": "^8.0.1",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-i18next": "^8.3.8",
+    "react-redux": "^5.1.1",
+    "react-router-dom": "^4.3.1",
+    "react-scripts-ts": "3.1.0",
+    "redux": "^4.0.1",
+    "redux-saga": "^0.16.2",
+    "styled-components": "^4.1.2"
+  },
+  "scripts": {
+    "start": "yarn clean && react-scripts-ts start",
+    "build-main": "yarn clean && react-scripts-ts build",
+    "clean": " "
+  },
+  "devDependencies": {
+    "@types/history": "^4.7.2",
+    "@types/i18next": "^12.1.0",
+    "@types/jest": "^23.3.10",
+    "@types/node": "^10.12.11",
+    "@types/react": "^16.7.11",
+    "@types/react-dom": "^16.0.11",
+    "@types/react-i18next": "^8.1.0",
+    "@types/react-redux": "^6.0.10",
+    "@types/react-router-dom": "^4.3.1",
+    "@types/redux": "^3.6.0",
+    "@types/redux-saga": "^0.10.5",
+    "@types/styled-components": "^4.1.3",
+    "prettier": "^1.15.3",
+    "tslint-config-airbnb": "^5.11.1",
+    "tslint-plugin-prettier": "^2.0.1",
+    "typescript": "^3.2.1"
+  }
+}

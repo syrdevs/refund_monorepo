@@ -1,0 +1,44 @@
+{
+  "name": "@vitacore/refunds-module",
+  "main": "build/dist/App.js",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "@vitacore/shared-ui": "^1.0.0",
+    "react": "^16.6.3",
+    "react-dom": "^16.6.3",
+    "react-scripts": "2.1.1"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.2.0",
+    "@babel/core": "^7.2.0",
+    "@babel/preset-env": "^7.2.0",
+    "@babel/preset-react": "^7.0.0",
+    "cross-env": "^5.2.0"
+  },
+  "scripts": {
+    "start": "cross-env BABEL_ENV=development yarn clean && babel src --out-dir build/dist --source-maps -w",
+    "build": "cross-env BABEL_ENV=production yarn clean && babel src --out-dir build/dist --minified",
+    "clean": " "
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": [
+    ">0.2%",
+    "not dead",
+    "not ie <= 11",
+    "not op_mini all"
+  ],
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-react",
+        {
+          "development": true
+        }
+      ],
+      "@babel/preset-env"
+    ]
+  }
+}

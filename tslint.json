@@ -1,0 +1,49 @@
+{
+  "extends": [
+    "tslint:recommended",
+    "tslint-config-airbnb",
+    "tslint-config-prettier",
+    "tslint-plugin-prettier"
+  ],
+  "rules": {
+    "prettier": [
+      true,
+      {
+        "printWidth": 120,
+        "singleQuote": true,
+        "semi": false,
+        "trailingComma": "es5"
+      }
+    ],
+    "interface-over-type-literal": false,
+    "max-line-length": {
+      "options": [
+        120
+      ]
+    },
+    "no-bitwise": false,
+    "no-invalid-this": true,
+    "object-literal-sort-keys": false,
+    "import-name": false,
+    "function-name": [
+      {
+        "method-regex": "/^[A-Z_\\d]+$/"
+      }
+    ],
+    "variable-name": [true, "allow-pascal-case"],
+    "no-string-literal": false,
+    "object-shorthand-properties-first": false,
+    "interface-name": false,
+    "no-empty-interface": false,
+    "prefer-array-literal": false,
+    "no-debugger": false,
+    "no-console": false
+  },
+  "linterOptions": {
+    "exclude": [
+      "config/**/*.js",
+      "node_modules/**/*.ts",
+      "coverage/lcov-report/*.js"
+    ]
+  }
+}

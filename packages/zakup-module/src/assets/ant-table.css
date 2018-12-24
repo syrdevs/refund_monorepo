@@ -1,0 +1,35 @@
+tr.ant-table-expanded-row {
+  background-color: white;
+}
+
+.ant-table-footer {
+  padding-top: 4px;
+  padding-bottom: 4px;
+}
+
+.ant-table-small > .ant-table-title {
+  background-color: #fafafa;
+  padding-left: 16px;
+  padding-right: 16px;
+}
+
+.ant-table .ant-table-body {
+  overflow: auto;
+}
+
+tr.ant-table-expanded-row-level-1 .ant-table-body {
+  overflow: unset;
+}
+
+.ant-menu-sub.ant-menu-inline > .ant-menu-item,
+.ant-menu-sub.ant-menu-inline > .ant-menu-submenu > .ant-menu-submenu-title {
+  line-height: 20px;
+  height: unset;
+  white-space: unset;
+  padding-bottom: 8px;
+  padding-top: 8px;
+}
+
+.ant-menu-inline .ant-menu-item:not(:last-child) {
+  margin-bottom: 12px;
+}

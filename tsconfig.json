@@ -1,0 +1,25 @@
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@vitacore/zakup-module/*": ["./packages/zakup-module/src"],
+      "@vitacore/shared-ui/*": ["./packages/shared-ui/src"],
+      "@vitacore/contracts-module/*": ["./packages/contracts-module/src"],
+      "@vitacore/test-module/*": ["./packages/test-module/src"],
+      "@vitacore/refunds-module/*": ["./packages/refunds-module/src"]
+    },
+    "outDir": "build/dist",
+    "rootDir": "src"
+  },
+  "exclude": [
+    "node_modules",
+    "build",
+    "scripts",
+    "acceptance-tests",
+    "webpack",
+    "jest",
+    "src/setupTests.ts",
+    "packages/**/build"
+  ]
+}
