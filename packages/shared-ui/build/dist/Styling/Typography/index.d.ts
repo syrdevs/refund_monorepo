@@ -1,0 +1,40 @@
+export declare const SIZES: {
+    s10: number;
+    s11: number;
+    s12: number;
+    s13: number;
+    s14: number;
+    s15: number;
+    s16: number;
+    s17: number;
+    s18: number;
+    s19: number;
+    s20: number;
+    s22: number;
+    s24: number;
+    s32: number;
+    s40: number;
+    s50: number;
+};
+export declare const WEIGHTS: {
+    LIGHT: string;
+    REGULAR: string;
+    MEDIUM: string;
+    BOLD: string;
+    EXTRA_BOLD: string;
+};
+export declare const COLORS: {
+    INPUT_TEXT: string;
+    BORDER: string;
+    GRAY: string;
+    LIGHT_GRAY: string;
+    LIGHTER_GRAY: string;
+    MAIN_GREEN: string;
+    MAIN_GREEN_HOVER: string;
+    LOADER_MESSAGE: string;
+    MAIN_BLUE: string;
+    MAIN_BLUE_2: string;
+    MAIN_BLUE_HOVER: string;
+    ERROR_BORDER: string;
+    WARN_BORDER: string;
+};

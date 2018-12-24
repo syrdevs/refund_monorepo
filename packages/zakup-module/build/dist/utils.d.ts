@@ -1,0 +1,35 @@
+import moment from 'moment';
+import APIClient from './API/APIClient';
+import { DictionaryItemBase } from './Models/DictionaryItemBase';
+import SelectOption from './Models/SelectOption';
+export declare const createApiClient: () => APIClient;
+export declare const emulateRequest: (fn: any, timeout: number, message?: string | undefined) => void;
+export declare const requestStarted: () => void;
+export declare const requestFinished: (message?: string | undefined) => void;
+export declare const getDateWithAppliedTimezone: (date: Date) => Date;
+export declare const formatDate: (date: Date) => string;
+export declare const convertStringIntoDate: (dateStr: string) => Date;
+export declare const selectInputParseAndFormat: (data: SelectOption[], valueGetterFn: (option: any) => any) => {
+    parse: (value: any) => any;
+    format: (value: string[]) => (SelectOption | undefined)[];
+};
+export declare const transformDictionaryItemsToSelectInputOptions: (dictItems: DictionaryItemBase[]) => SelectOption[];
+export declare const getUserLanguage: () => string;
+export declare const setUserLanguage: (lng: string) => void;
+export declare const isFalse: (value: any) => boolean;
+export declare const isTrue: (value: any) => boolean;
+export declare const addToAppFunctions: (name: string, cb?: any) => void;
+export declare const getAppFunction: (name: string) => any;
+export declare const callAppFunction: (name: string, ...args: any[]) => any;
+export declare const addToAppData: (name: string, value: any) => void;
+export declare const getAppData: (name: string) => any;
+export declare const getAppRoute: () => any;
+export declare const isModuleDev: () => boolean;
+export declare const isDisabledPreviousDate: (current: moment.Moment) => boolean;
+export declare const isDisabledNextDate: (current: moment.Moment) => boolean;
+export declare const isDisabledPreviousTime: (current: moment.Moment) => {
+    disabledHours: () => any;
+    disabledMinutes: () => any;
+    disabledSeconds: () => number[];
+};
+export declare const isDisabledNextTime: (current: moment.Moment) => boolean;

@@ -1,0 +1,23 @@
+import { DictionaryBaseML } from '@vitacore/shared-ui';
+import { FormComponentProps } from 'antd/lib/form';
+import { WrappedFormUtils } from 'antd/lib/form/Form';
+import * as React from 'react';
+import { ClinicPick } from '../../../Entities/Organization';
+import { PeriodYearPick } from '../../../Entities/PeriodYear';
+import { EntityProps } from './EntityProps';
+declare type OwnProps = {
+    onChange: any;
+    valid: boolean;
+    isNew: boolean;
+    regionId?: string;
+    periodYearId?: string;
+    handleSubmit: (form: WrappedFormUtils) => any;
+    periodYearsDict: PeriodYearPick[];
+    clinicsDict: ClinicPick[];
+    regionsDict: DictionaryBaseML[];
+    proposalTypesDict: DictionaryBaseML[];
+    hasItems: boolean;
+    onSendToReview: () => any;
+};
+declare const ProposalRequestInternalForm: React.ComponentClass<import("antd/lib/form/Form").RcBaseFormProps & Pick<FormComponentProps & OwnProps & EntityProps, "number" | "id" | "onChange" | "region" | "periodYear" | "proposalType" | "regionsDict" | "periodYearsDict" | "valid" | "descr" | "documentDate" | "clinic" | "clinicsDict" | "proposalTypesDict" | "regionId" | "periodYearId" | "isNew" | "handleSubmit" | "hasItems" | "onSendToReview">, any>;
+export default ProposalRequestInternalForm;

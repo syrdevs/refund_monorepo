@@ -1,0 +1,7 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.ZAKUP_ADS_TABLE_ITEMS_PER_PAGE = 'ZAKUP_ADS_TABLE_ITEMS_PER_PAGE';
+exports.APPLICATIONS_TABLE_ITEMS_PER_PAGE = 'APPLICATIONS_TABLE_ITEMS_PER_PAGE';
+exports.PROPOSALS_TABLE_ITEMS_PER_PAGE = 'PROPOSALS_TABLE_ITEMS_PER_PAGE';
+exports.PROTOCOLS_TABLE_ITEMS_PER_PAGE = 'PROTOCOLS_TABLE_ITEMS_PER_PAGE';
+//# sourceMappingURL=localStorageConstants.js.map

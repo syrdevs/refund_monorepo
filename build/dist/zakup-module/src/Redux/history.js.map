@@ -1,0 +1,1 @@
+{"version":3,"file":"history.js","sourceRoot":"","sources":["../../../../../packages/zakup-module/src/Redux/history.ts"],"names":[],"mappings":"AACA,OAAO,EAAE,UAAU,EAAE,MAAM,UAAU,CAAA;AAErC,MAAM,CAAC,IAAM,aAAa,GAAG,MAAM,CAAC,OAAO,CAAA;AAE3C,MAAM,CAAC,IAAM,UAAU,GAAG;IACxB,OAAO,UAAU,CAAC,SAAS,CAAyB,CAAA;AACtD,CAAC,CAAA"}

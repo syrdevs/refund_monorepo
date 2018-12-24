@@ -1,0 +1,9 @@
+export declare function fetchNoticesSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;
+export declare function fetchSingleNoticeSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;
+export declare function setNewNoticeSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;
+export declare function fetchCommissionsSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;
+export declare function fetchSingleCommissionSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;
+export declare function findPersonByIINSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;
+export declare function setNewCommissionSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;
+export declare function fetchCustomDictSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;
+export declare function deleteCommissionMemberSaga(): IterableIterator<import("redux-saga/effects").ForkEffect>;

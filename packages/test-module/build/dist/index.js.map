@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/index.js"],"names":["TestModule"],"mappings":";;;;;;;;;;;;;AAAA;;AAEA;;;;eADeA,Y","sourcesContent":["import { default as TestModule } from './App'\nexport default TestModule\nexport { default as LeftMenuItems } from './leftMenuItems'\n"],"file":"index.js"}
