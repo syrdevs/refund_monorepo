@@ -37,6 +37,13 @@ export default [
             authority: ["ADMIN", "FSMS1", "FSMS2"]
           },
           {
+            path: "/refunds/options",
+            icon: "faListAlt",
+            name: "options",
+            component: "./Options/Options",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
             path: "/refunds/calendar",
             icon: "faCalendarAlt",
             name: "calendar",

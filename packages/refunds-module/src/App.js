@@ -27,19 +27,29 @@ const ContentX = styled.div`
 `;
 
 
-const refundMenuItems = [{
-  name: "Возвраты",
-  hrefPrefix: "/refunds/reestr",
-  iconName: "database",
-  translationKey: "leftMenu.refunds._",
-  subItems: []
-}, {
-  name: "Платежи",
-  hrefPrefix: "/refunds/requests",
-  iconName: "database",
-  translationKey: "leftMenu.refunds.payments",
-  subItems: []
-}];
+const refundMenuItems = [
+    {
+    name: "Возвраты",
+    hrefPrefix: "/refunds/reestr",
+    iconName: "database",
+    translationKey: "leftMenu.refunds._",
+    subItems: []
+    },
+    {
+    name: "Платежи",
+    hrefPrefix: "/refunds/requests",
+    iconName: "database",
+    translationKey: "leftMenu.refunds.payments",
+    subItems: []
+    },
+    {
+    name: "Настройки",
+    hrefPrefix: "/refunds/options",
+    iconName: "database",
+    translationKey: "leftMenu.refunds.payments",
+    subItems: []
+    }
+  ];
 
 const loader = () => {
   return <div> </div>;
