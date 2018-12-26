@@ -2,7 +2,8 @@ var ruTranslation = {
     translation: {
         leftMenu: {
             refunds: {
-                _: "Возвраты"
+                _: "Возвраты",
+                payments: "Платежи"
             },
             contracts: {
                 commissions: {

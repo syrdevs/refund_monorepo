@@ -1,8 +1,18 @@
-import React from "react";
-import { Switch } from "react-router";
+import React, { lazy, Suspense } from "react";
+import { Redirect, Route, Switch, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { COLORS, LeftMenu } from "@vitacore/shared-ui";
 import ContentLayout from "./layouts/ContentLayout";
+import { Provider } from "react-redux";
+import store from "./Redux/store";
+import routerConfig from "./config/router.config";
+import Loadable from "react-loadable";
+import { Row, Col, Layout, Menu, Breadcrumb, Icon } from "antd";
+
+const { SubMenu } = Menu;
+const { Header, Content, Sider } = Layout;
+
+import "./App.css";
 
 const RootContainer = styled.div`
   display: flex;
@@ -11,36 +21,95 @@ const RootContainer = styled.div`
   min-width: 0;
 `;
 
-const Content = styled.div`
-  display: flex;
-  flex-grow: 1;
-  border-left: 1px solid #d6d6d6;
-  padding: 0 15px;
+const ContentX = styled.div`
+  overflow-x: hidden;
   background-color: white;
-  border-top: 4px solid ${COLORS.MAIN_GREEN};
-  min-width: 0;
-  overflow: auto;
 `;
 
 
 const refundMenuItems = [{
   name: "Возвраты",
-  hrefPrefix: "/refunds",
+  hrefPrefix: "/refunds/reestr",
   iconName: "database",
   translationKey: "leftMenu.refunds._",
   subItems: []
 }, {
   name: "Платежи",
-  hrefPrefix: "/payments",
+  hrefPrefix: "/refunds/requests",
   iconName: "database",
   translationKey: "leftMenu.refunds.payments",
   subItems: []
 }];
 
+const loader = () => {
+  return <div> </div>;
+};
+
+let RoutingCollection = [];
+
+function routerItemRender() {
+  routerConfig.forEach((parentMenu) => {
+
+    //redirect
+    //<Redirect to="/somewhere/else" />
+
+
+    // if (parentMenu.component) {
+    //   RoutingCollection.push(<Route key={parentMenu.path} exact path={parentMenu.path} render={() => {
+    //     const Component = withRouter(lazy(() => import("./pages/" + parentMenu.component.replace("./", ""))));
+    //     return <Component/>;
+    //   }}/>);
+    // }
+
+    if (parentMenu.routes) {
+      parentMenu.routes.forEach((childMenu) => {
+
+        //redirect
+
+        // if (childMenu.component) {
+        //   RoutingCollection.push(<Route key={childMenu.path} exact path={childMenu.path} render={() => {
+        //     const Component = withRouter(lazy(() => import("./pages/" + childMenu.component.replace("./", ""))));
+        //     return <Component/>;
+        //   }}/>);
+        // }
+
+        if (childMenu.routes) {
+          childMenu.routes.forEach((subChildMenu) => {
+
+            if (subChildMenu.component) {
+
+              // const RouteComponent = lazy(() => import("./pages/" + subChildMenu.component.replace("./", "")));
+
+              const RouteComponent = Loadable({
+                loader: () => import("./pages/" + subChildMenu.component.replace("./", "")),
+                loading: loader
+              });
+
+              RoutingCollection.push(<Route key={subChildMenu.path} exact path={subChildMenu.path}
+                                            component={withRouter(RouteComponent)}/>);
+            }
+
+          });
+        }
+
+      });
+    }
+  });
+}
+
+
+function menuItemRender() {
+
+}
+
+routerItemRender();
+menuItemRender();
+
 class App extends React.Component {
   constructor(props) {
     super(props);
   }
+
 
   render() {
     const location = this.props.location.pathname;
@@ -53,24 +122,73 @@ class App extends React.Component {
       {
         path: "/refunds",
         breadcrumbName: "Возвраты"
-      }
-    ];
+      }];
 
-    console.log(location);
+    if (location === "/refunds/reestr") {
+      bcRoutes.push({
+        path: "/refunds/reestr",
+        breadcrumbName: "Реестр"
+      });
+    }
+    if (location === "/refunds/requests") {
+      bcRoutes.push({
+        path: "/refunds/requests",
+        breadcrumbName: "Заявки"
+      }); ``
+    }
 
-    return (
-      <RootContainer>
-        <LeftMenu leftMenuItems={[...refundMenuItems]} location={location}
-                  goToLink={this.props.history.push}/>
-        <Content>
-          <ContentLayout
-            contentName={"Возвраты"}
-            breadcrumbRoutes={bcRoutes}>
-            Main Layout
-          </ContentLayout>
-        </Content>
-      </RootContainer>
-    );
+    return (<Provider store={store}>
+
+      <ContentX>
+        <Layout>
+          <Layout>
+            <Sider width={300} style={{ background: "#fff" }}>
+              <LeftMenu leftMenuItems={[...refundMenuItems]} location={location}
+                        goToLink={this.props.history.push}/>
+            </Sider>
+            <Layout style={{
+              borderLeft: "1px solid #d6d6d6",
+              padding: "0 15px",
+              backgroundColor: "white",
+              borderTop: `4px solid ${COLORS.MAIN_GREEN}`
+            }}>
+
+              <Content style={{
+                background: "#fff"
+              }}
+              >
+                <Suspense fallback={<div>...</div>}>
+                  <Switch>
+                    {RoutingCollection}
+                  </Switch>
+                </Suspense>
+              </Content>
+            </Layout>
+          </Layout>
+        </Layout>
+      </ContentX>
+    </Provider>);
+
+    // (
+    //
+    //   <Provider store={store}>
+    //     <RootContainer>
+    //       <LeftMenu leftMenuItems={[...refundMenuItems]} location={location}
+    //                 goToLink={this.props.history.push}/>
+    //       <Content>
+    //         <ContentLayout
+    //           contentName={"Возвраты"}
+    //           breadcrumbRoutes={bcRoutes}>
+    //           <Suspense fallback={<div>...</div>}>
+    //             <Switch>
+    //               {RoutingCollection}
+    //             </Switch>
+    //           </Suspense>
+    //         </ContentLayout>
+    //       </Content>
+    //     </RootContainer>
+    //   </Provider>
+    // );
   }
 }
 

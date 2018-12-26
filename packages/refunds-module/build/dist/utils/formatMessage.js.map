@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../../src/utils/formatMessage.js"],"names":["module","exports","langItem","id"],"mappings":";;AAAAA,MAAM,CAACC,OAAP,GAAiB,UAACC,QAAD,EAAc;AAC7B,SAAOA,QAAQ,CAACC,EAAhB;AACD,CAFD","sourcesContent":["module.exports = (langItem) => {\r\n  return langItem.id;\r\n};"],"file":"formatMessage.js"}

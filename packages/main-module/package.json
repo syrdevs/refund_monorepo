@@ -43,5 +43,6 @@
     "tslint-config-airbnb": "^5.11.1",
     "tslint-plugin-prettier": "^2.0.1",
     "typescript": "^3.2.1"
-  }
+  },
+  "proxy": "http://185.27.192.177:6307"
 }

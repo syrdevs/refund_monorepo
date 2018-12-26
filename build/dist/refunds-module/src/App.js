@@ -39,6 +39,9 @@ import React from "react";
 import styled from "styled-components";
 import { COLORS, LeftMenu } from "@vitacore/shared-ui";
 import ContentLayout from "./layouts/ContentLayout";
+import { Provider } from "react-redux";
+import store from "./Redux/store";
+import Page from "./pages/OptionPage/Page";
 var RootContainer = styled.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  display: flex;\n  flex-grow: 1;\n  background-color: #edf1f5;\n  min-width: 0;\n"], ["\n  display: flex;\n  flex-grow: 1;\n  background-color: #edf1f5;\n  min-width: 0;\n"])));
 var Content = styled.div(templateObject_2 || (templateObject_2 = __makeTemplateObject(["\n  display: flex;\n  flex-grow: 1;\n  border-left: 1px solid #d6d6d6;\n  padding: 0 15px;\n  background-color: white;\n  border-top: 4px solid ", ";\n  min-width: 0;\n  overflow: auto;\n"], ["\n  display: flex;\n  flex-grow: 1;\n  border-left: 1px solid #d6d6d6;\n  padding: 0 15px;\n  background-color: white;\n  border-top: 4px solid ", ";\n  min-width: 0;\n  overflow: auto;\n"])), COLORS.MAIN_GREEN);
 var refundMenuItems = [{
@@ -46,6 +49,12 @@ var refundMenuItems = [{
         hrefPrefix: "/refunds",
         iconName: "database",
         translationKey: "leftMenu.refunds._",
+        subItems: []
+    }, {
+        name: "Платежи",
+        hrefPrefix: "/payments",
+        iconName: "database",
+        translationKey: "leftMenu.refunds.payments",
         subItems: []
     }];
 var App = /** @class */ (function (_super) {
@@ -57,18 +66,20 @@ var App = /** @class */ (function (_super) {
         var location = this.props.location.pathname;
         var bcRoutes = [
             {
-                path: '/',
-                breadcrumbName: 'Главная',
+                path: "/",
+                breadcrumbName: "Главная"
             },
             {
-                path: 'refunds',
-                breadcrumbName: 'Возвраты',
+                path: "/refunds",
+                breadcrumbName: "Возвраты"
             }
         ];
-        return (React.createElement(RootContainer, null,
-            React.createElement(LeftMenu, { leftMenuItems: __spread(refundMenuItems), location: location, goToLink: this.props.history.push }),
-            React.createElement(Content, null,
-                React.createElement(ContentLayout, { contentName: 'Возвраты', breadcrumbRoutes: bcRoutes }, "Main Layout"))));
+        return (React.createElement(Provider, { store: store },
+            React.createElement(RootContainer, null,
+                React.createElement(LeftMenu, { leftMenuItems: __spread(refundMenuItems), location: location, goToLink: this.props.history.push }),
+                React.createElement(Content, null,
+                    React.createElement(ContentLayout, { contentName: "Возвраты", breadcrumbRoutes: bcRoutes },
+                        React.createElement(Page, null))))));
     };
     return App;
 }(React.Component));

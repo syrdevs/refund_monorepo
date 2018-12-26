@@ -42,23 +42,17 @@ function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || func
 //todo getBuildApproute path
 function itemRender(route, params, routes, paths) {
   var last = routes.indexOf(route) === routes.length - 1;
-  var location = paths.join("/");
-
-  if (paths.length > 0) {
-    location = "/".concat(location);
-  }
-
   return last ? React.createElement("span", {
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 17
+      lineNumber: 12
     },
     __self: this
   }, route.breadcrumbName) : React.createElement(_reactRouterDom.Link, {
-    to: (0, _sharedUi.buildAppRoute)("/", location),
+    to: paths.join('/'),
     __source: {
       fileName: _jsxFileName,
-      lineNumber: 19
+      lineNumber: 12
     },
     __self: this
   }, route.breadcrumbName);
@@ -83,7 +77,7 @@ function (_React$Component) {
         routes: this.props.routes,
         __source: {
           fileName: _jsxFileName,
-          lineNumber: 29
+          lineNumber: 21
         },
         __self: this
       });
