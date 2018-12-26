@@ -93,13 +93,6 @@ class Options extends Component {
     );
   }
 }
-/*export default connect(({ universal, universal2, references, loading }) => ({
-  universal,
-  universal2,
-  references,
-  loadingData: loading.effects["universal2/getList"],
-  rpmuLoading: loading.effects["universal/rpmuTable"]
-}))(MainView);*/
 
 export default  connect(({ universal, loading }) => ({
   universal,

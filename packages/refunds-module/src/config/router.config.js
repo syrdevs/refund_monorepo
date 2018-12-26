@@ -44,6 +44,13 @@ export default [
             authority: ["ADMIN", "FSMS1", "FSMS2"]
           },
           {
+            path: "/refunds/journal",
+            icon: "faListAlt",
+            name: "reestr",
+            component: "./Journal/JournalPage",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
             path: "/refunds/calendar",
             icon: "faCalendarAlt",
             name: "calendar",

@@ -3,7 +3,9 @@ var ruTranslation = {
         leftMenu: {
             refunds: {
                 _: "Возвраты",
-                payments: "Платежи"
+                payments: "Платежи",
+                options: "Настройки",
+                journal: "Журнал"
             },
             contracts: {
                 commissions: {
