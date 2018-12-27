@@ -22,8 +22,8 @@ import {
   Spin,
   Badge
 } from "antd";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
@@ -35,7 +35,7 @@ import GridFilter from "../../components/GridFilter";
 import hasRole from "../../utils/hasRole";
 import ModalGridView from "../../components/ModalGridView";
 import ModalChangeDateRefund from "../../components/ModalChangeDateRefund";
-import ModalGraphView from "../../components/ModalGridView";
+import ModalGraphView from "../../components/ModalGraphView";
 import { Animated } from "react-animated-css";
 
 const FormItem = Form.Item;
@@ -614,10 +614,12 @@ class MainView extends Component {
   };
   disableBtnIsReceiptDateNull = () => {
 
-
+    const universal = {
+      table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
+    };
     if (this.state.selectedRowKeys.length > 0) {
       let nullableDateRecords = this.state.selectedRowKeys
-        .map((selectKey) => this.props.universal.table.content.find(item => item.id === selectKey))
+        .map((selectKey) => universal.table.content.find(item => item.id === selectKey))
         .filter((itemRecord) => itemRecord.applicationId.receiptAppdateToFsms === null);
 
       return nullableDateRecords.length > 0;
@@ -629,9 +631,14 @@ class MainView extends Component {
       btnhide: false
     });
     if (selectedRowKeys.length > 0) {
+
+      const universal = {
+        table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
+      };
+
       selectedRowKeys.map(select => {
 
-        if ([this.props.universal.table.content.find(item => item.id === select)].map(item => item.dappRefundStatusId.code === "00007" || item.dappRefundStatusId.code === "00008")[0]) {
+        if ([universal.table.content.find(item => item.id === select)].map(item => item.dappRefundStatusId.code === "00007" || item.dappRefundStatusId.code === "00008")[0]) {
           this.setState({
             btnhide: true
           });
@@ -705,10 +712,7 @@ class MainView extends Component {
         body: JSON.stringify({
           "entityClass": "Refund",
           "fileName": formatMessage({ id: "menu.refunds" }),
-          "src": {
-            "searched": true,
-            "data": this.state.pagingConfig.src.data
-          },
+          "filter": this.state.pagingConfig.filter,
           "columns": [{
             "title": "Статус заявки на возврат",
             "dataIndex": "dappRefundStatusId.nameRu"

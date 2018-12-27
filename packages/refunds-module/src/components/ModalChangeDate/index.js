@@ -1,15 +1,16 @@
-import React, { Component } from 'react';
-import { Modal, DatePicker, Upload, Button, Icon, Row, Input, Spin } from 'antd';
-import moment from 'moment';
-import formatMessage from '../../utils/formatMessage';
-import connect from '../../Redux';
-import saveAs from 'file-saver';
+import React, { Component } from "react";
+import { Modal, DatePicker, Upload, Button, Icon, Row, Input, Spin } from "antd";
+import moment from "moment";
+import formatMessage from "../../utils/formatMessage";
+import connect from "../../Redux";
+import saveAs from "file-saver";
 
 class ModalChangeDate extends Component {
 
 
   state = {
-    changeDateValue: null,
+    test: "",
+    changeDateValue: null
   };
 
   handleOk = () => {
@@ -18,11 +19,11 @@ class ModalChangeDate extends Component {
 
     if (this.state.changeDateValue !== null) {
       dispatch({
-        type: 'universal/changeDateRequest',
+        type: "universal/changeDateRequest",
         payload: {
-          [dataSource.key]: this.state.changeDateValue !== '' ? this.state.changeDateValue : null,
-          id: dataSource.id,
-        },
+          [dataSource.key]: this.state.changeDateValue !== "" ? this.state.changeDateValue : null,
+          id: dataSource.id
+        }
       }).then(() => {
         this.props.hideModal(true);
       });
@@ -38,14 +39,14 @@ class ModalChangeDate extends Component {
 
     const { dispatch, dataSource } = this.props;
 
-    if (data.file.status === 'done') {
+    if (data.file.status === "done") {
       //data.file.status = 'uploading';
       dispatch({
-        type: 'universal/setfile',
+        type: "universal/setfile",
         payload: {
           file: data.file.originFileObj,
-          id: dataSource.id,
-        },
+          id: dataSource.id
+        }
       }).then(() => this.getFileList());
     }
   };
@@ -53,10 +54,10 @@ class ModalChangeDate extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'universal/removeFileRequest',
+      type: "universal/removeFileRequest",
       payload: {
-        id: file.uid,
-      },
+        id: file.uid
+      }
     }).then(() => this.getFileList());
   };
 
@@ -65,10 +66,12 @@ class ModalChangeDate extends Component {
     const { dataSource, dispatch } = this.props;
 
     dispatch({
-      type: 'universal/getFilesRequestDate',
+      type: "universal/getFilesRequestDate",
       payload: {
-        id: dataSource.id,
-      },
+        id: dataSource.id
+      }
+    }).then(() => {
+      this.setState({ test: "test" });
     });
 
   };
@@ -84,18 +87,18 @@ class ModalChangeDate extends Component {
 
   disabledDate = (current) => {
     // Can not select days before today and today
-    if (this.props.coltype !== 'appEndDate') {
+    if (this.props.coltype !== "appEndDate") {
       return current && current.valueOf() > (Date.now());
     }
   };
 
-  getFileNameByContentDisposition=(contentDisposition)=>{
+  getFileNameByContentDisposition = (contentDisposition) => {
     var filename = "";
-    if (contentDisposition && contentDisposition.indexOf('attachment') !== -1) {
+    if (contentDisposition && contentDisposition.indexOf("attachment") !== -1) {
       var filenameRegex = /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/;
       var matches = filenameRegex.exec(contentDisposition);
       if (matches != null && matches[1]) {
-        filename = matches[1].replace(/['"]/g, '');
+        filename = matches[1].replace(/['"]/g, "");
       }
     }
 
@@ -104,16 +107,18 @@ class ModalChangeDate extends Component {
 
   render() {
 
+    console.log(this.props.universal.files);
+
     let uploadProps = {
       defaultFileList: this.props.universal.files.map((file) => ({
         uid: file.id,
-        name: file.filename,
+        name: file.filename
       })),
       onRemove: (file) => {
         if (this.props.universal.files.length === 1 && this.props.dataSource.value !== null) {
           Modal.error({
-            title: 'Внимание',
-            content: 'Файл не может быть удален. Пожалуйста, удалите сначала дату',
+            title: "Внимание",
+            content: "Файл не может быть удален. Пожалуйста, удалите сначала дату"
           });
           return false;
         } else {
@@ -122,23 +127,23 @@ class ModalChangeDate extends Component {
       },
       onPreview: (file) => {
 
-        let authToken = localStorage.getItem('token');
+        let authToken = localStorage.getItem("AUTH_TOKEN");
 
-        fetch('/api/refund/upload/application/download/' + file.uid,
+        fetch("/api/refund/upload/application/download/" + file.uid,
           {
             headers: {
-              'Content-Type': 'application/json; charset=utf-8',
-              Authorization: 'Bearer ' + authToken,
+              "Content-Type": "application/json; charset=utf-8",
+              Authorization: "Bearer " + authToken
             },
-            method: 'post',
+            method: "post"
           })
           .then(response => {
             if (response.ok) {
               return response.blob().then(blob => {
-                let disposition = response.headers.get('content-disposition');
+                let disposition = response.headers.get("content-disposition");
                 return {
                   fileName: this.getFileNameByContentDisposition(disposition),
-                  raw: blob,
+                  raw: blob
                 };
               });
             }
@@ -149,13 +154,13 @@ class ModalChangeDate extends Component {
             }
           });
       },
-      onChange: this.uploadFile,
+      onChange: this.uploadFile
     };
 
 
     return (
       <Modal
-        title={formatMessage({ id: 'modalchangedate.title' })}
+        title={formatMessage({ id: "modalchangedate.title" })}
         onOk={this.handleOk}
         onCancel={this.handleCancel}
         width={500}
@@ -163,13 +168,13 @@ class ModalChangeDate extends Component {
         visible
         footer={[
           <Button key="back" onClick={this.handleCancel}>
-            {formatMessage({ id: 'system.close' })}
+            {formatMessage({ id: "system.close" })}
           </Button>,
           <Button
-            disabled={this.props.coltype !== 'appEndDate' && this.props.universal.files.length === 0}
+            disabled={this.props.coltype !== "appEndDate" && this.props.universal.files.length === 0}
             key="submit" type="primary" onClick={this.handleOk}>
-            {formatMessage({ id: 'form.save' })}
-          </Button>,
+            {formatMessage({ id: "form.save" })}
+          </Button>
         ]}
       >
 
@@ -179,7 +184,7 @@ class ModalChangeDate extends Component {
               allowClear={false}
               defaultValue={moment(this.props.dataSource.value, this.props.dateFormat)}
               size="large"
-              style={{ marginBottom: '5px' }}
+              style={{ marginBottom: "5px" }}
               format={this.props.dateFormat}
               disabledDate={this.disabledDate}
               onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
@@ -188,22 +193,22 @@ class ModalChangeDate extends Component {
             {!this.props.dataSource.value && <DatePicker
               allowClear={false}
               size="large"
-              style={{ marginBottom: '5px' }}
+              style={{ marginBottom: "5px" }}
               format={this.props.dateFormat}
               disabledDate={this.disabledDate}
               onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
             />}
           </Row>
-          {this.props.coltype !== 'appEndDate' &&
-          <Row style={{ marginTop: '15px' }}>
+          {this.props.coltype !== "appEndDate" &&
+          <Row style={{ marginTop: "15px" }}>
             {this.props.loadingFiles === false ?
-              <Spin tip={'Загрузка файла...'} spinning={this.props.uploadFile === true}> <Upload
+              <Spin tip={"Загрузка файла..."} spinning={this.props.uploadFile === true}> <Upload
                 {...uploadProps}>
                 <Button size="large">
-                  <Icon type="upload"/>{formatMessage({ id: 'system.load' })}
+                  <Icon type="upload"/>{formatMessage({ id: "system.load" })}
                 </Button>
               </Upload></Spin> : <Button size="large">
-                <Icon type="upload"/>{formatMessage({ id: 'system.load' })}
+                <Icon type="upload"/>{formatMessage({ id: "system.load" })}
               </Button>
             }
           </Row>}</Spin>
@@ -214,9 +219,9 @@ class ModalChangeDate extends Component {
 
 export default connect(({ universal, loading }) => ({
   universal,
-  uploadFile: loading.effects['universal/setfile'],
-  loadingFiles: loading.effects['universal/getFilesRequestDate'],
-  deleteFile: loading.effects['universal/removeFileRequest'],
-  changeDate: loading.effects['universal/changeDateRequest'],
+  uploadFile: loading.effects["universal/setfile"],
+  loadingFiles: loading.effects["universal/getFilesRequestDate"],
+  deleteFile: loading.effects["universal/removeFileRequest"],
+  changeDate: loading.effects["universal/changeDateRequest"]
 }))(ModalChangeDate);
 

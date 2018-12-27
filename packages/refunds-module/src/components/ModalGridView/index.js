@@ -79,13 +79,13 @@ class ModalGridView extends Component {
 
   componentDidMount() {
 
-    // const filter = this.props.filter;
-    // filter.src.data.dappRefundStatusList = [{ id: '8050e0eb-74c0-48cd-9bd5-5089585cc577' }];
-    // this.setState({
-    //   filter: filter,
-    // }, () => {
-    //   this.firstLoad();
-    // });
+    const filter = this.props.filter;
+    filter.src.data.dappRefundStatusList = [{ id: '8050e0eb-74c0-48cd-9bd5-5089585cc577' }];
+    this.setState({
+      filter: filter,
+    }, () => {
+      this.firstLoad();
+    });
 
   }
 

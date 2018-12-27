@@ -121,6 +121,7 @@ export default {
       yield call(setDateRequest, payload);
     },
     * setfile(payload, { call, put }) {
+
       const response = yield call(setfile, payload);
 
       yield put({

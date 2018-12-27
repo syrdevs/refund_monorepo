@@ -12,6 +12,7 @@
     "@vitacore/shared-ui": "^1.0.0",
     "animated": "^0.2.2",
     "babel-polyfill": "^6.26.0",
+    "bizcharts": "^3.4.2",
     "file-saver": "^2.0.0",
     "history": "^4.7.2",
     "moment": "^2.23.0",
