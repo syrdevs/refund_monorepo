@@ -1,3 +1,10 @@
+import kk from "../locales/kk_KZ";
+import ru from "../locales/ru-RU";
+
+const LANGUAGE = localStorage.getItem("LANGUAGE");
+
 module.exports = (langItem) => {
-  return langItem.id;
+  if (LANGUAGE === "kz")
+    return kk[langItem.id];
+  return ru[langItem.id];
 };

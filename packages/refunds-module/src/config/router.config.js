@@ -18,7 +18,7 @@ export default [
     routes: [
       {
         path: "/refunds",
-        icon: "faCreditCard",
+        icon: "database",
         name: "refunds",
         routes: [
           { path: "/refunds", redirect: "/refunds/reestr" },
@@ -35,30 +35,30 @@ export default [
             name: "reestr",
             component: "./Main/MainView",
             authority: ["ADMIN", "FSMS1", "FSMS2"]
-          },
-          {
-            path: "/refunds/options",
-            icon: "faListAlt",
-            name: "options",
-            component: "./Options/Options",
-            authority: ["ADMIN", "FSMS1", "FSMS2"]
-          },
-          {
-            path: "/refunds/journal",
-            icon: "faListAlt",
-            name: "reestr",
-            component: "./Journal/JournalPage",
-            authority: ["ADMIN", "FSMS1", "FSMS2"]
-          },
-          {
-            path: "/refunds/calendar",
-            icon: "faCalendarAlt",
-            name: "calendar",
-            hideChildrenInMenu: true,
-            component: "./Calendar/CalendarView",
-            authority: ["ADMIN", "FSMS2"]
           }
         ]
+      },
+      {
+        path: "/refunds/options",
+        icon: "database",
+        name: "options",
+        component: "./Options/Options",
+        authority: ["ADMIN", "FSMS1", "FSMS2"]
+      },
+      {
+        path: "/refunds/journal",
+        icon: "database",
+        name: "journal",
+        component: "./Journal/JournalPage",
+        authority: ["ADMIN", "FSMS1", "FSMS2"]
+      },
+      {
+        path: "/refunds/calendar",
+        icon: "faCalendarAlt",
+        name: "calendar",
+        hideChildrenInMenu: true,
+        component: "./Calendar/CalendarView",
+        authority: ["ADMIN", "FSMS2"]
       }
     ]
   }

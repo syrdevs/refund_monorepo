@@ -3,9 +3,17 @@ var ruTranslation = {
         leftMenu: {
             refunds: {
                 _: "Возвраты",
+                requests: "Заявки",
+                reestr: "Реестр возвратов",
                 payments: "Платежи",
                 options: "Настройки",
                 journal: "Журнал"
+            },
+            options: {
+                _: "Настройки"
+            },
+            journal: {
+                _: "Журнал"
             },
             contracts: {
                 commissions: {

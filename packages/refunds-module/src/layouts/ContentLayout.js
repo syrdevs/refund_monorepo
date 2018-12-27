@@ -29,14 +29,9 @@ const BreadcrumbsContainer = styled.div`
 `;
 
 const MainContent = styled.div`
-  display: flex;
-  flex-grow: 1;
-  min-height: 0;
   padding: 10px;
-
-  & > * {
-    flex-grow: 1;
-  }
+ width:100%;
+ overflow-x:hidden;
 `;
 
 class ContentLayout extends React.Component {

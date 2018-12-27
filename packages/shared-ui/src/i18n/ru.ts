@@ -2,10 +2,18 @@ const ruTranslation = {
   translation: {
     leftMenu: {
       refunds: {
-        _:"Возвраты",
-        payments:"Платежи",
-        options:"Настройки",
-        journal:"Журнал"
+        _: "Возвраты",
+        requests: "Заявки",
+        reestr: "Реестр возвратов",
+        payments: "Платежи",
+        options: "Настройки",
+        journal: "Журнал"
+      },
+      options: {
+        _: "Настройки"
+      },
+      journal:{
+        _: "Журнал"
       },
       contracts: {
         commissions: {
@@ -34,6 +42,6 @@ const ruTranslation = {
       }
     }
   }
-}
+};
 
-export default ruTranslation
+export default ruTranslation;

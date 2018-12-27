@@ -3,9 +3,17 @@ declare const ruTranslation: {
         leftMenu: {
             refunds: {
                 _: string;
+                requests: string;
+                reestr: string;
                 payments: string;
                 options: string;
                 journal: string;
+            };
+            options: {
+                _: string;
+            };
+            journal: {
+                _: string;
             };
             contracts: {
                 commissions: {

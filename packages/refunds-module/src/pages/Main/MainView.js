@@ -22,22 +22,25 @@ import {
   Spin,
   Badge
 } from "antd";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
 import moment from "moment";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
-
-function formatMessage(value) {
-  return value.id;
-}
+import formatMessage from "../../utils/formatMessage";
+import ImportXMLModal from "./ImportXMLModal";
+import ImportModalGrid from "./ImportModalGrid";
+import componentLocal from "../../locales/components/componentLocal";
+import GridFilter from "../../components/GridFilter";
+import hasRole from "../../utils/hasRole";
+import ModalGridView from "../../components/ModalGridView";
+import ModalChangeDateRefund from "../../components/ModalChangeDateRefund";
+import ModalGraphView from "../../components/ModalGridView";
+import { Animated } from "react-animated-css";
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const { RangePicker } = DatePicker;
-
-function hasRole(roles) {
-  let userRoles = ["ADMIN"];
-  return !userRoles.some(r => roles.indexOf(r) >= 0);
-}
 
 
 class MainView extends Component {
@@ -364,7 +367,6 @@ class MainView extends Component {
   }
 
   selectTable = (selectedRowKeys) => {
-    console.log("test");
     this.setState({ selectedRowKeys });
   };
 
@@ -504,7 +506,7 @@ class MainView extends Component {
       }
     ];
   };
-  setStatusRecord = (statusCode, statusText) => {
+  setStatusRecord = (statusCode, sntatusText) => {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
 
@@ -690,7 +692,7 @@ class MainView extends Component {
   };
   exportToExcel = () => {
 
-    let authToken = localStorage.getItem("token");
+    let authToken = localStorage.getItem("AUTH_TOKEN");
     let columns = JSON.parse(localStorage.getItem("RefundsPageColumns"));
 
     fetch("/api/refund/exportToExcel",
@@ -764,7 +766,6 @@ class MainView extends Component {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
     };
     const dateFormat = "DD.MM.YYYY";
-    console.log(universal);
     /*const { universal } = this.props;
     console.log(universal);*/
 
@@ -772,18 +773,81 @@ class MainView extends Component {
     const GridFilterData = this.stateFilter();
 
     return (
-      <Card bodyStyle={{ padding: 5 }}>
+      <div>
+        {this.state.ImportXMLModal.visible &&
+        <ImportXMLModal
+          closeAction={() => this.setState(prevState => ({ ImportXMLModal: { visible: false } }))}
+          onSelectedRows={(selectedRecords) => console.log(selectedRecords)}
+        />}
+
+        {this.state.ModalChangeDateRefund && <ModalChangeDateRefund
+          selectedRowKeys={this.state.selectedRowKeys}
+          dateFormat={dateFormat}
+          hideModal={(loadData) => {
+            if (loadData)
+              this.setState({
+                ModalChangeDateRefund: false,
+                selectedRowKeys: [],
+                btnhide: false
+              }, () => this.loadMainGridData());
+            else this.setState({ ModalChangeDateRefund: false });
+          }}/>}
+
+        <ModalGraphView visible={this.state.ShowGraph}
+                        resetshow={(e) => {
+                          this.setState({ ShowGraph: false });
+                        }}
+                        dataSource={universal.mainmodal}/>
+
+        {this.state.ShowModal && <ModalGridView visible={this.state.ShowModal}
+                                                resetshow={(e) => {
+                                                  this.setState({ ShowModal: false });
+                                                }}
+                                                filter={this.state.pagingConfig}/>}
+
+        <Card bodyStyle={{ padding: 5 }}>
           <Row>
             <Col sm={24} md={this.state.searchercont}>
               <div>
+
+                {this.state.searchercont === 7 &&
+                <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
+                  <Card
+                    style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
+                    type="inner"
+                    title={formatMessage({ id: "system.filter" })}
+                    headStyle={{
+                      padding: "0 14px"
+                    }}
+                    extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>}>
+
+                    <GridFilter
+                      clearFilter={() => {
+                        this.clearFilter();
+                      }}
+                      applyFilter={(filters) => {
+                        console.log(JSON.stringify(filters));
+                        this.setFilter(filters);
+                      }}
+                      filterForm={GridFilterData}
+                      dateFormat={dateFormat}/>
+
+
+                  </Card>
+                </Animated>}
+
                 {this.state.searchercont === 8 &&
+                <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                   <Card
                     style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
                     bodyStyle={{ padding: 0 }}
                     type="inner"
                     title={formatMessage({ id: "menu.mainview.rpmuLocale" })}
-                    extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}>s</Icon>}
+                    extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>}
                   >
+                    <LocaleProvider locale={componentLocal}>
                       <Spin spinning={this.props.rpmuLoading}>
                         <SmartGridView
                           name={"RefundsRPMUColumns"}
@@ -863,7 +927,9 @@ class MainView extends Component {
                         {/*}*/}
                         {/*scroll={{ x: 1100 }}/>*/}
                       </Spin>
+                    </LocaleProvider>
                   </Card>
+                </Animated>
                 }
 
               </div>
@@ -1031,6 +1097,7 @@ class MainView extends Component {
             </Col>
           </Row>
         </Card>
+      </div>
     );
   }
 }

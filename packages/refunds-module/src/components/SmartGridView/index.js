@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from "react";
 import {
   Card,
   Tabs,
@@ -18,31 +18,27 @@ import {
   Checkbox,
   Spin,
   LocaleProvider,
-  Divider,
-} from 'antd';
-import styles from './index.less';
-// import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-// import {faSyncAlt} from '@fortawesome/free-solid-svg-icons';
-// import {faCreditCard, faColumns} from '@fortawesome/free-solid-svg-icons/index';
+  Divider
+} from "antd";
+import styles from "./index.css";
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faSyncAlt} from '@fortawesome/free-solid-svg-icons';
+import {faCreditCard, faColumns} from '@fortawesome/free-solid-svg-icons/index';
 // import {Resizable} from 'react-resizable';
 //import {formatMessage, FormattedMessage, getLocale} from 'umi/locale';
-import componentLocal from '../../locales/components/componentLocal';
+import componentLocal from "../../locales/components/componentLocal";
+import formatMessage from "../../utils/formatMessage";
 
-
-function formatMessage(langItem) {
-  return langItem.id;
-}
-
-import ru_RU from 'antd/lib/locale-provider/ru_RU';
+import ru_RU from "antd/lib/locale-provider/ru_RU";
 
 function getPropByName(obj, desc) {
-  var arr = desc.split('.');
+  var arr = desc.split(".");
 
   while (arr.length && obj) {
     var comp = arr.shift();
-    var match = new RegExp('(.+)\\[([0-9]*)\\]').exec(comp);
+    var match = new RegExp("(.+)\\[([0-9]*)\\]").exec(comp);
     if ((match !== null) && (match.length == 3)) {
-      var arrayData = {arrName: match[1], arrIndex: match[2]};
+      var arrayData = { arrName: match[1], arrIndex: match[2] };
       if (obj[arrayData.arrName] != undefined) {
         obj = obj[arrayData.arrName][arrayData.arrIndex];
       } else {
@@ -57,14 +53,12 @@ function getPropByName(obj, desc) {
 }
 
 const SmartColumnsSelect = props => {
-
-
   const menu = (
     <Menu>
       <Menu.Item>
-        <div>{formatMessage({id: 'app.table.column.select'})}:</div>
+        <div>{formatMessage({ id: "app.table.column.select" })}:</div>
       </Menu.Item>
-      {props.value.map(function (column, index) {
+      {props.value.map(function(column, index) {
         return (
           <Menu.Item key={index.toString()}>
             <Checkbox
@@ -80,11 +74,10 @@ const SmartColumnsSelect = props => {
     </Menu>
   );
 
-  return (<Dropdown trigger={['click']} onVisibleChange={(visible) => {
+  return (<Dropdown trigger={["click"]} onVisibleChange={(visible) => {
     props.dropDownAction(visible);
   }} visible={props.dropDownVisible} overlay={menu} placement="bottomRight">
-    <Button style={{float: 'right'}}>s
-      {/*<Icon><FontAwesomeIcon icon={faColumns}/></Icon>*/}
+    <Button style={{ float: "right" }}><Icon><FontAwesomeIcon icon={faColumns}/></Icon>
     </Button>
   </Dropdown>);
 };
@@ -97,25 +90,25 @@ const SmartGridHeader = props => {
   return (<div>
     <Row>
       <Col sm={24} md={24} xs={24}>
-        <div className={styles.headerButton}>
+        <div className={"headerButton"}>
 
           {filterBtnShow &&
-          <Button type={'default'} disabled={props.searchButton} onClick={props.onSearch}><Icon type="search"
+          <Button type={"default"} disabled={props.searchButton} onClick={props.onSearch}><Icon type="search"
                                                                                                 theme="outlined"/></Button>}
 
-          {/*{refreshBtnShow && <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>}*/}
+          {refreshBtnShow && <Button onClick={props.onRefresh}><FontAwesomeIcon icon={faSyncAlt}/></Button>}
           {props.addonButtons}
 
-          <div className={styles.smart_grid_controls_right}>
+          <div className={"smart_grid_controls_right"}>
 
             {<SmartColumnsSelect {...props} searchButton={props.searchButton} onSelectColumn={props.onSelectColumn}
                                  value={props.columns}/>}
             {props.showExportBtn &&
-            <Button onClick={() => props.actionExport()} style={{float: 'right'}}><Icon type="file-excel"/></Button>}
+            <Button onClick={() => props.actionExport()} style={{ float: "right" }}><Icon type="file-excel"/></Button>}
 
             {props.showTotal &&
             <div
-              className={styles.total_label}>{props.extraButtons !== undefined && props.extraButtons} {formatMessage({id: 'app.table.column.total'})}: {props.dataSource.total}</div>}
+              className={"total_label"}>{props.extraButtons !== undefined && props.extraButtons} {formatMessage({ id: "app.table.column.total" })}: {props.dataSource.total}</div>}
 
           </div>
         </div>
@@ -141,7 +134,7 @@ export default class SmartGridView extends Component {
     this.state = {
       dropDownVisible: false,
       selectedRow: null,
-      isColumnChanged: false,
+      isColumnChanged: false
     };
   }
 
@@ -151,13 +144,13 @@ export default class SmartGridView extends Component {
 
   onSelectColumn = (columnIndex) => {
 
-    const {onColumnsChange} = this.props;
+    const { onColumnsChange } = this.props;
     let payment = this.props;
 
     let local_helper = this.StorageHelper();
     let StorageColumns = local_helper.get(this.props.name);
 
-    StorageColumns.forEach(function (item) {
+    StorageColumns.forEach(function(item) {
       if (item.dataIndex === columnIndex) {
         item.isVisible = !item.isVisible;
       }
@@ -166,28 +159,27 @@ export default class SmartGridView extends Component {
     local_helper.set(this.props.name, StorageColumns, true);
 
     this.setState({
-      isColumnChanged: !this.state.isColumnChanged,
+      isColumnChanged: !this.state.isColumnChanged
     });
 
     if (onColumnsChange)
-      onColumnsChange(!this.state.isColumnChanged,columnIndex);
+      onColumnsChange(!this.state.isColumnChanged, columnIndex);
 
   };
-
 
 
   onSelectChange = (selectedRowKeys) => {
     this.props.onSelectCheckboxChange(selectedRowKeys);
   };
 
-  handleResize = index => (e, {size}) => {
-    this.setState(({columns}) => {
+  handleResize = index => (e, { size }) => {
+    this.setState(({ columns }) => {
       const nextColumns = [...columns];
       nextColumns[index] = {
         ...nextColumns[index],
-        width: size.width,
+        width: size.width
       };
-      return {columns: nextColumns};
+      return { columns: nextColumns };
     });
   };
 
@@ -197,21 +189,21 @@ export default class SmartGridView extends Component {
 
   StorageHelper() {
     return {
-      clear: function (name) {
+      clear: function(name) {
         localStorage.setItem(name, null);
       },
-      set: function (name, value, isReplace = true) {
+      set: function(name, value, isReplace = true) {
 
         if (isReplace) {
-          localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
+          localStorage.setItem(name, typeof value === "string" ? value : JSON.stringify(value));
         } else {
           if (!localStorage.getItem(name)) {
-            localStorage.setItem(name, typeof value === 'string' ? value : JSON.stringify(value));
+            localStorage.setItem(name, typeof value === "string" ? value : JSON.stringify(value));
           }
         }
 
       },
-      get: function (name) {
+      get: function(name) {
         let result = localStorage.getItem(name);
 
         if (result) {
@@ -219,7 +211,7 @@ export default class SmartGridView extends Component {
         }
 
         return false;
-      },
+      }
     };
   }
 
@@ -240,16 +232,16 @@ export default class SmartGridView extends Component {
 
     let tableOptions = {
       bordered: true,
-      rowClassName: styles.smart_grid_view_container,
-      size: 'small',
+      rowClassName: "smart_grid_view_container",
+      size: "small",
       pagination: false,
-      rowKey: this.props.rowKey || 'id',
+      rowKey: this.props.rowKey || "id",
       columns: _columns.filter(column => column.isVisible),
       dataSource: this.props.dataSource.data,
       onChange: (pagination, filters, sorter) => {
         if (this.props.onSort)
           this.props.onSort(sorter);
-      },
+      }
     };
     /* if (this.props.rowClassName){
        tableOptions.rowClassName = this.props.rowClassName;
@@ -268,7 +260,6 @@ export default class SmartGridView extends Component {
          onResize: this.handleResize(index),
        }),
      }));*/
-
 
 
     if (this.props.sorted) {
@@ -322,26 +313,26 @@ export default class SmartGridView extends Component {
            cell: ResizeableTitle,
          },*/
         body: {
-          cell: BodyCell,
-        },
+          cell: BodyCell
+        }
       };
     }
 
     if (this.props.selectedRowCheckBox) {
       tableOptions.rowSelection = {
         selectedRowKeys: this.props.selectedRowKeys,
-        onChange: this.onSelectChange,
+        onChange: this.onSelectChange
       };
     }
 
     if (this.props.scroll) {
       tableOptions.scroll = {
-        ...this.props.scroll,
+        ...this.props.scroll
       };
     }
     if (!this.props.rowClassName) {
       tableOptions.rowClassName = (record, index) => {
-        return this.state.selectedRow === index ? 'active' : '';
+        return this.state.selectedRow === index ? "active" : "";
       };
     } else {
       tableOptions.rowClassName = this.props.rowClassName;
@@ -351,12 +342,12 @@ export default class SmartGridView extends Component {
     tableOptions.onRow = (record, index) => ({
       onClick: () => {
         this.setState({
-          selectedRow: index,
+          selectedRow: index
         }, () => {
           if (this.props.onSelectRow)
             this.props.onSelectRow(record, index);
         });
-      },
+      }
     });
     /*
 
@@ -379,7 +370,7 @@ export default class SmartGridView extends Component {
                        searchButton={this.props.searchButton}
                        dropDownAction={(state) => {
                          this.setState({
-                           dropDownVisible: state,
+                           dropDownVisible: state
                          });
                        }}
                        dropDownVisible={this.state.dropDownVisible}
@@ -393,9 +384,9 @@ export default class SmartGridView extends Component {
       <LocaleProvider locale={componentLocal}>
         <Pagination
           defaultPageSize={this.props.dataSource.pageSize}
-          style={{display: 'flex', justifyContent: 'center', alignItems: 'center'}}
+          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
           showSizeChanger
-          pageSizeOptions={['15', '30', '40', '50', '100']}
+          pageSizeOptions={["15", "30", "40", "50", "100"]}
           onShowSizeChange={(page, pageSize) => {
             this.props.onShowSizeChange(page - 1, pageSize);
           }}
