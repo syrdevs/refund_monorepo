@@ -169,6 +169,7 @@ export default {
   "menu.journal.requests": "Заявки",
   "menu.rpmu.searcher": "Поиск в ГБД ФЛ",
   "menu.reports": "Отчеты",
+  "menu.refunds.reports":"Отчеты",
   "menu.refunds.journal": "Журнал",
   "menu.refunds.rpmu": "Регистр потребителей",
   "menu.refunds.rpmu.payments": "Платежи",

@@ -55,6 +55,6 @@ const ruTranslation = {
       }
     }
   }
-};
+}
 
-export default ruTranslation;
+export default ruTranslation
