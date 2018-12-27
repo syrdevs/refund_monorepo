@@ -8,7 +8,9 @@ const ruTranslation = {
         payments: "Платежи",
         options: "Настройки",
         journal: "Журнал",
-        calendar: "Календарь"
+        calendar: "Календарь",
+        template: "Шаблоны",
+        staticview: "Статические данные",
       },
       rpmu: {
         _: "Регистр потребителей",
