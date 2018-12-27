@@ -24,6 +24,22 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"]
       },
       {
+        path: '/refunds/rpmu',
+        icon: 'database',
+        name: 'rpmu',
+        routes: [
+          { path: '/refunds/rpmu', redirect: '/refunds/rpmu/payments' },
+          {
+            path: '/refunds/rpmu/payments',
+            icon: 'database',
+            name: 'payments',
+            component: './Payments/PaymentsPage',
+            authority: ['ADMIN']
+          }
+        ],
+      },
+
+      {
         path: "/refunds",
         icon: "database",
         name: "refunds",
@@ -73,7 +89,14 @@ export default [
         hideChildrenInMenu: true,
         component: "./Calendar/CalendarView",
         authority: ["ADMIN", "FSMS2"]
-      }
+      },
+      {
+        path: '/refunds/reports',
+        icon: 'database',
+        name: 'reports',
+        component: './Reports/ReportsPage',
+        authority: ['ADMIN', 'FSMS2']
+      },
     ]
   }
 ];

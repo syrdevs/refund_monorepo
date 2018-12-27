@@ -10,13 +10,20 @@ const ruTranslation = {
         journal: "Журнал",
         calendar: "Календарь"
       },
+      rpmu: {
+        _: "Регистр потребителей",
+        payments: "Платежи"
+      },
+      reports: {
+        _: "Отчеты"
+      },
       options: {
         _: "Настройки"
       },
-      journal:{
+      journal: {
         _: "Журнал"
       },
-      home:{
+      home: {
         _: "Главная"
       },
       contracts: {
