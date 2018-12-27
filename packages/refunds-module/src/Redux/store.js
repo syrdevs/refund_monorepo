@@ -13,12 +13,12 @@ models.forEach((model) => {
   Object.keys(model.effects).forEach((effectItemKey) => {
     sagaMiddlewareWatcher.push(function* () {
 
-      yield takeEvery(model.namespace + "/" + effectItemKey, function* (payload) {
+      yield takeEvery(model.namespace + "/" + effectItemKey, function* (payloadCb) {
 
-        yield model.effects[effectItemKey](payload, {
+        yield model.effects[effectItemKey](payloadCb, {
           call: function* (fn, payload) {
             const result = yield call(fn, payload);
-            payload.callback(result);
+            payloadCb.callback(result);
             return result;
           },
           put: function* (action) {
