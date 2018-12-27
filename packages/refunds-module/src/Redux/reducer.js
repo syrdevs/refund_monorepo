@@ -3,6 +3,8 @@ const initialState = {
 };
 
 const reducer = (state = initialState, action) => {
+
+  console.log(action.type)
   switch (action.type) {
     case "REQUESTED":
       return {
@@ -27,4 +29,6 @@ const reducer = (state = initialState, action) => {
   }
 };
 
-export default reducer;
+export default {
+  "reducer": reducer
+};

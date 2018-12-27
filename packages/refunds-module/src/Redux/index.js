@@ -1,4 +1,5 @@
 import { connect } from "react-redux";
+import store from "./store";
 import models from "./model.config";
 
 
@@ -18,9 +19,10 @@ export default (args) => {
   return (Component) => {
 
     function mapDispatchToProps(dispatch) {
+
       return {
         dispatch(action) {
-          return dispatch(action);
+          return store._dispatch(action);
         }
       };
     }
