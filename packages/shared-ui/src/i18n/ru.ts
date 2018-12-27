@@ -7,13 +7,17 @@ const ruTranslation = {
         reestr: "Реестр возвратов",
         payments: "Платежи",
         options: "Настройки",
-        journal: "Журнал"
+        journal: "Журнал",
+        calendar: "Календарь"
       },
       options: {
         _: "Настройки"
       },
       journal:{
         _: "Журнал"
+      },
+      home:{
+        _: "Главная"
       },
       contracts: {
         commissions: {

@@ -17,11 +17,18 @@ export default [
     authority: ["ADMIN", "FSMS1", "FSMS2"],
     routes: [
       {
+        path: "/refunds/home",
+        icon: "database",
+        name: "home",
+        component: "./Home/Home",
+        authority: ["ADMIN", "FSMS1", "FSMS2"]
+      },
+      {
         path: "/refunds",
         icon: "database",
         name: "refunds",
         routes: [
-          { path: "/refunds", redirect: "/refunds/reestr" },
+          { path: "/refunds", redirect: "/refunds/home" },
           {
             path: "/refunds/requests",
             name: "requests",
@@ -34,6 +41,13 @@ export default [
             icon: "faListAlt",
             name: "reestr",
             component: "./Main/MainView",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
+            path: "/refunds/calendar",
+            icon: "faListAlt",
+            name: "calendar",
+            component: "./Calendar/CalendarView",
             authority: ["ADMIN", "FSMS1", "FSMS2"]
           }
         ]
