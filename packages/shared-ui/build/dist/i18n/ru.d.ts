@@ -4,6 +4,8 @@ declare const ruTranslation: {
             refunds: {
                 _: string;
                 payments: string;
+                options: string;
+                journal: string;
             };
             contracts: {
                 commissions: {

@@ -27,19 +27,36 @@ const ContentX = styled.div`
 `;
 
 
-const refundMenuItems = [{
-  name: "Возвраты",
-  hrefPrefix: "/refunds/reestr",
-  iconName: "database",
-  translationKey: "leftMenu.refunds._",
-  subItems: []
-}, {
-  name: "Платежи",
-  hrefPrefix: "/refunds/requests",
-  iconName: "database",
-  translationKey: "leftMenu.refunds.payments",
-  subItems: []
-}];
+const refundMenuItems = [
+    {
+    name: "Возвраты",
+    hrefPrefix: "/refunds/reestr",
+    iconName: "database",
+    translationKey: "leftMenu.refunds._",
+    subItems: []
+    },
+    {
+    name: "Платежи",
+    hrefPrefix: "/refunds/requests",
+    iconName: "database",
+    translationKey: "leftMenu.refunds.payments",
+    subItems: []
+    },
+    {
+    name: "Настройки",
+    hrefPrefix: "/refunds/options",
+    iconName: "database",
+    translationKey: "leftMenu.refunds.options",
+    subItems: []
+    },
+    {
+      name: "Журнал",
+      hrefPrefix: "/refunds/journal",
+      iconName: "database",
+      translationKey: "leftMenu.refunds.journal",
+      subItems: []
+    }
+  ];
 
 const loader = () => {
   return <div> </div>;
@@ -138,36 +155,18 @@ class App extends React.Component {
     }
 
     return (<Provider store={store}>
-
-      <ContentX>
-        <Layout>
-          <Layout>
-            <Sider width={300} style={{ background: "#fff" }}>
-              <LeftMenu leftMenuItems={[...refundMenuItems]} location={location}
-                        goToLink={this.props.history.push}/>
-            </Sider>
-            <Layout style={{
-              borderLeft: "1px solid #d6d6d6",
-              padding: "0 15px",
-              backgroundColor: "white",
-              borderTop: `4px solid ${COLORS.MAIN_GREEN}`
-            }}>
-
-              <Content style={{
-                background: "#fff"
-              }}
-              >
-                <Suspense fallback={<div>...</div>}>
-                  <Switch>
-                    {RoutingCollection}
-                  </Switch>
-                </Suspense>
-              </Content>
-            </Layout>
-          </Layout>
-        </Layout>
-      </ContentX>
-    </Provider>);
+      <div>
+        <LeftMenu leftMenuItems={[...refundMenuItems]} location={location}
+                  goToLink={this.props.history.push}/>
+      </div>
+      <div style={{ overflowX: "hidden", width: "100%", height: "100vh" }}>
+        <Suspense fallback={<div>...</div>}>
+          <Switch>
+            {RoutingCollection}
+          </Switch>
+        </Suspense>
+      </div>
+    </Provider> );
 
     // (
     //
