@@ -30,7 +30,7 @@ export default class PaymentsPage extends Component {
 
   render() {
     return (<div>
-      test
+      PaymentsPage
     </div>);
   }
 

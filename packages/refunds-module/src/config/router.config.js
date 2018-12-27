@@ -33,7 +33,7 @@ export default [
             path: '/refunds/rpmu/payments',
             icon: 'database',
             name: 'payments',
-            component: './Payments/PaymentsPage',
+            component: './PaymentsPage/PaymentsPage',
             authority: ['ADMIN']
           }
         ],
@@ -94,7 +94,7 @@ export default [
         path: '/refunds/reports',
         icon: 'database',
         name: 'reports',
-        component: './Reports/ReportsPage',
+        component: './ReportsPage/ReportsPage',
         authority: ['ADMIN', 'FSMS2']
       },
     ]
