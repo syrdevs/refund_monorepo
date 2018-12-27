@@ -82,7 +82,7 @@ export default {
   'button.apply': 'Применить',
   'label.select': 'Выберите',
   'label.type': 'Тип',
-  'menu.home': 'Главная',
+  'menu.refunds.home': 'Главная',
   'menu.refunds': 'Возвраты',
   'menu.rpmu': 'Регистр потребителей',
   'menu.refunds.requests': 'Заявки',

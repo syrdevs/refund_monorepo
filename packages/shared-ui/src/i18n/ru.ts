@@ -15,6 +15,9 @@ const ruTranslation = {
       journal:{
         _: "Журнал"
       },
+      home:{
+        _: "Главная"
+      },
       contracts: {
         commissions: {
           _: "Комиссия"

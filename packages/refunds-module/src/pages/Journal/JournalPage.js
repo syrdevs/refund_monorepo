@@ -6,24 +6,25 @@ import {
   Label,
   Row,
   Col,
+  Spin,
 } from 'antd';
-/*import GridFilter from '@/components/GridFilter';*/
-import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
+
+import saveAs from 'file-saver';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTimes } from '@fortawesome/free-solid-svg-icons';
+import moment from "moment";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
-import { Animated } from 'react-animated-css';
-import saveAs from 'file-saver';
-import moment from 'moment';
+import formatMessage from "../../utils/formatMessage";
+import GridFilter from "../../components/GridFilter";
+import { Animated } from "react-animated-css";
 
 const TabPane = Tabs.TabPane;
 const dateFormat = 'YYYY/MM/DD';
 
-function formatMessage(value) {
-  return value.id;
-}
 
-class JournalPage extends Component {
+
+ class JournalPage extends Component {
   constructor(props) {
     super(props);
 
@@ -104,7 +105,7 @@ class JournalPage extends Component {
         {
           name: 'entryDate',
           label: 'Дата и время',
-          type: 'betweenDate',
+          type: 'listbetweenDate',
         }, {
           name: 'appNumber',
           label: 'Номер заявки',
@@ -118,9 +119,9 @@ class JournalPage extends Component {
           label: 'Номер ПП ГК',
           type: 'text',
         }, {
-          name: 'gcvpOrderDate',
+          name: 'refundId.gcvpOrderDate',
           label: 'Дата ПП ГК',
-          type: 'betweenDate',
+          type: 'listbetweenDate',
         }, {
           name: 'dappRefundStatus',
           label: 'Действие',
@@ -130,10 +131,9 @@ class JournalPage extends Component {
       pagingConfig: {
         'start': 0,
         'length': 15,
-        'src': {
-          'searched': false,
-          'data': {},
-        },
+        'entity': "refund_history",
+        'filter': {},
+        'sort': [],
       },
     };
   }
@@ -151,10 +151,9 @@ class JournalPage extends Component {
       pagingConfig: {
         'start': 0,
         'length': 15,
-        'src': {
-          'searched': false,
-          'data': {},
-        },
+        'entity': "refund_history",
+        'filter': {},
+        'sort': [],
       },
     }, () => {
       this.loadMainGridData();
@@ -167,10 +166,9 @@ class JournalPage extends Component {
       pagingConfig: {
         'start': 0,
         'length': this.state.pagingConfig.length,
-        'src': {
-          'searched': true,
-          'data': filters,
-        },
+        'entity': "refund_history",
+        'filter': filters,
+        'sort': [],
       },
     }, () => {
       this.loadMainGridData();
@@ -184,7 +182,7 @@ class JournalPage extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: 'universal2/journalData',
+      type: 'universal2/getList',
       payload: this.state.pagingConfig,
     });
 
@@ -221,7 +219,6 @@ class JournalPage extends Component {
       }})
       .then(responseBlob => {saveAs(responseBlob, moment().format('DDMMYYYY')+filename);});
   };
-
   getFileNameByContentDisposition(contentDisposition){
     var regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
     var matches = regex.exec(contentDisposition);
@@ -255,7 +252,7 @@ class JournalPage extends Component {
       },
     }), () => {
       dispatch({
-        type: 'universal2/journalData',
+        type: 'universal2/getList',
         payload: {
           ...this.state.pagingConfig,
           start: current,
@@ -279,6 +276,8 @@ class JournalPage extends Component {
   };
 
   render() {
+    const { universal2 } = this.props;
+    const refundHistory = universal2.references[this.state.pagingConfig.entity];
 
     const { dataStore, columns } = this.props.universal2;
 
@@ -298,10 +297,10 @@ class JournalPage extends Component {
           showExportBtn
           actionExport={() => this.exportToExcel()}
           dataSource={{
-            total: dataStore.totalElements,
+            total: refundHistory ? refundHistory.totalElements : 0,
             pageSize: this.state.pagingConfig.length,
             page: this.state.pagingConfig.start + 1,
-            data: dataStore.content,
+            data: refundHistory ? refundHistory.content : [],
           }}
           onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
           onRefresh={() => {
@@ -314,6 +313,7 @@ class JournalPage extends Component {
     );
 
     return (
+      <div>
         <Card bodyStyle={{ padding: 5 }}>
           <Tabs defaultActiveKey="1">
             <TabPane tab={formatMessage({ id: 'menu.journal.refunds' })} key="1">
@@ -331,9 +331,9 @@ class JournalPage extends Component {
                       extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
                         icon={faTimes}/></Icon>}
                     >
-                      {/*<GridFilter clearFilter={this.clearFilter} applyFilter={this.setFilter} key={'1'}
+                      <GridFilter clearFilter={this.clearFilter} applyFilter={this.setFilter} key={'1'}
                                   filterForm={this.state.filterForm}
-                                  dateFormat={dateFormat}/>*/}
+                                  dateFormat={dateFormat}/>
                     </Card>
                   </Animated>
 
@@ -345,16 +345,17 @@ class JournalPage extends Component {
               </Row>
             </TabPane>
             {/*<TabPane tab={formatMessage({ id: 'menu.journal.requests' })} key="2">*/}
-              {/*Заявки*/}
+            {/*Заявки*/}
             {/*</TabPane>*/}
           </Tabs>
         </Card>
-    );
+        <br/>
+      </div>);
   }
 
 }
 
 export default connect(({ universal2, loading }) => ({
   universal2,
-  loadingData: loading.effects['universal2/journalData'],
-})) (JournalPage)
+  loadingData: loading.effects['universal2/getList'],
+}))(JournalPage)
