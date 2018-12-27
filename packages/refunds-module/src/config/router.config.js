@@ -65,6 +65,20 @@ export default [
             name: "calendar",
             component: "./Calendar/CalendarView",
             authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
+            path: "/refunds/template",
+            icon: "faListAlt",
+            name: "template",
+            component: "./Templates/Template",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
+            path: "/refunds/static",
+            icon: "faListAlt",
+            name: "staticview",
+            component: "./StaticsView/StaticsView",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
           }
         ]
       },
