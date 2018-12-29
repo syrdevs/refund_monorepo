@@ -426,7 +426,6 @@ export default class ReportForm extends Component {
     // ];
 
     return (<Card bodyStyle={{ padding: 15 }}>
-      <Spin spinning={this.props.loading}>
         {reportName}
         <hr/>
         <br/>
@@ -443,7 +442,6 @@ export default class ReportForm extends Component {
         <Button onClick={() => {
           reportForming(this.state.formFilters);
         }} type={'primary'} disabled={buttonIsDisabled}>{formatMessage({ id: 'system.forming' })}</Button>
-      </Spin>
     </Card>);
   }
 }

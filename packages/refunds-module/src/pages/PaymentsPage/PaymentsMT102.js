@@ -296,7 +296,6 @@ class PaymentsMT102 extends Component {
 
       </Col>
       <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-        <Spin tip="" spinning={this.props.loadingData}>
           <SmartGridView
             name={"paymentspagemt102columns"}
             scroll={{ x: "auto" }}
@@ -370,7 +369,6 @@ class PaymentsMT102 extends Component {
               });
             }}
           />
-        </Spin>
       </Col>
     </Row>);
   };

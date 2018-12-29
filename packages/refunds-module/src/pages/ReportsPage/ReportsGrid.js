@@ -124,14 +124,15 @@ class ReportsGrid extends Component {
 
   downloadFile = async (param) => {
 
-    let authToken = localStorage.getItem("token");
+    let authToken = localStorage.getItem("AUTH_TOKEN");
 
-    fetch("api/report/getReportResult?id=" + param.id,
+    fetch("/api/report/getReportResult?id=" + param.id,
       {
         headers: {
           "Content-Type": "application/json; charset=utf-8",
           Authorization: "Bearer " + authToken
-        }
+        },
+        method: "GET"
       })
       .then(response => {
         if (response.ok) {
@@ -205,7 +206,7 @@ class ReportsGrid extends Component {
   }
 
   getOrder = async (taskItem, count, call) => {
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem("AUTH_TOKEN");
 
     const res = await fetch("/api/report/getReportStatus?id=" + taskItem, {
       headers: {
@@ -246,7 +247,7 @@ class ReportsGrid extends Component {
 
   saveOrder = async () => {
 
-    let token = localStorage.getItem("token");
+    let token = localStorage.getItem("AUTH_TOKEN");
 
     const res = await fetch("/api/report/createReport", {
       method: "POST",
@@ -320,43 +321,44 @@ class ReportsGrid extends Component {
 
     const { columns } = this.state;
 
-    return (<Spin spinning={this.props.loadingData}><Table
-      size={"small"}
-      rowClassName={(record, index) => {
-        return this.state.selectedRow === index ? "active" : "";
-      }}
-      onRow={(record, index) => {
-        return {
-          onClick: () => {
-            this.setState({
-              selectedRow: index
-            });
-          }
-        };
-      }}
-      rowKey={"id"}
-      columns={columns}
-      bordered={true}
-      pagination={false}
-      dataSource={this.props.universal2.reportFormedData.content ? this.state.dataSource.concat(this.props.universal2.reportFormedData.content) : []}/>
-      <br/>
-      <LocaleProvider locale={componentLocal}>
-        <Pagination
-          defaultPageSize={15}
-          style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
-          showSizeChanger
-          pageSizeOptions={["15", "30", "40", "50", "100"]}
-          onShowSizeChange={(page, pageSize) => {
-            this.onShowSizeChange(page - 1, pageSize);
-          }}
-          onChange={(page, pageSize) => {
-            this.onShowSizeChange(page - 1, pageSize);
-          }}
-          defaultCurrent={this.state.pagingConfig.start + 1}
-          total={this.props.universal2.reportFormedData.totalElements}
-        />
-      </LocaleProvider>
-    </Spin>);
+    return (<div><Table
+        size={"small"}
+        rowClassName={(record, index) => {
+          return this.state.selectedRow === index ? "active" : "";
+        }}
+        onRow={(record, index) => {
+          return {
+            onClick: () => {
+              this.setState({
+                selectedRow: index
+              });
+            }
+          };
+        }}
+        rowKey={"id"}
+        columns={columns}
+        bordered={true}
+        pagination={false}
+        dataSource={this.props.universal2.reportFormedData.content ? this.state.dataSource.concat(this.props.universal2.reportFormedData.content) : []}/>
+        <br/>
+        <LocaleProvider locale={componentLocal}>
+          <Pagination
+            defaultPageSize={15}
+            style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
+            showSizeChanger
+            pageSizeOptions={["15", "30", "40", "50", "100"]}
+            onShowSizeChange={(page, pageSize) => {
+              this.onShowSizeChange(page - 1, pageSize);
+            }}
+            onChange={(page, pageSize) => {
+              this.onShowSizeChange(page - 1, pageSize);
+            }}
+            defaultCurrent={this.state.pagingConfig.start + 1}
+            total={this.props.universal2.reportFormedData.totalElements}
+          />
+        </LocaleProvider>
+      </div>
+    );
   }
 }
 

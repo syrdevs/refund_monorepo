@@ -582,8 +582,8 @@ class GridFilter extends Component {
 
 
     return (
-
-      <Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>
+      <div>
+        {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
         <Form layout={"vertical"}>
           {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
           {this.props.miniForm !== true && <Divider style={{ margin: "16px 10px 0 0" }}/>}
@@ -594,7 +594,8 @@ class GridFilter extends Component {
           {this.props.miniForm !== true && <Button style={{ margin: "10px 0 0 5px" }}
                                                    onClick={this.clearFilters}>{formatMessage({ id: "system.clear" })}</Button>}
         </Form>
-      </Spin>
+      </div>
+      // </Spin>
     );
   }
 }

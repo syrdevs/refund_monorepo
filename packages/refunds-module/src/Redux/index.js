@@ -5,6 +5,7 @@ import models from "./model.config";
 
 export default (args) => {
 
+
   let modelsData = {};
   let effects = {};
   models.forEach((model) => {
@@ -16,10 +17,17 @@ export default (args) => {
 
   });
 
+
   return (Component) => {
 
-    function mapDispatchToProps(dispatch) {
+    let params = {
+      loading: {
+        effects: effects
+      },
+      ...modelsData
+    };
 
+    function mapDispatchToProps(dispatch) {
       return {
         dispatch(action) {
           return store._dispatch(action);
@@ -28,14 +36,6 @@ export default (args) => {
     }
 
     function mapStateToProps(state) {
-
-      let params = {
-        loading: {
-          effects: effects
-        },
-        ...modelsData
-      };
-
       return { ...args(params), ...state };
     }
 

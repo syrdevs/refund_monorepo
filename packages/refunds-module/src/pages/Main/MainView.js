@@ -76,8 +76,7 @@ class MainView extends Component {
           onCell: record => {
             return {
               onClick: () => {
-                this.toggleItems(record);
-                this.loadRpmuData(record.id);
+                this.loadRpmuData(record);
               }
             };
           },
@@ -692,9 +691,11 @@ class MainView extends Component {
         "start": 0,
         "length": 30,
         "refundId": {
-          "id": recordId
+          "id": recordId.id
         }
       }
+    }).then(() => {
+      this.toggleItems(recordId);
     });
   };
   exportToExcel = () => {
@@ -769,6 +770,8 @@ class MainView extends Component {
     const universal = {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
     };
+
+
     const dateFormat = "DD.MM.YYYY";
     /*const { universal } = this.props;
     console.log(universal);*/
@@ -852,85 +855,83 @@ class MainView extends Component {
                       icon={faTimes}/></Icon>}
                   >
                     <LocaleProvider locale={componentLocal}>
-                      <Spin spinning={this.props.rpmuLoading}>
-                        <SmartGridView
-                          name={"RefundsRPMUColumns"}
-                          rowKey={"id"}
-                          scroll={{ x: this.state.xsize }}
-                          actionColumns={[
-                            {
-                              title: formatMessage({ id: "menu.mainview.rpmuName" }),
-                              key: "lastname",
-                              order: 0,
-                              isVisible: true,
-                              width: 100,
-                              render: (text, record) => (<div>
-                                  {text.lastname + " " + text.firstname + " " + text.secondname}
-                                  <br/>
-                                  {"(ИИН: " + text.iin + ", ДР: " + text.birthdate + ")"}
-                                </div>
-                              )
-                            }]}
-                          columns={rpmuColumns}
-                          sorted={true}
-                          sortedInfo={this.state.sortedInfo}
-                          onSort={(column) => {
+                      <SmartGridView
+                        name={"RefundsRPMUColumns"}
+                        rowKey={"id"}
+                        scroll={{ x: this.state.xsize }}
+                        actionColumns={[
+                          {
+                            title: formatMessage({ id: "menu.mainview.rpmuName" }),
+                            key: "lastname",
+                            order: 0,
+                            isVisible: true,
+                            width: 100,
+                            render: (text, record) => (<div>
+                                {text.lastname + " " + text.firstname + " " + text.secondname}
+                                <br/>
+                                {"(ИИН: " + text.iin + ", ДР: " + text.birthdate + ")"}
+                              </div>
+                            )
+                          }]}
+                        columns={rpmuColumns}
+                        sorted={true}
+                        sortedInfo={this.state.sortedInfo}
+                        onSort={(column) => {
 
-                            if (Object.keys(column).length === 0) {
-                              this.setState(prevState => ({
-                                sortedInfo: {},
-                                pagingConfig: {
-                                  ...prevState.pagingConfig,
-                                  sort: []
-                                }
-                              }), () => {
-                                this.loadMainGridData();
-                              });
-                              return;
-                            }
-
+                          if (Object.keys(column).length === 0) {
                             this.setState(prevState => ({
-                              sortedInfo: column,
+                              sortedInfo: {},
                               pagingConfig: {
                                 ...prevState.pagingConfig,
-                                sort: [{ field: column.field, "desc": column.order === "descend" }]
+                                sort: []
                               }
                             }), () => {
                               this.loadMainGridData();
                             });
+                            return;
+                          }
 
-                          }}
-                          rowSelection={false}
-                          rowClassName={(record) => {
-                            if (record.refundExist) {
-                              return "greenRow";
+                          this.setState(prevState => ({
+                            sortedInfo: column,
+                            pagingConfig: {
+                              ...prevState.pagingConfig,
+                              sort: [{ field: column.field, "desc": column.order === "descend" }]
                             }
-                          }
-                          }
-                          hideFilterBtn={true}
-                          hideRefreshBtn={true}
-                          dataSource={{
-                            total: universal.rpmu.totalElements,
-                            pageSize: this.state.rpmu.pagingConfig.length,
-                            page: this.state.rpmu.pagingConfig.start + 1,
-                            data: universal.rpmu.content
-                          }}
-                        />
-                        {/*<Table*/}
-                        {/*bordered={true}*/}
-                        {/*size={'small'}*/}
-                        {/*columns={rpmuColumns}*/}
-                        {/*dataSource={universal.rpmu.content}*/}
-                        {/*rowClassName={(record) => {*/}
+                          }), () => {
+                            this.loadMainGridData();
+                          });
 
-                        {/*if (record.refundExist) {*/}
-                        {/*console.log(record.refundExist);*/}
-                        {/*return 'greenRow';*/}
-                        {/*}*/}
-                        {/*}*/}
-                        {/*}*/}
-                        {/*scroll={{ x: 1100 }}/>*/}
-                      </Spin>
+                        }}
+                        rowSelection={false}
+                        rowClassName={(record) => {
+                          if (record.refundExist) {
+                            return "greenRow";
+                          }
+                        }
+                        }
+                        hideFilterBtn={true}
+                        hideRefreshBtn={true}
+                        dataSource={{
+                          total: this.props.universal.rpmu.totalElements,
+                          pageSize: this.state.rpmu.pagingConfig.length,
+                          page: this.state.rpmu.pagingConfig.start + 1,
+                          data: this.props.universal.rpmu.content
+                        }}
+                      />
+                      {/*<Table*/}
+                      {/*bordered={true}*/}
+                      {/*size={'small'}*/}
+                      {/*columns={rpmuColumns}*/}
+                      {/*dataSource={universal.rpmu.content}*/}
+                      {/*rowClassName={(record) => {*/}
+
+                      {/*if (record.refundExist) {*/}
+                      {/*console.log(record.refundExist);*/}
+                      {/*return 'greenRow';*/}
+                      {/*}*/}
+                      {/*}*/}
+                      {/*}*/}
+                      {/*scroll={{ x: 1100 }}/>*/}
                     </LocaleProvider>
                   </Card>
                 </Animated>
@@ -940,163 +941,162 @@ class MainView extends Component {
             </Col>
             <Col sm={24} md={this.state.tablecont}>
               {/*<Card style={{ borderRadius: '5px', marginBottom: '10px' }} bodyStyle={{ padding: 0 }} bordered={true}>*/}
-              <Spin tip={formatMessage({ id: "system.loading" })} spinning={this.props.loadingData}>
-                <SmartGridView
-                  name={"RefundsPageColumns"}
-                  scroll={{ x: this.state.xsize }}
-                  selectedRowCheckBox={true}
-                  searchButton={this.state.searchButton}
-                  selectedRowKeys={this.state.selectedRowKeys}
-                  rowKey={"id"}
-                  loading={this.props.loadingData}
-                  rowSelection={true}
-                  actionColumns={this.state.fcolumn}
-                  columns={this.state.columns}
-                  sorted={true}
-                  sortedInfo={this.state.sortedInfo}
-                  showTotal={true}
-                  showExportBtn={true}
-                  dataSource={{
-                    total: universal.table.totalElements,
-                    pageSize: this.state.pagingConfig.length,
-                    page: this.state.pagingConfig.start + 1,
-                    data: universal.table.content
-                  }}
-                  addonButtons={[
-                    <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: "menu.mainview.approveBtn" }))}
-                            disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                            key={"odobrit"} className={"btn-success"}
-                    >
-                      {formatMessage({ id: "menu.mainview.approveBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-                    </Button>,
 
-                    <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: "menu.mainview.cancelBtn" }))}
-                            disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                            key={"cancel"}
-                            className={"btn-danger"}>
-                      {formatMessage({ id: "menu.mainview.cancelBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-                    </Button>,
+              <SmartGridView
+                name={"RefundsPageColumns"}
+                scroll={{ x: this.state.xsize }}
+                selectedRowCheckBox={true}
+                searchButton={this.state.searchButton}
+                selectedRowKeys={this.state.selectedRowKeys}
+                rowKey={"id"}
+                loading={this.props.loadingData}
+                rowSelection={true}
+                actionColumns={this.state.fcolumn}
+                columns={this.state.columns}
+                sorted={true}
+                sortedInfo={this.state.sortedInfo}
+                showTotal={true}
+                showExportBtn={true}
+                dataSource={{
+                  total: universal.table.totalElements,
+                  pageSize: this.state.pagingConfig.length,
+                  page: this.state.pagingConfig.start + 1,
+                  data: universal.table.content
+                }}
+                addonButtons={[
+                  <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: "menu.mainview.approveBtn" }))}
+                          disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                          key={"odobrit"} className={"btn-success"}
+                  >
+                    {formatMessage({ id: "menu.mainview.approveBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                  </Button>,
 
-                    <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: "menu.mainview.saveBtn" }))}
-                            disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                            key={"save"}>{formatMessage({ id: "menu.mainview.saveBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
-                    <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: "menu.mainview.performBtn" }))}
-                            disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                            key={"run"}>{formatMessage({ id: "menu.mainview.performBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+                  <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: "menu.mainview.cancelBtn" }))}
+                          disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                          key={"cancel"}
+                          className={"btn-danger"}>
+                    {formatMessage({ id: "menu.mainview.cancelBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                  </Button>,
 
-                    <Dropdown key={"dropdown"} trigger={["click"]} overlay={<Menu>
-                      <Menu.Item
-                        disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                        key="1"
-                        onClick={this.AppRefundStatusAuto}>
-                        {formatMessage({ id: "menu.mainview.verifyRPMUBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-                      </Menu.Item>
-                      {/*<Menu.Item*/}
-                      {/*key="2" onClick={this.exportToExcel}>*/}
-                      {/*{formatMessage({ id: 'menu.mainview.excelBtn' })}*/}
-                      {/*</Menu.Item>*/}
-                      <Menu.Item
-                        disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.selectedRowKeys.length === 0])}
-                        key="3"
-                        onClick={() => {
-                          this.setState({ ModalChangeDateRefund: true });
-                        }}>
-                        {formatMessage({ id: "menu.mainview.setDateBtn" })}
-                      </Menu.Item>
-                      <Menu.Item disabled={hasRole(["ADMIN", "FSMS2"])} key="4" onClick={() => {
-                        this.showModal();
+                  <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: "menu.mainview.saveBtn" }))}
+                          disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                          key={"save"}>{formatMessage({ id: "menu.mainview.saveBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+                  <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: "menu.mainview.performBtn" }))}
+                          disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                          key={"run"}>{formatMessage({ id: "menu.mainview.performBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>,
+
+                  <Dropdown key={"dropdown"} trigger={["click"]} overlay={<Menu>
+                    <Menu.Item
+                      disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                      key="1"
+                      onClick={this.AppRefundStatusAuto}>
+                      {formatMessage({ id: "menu.mainview.verifyRPMUBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                    </Menu.Item>
+                    {/*<Menu.Item*/}
+                    {/*key="2" onClick={this.exportToExcel}>*/}
+                    {/*{formatMessage({ id: 'menu.mainview.excelBtn' })}*/}
+                    {/*</Menu.Item>*/}
+                    <Menu.Item
+                      disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.selectedRowKeys.length === 0])}
+                      key="3"
+                      onClick={() => {
+                        this.setState({ ModalChangeDateRefund: true });
                       }}>
-                        {formatMessage({ id: "menu.mainview.mt102Btn" })}
-                      </Menu.Item>
+                      {formatMessage({ id: "menu.mainview.setDateBtn" })}
+                    </Menu.Item>
+                    <Menu.Item disabled={hasRole(["ADMIN", "FSMS2"])} key="4" onClick={() => {
+                      this.showModal();
+                    }}>
+                      {formatMessage({ id: "menu.mainview.mt102Btn" })}
+                    </Menu.Item>
 
-                      {/*<Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {*/}
-                      {/*}}>*/}
+                    {/*<Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {*/}
+                    {/*}}>*/}
 
-                      {/*<Upload*/}
-                      {/*showUploadList={false}*/}
-                      {/*openFileDialogOnClick={true}*/}
-                      {/*onRemove={() => {*/}
+                    {/*<Upload*/}
+                    {/*showUploadList={false}*/}
+                    {/*openFileDialogOnClick={true}*/}
+                    {/*onRemove={() => {*/}
 
-                      {/*}}*/}
-                      {/*onPreview={() => {*/}
+                    {/*}}*/}
+                    {/*onPreview={() => {*/}
 
-                      {/*}}*/}
-                      {/*onChange={(e) => {*/}
-                      {/*if (e.file.status === 'done') {*/}
-                      {/*console.log(e.file);*/}
-                      {/*this.importXmlAction();*/}
-                      {/*}*/}
-                      {/*}}>*/}
-                      {/*{formatMessage({ id: 'menu.mainview.xmlBtn' })}*/}
-                      {/*</Upload>*/}
-                      {/*</Menu.Item>*/}
-                      <Menu.Item disabled={hasRole(["ADMIN"])} key="6" onClick={() => {
-                        this.showGraphic();
-                      }}>
-                        {formatMessage({ id: "menu.mainview.infographBtn" })}
-                      </Menu.Item>
-                      <Menu.Item disabled={hasRole(["FSMS1", "FSMS2", "ADMIN"])} key="7" onClick={() => {
-                        this.refundsReceiver();
-                      }}>
-                        {formatMessage({ id: "menu.mainview.refundreceiver" })}
-                      </Menu.Item>
-                    </Menu>}>
-                      <Button disabled={hasRole(["FSMS2", "ADMIN"])}
-                              key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
-                        type="down"/></Button>
-                    </Dropdown>
-                  ]}
-                  actionExport={() => this.exportToExcel()}
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                    this.onShowSizeChange(pageNumber, pageSize);
-                  }}
-                  onSort={(column) => {
+                    {/*}}*/}
+                    {/*onChange={(e) => {*/}
+                    {/*if (e.file.status === 'done') {*/}
+                    {/*console.log(e.file);*/}
+                    {/*this.importXmlAction();*/}
+                    {/*}*/}
+                    {/*}}>*/}
+                    {/*{formatMessage({ id: 'menu.mainview.xmlBtn' })}*/}
+                    {/*</Upload>*/}
+                    {/*</Menu.Item>*/}
+                    <Menu.Item disabled={hasRole(["ADMIN"])} key="6" onClick={() => {
+                      this.showGraphic();
+                    }}>
+                      {formatMessage({ id: "menu.mainview.infographBtn" })}
+                    </Menu.Item>
+                    <Menu.Item disabled={hasRole(["FSMS1", "FSMS2", "ADMIN"])} key="7" onClick={() => {
+                      this.refundsReceiver();
+                    }}>
+                      {formatMessage({ id: "menu.mainview.refundreceiver" })}
+                    </Menu.Item>
+                  </Menu>}>
+                    <Button disabled={hasRole(["FSMS2", "ADMIN"])}
+                            key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
+                      type="down"/></Button>
+                  </Dropdown>
+                ]}
+                actionExport={() => this.exportToExcel()}
+                onShowSizeChange={(pageNumber, pageSize) => {
+                  this.onShowSizeChange(pageNumber, pageSize);
+                }}
+                onSort={(column) => {
 
-                    if (Object.keys(column).length === 0) {
-                      this.setState(prevState => ({
-                        sortedInfo: {},
-                        pagingConfig: {
-                          ...prevState.pagingConfig,
-                          sort: []
-                        }
-                      }), () => {
-                        this.loadMainGridData();
-                      });
-                      return;
-                    }
-
+                  if (Object.keys(column).length === 0) {
                     this.setState(prevState => ({
-                      sortedInfo: column,
+                      sortedInfo: {},
                       pagingConfig: {
                         ...prevState.pagingConfig,
-                        sort: [{ field: column.field, "desc": column.order === "descend" }]
+                        sort: []
                       }
                     }), () => {
                       this.loadMainGridData();
                     });
+                    return;
+                  }
 
-                  }}
-                  onSelectCell={(cellIndex, cell) => {
-
-                  }}
-                  onSelectRow={(record) => {
-                    //console.log(record);
-                  }}
-                  onFilter={(filters) => {
-
-                  }}
-                  onRefresh={() => {
+                  this.setState(prevState => ({
+                    sortedInfo: column,
+                    pagingConfig: {
+                      ...prevState.pagingConfig,
+                      sort: [{ field: column.field, "desc": column.order === "descend" }]
+                    }
+                  }), () => {
                     this.loadMainGridData();
-                  }}
-                  onSearch={() => {
-                    this.toggleSearcher();
-                  }}
-                  onSelectCheckboxChange={(selectedRowKeys) => {
-                    this.checkStatus(selectedRowKeys);
-                  }}
-                />
-                <br/>
-              </Spin>
+                  });
+
+                }}
+                onSelectCell={(cellIndex, cell) => {
+
+                }}
+                onSelectRow={(record) => {
+                  //console.log(record);
+                }}
+                onFilter={(filters) => {
+
+                }}
+                onRefresh={() => {
+                  this.loadMainGridData();
+                }}
+                onSearch={() => {
+                  this.toggleSearcher();
+                }}
+                onSelectCheckboxChange={(selectedRowKeys) => {
+                  this.checkStatus(selectedRowKeys);
+                }}
+              />
+              <br/>
               {/*</Card>*/}
             </Col>
           </Row>

@@ -1,34 +1,19 @@
-const initialState = {
-  loading: true
-};
+export default (effectName) => {
+  return (state, action) => {
 
-const reducer = (state = initialState, action) => {
+    const REQUESTED = effectName + "/REQUESTED";
+    const REQUESTED_SUCCEEDED = effectName + "/REQUESTED_SUCCEEDED";
+    const REQUESTED_FAILED = effectName + "/REQUESTED_FAILED";
 
-  console.log(action.type)
-  switch (action.type) {
-    case "REQUESTED":
-      return {
-        data: {},
-        loading: true,
-        error: false
-      };
-    case "REQUESTED_SUCCEEDED":
-      return {
-        data: action.data,
-        loading: false,
-        error: false
-      };
-    case "REQUESTED_FAILED":
-      return {
-        data: "",
-        loading: false,
-        error: true
-      };
-    default:
-      return state;
-  }
-};
-
-export default {
-  "reducer": reducer
+    switch (action.type) {
+      case REQUESTED:
+        return true;
+      case REQUESTED_SUCCEEDED:
+        return false;
+      case REQUESTED_FAILED:
+        return false;
+      default:
+        return false;
+    }
+  };
 };

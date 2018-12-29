@@ -151,10 +151,10 @@ class App extends React.Component {
     const location = this.props.location.pathname;
 
     const bcRoutes = [
-      {
-        path: "/",
-        breadcrumbName: "Главная"
-      }
+      // {
+      //   path: "/",
+      //   breadcrumbName: "Главная"
+      // }
     ];
 
     let breadCumberNameKey = {

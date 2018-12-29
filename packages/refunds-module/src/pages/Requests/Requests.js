@@ -248,13 +248,14 @@ class Requests extends Component {
       this.refreshTable();
   };
 
+
   refreshTable = () => {
     this.loadMainGridData();
   };
 
   exportToExcel = () => {
 
-    let authToken = localStorage.getItem("token");
+    let authToken = localStorage.getItem("AUTH_TOKEN");
     let columns = [
       {
         "title": "Номер заявки",
@@ -341,7 +342,7 @@ class Requests extends Component {
 
   getservicenote = () => {
     let filename = "";
-    let authToken = localStorage.getItem("token");
+    let authToken = localStorage.getItem("AUTH_TOKEN");
     let columns = JSON.parse(localStorage.getItem("journalPageColumns"));
     fetch("/api/refund/get/oletter",
       {
@@ -363,7 +364,7 @@ class Requests extends Component {
           let disposition = response.headers.get("content-disposition");
 
           filename = this.getFileNameByContentDisposition(disposition);
-          console.log(filename);
+
           return response.blob();
         }
       })
@@ -560,7 +561,7 @@ class Requests extends Component {
               </Animated>}
             </Col>
             <Col sm={24} md={this.state.tablecont}>
-              <Spin tip={formatMessage({ id: "system.loading" })} spinning={this.props.loadingData}>
+              {/*<Spin tip={formatMessage({ id: "system.loading" })} spinning={this.props.loadingData}>*/}
                 <SmartGridView
                   name='RequestPageColumns'
                   searchButton={this.state.searchButton}
@@ -647,7 +648,7 @@ class Requests extends Component {
                     this.toggleSearcher();
                   }}
                 />
-              </Spin>
+              {/*</Spin>*/}
             </Col>
           </Row>
         </Card>

@@ -39,16 +39,18 @@ class ModalChangeDate extends Component {
 
     const { dispatch, dataSource } = this.props;
 
-    if (data.file.status === "done") {
-      //data.file.status = 'uploading';
-      dispatch({
-        type: "universal/setfile",
-        payload: {
-          file: data.file.originFileObj,
-          id: dataSource.id
-        }
-      }).then(() => this.getFileList());
-    }
+    //if (data.file.status === "done") {
+    //data.file.status = 'uploading';
+    dispatch({
+      type: "universal/setfile",
+      payload: {
+        file: data.file.originFileObj,
+        id: dataSource.id
+      }
+    }).then(() => this.getFileList());
+    //}
+
+    return false;
   };
   removeFile = (file) => {
     const { dispatch } = this.props;
@@ -65,6 +67,7 @@ class ModalChangeDate extends Component {
 
     const { dataSource, dispatch } = this.props;
 
+
     dispatch({
       type: "universal/getFilesRequestDate",
       payload: {
@@ -75,6 +78,7 @@ class ModalChangeDate extends Component {
     });
 
   };
+
 
   componentDidMount() {
     this.getFileList();
@@ -107,10 +111,8 @@ class ModalChangeDate extends Component {
 
   render() {
 
-    console.log(this.props.universal.files);
-
     let uploadProps = {
-      defaultFileList: this.props.universal.files.map((file) => ({
+      fileList: this.props.universal.files.map((file) => ({
         uid: file.id,
         name: file.filename
       })),
@@ -154,9 +156,12 @@ class ModalChangeDate extends Component {
             }
           });
       },
-      onChange: this.uploadFile
+      onChange: (file, fileList) => {
+        if (file.status !== "removing") {
+          this.uploadFile(file);
+        }
+      }
     };
-
 
     return (
       <Modal
