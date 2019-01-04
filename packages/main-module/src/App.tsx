@@ -9,7 +9,7 @@ import LoginRoute from './Routing/LoginRoute'
 import LogoutRoute from './Routing/LogoutRoute'
 import { getAuthToken, isUserAuthenticated, isUserAuthenticatedSimple } from './Services/AuthenticationService'
 import { addUserLanguageChangeCb, getUserLanguage, requestFinished, requestStarted } from './utils'
-
+const ContractModule = lazy(() => import('@vitacore/conttract-module'))
 const ContractsModule = lazy(() => import('@vitacore/contracts-module'))
 const RefundsModule = lazy(() => import('@vitacore/refunds-module'))
 
@@ -62,7 +62,26 @@ class MainApp extends React.Component<Props> {
                     render={props => (
                       <RefundsModule
                         moduleName="/refunds"
-                        defaultRoute="/refunds/main"
+                        defaultRoute="/refunds/home"
+                        simpleAuthCheck={isUserAuthenticatedSimple}
+                        promiseAuthCheck={isUserAuthenticated}
+                        getAuthToken={getAuthToken}
+                        requestStarted={requestStarted}
+                        requestFinished={requestFinished}
+                        getUserLanguage={getUserLanguage}
+                        subscribeToUserLanguageChange={addUserLanguageChangeCb}
+                        {...props}
+                      />
+                    )}
+                  />
+                  <PrivateRoute
+                    simpleAuthCheck={isUserAuthenticatedSimple}
+                    promiseAuthCheck={isUserAuthenticated}
+                    path="/contracts2"
+                    render={props => (
+                      <ContractModule
+                        moduleName="/contracts2"
+                        defaultRoute="/contracts2/home"
                         simpleAuthCheck={isUserAuthenticatedSimple}
                         promiseAuthCheck={isUserAuthenticated}
                         getAuthToken={getAuthToken}
