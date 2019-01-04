@@ -1,33 +1,33 @@
-.modal_buttons :global .ant-modal-footer {
+.modal_buttons .ant-modal-footer {
     text-align: center;
 }
-.customCalendar :global .ant-fullcalendar-content .event_day {
+.customCalendar .ant-fullcalendar-content .event_day {
     background: #8fc5f1;
     color: white;
     display: block;
 }
-.customCalendar :global .events {
+.customCalendar .events {
     list-style: none;
     margin: 0;
     padding: 0;
 }
-.customCalendar :global .events .ant-badge-status {
+.customCalendar .events .ant-badge-status {
     overflow: hidden;
     white-space: normal;
     width: 100%;
     text-overflow: ellipsis;
     font-size: 12px;
 }
-.customCalendar :global .notes-month {
+.customCalendar .notes-month {
     text-align: center;
     font-size: 28px;
 }
-.customCalendar :global .notes-month section {
+.customCalendar  .notes-month section {
     font-size: 28px;
 }
-.customCalendar :global .ant-fullcalendar-header {
+.customCalendar .ant-fullcalendar-header {
     display: none;
 }
-.customCalendar :global .ant-fullcalendar-next-month-btn-day {
+.customCalendar .ant-fullcalendar-next-month-btn-day {
     display: none;
 }

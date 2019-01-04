@@ -176,6 +176,8 @@ export default {
   "menu.journal.title": "Журнал действий",
   "menu.journal.refunds": "Возвраты",
   "menu.refunds.calendar": "Календарь",
+  "menu.refunds.template": "Шаблоны",
+  "menu.refunds.static": "Статистические данные",
   "menu.refunds.templates_view": "Шаблоны",
   "menu.refunds.templates_view.title": "ШАБЛОНЫ",
   "menu.refunds.templates_view.download": "Загрузить шаблон",

@@ -16,11 +16,11 @@ import {
   Modal,
   Spin
 } from 'antd';
-import style from './CalendarView.css';
 import moment from "moment";
 import connect from "../../Redux";
 import formatMessage from "../../utils/formatMessage";
 import { Animated } from "react-animated-css";
+import './CalendarView.css';
 
 
 moment.locale('ru-ru');
@@ -53,12 +53,32 @@ class CalendarView extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'calendar/get',
       payload: {
         monthYear: moment(new Date(), 'DD-MM-YYYY').format('MM.YYYY'),
       },
     });
+
+    this.setState({
+      dataSource: [{
+        date: '23.10.2018',
+        EventID: {
+          id: '1',
+        },
+      }
+        , {
+
+          date: '01.10.2018',
+          EventID: {
+            id: '2',
+            name: 'Lorem ipsum dolor sit amet 11111',
+          },
+        }
+      ],
+    });
+
   }
 
   showModal = (data) => {
@@ -77,7 +97,6 @@ class CalendarView extends Component {
       modalForm: modalForm,
     });
   };
-
   handleOk = (e) => {
     const { modalForm, modalData, selectedDate } = this.state;
     const { dispatch } = this.props;
@@ -98,7 +117,6 @@ class CalendarView extends Component {
     })
     this.handleCancel();
   };
-
   handleCancel = (e) => {
     this.setState({
       modalData: {},
@@ -111,7 +129,6 @@ class CalendarView extends Component {
       },
     });
   };
-
   handleDelete = () => {
     const { modalData, selectedDate } = this.state;
     const { dispatch } = this.props;
@@ -158,6 +175,22 @@ class CalendarView extends Component {
     return listData || '';
   }
 
+  /*getMonthData(value) {
+    if (value.month() === 8) {
+      return 1394;
+    }
+  }
+
+  monthCellRender(value) {
+    const num = this.getMonthData(value);
+    return num ? (
+      <div className="notes-month">
+        <section>{num}</section>
+        <span>Backlog number</span>
+      </div>
+    ) : null;
+  }*/
+
   onSelectDate(e) {
     let _date = moment(e, 'DD.MM.YYYY');
 
@@ -198,7 +231,7 @@ class CalendarView extends Component {
 
     return (<div>
       <Modal centered
-             className={style.modal_buttons}
+             className={'modal_buttons'}
              title={formatMessage({ id: 'calendar.createEvent' })+" "+moment(this.state.selectedDate).format('DD.MM.YYYY')}
              onCancel={this.handleCancel.bind(this)}
              visible={modalVisible}
@@ -210,51 +243,54 @@ class CalendarView extends Component {
                <Button key="cancel" onClick={this.handleCancel}>{formatMessage({ id: 'button.cancel' })}</Button>,
              ]}>
         <div><span style={spantitle}>{formatMessage({ id: 'label.type' })}:</span>
-        <Select
-          style={{ width: '100%' }}
-          placeholder={formatMessage({ id: 'label.select' })}
-          value={modalForm.selectedDayType}
-          onChange={(value, option) => {
+          <Select
+            style={{ width: '100%' }}
+            placeholder={formatMessage({ id: 'label.select' })}
+            value={modalForm.selectedDayType}
+            onChange={(value, option) => {
+              this.setState(({ modalForm }) => ({
+                modalForm: {
+                  ...modalForm,
+                  selectedDayType: value,
+                  description: '',
+                  eventDescriptionVisible: value === '2',
+                },
+              }));
+            }}
+            optionFilterProp="children">
+            <Option value="1">Выходной день</Option>
+            <Option value="2">Праздничный день</Option>
+          </Select>
+        </div>
+        <div style={{display: eventDescriptionVisible ? '' : 'none' }}><span style={spantitle}>{formatMessage({ id: 'component.globalHeader.event' })}:</span>
+          <Input value={modalForm.description} onChange={(({ target }) => {
+
             this.setState(({ modalForm }) => ({
               modalForm: {
                 ...modalForm,
-                selectedDayType: value,
-                description: '',
-                eventDescriptionVisible: value === '2',
+                description: target.value,
               },
             }));
-          }}
-          optionFilterProp="children">
-          <Option value="1">Выходной день</Option>
-          <Option value="2">Праздничный день</Option>
-        </Select>
-        </div>
-        <div style={{display: eventDescriptionVisible ? '' : 'none' }}><span style={spantitle}>{formatMessage({ id: 'component.globalHeader.event' })}:</span>
-        <Input value={modalForm.description} onChange={(({ target }) => {
-
-          this.setState(({ modalForm }) => ({
-            modalForm: {
-              ...modalForm,
-              description: target.value,
-            },
-          }));
-        })} style={{ width: '100%'}}
-               placeholder={formatMessage({ id: 'component.globalHeader.event' })}/>
+          })} style={{ width: '100%'}}
+                 placeholder={formatMessage({ id: 'component.globalHeader.event' })}/>
         </div>
       </Modal>
+
+
       <Card bordered={false}>
         <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
-        <div>
-          <MonthPicker format={"MM.YYYY"} value={currentDate} onChange={this.onChangeDatePicker.bind(this)} placeholder={formatMessage({ id: 'label.select' })}/>
+          <div>
+            <MonthPicker format={"MM.YYYY"} value={currentDate} onChange={this.onChangeDatePicker.bind(this)} placeholder={formatMessage({ id: 'label.select' })}/>
 
-          <Calendar value={currentDate} defaultValue={currentDate} className={style.customCalendar} onSelect={this.onSelectDate.bind(this)}
-                    dateCellRender={this.dateCellRender.bind(this)}/>
-        </div>
+            <Calendar value={currentDate} defaultValue={currentDate} className={'customCalendar'} onSelect={this.onSelectDate.bind(this)}
+                      dateCellRender={this.dateCellRender.bind(this)}/>
+          </div>
         </Spin>
       </Card>
     </div>);
   };
 }
+
 
 export default connect(({ calendar, loading }) => ({
   calendar,
