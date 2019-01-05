@@ -77,7 +77,7 @@ export default [
             path: "/refunds/static",
             icon: "faListAlt",
             name: "staticview",
-            component: "./StaticsView/StaticsView",
+            component: "./StaticticsView/StaticticsView",
             authority: ["ADMIN", "FSMS1", "FSMS2"]
           }
         ]
