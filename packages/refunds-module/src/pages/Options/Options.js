@@ -1,11 +1,9 @@
 import React, { Component } from 'react';
 import { Card, Label, Row, Col, Input, Button, Table, Tabs, Spin } from 'antd';
 import connect from "../../Redux";
+import formatMessage from "../../utils/formatMessage";
 
 
-function formatMessage(value) {
-  return value.id;
-}
 
 const TabPane = Tabs.TabPane;
 
