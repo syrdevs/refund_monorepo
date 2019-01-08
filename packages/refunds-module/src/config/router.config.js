@@ -38,7 +38,6 @@ export default [
           }
         ],
       },
-
       {
         path: "/refunds",
         icon: "database",
@@ -87,6 +86,13 @@ export default [
         icon: "database",
         name: "options",
         component: "./Options/Options",
+        authority: ["ADMIN", "FSMS1", "FSMS2"]
+      },
+      {
+        path: "/refunds/pulls",
+        icon: "database",
+        name: "pulls",
+        component: "./Pulls/Pulls",
         authority: ["ADMIN", "FSMS1", "FSMS2"]
       },
       {
