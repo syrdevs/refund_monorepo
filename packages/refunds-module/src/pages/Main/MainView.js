@@ -53,9 +53,7 @@ class MainView extends Component {
         visible: false
       },
       sortedInfo: {},
-
       ModalChangeDateRefund: false,
-
       ShowModal: false,
       btnhide: false,
       ShowGraph: false,
@@ -918,20 +916,6 @@ class MainView extends Component {
                           data: this.props.universal.rpmu.content
                         }}
                       />
-                      {/*<Table*/}
-                      {/*bordered={true}*/}
-                      {/*size={'small'}*/}
-                      {/*columns={rpmuColumns}*/}
-                      {/*dataSource={universal.rpmu.content}*/}
-                      {/*rowClassName={(record) => {*/}
-
-                      {/*if (record.refundExist) {*/}
-                      {/*console.log(record.refundExist);*/}
-                      {/*return 'greenRow';*/}
-                      {/*}*/}
-                      {/*}*/}
-                      {/*}*/}
-                      {/*scroll={{ x: 1100 }}/>*/}
                     </LocaleProvider>
                   </Card>
                 </Animated>
