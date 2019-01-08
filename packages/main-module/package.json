@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@vitacore/shared-ui": "^1.0.0",
+    "@vitacore/contract-module":"^1.0.0",
     "@vitacore/contracts-module": "^1.0.0",
     "@vitacore/refunds-module": "^1.0.0",
     "axios": "^0.18.0",
