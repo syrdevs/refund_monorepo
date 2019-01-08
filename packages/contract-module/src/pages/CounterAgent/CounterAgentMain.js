@@ -5,8 +5,6 @@ import {
   Label
 } from "antd";
 import formatMessage from "../../utils/formatMessage";
-import { renderRoutes } from "react-router-config";
-
 
 const dateFormat = "DD.MM.YYYY";
 
@@ -39,12 +37,6 @@ export default class CounterAgentMain extends Component {
   render = () => {
     const { location, children, route } = this.props;
 
-
-    return (<Card bodyStyle={{ padding: 5 }}>
-      <div style={{ width: "100%" }}>
-        main
-      </div>
-      {children}
-    </Card>);
+    return children ? children : null;
   };
 }

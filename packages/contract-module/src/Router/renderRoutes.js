@@ -24,7 +24,8 @@ function RouteNest(props) {
     routeProps.children = props.children;
 
   return (
-    <Route exact={props.exact} path={props.path} render={p => <props.component {...p} {...routeProps}/>}/>
+    <Route exact={props.exact}  path={props.path}
+           render={p => <props.component {...p} {...routeProps}/>}/>
   );
 }
 

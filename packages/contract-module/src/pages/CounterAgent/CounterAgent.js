@@ -23,9 +23,8 @@ import formatMessage from "../../utils/formatMessage";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
 import hasRole from "../../utils/hasRole";
+import ContentLayout from "../../layouts/ContentLayout";
 import { Animated } from "react-animated-css";
-import { Route } from "react-router-dom";
-import Home from "../../pages/Home/Home";
 
 class CounterAgent extends Component {
   constructor(props) {
@@ -119,7 +118,8 @@ class CounterAgent extends Component {
 
   }
 
-  toggleItems() {  }
+  toggleItems() {
+  }
 
   goForm = () => {
     this.setState({
@@ -129,9 +129,115 @@ class CounterAgent extends Component {
 
 
   render() {
-    console.log(this.props);
+    const { universal2 } = this.props;
+    const counterData = universal2.references[this.state.gridParameters.entity];
+
+    const addonButtons = [
+      <Dropdown key={"dropdown"} trigger={["click"]} overlay={<Menu>
+        {/*<Menu.Item*/}
+        {/*disabled={hasRole(['ADMIN'])}*/}
+        {/*onClick={() => this.goForm()}*/}
+        {/*key='add'>*/}
+        {/*Добавить*/}
+        {/*</Menu.Item>*/}
+        {/*<Menu.Item*/}
+        {/*disabled={hasRole(['ADMIN']) || true}*/}
+        {/*key='delete'>*/}
+        {/*Удалить*/}
+        {/*</Menu.Item>*/}
+        {/*<Menu.Item*/}
+        {/*disabled={hasRole(['ADMIN']) || true}*/}
+        {/*key='update'>*/}
+        {/*Открыть/изменить*/}
+        {/*</Menu.Item>*/}
+        <Menu.Item
+          disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
+          key='register_document'
+          onClick={() => {
+            this.props.history.push({
+              pathname: "create",
+              state: {
+                data: this.state.selectedRecord
+                // data: counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
+              }
+            });
+          }}>
+          Создать договор
+        </Menu.Item>
+      </Menu>}>
+        <Button
+          key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
+          type="down"/></Button>
+      </Dropdown>
+    ];
+
+
     return (
-      <div>CounterAgent</div>
+      <ContentLayout
+        contentName={"Контрагенты"}
+        breadcrumbRoutes={[{
+          path: "/",
+          breadcrumbName: "Главная"
+        }, {
+          path: "contracts2/counteragent/main",
+          breadcrumbName: "Контрагенты"
+        }]}>
+        <Row>
+          <Col sm={24} md={this.state.tablecont}>
+            {!this.state.isForm &&
+
+            <SmartGridView
+              name='CounterAgentPageColumns'
+              scroll={{ x: this.state.xsize }}
+              fixedBody
+              //selectedRowCheckBox
+              searchButton={this.state.searchButton}
+              // selectedRowKeys={this.state.selectedRowKeys}
+              rowKey={"id"}
+              fixedHeader
+              //rowSelection
+              showExportBtn={true}
+              actionExport={() => {
+              }}
+              columns={this.state.columns}
+              sorted={true}
+              showTotal={true}
+              dataSource={{
+                total: counterData ? counterData.totalElements : 0,
+                pageSize: this.state.gridParameters.length,
+                page: this.state.gridParameters.start + 1,
+                data: counterData ? counterData.content : []
+              }}
+              addonButtons={addonButtons}
+
+              onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
+              onSelectCell={(cellIndex, cell) => {
+
+              }}
+              onSelectRow={(record) => {
+                this.setState({
+                  selectedRecord: record
+                });
+              }}
+              onFilter={(filters) => {
+
+              }}
+              onRefresh={() => {
+                this.loadMainGridData();
+              }}
+              onSearch={() => {
+
+              }}
+              onSelectCheckboxChange={(selectedRowKeys) => {
+                // this.setState({
+                //   selectedRowKeys: selectedRowKeys,
+                // });
+              }}
+            />}
+          </Col>
+
+        </Row>
+      </ContentLayout>
     );
   }
 }

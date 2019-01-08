@@ -11,7 +11,7 @@ const ruTranslation = {
         journal: "Журнал",
         calendar: "Календарь",
         template: "Шаблоны",
-        staticview: "Статические данные",
+        staticview: "Статические данные"
       },
       rpmu: {
         _: "Регистр потребителей",
@@ -32,7 +32,20 @@ const ruTranslation = {
       home: {
         _: "Главная"
       },
+      counteragent: {
+        _: "Контрагенты"
+      },
+      bills: {
+        _: "Счет реестр"
+      },
+      acts: {
+        _: "Акты"
+      },
+      contractrequests: {
+        _: "Заявки"
+      },
       contracts: {
+        _: "Договоры",
         commissions: {
           _: "Комиссия"
         },
@@ -59,6 +72,6 @@ const ruTranslation = {
       }
     }
   }
-}
+};
 
-export default ruTranslation
+export default ruTranslation;
