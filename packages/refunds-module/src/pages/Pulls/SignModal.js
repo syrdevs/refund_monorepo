@@ -20,9 +20,13 @@ export default class SignModal extends Component {
   render() {
     return (
       <div style={{display:'inline-block'}}>
-        <Button key={"signandsend"}  disabled={this.props.disabled} onClick={this.showModal}>Определить исполнителя</Button>
+        <Button
+          key={"signandsend"}
+          className={"btn-success"}
+          disabled={this.props.disabled}
+          onClick={this.showModal}>Подписать и отправить</Button>
         <Modal
-          title="Modal"
+          title="Подписать и отправить"
           visible={this.state.visible}
           onOk={this.hideModal}
           onCancel={this.hideModal}
