@@ -20,7 +20,7 @@ export default class ExecuteModal extends Component {
   render() {
     return (
       <div style={{display:'inline-block'}}>
-        <Button key={"executor"} disabled={this.props.disabled} onClick={this.showModal}>Определить исполнителя</Button>
+        <Button key={"executor"} disabled={this.props.disabled} style={{marginLeft:'5px'}} onClick={this.showModal}>Определить исполнителя</Button>
         <Modal
           title="Определить исполнителя"
           visible={this.state.visible}

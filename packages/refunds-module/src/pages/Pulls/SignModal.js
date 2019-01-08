@@ -23,6 +23,7 @@ export default class SignModal extends Component {
         <Button
           key={"signandsend"}
           className={"btn-success"}
+          style={{marginLeft:'5px'}}
           disabled={this.props.disabled}
           onClick={this.showModal}>Подписать и отправить</Button>
         <Modal

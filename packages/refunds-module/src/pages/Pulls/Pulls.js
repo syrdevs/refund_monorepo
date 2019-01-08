@@ -203,41 +203,7 @@ class Pulls extends Component {
   <p style={{ margin: "10px" }}>Пулы возвратов: 3</p>
     <Row>
     <Col span={7} style={{marginLeft:'10px'}}>
-  <Radio.Group defaultValue="a" buttonStyle="solid" style={{float:'left', margin:'0 0 10px 10px'}}>
-  <Radio.Button value="a">Исполнено</Radio.Button>
-      <Radio.Button value="b">Согласовано</Radio.Button>
-      <Radio.Button value="c">Отклонено</Radio.Button>
-      <Radio.Button value="d">Отправлено</Radio.Button>
-      </Radio.Group>
-      <Search
-    enterButton
-    size="large"
-    onSearch={value => console.log(value)}
-    style={{marginBottom:'5px'}}
-    />
-    <Card  bodyStyle={{ overflowY: "auto" , height:'700px', padding: '5px'}}>
-  <Card style={{ width: "95%", margin: '16px auto 0 auto' }}>
-  <Meta
-    title="№8003, Одобренные."
-    description="Количество возвратов: 302"
-      />
-      <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)'}}>06.01.2019</div>
-    </Card>
-    <Card style={{ width: "95%", margin: '16px auto 0 auto' }}>
-  <Meta
-    title="№8003, Одобренные."
-    description="Количество возвратов: 302"
-      />
-      <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)'}}>06.01.2019</div>
-    </Card>
-    <Card style={{ width: "95%", margin: '16px auto 0 auto', backgroundColor:'rgb(89, 181, 103,0.6)' }}>
-  <Meta
-    title="№8003, Одобренные."
-    description="Количество возвратов: 302"
-      />
-      <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)'}}>06.01.2019</div>
-    </Card>
-    </Card>
+
     </Col>
     <Col span={16} style={{marginLeft:'10px'}}>
   <PullFilter/>
@@ -266,22 +232,22 @@ class Pulls extends Component {
     }}
     addonButtons={[
       <ExecuteModal disabled={false}/>,
-    <Button onClick={() => {
-      this.confirming()
-    }}
-    key={"confirm"}
-    className={"btn-success"}>
-      Подтвердить
+      <Button onClick={() => {
+        this.confirming()
+      }}
+              key={"confirm"}
+              className={"btn-success"}>
+        Подтвердить
       </Button>,
       <Button onClick={() => {
-      this.rejecting()
-    }}
-    key={"reject"} className={"btn-danger"}
+        this.rejecting()
+      }}
+              key={"reject"} className={"btn-danger"}
       >
-      Отклонить
+        Отклонить
       </Button>,
       <ApproveModal disabled={false}/>,
-    <SignModal disabled={false}/>
+      <SignModal disabled={false}/>
   ]}
     onSort={(column) => {
       if (Object.keys(column).length === 0) {
