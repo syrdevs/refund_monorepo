@@ -48,7 +48,6 @@ function menuItemRender() {
           subItems: []
         };
 
-
         if (childMenu.routes) {
 
           childMenu.routes.forEach((subChildMenu) => {

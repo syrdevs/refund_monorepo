@@ -17,8 +17,14 @@ const CustomComponent = (props) => {
 
 
 function RouteNest(props) {
+
+  let routeProps = {};
+
+  if (props.children)
+    routeProps.children = props.children;
+
   return (
-    <Route exact={props.exact} path={props.path} render={p => <props.component {...p} children={props.children}/>}/>
+    <Route exact={props.exact} path={props.path} render={p => <props.component {...p} {...routeProps}/>}/>
   );
 }
 
@@ -47,9 +53,12 @@ function renderRoutes(routesData) {
     }
 
 
-    routeResult.push(<RouteNest key={routeItem.path} path={routeItem.path}
-                                {...routeProps}>{routeItem.routes && renderRoutes(routeItem.routes)}</RouteNest>);
-
+    if (routeItem.routes && routeItem.routes.length > 0)
+      routeResult.push(<RouteNest key={routeItem.path} path={routeItem.path}
+                                  {...routeProps}>{renderRoutes(routeItem.routes)}</RouteNest>);
+    else
+      routeResult.push(<RouteNest key={routeItem.path} path={routeItem.path}
+                                  {...routeProps}/>);
   });
 
   return routeResult;

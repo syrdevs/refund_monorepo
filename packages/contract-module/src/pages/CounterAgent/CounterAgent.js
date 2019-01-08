@@ -119,9 +119,7 @@ class CounterAgent extends Component {
 
   }
 
-  toggleItems() {
-
-  }
+  toggleItems() {  }
 
   goForm = () => {
     this.setState({
