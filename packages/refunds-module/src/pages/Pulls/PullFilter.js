@@ -4,6 +4,7 @@ import {
   Slider, Button, Upload, Icon, Rate, Checkbox,
   Row, Col, Input, DatePicker, Sea, Card, Collapse, Pagination
 } from "antd";
+import './PullFilter.css';
 
 const { Meta } = Card;
 const Panel = Collapse.Panel;
@@ -31,7 +32,20 @@ export default class PullFilter extends Component {
   normFile = (e) => {
 
   }
+  cardClick = (e) => {
+    /*Array.from(document.getElementsByClassName('clickedcard')).forEach(
+      function(element, index, array) {
+        element.classList.remove("clickedcard");
+      }
+    );*/
+    // e.target.closest('.cardbtn').classList.add('clickedcard');
 
+    document.getElementById("clickedcard") && document.getElementById("clickedcard").removeAttribute("id")
+    e.target.closest('.cardbtn').id = 'clickedcard';
+  }
+
+
+  
 
   render = () => {
     const formItemLayout = {
@@ -56,21 +70,35 @@ export default class PullFilter extends Component {
           style={{width:'90%', marginBottom:'10px'}}
         />
         <Card  bodyStyle={{ overflowY: "auto" , height:'700px', padding: '5px', marginBottom:'5px'}} style={{width:'96%', margin:'0 2% 0 2%'}}>
-          <Card style={pullStyle} bodyStyle={{textAlign:'left'}}>
+          <Card
+            style={pullStyle}
+            className={'cardbtn'}
+            bodyStyle={{textAlign:'left'}}
+            onClick={this.cardClick}
+          >
             <Meta
               title="№8003, Одобренные."
               description="Количество возвратов: 302"
             />
             <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)'}}>06.01.2019</div>
           </Card>
-          <Card bodyStyle={{textAlign:'left'}} style={{ width: "95%", margin: '16px auto 0 auto', borderRadius:'5px', backgroundColor:'rgb(181,46,53,0.2)' }}>
+          <Card
+            bodyStyle={{textAlign:'left'}}
+            className={'cardbtn'}
+            style={{ width: "95%", margin: '16px auto 0 auto', borderRadius:'5px', backgroundColor:'rgb(181,46,53,0.2)' }}
+            onClick={this.cardClick}>
             <Meta
               title="№8003, Одобренные."
               description="Количество возвратов: 302"
             />
             <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)'}}>06.01.2019</div>
           </Card>
-          <Card bodyStyle={{textAlign:'left'}} style={{ width: "95%", margin: '16px auto 0 auto', backgroundColor:'rgb(60,181,68,0.2)', borderRadius:'5px' }}>
+          <Card
+            bodyStyle={{textAlign:'left'}}
+            className={'cardbtn'}
+            style={{ width: "95%", margin: '16px auto 0 auto', backgroundColor:'rgb(60,181,68,0.2)', borderRadius:'5px' }}
+            onClick={this.cardClick}
+          >
             <Meta
               title="№8003, Одобренные."
               description="Количество возвратов: 302"
