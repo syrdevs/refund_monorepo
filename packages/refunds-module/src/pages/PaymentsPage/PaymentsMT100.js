@@ -190,7 +190,7 @@ class PaymentsMT100 extends Component {
       this.loadGridData();
     });
   };
-
+//test
   applyFilter = (filter) => {
     this.setState({
       sortedInfo: {},
@@ -416,6 +416,7 @@ class PaymentsMT100 extends Component {
             extraButtons={extraButtons}
             addonButtons={addonButtons}
             onSelectRow={(record, index) => {
+              console.log(record);
               this.setState({
                 selectedRecord: record,
               });
