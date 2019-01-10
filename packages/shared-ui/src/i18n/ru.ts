@@ -7,10 +7,11 @@ const ruTranslation = {
         reestr: "Реестр возвратов",
         payments: "Платежи",
         options: "Настройки",
+        pulls: "Распределение пулов",
         journal: "Журнал",
         calendar: "Календарь",
         template: "Шаблоны",
-        staticview: "Статические данные",
+        staticview: "Статические данные"
       },
       rpmu: {
         _: "Регистр потребителей",
@@ -22,13 +23,29 @@ const ruTranslation = {
       options: {
         _: "Настройки"
       },
+      pulls: {
+        _: "Распределение пулов"
+      },
       journal: {
         _: "Журнал"
       },
       home: {
         _: "Главная"
       },
+      counteragent: {
+        _: "Контрагенты"
+      },
+      bills: {
+        _: "Счет реестр"
+      },
+      acts: {
+        _: "Акты"
+      },
+      contractrequests: {
+        _: "Заявки"
+      },
       contracts: {
+        _: "Договоры",
         commissions: {
           _: "Комиссия"
         },
@@ -55,6 +72,6 @@ const ruTranslation = {
       }
     }
   }
-}
+};
 
-export default ruTranslation
+export default ruTranslation;

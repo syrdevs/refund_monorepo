@@ -9,7 +9,8 @@ import LoginRoute from './Routing/LoginRoute'
 import LogoutRoute from './Routing/LogoutRoute'
 import { getAuthToken, isUserAuthenticated, isUserAuthenticatedSimple } from './Services/AuthenticationService'
 import { addUserLanguageChangeCb, getUserLanguage, requestFinished, requestStarted } from './utils'
-const ContractModule = lazy(() => import('@vitacore/conttract-module'))
+
+const ContractModule = lazy(() => import('@vitacore/contract-module'))
 const ContractsModule = lazy(() => import('@vitacore/contracts-module'))
 const RefundsModule = lazy(() => import('@vitacore/refunds-module'))
 

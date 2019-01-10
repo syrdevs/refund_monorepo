@@ -1,10 +1,11 @@
 {
-  "name": "@vitacore/conttract-module",
+  "name": "@vitacore/contract-module",
   "main": "build/dist/App.js",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
     "@babel/plugin-proposal-class-properties": "^7.2.3",
+    "@babel/plugin-proposal-decorators": "^7.2.3",
     "@babel/plugin-syntax-dynamic-import": "^7.2.0",
     "@fortawesome/fontawesome-svg-core": "^1.2.12",
     "@fortawesome/free-solid-svg-icons": "^5.6.3",
@@ -24,7 +25,6 @@
     "react-loadable": "^5.5.0",
     "react-redux": "^6.0.0",
     "react-resizable": "^1.7.5",
-    "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
     "react-scripts": "2.1.1",
     "redux-saga": "^0.16.2"
@@ -61,8 +61,21 @@
       "@babel/preset-env"
     ],
     "plugins": [
-      "@babel/plugin-proposal-class-properties",
-      "@babel/plugin-syntax-dynamic-import"
+      [
+        "@babel/plugin-syntax-dynamic-import"
+      ],
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ],
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        }
+      ]
     ]
   }
 }

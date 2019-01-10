@@ -1,14 +1,13 @@
 import React, { lazy, Suspense } from "react";
-import { Redirect, Route, Switch, withRouter } from "react-router-dom";
+import { Redirect, Switch, withRouter, Route } from "react-router-dom";
 import styled from "styled-components";
 import { COLORS, LeftMenu, NoMatchRoute } from "@vitacore/shared-ui";
-import ContentLayout from "./layouts/ContentLayout";
 import { Provider } from "react-redux";
 import store from "./Redux/store";
 import routerConfig from "./config/router.config";
-import Loadable from "react-loadable"
+import Loadable from "react-loadable";
 import formatMessage from "./utils/formatMessage";
-
+import renderRoutes from "./Router/renderRoutes";
 import "./App.css";
 
 const RootContainer = styled.div`
@@ -29,16 +28,12 @@ const Content = styled.div`
 `;
 
 
-const loader = () => {
-  return <div></div>;
-};
-
-let RoutingCollection = [];
+let RoutingCollection = renderRoutes(routerConfig);
 let leftMenuCollection = [];
 
-
-function routerItemRender() {
+function menuItemRender() {
   routerConfig.forEach((parentMenu) => {
+
     if (parentMenu.routes) {
       parentMenu.routes.forEach((childMenu) => {
 
@@ -52,46 +47,8 @@ function routerItemRender() {
           subItems: []
         };
 
-        //redirect
-
-        if (childMenu.component) {
-          const RouteComponent = Loadable({
-            loader: () => import("./pages/" + childMenu.component.replace("./", "")),
-            loading: loader
-          });
-
-          RoutingCollection.push(<Route key={childMenu.path} exact path={childMenu.path}
-                                        component={withRouter(RouteComponent)}/>);
-        }
-
-        if (childMenu.routes) {
-
+        if (childMenu.routes && !childMenu.hideChildrenInMenu) {
           childMenu.routes.forEach((subChildMenu) => {
-
-            if (subChildMenu.redirect) {
-              RoutingCollection.push(<Route exact key={subChildMenu.path + "_redirect"} strict path={subChildMenu.path}
-                                            render={({ location }) => {
-                                              if (location.pathname === window.location.pathname) {
-                                                return <Redirect key={subChildMenu.path + "_from"}
-                                                                 to={subChildMenu.redirect}/>;
-                                              }
-                                              return null;
-                                            }}/>);
-            }
-
-            if (subChildMenu.component) {
-
-              // const RouteComponent = lazy(() => import("./pages/" + subChildMenu.component.replace("./", "")));
-
-              const RouteComponent = Loadable({
-                loader: () => import("./pages/" + subChildMenu.component.replace("./", "")),
-                loading: loader
-              });
-
-              RoutingCollection.push(<Route key={subChildMenu.path} exact path={subChildMenu.path}
-                                            component={withRouter(RouteComponent)}/>);
-            }
-
             if (!subChildMenu.hideChildrenInMenu && !subChildMenu.redirect)
               menuItem.subItems.push({
                 name: subChildMenu.name,
@@ -103,18 +60,13 @@ function routerItemRender() {
           });
         }
 
-        if (!childMenu.hideChildrenInMenu) {
+        if (!childMenu.hasOwnProperty("redirect"))
           leftMenuCollection.push(menuItem);
-        }
       });
     }
   });
 }
-function menuItemRender() {
 
-}
-
-routerItemRender();
 menuItemRender();
 
 
@@ -132,49 +84,24 @@ class App extends React.Component {
   }
 
   render() {
-
     const location = this.props.location.pathname;
 
-    const bcRoutes = [];
-
-    let breadCumberNameKey = {
-      "menu": null
-    };
-
-    location.split("/").forEach((routeItem) => {
-      if (routeItem.length > 0) {
-
-        breadCumberNameKey[routeItem] = null;
-
-        let langItem = Object.keys(breadCumberNameKey).join(".");
-
-        bcRoutes.push({
-          path: "../" + routeItem,
-          breadcrumbName: formatMessage({ id: langItem })
-        });
-      }
-    });
-
-
     return (<Provider store={store}>
-      <RootContainer>
-        <LeftMenu leftMenuItems={leftMenuCollection} location={location}
-                  goToLink={this.props.history.push}/>
-        <Content>
-          <ContentLayout
-            contentName={bcRoutes.length > 0 ? bcRoutes[bcRoutes.length - 1].breadcrumbName : null}
-            breadcrumbRoutes={bcRoutes}>
+        <RootContainer>
+          <LeftMenu leftMenuItems={leftMenuCollection} location={location}
+                    goToLink={this.props.history.push}/>
+          <Content>
             <Suspense fallback={<div>...</div>}>
               <Switch>
                 {RoutingCollection}
-                <NoMatchRoute key={"404"} handle={true}/>
               </Switch>
             </Suspense>
-          </ContentLayout>
-        </Content>
-      </RootContainer>
-    </Provider>);
+          </Content>
+        </RootContainer>
+      </Provider>
+    );
   }
 }
 
 export default App;
+
