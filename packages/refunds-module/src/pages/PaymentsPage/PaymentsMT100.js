@@ -190,7 +190,7 @@ class PaymentsMT100 extends Component {
       this.loadGridData();
     });
   };
-
+//test
   applyFilter = (filter) => {
     this.setState({
       sortedInfo: {},
