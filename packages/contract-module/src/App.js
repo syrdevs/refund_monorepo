@@ -60,7 +60,7 @@ function menuItemRender() {
           });
         }
 
-        if (!childMenu.hasOwnProperty("redirect"))
+        if (!childMenu.hasOwnProperty("redirect") && childMenu.name)
           leftMenuCollection.push(menuItem);
       });
     }
@@ -103,5 +103,5 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default withRouter(App);
 
