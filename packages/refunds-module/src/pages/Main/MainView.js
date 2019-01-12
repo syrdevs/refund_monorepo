@@ -855,7 +855,7 @@ class MainView extends Component {
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
             <Card bodyStyle={{ padding: 5 }} style={{marginTop:'5px'}}>
-                <ExecuteModal disabled={this.state.selectedRowKeys.length === 0}/>
+                <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length} selectedRows={this.state.selectedRowKeys}/>
                 <Button onClick={() => {
                   this.confirming()
                 }}

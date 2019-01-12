@@ -29,6 +29,7 @@ const dateFormat = 'YYYY/MM/DD';
     super(props);
 
     this.state = {
+      sortedInfo: {},
       fcolumn: [
         {
           title: 'Потребитель',
@@ -299,6 +300,7 @@ const dateFormat = 'YYYY/MM/DD';
           columns={this.state.columns}
           actionColumns={this.state.fcolumn}
           sorted={true}
+          sortedInfo={this.state.sortedInfo}
           showTotal={true}
           showExportBtn
           actionExport={() => this.exportToExcel()}
@@ -311,6 +313,31 @@ const dateFormat = 'YYYY/MM/DD';
           onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
           onRefresh={() => {
             this.refreshTable();
+          }}
+          onSort={(column) => {
+
+            if (Object.keys(column).length === 0) {
+              this.setState(prevState => ({
+                pagingConfig: {
+                  ...prevState.pagingConfig,
+                  sort: [],
+                },
+                sortedInfo: {},
+              }), () => {
+                this.loadMainGridData();
+              });
+              return;
+            }
+
+            this.setState(prevState => ({
+              sortedInfo: column,
+              pagingConfig: {
+                ...prevState.pagingConfig,
+                sort: [{ field: column.field==='mt102LoadStatus.text'?'mt102LoadStatus': column.field, 'desc': column.order === 'descend' }],
+              },
+            }), () => {
+              this.loadMainGridData();
+            });
           }}
           onSearch={() => {
             this.filterPanelState();

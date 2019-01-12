@@ -44,7 +44,8 @@ const data = [{
   name: "Айдаров Айбек Ганиевич",
   position: "Эксперт",
   placeWork: "РГП"
-}];
+}
+];
 
 export default class EmployeesModal extends Component {
 
@@ -167,24 +168,28 @@ export default class EmployeesModal extends Component {
           this.props.onCancel();
         }}
         onOk={() => {
-          console.log(this.state.fio);
+          console.log({
+            id:this.state.fio,
+            refundList: this.props.keys
+          });
         }}>
-        <Table columns={columns} dataSource={data}
-               // rowSelection={rowSelection}
-               rowClassName={(record, index) => {
-                 return this.state.selectedIndex === index ? "active" : "";
-               }}
-               onRow={(record, index) => ({
+          <Table columns={columns} dataSource={data}
+            // rowSelection={rowSelection}
+                 rowClassName={(record, index) => {
+                   return this.state.selectedIndex === index ? "active" : "";
+                 }}
+                 bordered={true}
+                 onRow={(record, index) => ({
 
-                 onClick: () => {
+                   onClick: () => {
 
-                   this.setState({
-                     selectedIndex: index,
-                     fio: record.name
-                   });
-                 }
-               })}
-        />
+                     this.setState({
+                       selectedIndex: index,
+                       fio: record.name
+                     });
+                   }
+                 })}
+          />
       </Modal>
     </div>)
       ;

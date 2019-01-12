@@ -43,7 +43,7 @@ class PaymentsMT102 extends Component {
     sortedInfo: {},
     parameters: {
       start: 0,
-      length: 15,
+      length: 10,
       entity: "mt102",
       filter: {},
       sort: []
@@ -169,7 +169,7 @@ class PaymentsMT102 extends Component {
         "dataIndex": "iin",
         "isVisible": "true"
       }, {
-        "title": "Отправитель (БИН)",
+        "title": "Отправитель (БИН/ИИН)",
         "dataIndex": "senderBin",
         "isVisible": "true"
       }, {
@@ -197,7 +197,7 @@ class PaymentsMT102 extends Component {
       sortedInfo: {},
       parameters: {
         start: 0,
-        length: 15,
+        length: 10,
         entity: this.state.parameters.entity,
         filter: {},
         sort: []
@@ -208,6 +208,9 @@ class PaymentsMT102 extends Component {
   };
 
   applyFilter = (filter) => {
+    if(filter.knpList!=null && filter.knpList.length===0){
+      delete filter['knpList'];
+    }
     this.setState({
       sortedInfo: {},
       parameters: {

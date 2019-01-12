@@ -65,7 +65,7 @@ class PaymentsPage extends Component {
       sortedInfo: {},
       parameters: {
         start: 0,
-        length: 15,
+        length: 10,
         entity: 'mt100',
         filter: {},
         sort: [],
@@ -392,7 +392,7 @@ class PaymentsPage extends Component {
       sortedInfo: {},
       parameters: {
         start: 0,
-        length: 15,
+        length: 10,
         entity: this.state.parameters.entity,
         filter: {},
         sort: [],

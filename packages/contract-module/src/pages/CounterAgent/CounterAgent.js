@@ -71,7 +71,7 @@ class CounterAgent extends Component {
 
       gridParameters: {
         start: 0,
-        length: 15,
+        length: 10,
         alias: "clinicList",
         entity: "clinic",
         filter: {},

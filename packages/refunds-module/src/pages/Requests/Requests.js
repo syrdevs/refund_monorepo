@@ -130,7 +130,9 @@ class Requests extends Component {
   };
 
   setFilter = (filters) => {
-
+    if(filters.knpList!=null && filters.knpList.length===0){
+      delete filters['knpList'];
+    }
     this.setState(prevState => ({
       sortedInfo: {},
       pagingConfig: {

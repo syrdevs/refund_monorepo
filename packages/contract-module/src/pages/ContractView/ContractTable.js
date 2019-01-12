@@ -325,7 +325,7 @@ class ContractTable extends Component {
     ShowContract: false,
     gridParameters: {
       start: 0,
-      length: 15,
+      length: 10,
       entity: "contract",
       alias: "contractList",
       filter: {},
@@ -343,7 +343,7 @@ class ContractTable extends Component {
       sortedInfo: {},
       gridParameters: {
         start: 0,
-        length: 15,
+        length: 10,
         entity: "contract",
         alias: "contractList",
         filter: {},
