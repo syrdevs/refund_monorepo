@@ -121,7 +121,7 @@ class InfoPage extends Component {
   getReferenceValues = (code, propName) => {
     const { universal2 } = this.props;
 
-    if (!universal2.references.hasOwnProperty(code)) return null;
+    if (!universal2.references.hasOwnProperty(code)) return [];
 
     return universal2.references[code]
       ? universal2.references[code].content.map((item) => (
@@ -199,6 +199,7 @@ class InfoPage extends Component {
 
     if (this.props.form.getFieldValue("parentContract") && this.props.form.getFieldValue("parentContract").hasOwnProperty("value") && this.props.form.getFieldValue("parentContract").value !== null) {
       contractTypeDataSource = contractTypeDataSource.filter(x => x.props.prop.code !== "1");
+      console.log(contractTypeDataSource);
     }
 
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;

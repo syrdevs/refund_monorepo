@@ -136,6 +136,7 @@ class CounterAgentCreate extends Component {
         sendModel.data.dateEnd = moment(data.period[1]).format("DD.MM.YYYY");
     }
 
+
     /*
     *  'number': data.number,
         'parentContract': {
@@ -282,10 +283,10 @@ class CounterAgentCreate extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "/contracts2/counteragent/table",
+          path: "/contracts2/contracts/table",
           breadcrumbName: "Договоры"
         }, {
-          path: "/contracts2/counteragent/create",
+          path: "/contracts2/contracts/create",
           breadcrumbName: "Новый договор"
         }]}>
         <Form

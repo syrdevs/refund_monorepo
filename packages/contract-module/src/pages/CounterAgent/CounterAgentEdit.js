@@ -374,10 +374,10 @@ class CounterAgentEdit extends Component {
         path: "/",
         breadcrumbName: "Главная"
       }, {
-        path: "contracts2/contracts/table",
+        path: "/contracts2/contracts/table",
         breadcrumbName: "Договоры"
       }, {
-        path: "/counteragent/create",
+        path: "/contracts2/contracts/create",
         breadcrumbName: "Редактирование"
       }]}>
       <Form
