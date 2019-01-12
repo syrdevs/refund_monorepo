@@ -154,13 +154,14 @@ class CounterAgent extends Component {
           disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
           key='register_document'
           onClick={() => {
-            this.props.history.push({
-              pathname: "create",
-              state: {
-                data: this.state.selectedRecord
-                // data: counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
-              }
-            });
+            this.props.history.push("/contracts2/contracts/create?counterAgentId=" + this.state.selectedRecord.id);
+            // this.props.history.push({
+            //   pathname: "/contracts2/contracts/create",
+            //   state: {
+            //     data: this.state.selectedRecord
+            //     // data: counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
+            //   }
+            // });
           }}>
           Создать договор
         </Menu.Item>

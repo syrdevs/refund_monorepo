@@ -855,26 +855,28 @@ class MainView extends Component {
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
             <Card bodyStyle={{ padding: 5 }} style={{marginTop:'5px'}}>
-                <ExecuteModal disabled={false}/>
+                <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length} selectedRows={this.state.selectedRowKeys}/>
                 <Button onClick={() => {
                   this.confirming()
                 }}
+                        disabled={true}
                         style={{marginLeft:'5px'}}
                         key={"confirm"}
-                        className={"btn-success"}>
+                >
                   Подтвердить
                 </Button>
-                <Button onClick={() => {
+                <Button
+                  disabled={true}
+                  onClick={() => {
                   this.rejecting()
                 }}
                         style={{marginLeft:'5px'}}
                         key={"reject"}
-                        className={"btn-danger"}
                 >
                   Отклонить
                 </Button>
-                <ApproveModal disabled={false}/>
-                <SignModal disabled={false}/>
+                <ApproveModal disabled={true}/>
+                <SignModal disabled={true}/>
             </Card>
             <Card bodyStyle={{ padding: 5 }} style={{margin:'5px 0 10px 0'}}>
                 <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: "menu.mainview.approveBtn" }))}

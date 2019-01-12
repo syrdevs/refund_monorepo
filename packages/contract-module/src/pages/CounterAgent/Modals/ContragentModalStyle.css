@@ -1,0 +1,22 @@
+.SmartGridView .ant-table-tbody .ant-table-row td {
+    word-break: normal;
+    min-width: 150px;
+    max-width: 150px;
+}
+
+.SmartGridView .ant-table-thead > tr > th {
+    min-width: 150px;
+    max-width: 150px;
+}
+
+.DogovorModal .ant-table-tbody .ant-table-row td {
+    word-break: normal;
+    min-width: 150px;
+    max-width: 150px;
+}
+
+.DogovorModal .ant-table-thead > tr > th {
+    min-width: 150px;
+    max-width: 150px;
+}
+

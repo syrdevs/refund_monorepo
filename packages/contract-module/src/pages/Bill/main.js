@@ -248,6 +248,7 @@ class BillsTable extends Component {
           key="2"
           disabled={this.state.selectedRowKeys.length !== 1}
           onClick={() => {
+            this.props.history.push("/contracts2/bills/viewBill?id="+this.state.selectedRowKeys[0]);
             //router.push("/contract/bills/viewBill?id="+this.state.selectedRowKeys[0])
           }}>
           Открыть

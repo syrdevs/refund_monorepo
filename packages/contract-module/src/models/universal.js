@@ -32,23 +32,23 @@ import {
   getList,
   getCommands,
   createSubContract
-} from '../services/api';
+} from "../services/api";
 
 export default {
-  namespace: 'universal',
+  namespace: "universal",
   state: {
     table: {
       number: null,
       size: null,
       totalElements: null,
       totalPages: null,
-      content: [],
+      content: []
     },
     files: [],
     columns: [],
     rpmu: {
       columns: [],
-      data: [],
+      data: []
     },
     mainmodal: [],
     select1: [],
@@ -57,7 +57,7 @@ export default {
     modalgridviewdata: [],
     paymentsData: {
       mt100: {},
-      mt102: {},
+      mt102: {}
     },
     searcherdata: {},
     searcherRPNdata: {},
@@ -81,7 +81,7 @@ export default {
     getObjectData: {},
     counterAgentData: {},
     uploadanswer: {},
-    commandResult: [],
+    commandResult: []
   },
   effects: {
     * getCommandResult(payload, { call, put }) {
@@ -89,8 +89,8 @@ export default {
       const response = yield call(getCommands, payload);
 
       yield put({
-        type: 'getCommandResultReducer',
-        payload: response,
+        type: "getCommandResultReducer",
+        payload: response
       });
     },
 
@@ -107,8 +107,8 @@ export default {
       const response = yield call(getFilesRequest, payload);
 
       yield put({
-        type: 'files',
-        payload: response,
+        type: "files",
+        payload: response
       });
     },
     * changeRefundStatus(payload, { call }) {
@@ -125,248 +125,248 @@ export default {
       const response = yield call(setfile, payload);
 
       yield put({
-        type: 'setfileReduce',
-        payload: response,
+        type: "setfileReduce",
+        payload: response
       });
     },
     * paymentsData(payload, { call, put }) {
       const response = yield call(paymentsData, payload.payload);
 
       yield put({
-        type: 'paymentsDataReducer',
+        type: "paymentsDataReducer",
         payload: {
           type: payload.payload.entity,
-          response: response || {},
-        },
+          response: response || {}
+        }
       });
     },
     * getmt102(payload, { call, put }) {
       const response = yield call(getmt102file, payload);
 
       yield put({
-        type: 'mt102',
-        payload: response,
+        type: "mt102",
+        payload: response
       });
     },
     * mt102preview(payload, { call, put }) {
 
       const response = yield call(mt102preview, payload);
       yield put({
-        type: 'mt102prevReducer',
-        payload: response,
+        type: "mt102prevReducer",
+        payload: response
       });
       if (response.refundKnpList.length > 0) {
         payload.payload.src.searched = true;
-        payload.payload.src.data['knpList'] = {
-          id: response.refundKnpList[0].id,
+        payload.payload.src.data["knpList"] = {
+          id: response.refundKnpList[0].id
         };
         const data = yield call(getmainViewTable, payload);
         yield put({
-          type: 'mt102dataReducer',
-          payload: data,
+          type: "mt102dataReducer",
+          payload: data
         });
       }
     },
     * mt102view(payload, { call, put }) {
       const data = yield call(getmainViewTable, payload);
       yield put({
-        type: 'mt102dataReducer',
-        payload: data,
+        type: "mt102dataReducer",
+        payload: data
       });
     },
     * mainviewtable(payload, { call, put }) {
       const response = yield call(getmainViewTable, payload);
 
       yield put({
-        type: 'maintable',
-        payload: response,
+        type: "maintable",
+        payload: response
       });
     },
     * mainviewcolumn(payload, { call, put }) {
       const response = yield call(getmainViewColumn, payload);
 
       yield put({
-        type: 'maincolumn',
-        payload: response,
+        type: "maincolumn",
+        payload: response
       });
     },
     * rpmuTable(payload, { call, put }) {
       const response = yield call(getRPMUTable, payload);
 
       yield put({
-        type: 'rpmuReduce',
-        payload: response,
+        type: "rpmuReduce",
+        payload: response
       });
     },
     * mainModal(payload, { call, put }) {
       const response = yield call(getMainModal, payload);
 
       yield put({
-        type: 'mainModalReducer',
-        payload: response,
+        type: "mainModalReducer",
+        payload: response
       });
     },
     * mainSelect1(payload, { call, put }) {
       const response = yield call(getMainSelect1, payload);
 
       yield put({
-        type: 'mainSelect1Reduce',
-        payload: response,
+        type: "mainSelect1Reduce",
+        payload: response
       });
     },
     * optionsData(payload, { call, put }) {
       const response = yield call(getOptionsdata, payload);
       yield put({
-        type: 'OptionReducer',
-        payload: response || [],
+        type: "OptionReducer",
+        payload: response || []
       });
     },
     * optionsDatachange(payload, { call, put }) {
       const response = yield call(saveOptionsdata, payload);
       yield put({
-        type: 'OptionChangeReducer',
-        payload: payload,
+        type: "OptionChangeReducer",
+        payload: payload
       });
     },
     * SearcherCalendar(payload, { call, put }) {
       const response = yield call(getSearcherCalendar, payload);
       yield put({
-        type: 'SearcherCalendarReducer',
-        payload: response,
+        type: "SearcherCalendarReducer",
+        payload: response
       });
     },
     * SearcherJurCalendar(payload, { call, put }) {
       const response = yield call(getSearcherJurCalendar, payload);
       yield put({
-        type: 'SearcherJurCalendarReducer',
-        payload: response,
+        type: "SearcherJurCalendarReducer",
+        payload: response
       });
     },
     * SearcherData(payload, { call, put }) {
       const response = yield call(getSearcherData, payload);
       yield put({
-        type: 'SearcherDataReducer',
-        payload: response,
+        type: "SearcherDataReducer",
+        payload: response
       });
     },
     * SearcherRPNData(payload, { call, put }) {
       const response = yield call(getSearcherRPNData, payload);
       yield put({
-        type: 'SearcherRNPDataReducer',
-        payload: response,
+        type: "SearcherRNPDataReducer",
+        payload: response
       });
     },
     * SearcherMEDData(payload, { call, put }) {
       const response = yield call(getSearcherMEDData, payload);
       yield put({
-        type: 'SearcherMEDDataReducer',
-        payload: response,
+        type: "SearcherMEDDataReducer",
+        payload: response
       });
     },
     * SearcherJur(payload, { call, put }) {
       const response = yield call(getSearcherJur, payload);
       yield put({
-        type: 'SearcherJurReducer',
-        payload: response,
+        type: "SearcherJurReducer",
+        payload: response
       });
     },
     * getperiodYear(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicperiodyearReducer',
-        payload: response,
+        type: "dicperiodyearReducer",
+        payload: response
       });
     },
     * getperiodSection(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicperiodSectionReducer',
-        payload: response,
+        type: "dicperiodSectionReducer",
+        payload: response
       });
     },
     * getorganization(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicorganizationReducer',
-        payload: response,
+        type: "dicorganizationReducer",
+        payload: response
       });
     },
     * getmedicalType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicmedicalTypeReducer',
-        payload: response,
+        type: "dicmedicalTypeReducer",
+        payload: response
       });
     },
     * getattachmentType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicattachmentTypeReducer',
-        payload: response,
+        type: "dicattachmentTypeReducer",
+        payload: response
       });
     },
     * getpaymentRequestType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicpaymentRequestTypeReducer',
-        payload: response,
+        type: "dicpaymentRequestTypeReducer",
+        payload: response
       });
     },
     * getdivisions(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicdivisionsReducer',
-        payload: response,
+        type: "dicdivisionsReducer",
+        payload: response
       });
     },
     * getactivity(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicactivityReducer',
-        payload: response,
+        type: "dicactivityReducer",
+        payload: response
       });
     },
     * getmeasureUnit(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicmeasureUnitReducer',
-        payload: response,
+        type: "dicmeasureUnitReducer",
+        payload: response
       });
     },
     * getidentifierType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'dicidentifierTypeReducer',
-        payload: response,
+        type: "dicidentifierTypeReducer",
+        payload: response
       });
     },
     * getcurrencyType(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'diccurrencyTypeReducer',
-        payload: response,
+        type: "diccurrencyTypeReducer",
+        payload: response
       });
     },
     * getlegalForm(payload, { call, put }) {
       const response = yield call(getActDics, payload);
       yield put({
-        type: 'diclegalFormReducer',
-        payload: response,
+        type: "diclegalFormReducer",
+        payload: response
       });
     },
     * saveobject(payload, { call, put }) {
       const response = yield call(saveObject, payload);
       yield put({
-        type: 'saveObjectReducer',
-        payload: response,
+        type: "saveObjectReducer",
+        payload: response
       });
     },
     * getobject(payload, { call, put }) {
       const response = yield call(getObject, payload);
 
       yield put({
-        type: 'getObjectReducer',
-        payload: response,
+        type: "getObjectReducer",
+        payload: response
       });
     },
 
@@ -374,43 +374,43 @@ export default {
       const response = yield call(createSubContract, payload);
 
       yield put({
-        type: 'createContractFromAgentReducer',
-        payload: response,
+        type: "createContractFromAgentReducer",
+        payload: response
       });
     },
     * getCounterAgentData(payload, { call, put }) {
       const response = yield call(createContractFromAgent, payload);
 
       yield put({
-        type: 'createContractFromAgentReducer',
-        payload: response,
+        type: "createContractFromAgentReducer",
+        payload: response
       });
 
     },
     * clearData(payload, { call, put }) {
 
       yield put({
-        type: 'clearDataReducer',
+        type: "clearDataReducer",
         payload: {
           typeName: payload.payload.typeName,
-          value: payload.payload.value ? payload.payload.value : [],
-        },
+          value: payload.payload.value ? payload.payload.value : []
+        }
       });
     },
     * createActForContract(payload, { call, put }) {
       const response = yield call(createActForContract, payload);
       yield put({
-        type: 'createActForContractReducer',
-        payload: response,
+        type: "createActForContractReducer",
+        payload: response
       });
     },
     * deleteObject(payload, { call, put }) {
       const response = yield call(deleteObject, payload);
       yield put({
-        type: 'deleteObjectReducer',
-        payload: response,
+        type: "deleteObjectReducer",
+        payload: response
       });
-    },
+    }
 
 
   },
@@ -420,69 +420,70 @@ export default {
 
       return {
         ...state,
-        commandResult: payload,
+        commandResult: payload
       };
     },
 
     deleteObjectReducer(state, { payload }) {
       return {
         ...state,
-        deletedObject: payload,
+        deletedObject: payload
       };
     },
     createActForContractReducer(state, { payload }) {
       return {
         ...state,
-        getObjectData: payload,
+        getObjectData: payload
       };
     },
     clearDataReducer(state, { payload }) {
       return {
         ...state,
-        [payload.typeName]: payload.value,
+        [payload.typeName]: payload.value
       };
     },
     createContractFromAgentReducer(state, { payload }) {
       return {
         ...state,
-        getObjectData: payload,
+        counterAgentData: payload,
+        getObjectData: payload
       };
     },
     getObjectReducer(state, { payload }) {
       return {
         ...state,
-        getObjectData: payload,
+        getObjectData: payload
       };
     },
 
     files(state, { payload }) {
       return {
         ...state,
-        files: payload,
+        files: payload
       };
     },
     mt102(state, { payload }) {
       return {
         ...state,
-        mt102file: payload,
+        mt102file: payload
       };
     },
     mt102dataReducer(state, { payload }) {
       return {
         ...state,
-        modalgridviewdata: payload,
+        modalgridviewdata: payload
       };
     },
     mt102prevReducer(state, { payload }) {
       return {
         ...state,
-        refundKnpList: payload.refundKnpList,
+        refundKnpList: payload.refundKnpList
       };
     },
     setfileReduce(state, { payload }) {
       return {
         ...state,
-        setfile: payload,
+        setfile: payload
       };
     },
     paymentsDataReducer(state, { payload }) {
@@ -490,8 +491,8 @@ export default {
         ...state,
         paymentsData: {
           ...state.paymentsData,
-          [payload.type]: payload.response,
-        },
+          [payload.type]: payload.response
+        }
       };
     },
     maintable(state, { payload }) {
@@ -499,46 +500,46 @@ export default {
         return {
           ...state,
           table: {
-            'size': 15,
-            'totalElements': 0,
-            'totalPages': 0,
-            'content': [],
-          },
+            "size": 15,
+            "totalElements": 0,
+            "totalPages": 0,
+            "content": []
+          }
         };
       }
       return {
         ...state,
-        table: payload,
+        table: payload
       };
     },
     maincolumn(state, { payload }) {
       return {
         ...state,
-        columns: payload,
+        columns: payload
       };
     },
     rpmuReduce(state, { payload }) {
       return {
         ...state,
-        rpmu: payload,
+        rpmu: payload
       };
     },
     mainModalReducer(state, { payload }) {
       return {
         ...state,
-        mainmodal: payload,
+        mainmodal: payload
       };
     },
     mainSelect1Reduce(state, { payload }) {
       return {
         ...state,
-        select1: payload,
+        select1: payload
       };
     },
     OptionReducer(state, { payload }) {
       return {
         ...state,
-        options: payload,
+        options: payload
       };
     },
     OptionChangeReducer(state, { payload }) {
@@ -547,91 +548,91 @@ export default {
     SearcherCalendarReducer(state, { payload }) {
       return {
         ...state,
-        searchercalendar: payload,
+        searchercalendar: payload
       };
     },
     SearcherJurCalendarReducer(state, { payload }) {
       return {
         ...state,
-        searcherjurcalendar: payload,
+        searcherjurcalendar: payload
       };
     },
     SearcherDataReducer(state, { payload }) {
       return {
         ...state,
-        searcherdata: payload,
+        searcherdata: payload
       };
     },
     SearcherRNPDataReducer(state, { payload }) {
       return {
         ...state,
-        searcherRPNdata: payload,
+        searcherRPNdata: payload
       };
     },
     SearcherMEDDataReducer(state, { payload }) {
       return {
         ...state,
-        searcherMEDdata: payload,
+        searcherMEDdata: payload
       };
     },
     SearcherJurReducer(state, { payload }) {
       return {
         ...state,
-        searcherjur: payload,
+        searcherjur: payload
       };
     },
     dicperiodyearReducer(state, { payload }) {
       return {
         ...state,
-        periodYear: payload,
+        periodYear: payload
       };
     },
     dicperiodSectionReducer(state, { payload }) {
       return {
         ...state,
-        periodSection: payload,
+        periodSection: payload
       };
     },
     dicorganizationReducer(state, { payload }) {
       return {
         ...state,
-        organization: payload,
+        organization: payload
       };
     },
     dicmedicalTypeReducer(state, { payload }) {
       return {
         ...state,
-        medicalType: payload,
+        medicalType: payload
       };
     },
     dicattachmentTypeReducer(state, { payload }) {
       return {
         ...state,
-        attachmentType: payload,
+        attachmentType: payload
       };
     },
     dicpaymentRequestTypeReducer(state, { payload }) {
       return {
         ...state,
-        paymentRequestType: payload,
+        paymentRequestType: payload
       };
     },
     dicdivisionsReducer(state, { payload }) {
       return {
         ...state,
-        divisions: payload,
+        divisions: payload
       };
     },
     dicactivityReducer(state, { payload }) {
       return {
         ...state,
-        activity: payload,
+        activity: payload
       };
     },
     dicmeasureUnitReducer(state, { payload }) {
       return {
         ...state,
-        measureUnit: payload,
+        measureUnit: payload
       };
     },
 
@@ -639,19 +640,19 @@ export default {
     dicidentifierTypeReducer(state, { payload }) {
       return {
         ...state,
-        identifierType: payload,
+        identifierType: payload
       };
     },
     diccurrencyTypeReducer(state, { payload }) {
       return {
         ...state,
-        currencyType: payload,
+        currencyType: payload
       };
     },
     diclegalFormReducer(state, { payload }) {
       return {
         ...state,
-        legalForm: payload,
+        legalForm: payload
       };
     },
     /*identifierType: {},
@@ -661,15 +662,15 @@ export default {
     saveObjectReducer(state, { payload }) {
       return {
         ...state,
-        saveanswer: payload,
+        saveanswer: payload
       };
     },
     uploadFileReducer(state, { payload }) {
       console.log(payload);
       return {
         ...state,
-        uploadanswer: payload,
+        uploadanswer: payload
       };
-    },
-  },
+    }
+  }
 };

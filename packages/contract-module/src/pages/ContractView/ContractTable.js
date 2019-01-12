@@ -26,6 +26,7 @@ import connect from "../../Redux";
 import { faTimes } from "@fortawesome/free-solid-svg-icons/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ContentLayout from "../../layouts/ContentLayout";
+import DropDownAction from "../../components/DropDownAction";
 
 const dateFormat = "DD.MM.YYYY";
 
@@ -239,7 +240,7 @@ class ContractTable extends Component {
               color: "#1890ff",
               textDecoration: "underline",
               cursor: "pointer"
-            }}>{record.parentContract.contractType} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
+            }}>{record.parentContract.contractType.shortName} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
           }
           //***
           ////<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>
@@ -421,19 +422,8 @@ class ContractTable extends Component {
             let recordId = this.state.selectedRowKeys[0];
             let record = this.props.universal2.references[this.state.gridParameters.entity].content.find(x => x.id === recordId);
 
-            let contractType = record.contractType ? record.contractType : "";
 
-            let contractName = contractType + " №" + record.number + " от " + record.documentDate;
-
-            this.props.history.push({
-              pathname: "/contract/counteragent/editcontract",
-              state: {
-                data: {
-                  id: this.state.selectedRowKeys[0],
-                  title: contractName
-                }
-              }
-            });
+            this.props.history.push("/contracts2/contracts/edit?id=" + this.state.selectedRowKeys[0]);
 
           }}
           key='2'>
@@ -456,7 +446,7 @@ class ContractTable extends Component {
               });
             });
             isOne ? this.props.history.push({
-              pathname: "/contract/contracts/paymentadd",
+              pathname: "/contracts2/contracts/paymentadd",
               state: {
                 data: contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
                 type: "contract"
@@ -475,13 +465,15 @@ class ContractTable extends Component {
           onClick={() => {
             let recordId = this.state.selectedRowKeys[0];
             let record = this.props.universal2.references[this.state.gridParameters.entity].content.find(x => x.id === recordId);
-            this.props.history.push({
-              pathname: "/contract/counteragent/create",
-              state: {
-                data: record,
-                type: "setContract"
-              }
-            });
+            // this.props.history.push({
+            //   pathname: "/contracts2/counteragent/create",
+            //   state: {
+            //     data: record,
+            //     type: "setContract"
+            //   }
+            // });
+
+            this.props.history.push("/contracts2/contracts/create?contractId=" + record.id);
           }}
           key="6">
           Создать договор
@@ -490,7 +482,7 @@ class ContractTable extends Component {
           key="5"
           onClick={() => {
             //router.push('/contract/contracts/acts/add');
-            router.push("/contract/contracts/acts/view?contractId=" + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
+            this.props.history.push("/contract/contracts/acts/view?contractId=" + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
             /* this.props.history.push({
                pathname: '/contract/contracts/acts/add',
                state: {
@@ -511,14 +503,14 @@ class ContractTable extends Component {
 
     ];
 
-    // if (this.state.selectedRowKeys.length !== 0) {
-    //   addonButtons.push(<DropDownAction
-    //     key={'dropdown_btn'}
-    //     contractId={this.state.selectedRowKeys}
-    //     entity={'contract'}
-    //     type={2}
-    //   />);
-    // }
+    if (this.state.selectedRowKeys.length !== 0) {
+      addonButtons.push(<DropDownAction
+        key={"dropdown_btn"}
+        contractId={this.state.selectedRowKeys}
+        entity={"contract"}
+        type={2}
+      />);
+    }
 
     return (
       <ContentLayout
