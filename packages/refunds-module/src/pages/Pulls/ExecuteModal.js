@@ -21,17 +21,7 @@ export default class ExecuteModal extends Component {
   render() {
     return (
       <div style={{display:'inline-block'}}>
-        <Button key={"executor"} disabled={this.props.disabled} style={{marginLeft:'5px'}} onClick={this.showModal}>Определить исполнителя</Button>
-        {/*<Modal
-          title="Определить исполнителя"
-          visible={this.state.visible}
-          onOk={this.hideModal}
-          onCancel={this.hideModal}
-          okText="Выбрать"
-          cancelText="Отменить"
-        >
-          <p>Текст</p>
-        </Modal>*/}
+        <Button key={"executor"} disabled={this.props.disabled} style={{marginLeft:'5px'}} onClick={this.showModal}>Определить исполнителя  {this.props.count > 0 && ` (${this.props.count})`}</Button>
         {this.state.visible && <EmployeesModal onCancel={this.hideModal}/>}
       </div>
     );
