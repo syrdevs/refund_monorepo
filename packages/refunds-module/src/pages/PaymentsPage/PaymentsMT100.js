@@ -28,6 +28,7 @@ import SmartGridView from '../../components/SmartGridView';
 import connect from '../../Redux';
 import { Animated } from 'react-animated-css';
 import moment from 'moment/moment';
+import  './Payments.css';
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
@@ -43,7 +44,7 @@ class PaymentsMT100 extends Component {
     selectedRecord: null,
     parameters: {
       start: 0,
-      length: 15,
+      length: 10,
       entity: 'mt100',
       filter: {},
       sort: [],
@@ -109,9 +110,14 @@ class PaymentsMT100 extends Component {
       //   type: 'text',
       // },
       {
-        label: 'Дата создания',
+        label: 'Дата поступления информации',
         name: 'createdOn',
         type: 'betweenDate',
+      },
+      {
+      label: 'БИН',
+        name: 'bin',
+        type: 'text',
       },
     ],
     sortedInfo: {},
@@ -176,12 +182,13 @@ class PaymentsMT100 extends Component {
     ],
   };
 
-  clearFilter = () => {
+  clearFilter = (pageNumber) => {
+    console.log(this.state.parameters);
     this.setState({
       sortedInfo: {},
       parameters: {
-        start: 0,
-        length: 15,
+        start: this.state.parameters.start,
+        length: this.state.parameters.length,
         entity: this.state.parameters.entity,
         filter: {},
         sort: [],
@@ -192,6 +199,9 @@ class PaymentsMT100 extends Component {
   };
 //test
   applyFilter = (filter) => {
+    if(filter.knpList!=null && filter.knpList.length===0){
+      delete filter['knpList'];
+    }
     this.setState({
       sortedInfo: {},
       parameters: {
@@ -200,7 +210,18 @@ class PaymentsMT100 extends Component {
         sort: [],
       },
     }, () => {
-      this.loadGridData();
+
+      const { dispatch } = this.props;
+      dispatch({
+        type: 'universal/paymentsData',
+        payload: {
+          ...this.state.parameters,
+          start:0
+        },
+      });
+
+
+
     });
   };
 
@@ -342,7 +363,8 @@ class PaymentsMT100 extends Component {
             extra={<Icon style={{ 'cursor': 'pointer' }} onClick={this.filterPanelState}><FontAwesomeIcon
               icon={faTimes}/></Icon>}>
             <GridFilter
-              clearFilter={this.clearFilter}
+              // clearFilter={this.clearFilter(pageNumber)}
+              clearFilter={(pageNumber) => this.clearFilter(pageNumber)}
               applyFilter={(filter) => this.applyFilter(filter)} key={'1'}
               filterForm={this.state.filterForm}
               dateFormat={dateFormat}/>
@@ -406,7 +428,7 @@ class PaymentsMT100 extends Component {
                 sortedInfo: column,
                 parameters: {
                   ...prevState.parameters,
-                  sort: [{ field: column.field, 'desc': column.order === 'descend' }],
+                  sort: [{ field: column.field==='mt102LoadStatus.text'?'mt102LoadStatus': column.field, 'desc': column.order === 'descend' }],
                 },
               }), () => {
                 this.loadGridData();

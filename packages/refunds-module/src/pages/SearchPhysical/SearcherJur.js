@@ -204,7 +204,7 @@ class SearcherJur extends Component {
       },
       {
         key:2,
-        name: 'БИК',
+        name: 'РАЙОН',
         value: jur.senderBankBik,
       },
       {
@@ -233,7 +233,7 @@ class SearcherJur extends Component {
                   <div style={{display:'block'}}>
                     <div style={{float:'left', width:this.state.jur.senderBin?'70%':'100%'}}>
                       <Search
-                        placeholder="Введите БИН"
+                        placeholder="Введите БИН/ИИН"
                         enterButton={formatMessage({ id: 'system.search' })}
                         size="large"
                         maxLength={12}

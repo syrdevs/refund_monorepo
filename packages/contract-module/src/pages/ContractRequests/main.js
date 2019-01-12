@@ -182,7 +182,7 @@ class ContractRequestsTable extends Component {
     ],
     gridParameters: {
       start: 0,
-      length: 15,
+      length: 10,
       entity: "paymentRequest",
       alias: "paymentRequestList",
       filter: {},
@@ -232,7 +232,7 @@ class ContractRequestsTable extends Component {
     this.setState({
       gridParameters: {
         start: 0,
-        length: 15,
+        length: 10,
         entity: "paymentRequest",
         alias: "paymentRequestList",
         filter: {},
@@ -246,7 +246,7 @@ class ContractRequestsTable extends Component {
     this.setState({
       gridParameters: {
         start: 0,
-        length: 15,
+        length: 10,
         entity: "paymentRequest",
         alias: "paymentRequestList",
         filter: filters,

@@ -164,7 +164,7 @@ class BillsTable extends Component {
     ],
     gridParameters: {
       start: 0,
-      length: 15,
+      length: 10,
       entity: "bill",
       alias: "",
       filter: {},
@@ -211,7 +211,7 @@ class BillsTable extends Component {
     this.setState({
       gridParameters: {
         start: 0,
-        length: 15,
+        length: 10,
         entity: "act",
         alias: "actList",
         filter: {},
@@ -225,7 +225,7 @@ class BillsTable extends Component {
     this.setState({
       gridParameters: {
         start: 0,
-        length: 15,
+        length: 10,
         entity: "act",
         alias: "actList",
         filter: filters,
