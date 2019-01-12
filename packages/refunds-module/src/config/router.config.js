@@ -103,14 +103,6 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"]
       },
       {
-        path: "/refunds/calendar",
-        icon: "faCalendarAlt",
-        name: "calendar",
-        hideChildrenInMenu: true,
-        component: "./Calendar/CalendarView",
-        authority: ["ADMIN", "FSMS2"]
-      },
-      {
         path: '/refunds/reports',
         icon: 'database',
         name: 'reports',
