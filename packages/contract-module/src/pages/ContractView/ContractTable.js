@@ -240,7 +240,7 @@ class ContractTable extends Component {
               color: "#1890ff",
               textDecoration: "underline",
               cursor: "pointer"
-            }}>{record.parentContract.contractType} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
+            }}>{record.parentContract.contractType.shortName} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
           }
           //***
           ////<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>

@@ -159,7 +159,8 @@ class AttachmentPage extends Component {
           return;
         }
 
-        if (data.file.status === "done") {
+        if (data.file) {
+
           let authToken = localStorage.getItem("AUTH_TOKEN");
           let entityData = {};
 
@@ -180,7 +181,7 @@ class AttachmentPage extends Component {
             "alias": null,
             "data": entityData
           }));
-          formData.append("content", data.file.originFileObj);
+          formData.append("content", data.file);
 
           const options = {
             headers: {
@@ -194,6 +195,9 @@ class AttachmentPage extends Component {
 
           fetch("/api/uicommand/uploadFile", options)
             .then((response) => {
+
+              console.log(response);
+
               this.setState({ loading: false });
               this.getFilesData();
             });
@@ -222,6 +226,9 @@ class AttachmentPage extends Component {
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
 
     let uploadProps = {
+      beforeUpload: (file) => {
+        return false;
+      },
       onPreview: (file) => {
 
       },
@@ -230,53 +237,53 @@ class AttachmentPage extends Component {
     };
 
     return (<Card style={{ marginLeft: "-10px" }}>
-        <Row>
-          <div style={{ margin: "10px 0", maxWidth: "70%" }}>
-            <Form.Item {...formItemLayout} label="Документ">
-              {getFieldDecorator("fileDoc", {
-                initialValue: null,
-                rules: [{ required: true, message: "не заполнено" }]
-              })(
-                <Select allowClear>
-                  {this.props.universal.attachmentType.content && this.props.universal.attachmentType.content.map((item) => {
-                    return <Select.Option key={item.id} value={item.id}>{item.nameRu}</Select.Option>;
-                  })}
-                </Select>
-              )}
-            </Form.Item>
-            <Form.Item {...formItemLayout} label="Комментарий">
-              {getFieldDecorator("fileDescription", {
-                initialValue: null,
-                rules: [{ required: false, message: "не заполнено" }]
-              })(
-                <TextArea rows={4}/>
-              )}
-            </Form.Item>
-            <Form.Item {...formItemLayout} label="Файл">
-              {getFieldDecorator("file", {
-                initialValue: null,
-                rules: [{ required: false, message: "не заполнено" }]
-              })(
-                <Upload
-                  {...uploadProps}
-                  showUploadList={false}
-                  name="logo">
-                  <Button>
-                    <Icon type="upload"/> Загрузить
-                  </Button>
-                </Upload>
-              )}
-            </Form.Item>
-          </div>
-        </Row>
-        <Row>
-          <Table
-            columns={this.state.columns}
-            dataSource={this.state.dataSource}
-            pagination={{ position: "none" }}
-            showHeader={false}
-          />
-        </Row>
+      <Row>
+        <div style={{ margin: "10px 0", maxWidth: "70%" }}>
+          <Form.Item {...formItemLayout} label="Документ">
+            {getFieldDecorator("fileDoc", {
+              initialValue: null,
+              rules: [{ required: true, message: "не заполнено" }]
+            })(
+              <Select allowClear>
+                {this.props.universal.attachmentType.content && this.props.universal.attachmentType.content.map((item) => {
+                  return <Select.Option key={item.id} value={item.id}>{item.nameRu}</Select.Option>;
+                })}
+              </Select>
+            )}
+          </Form.Item>
+          <Form.Item {...formItemLayout} label="Комментарий">
+            {getFieldDecorator("fileDescription", {
+              initialValue: null,
+              rules: [{ required: false, message: "не заполнено" }]
+            })(
+              <TextArea rows={4}/>
+            )}
+          </Form.Item>
+          <Form.Item {...formItemLayout} label="Файл">
+            {getFieldDecorator("file", {
+              initialValue: null,
+              rules: [{ required: false, message: "не заполнено" }]
+            })(
+              <Upload
+                {...uploadProps}
+                showUploadList={false}
+                name="logo">
+                <Button>
+                  <Icon type="upload"/> Загрузить
+                </Button>
+              </Upload>
+            )}
+          </Form.Item>
+        </div>
+      </Row>
+      <Row>
+        <Table
+          columns={this.state.columns}
+          dataSource={this.state.dataSource}
+          pagination={{ position: "none" }}
+          showHeader={false}
+        />
+      </Row>
     </Card>);
   }
 }

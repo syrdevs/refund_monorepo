@@ -364,7 +364,7 @@ class CounterAgentEdit extends Component {
     //documentStatus !==null && _documentStatus.result === 2
     let contractName = "";
     if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractType) {
-      let contractType = this.props.universal.getObjectData.contractType ? this.props.universal.getObjectData.contractType.shortname : "";
+      let contractType = this.props.universal.getObjectData.contractType ? this.props.universal.getObjectData.contractType.shortName : "";
       contractName = contractType + " №" + this.props.universal.getObjectData.number + " от " + this.props.universal.getObjectData.documentDate;
     }
 
