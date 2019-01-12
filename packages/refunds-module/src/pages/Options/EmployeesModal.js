@@ -169,22 +169,24 @@ export default class EmployeesModal extends Component {
         onOk={() => {
           console.log(this.state.fio);
         }}>
-        <Table columns={columns} dataSource={data}
-               // rowSelection={rowSelection}
-               rowClassName={(record, index) => {
-                 return this.state.selectedIndex === index ? "active" : "";
-               }}
-               onRow={(record, index) => ({
+        <Card>
+          <Table columns={columns} dataSource={data}
+            // rowSelection={rowSelection}
+                 rowClassName={(record, index) => {
+                   return this.state.selectedIndex === index ? "active" : "";
+                 }}
+                 onRow={(record, index) => ({
 
-                 onClick: () => {
+                   onClick: () => {
 
-                   this.setState({
-                     selectedIndex: index,
-                     fio: record.name
-                   });
-                 }
-               })}
-        />
+                     this.setState({
+                       selectedIndex: index,
+                       fio: record.name
+                     });
+                   }
+                 })}
+          />
+        </Card>
       </Modal>
     </div>)
       ;
