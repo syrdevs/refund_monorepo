@@ -76,7 +76,12 @@ export default [
             component: "./Acts/main"
           },
           {
-            path: "/contracts2/acts/viewAct",
+            path: "/contracts2/acts/create",
+            name: "actview",
+            component: "./Acts/ViewAct"
+          },
+          {
+            path: "/contracts2/acts/edit",
             name: "actadd",
             component: "./Acts/ViewAct"
           }
@@ -99,7 +104,11 @@ export default [
             component: "./ContractRequests/main"
           },
           {
-            path: "/contracts2/contractrequests/add",
+            path: "/contracts2/contractrequests/create",
+            component: "./ContractRequests/ContractRequestsadd"
+          },
+          {
+            path: "/contracts2/contractrequests/edit",
             name: "add",
             component: "./ContractRequests/ContractRequestsadd"
           }
@@ -139,7 +148,7 @@ export default [
             component: "./Bill/Billsadd"
           },
           {
-            path: "/contracts2/bills/viewBill",
+            path: "/contracts2/bills/edit",
             name: "billadd",
             component: "./Bill/ViewBill"
           }

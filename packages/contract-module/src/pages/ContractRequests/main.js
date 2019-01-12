@@ -289,7 +289,7 @@ class ContractRequestsTable extends Component {
           key="2"
           disabled={this.state.selectedRowKeys.length !== 1}
           onClick={() => {
-            this.props.history.push("/contracts2/contractrequests/add?id=" + this.state.selectedRowKeys[0]);
+            this.props.history.push("/contracts2/contractrequests/edit?id=" + this.state.selectedRowKeys[0]);
             // router.push("/contract/contractrequests/add?id="+this.state.selectedRowKeys[0])
           }}
         >

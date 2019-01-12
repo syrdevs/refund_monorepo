@@ -266,7 +266,7 @@ class ActsTable extends Component {
           key="2"
           disabled={this.state.selectedRowKeys.length !== 1}
           onClick={() => {
-            this.props.history.push("/contracts2/acts/viewAct?id="+this.state.selectedRowKeys[0])
+            this.props.history.push("/contracts2/acts/edit?id=" + this.state.selectedRowKeys[0]);
             //router.push("/contract/acts/viewAct?id="+this.state.selectedRowKeys[0])
           }}>
           Открыть
@@ -293,13 +293,7 @@ class ActsTable extends Component {
               });
             });
 
-            isOne ? this.props.history.push({
-              pathname: "/contract/acts/paymentrequestadd",
-              state: {
-                data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
-                type: "act"
-              }
-            }) : Modal.error({
+            isOne ? this.props.history.push("/contracts2/contractrequests/create?actId=" + act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1)[0].id) : Modal.error({
               title: "Ошибка",
               content: "Нельзя создать заявку на разные учетные периоды"
             });

@@ -445,13 +445,8 @@ class ContractTable extends Component {
                 }
               });
             });
-            isOne ? this.props.history.push({
-              pathname: "/contracts2/contracts/paymentadd",
-              state: {
-                data: contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
-                type: "contract"
-              }
-            }) : Modal.error({
+
+            isOne ? this.props.history.push("/contracts2/contractrequests/create?contractId="+contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1)[0].id) : Modal.error({
               title: "Ошибка",
               content: "Нельзя создать заявку на разные учетные периоды"
             });
@@ -482,7 +477,7 @@ class ContractTable extends Component {
           key="5"
           onClick={() => {
             //router.push('/contract/contracts/acts/add');
-            this.props.history.push("/contract/contracts/acts/view?contractId=" + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
+            this.props.history.push("/contracts2/acts/create?contractId=" + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
             /* this.props.history.push({
                pathname: '/contract/contracts/acts/add',
                state: {

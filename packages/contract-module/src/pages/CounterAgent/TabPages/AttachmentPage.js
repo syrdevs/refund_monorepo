@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import formatMessage from "../../../utils/formatMessage";
+import axios from "axios";
 import {
   Form,
   Input,
@@ -14,7 +15,9 @@ import {
   Card,
   Upload,
   Icon,
-  Spin
+  Spin,
+  message,
+  Modal
 } from "antd";
 import connect from "../../../Redux";
 import saveAs from "file-saver";
@@ -196,7 +199,14 @@ class AttachmentPage extends Component {
           fetch("/api/uicommand/uploadFile", options)
             .then((response) => {
 
-              console.log(response);
+              if (response.status === 400) {
+                response.json().then((res) => {
+                  Modal.error({
+                    title: "Информация",
+                    content: res.Message
+                  });
+                });
+              }
 
               this.setState({ loading: false });
               this.getFilesData();
@@ -278,6 +288,7 @@ class AttachmentPage extends Component {
       </Row>
       <Row>
         <Table
+          className={"attachment_file_list"}
           columns={this.state.columns}
           dataSource={this.state.dataSource}
           pagination={{ position: "none" }}

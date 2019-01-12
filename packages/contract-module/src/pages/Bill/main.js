@@ -248,7 +248,7 @@ class BillsTable extends Component {
           key="2"
           disabled={this.state.selectedRowKeys.length !== 1}
           onClick={() => {
-            this.props.history.push("/contracts2/bills/viewBill?id="+this.state.selectedRowKeys[0]);
+            this.props.history.push("/contracts2/bills/edit?id="+this.state.selectedRowKeys[0]);
             //router.push("/contract/bills/viewBill?id="+this.state.selectedRowKeys[0])
           }}>
           Открыть
@@ -259,36 +259,36 @@ class BillsTable extends Component {
         >
           Удалить
         </Menu.Item>
-        <Menu.Item
-          key="4"
-          disabled={this.state.selectedRowKeys.length === 0}
-          onClick={() => {
-            let isOne = true;
-            act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr) => {
-              arr.map(elem => {
-                if (elem.periodSection.id !== item.periodSection.id) {
-                  isOne = false;
-                }
-                if (elem.periodYear.id !== item.periodYear.id) {
-                  isOne = false;
-                }
-              });
-            });
+        {/*<Menu.Item*/}
+          {/*key="4"*/}
+          {/*disabled={this.state.selectedRowKeys.length === 0}*/}
+          {/*onClick={() => {*/}
+            {/*let isOne = true;*/}
+            {/*act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr) => {*/}
+              {/*arr.map(elem => {*/}
+                {/*if (elem.periodSection.id !== item.periodSection.id) {*/}
+                  {/*isOne = false;*/}
+                {/*}*/}
+                {/*if (elem.periodYear.id !== item.periodYear.id) {*/}
+                  {/*isOne = false;*/}
+                {/*}*/}
+              {/*});*/}
+            {/*});*/}
 
-            isOne ? this.props.history.push({
-              pathname: "/contract/acts/paymentrequestadd",
-              state: {
-                data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
-                type: "act"
-              }
-            }) : Modal.error({
-              title: "Ошибка",
-              content: "Нельзя создать заявку на разные учетные периоды"
-            });
-          }}
-        >
-          Включить в заявку на оплату
-        </Menu.Item>
+            {/*isOne ? this.props.history.push({*/}
+              {/*pathname: "/contract/acts/paymentrequestadd",*/}
+              {/*state: {*/}
+                {/*data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),*/}
+                {/*type: "act"*/}
+              {/*}*/}
+            {/*}) : Modal.error({*/}
+              {/*title: "Ошибка",*/}
+              {/*content: "Нельзя создать заявку на разные учетные периоды"*/}
+            {/*});*/}
+          {/*}}*/}
+        {/*>*/}
+          {/*Включить в заявку на оплату*/}
+        {/*</Menu.Item>*/}
       </Menu>
       }>
         <Button

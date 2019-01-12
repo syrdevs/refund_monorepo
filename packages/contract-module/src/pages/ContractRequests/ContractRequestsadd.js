@@ -32,7 +32,7 @@ import ContractModal from "../Acts/ContractModal";
 import TabPageStyle from "../CounterAgent/TabPages/TabPages.less";
 import DropDownAction from "../../components/DropDownAction/";
 //import reduxRouter from 'umi/router';
-import ContentLayout from '../../layouts/ContentLayout';
+import ContentLayout from "../../layouts/ContentLayout";
 
 const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
@@ -52,6 +52,9 @@ class ContractRequestsadd extends Component {
   constructor(props) {
     super(props);
     this.state = {
+
+      createMode: null,
+
       actcolumns: [
         {
           title: "Учетный период(год)",
@@ -306,137 +309,208 @@ class ContractRequestsadd extends Component {
   }
 
   componentDidMount() {
+
+    let createMode = "";
+
+    if (this.props.location.query.hasOwnProperty("contractId")) {
+      createMode = "contract";
+    }
+
+    if (this.props.location.query.hasOwnProperty("actId")) {
+      createMode = "act";
+    }
+
+    if (this.props.location.query.hasOwnProperty("id")) {
+      createMode = "request";
+    }
+
+    if (createMode.length === 0) {
+      this.props.history.push("/contracts2/contractrequests/table");
+    }
+
     this.setState({
-      loadData: true
-    });
-    const { dispatch } = this.props;
-    const DicArr = [
-      "periodYear",
-      "periodSection",
-      "divisions",
-      "medicalType",
-      "paymentRequestType"
-    ];
-    DicArr.forEach(function(item) {
-      dispatch({
-        type: "universal/get" + item,
-        payload: {
-          "start": 0,
-          "length": 1000,
-          "entity": item
-        }
+      loadData: true,
+      createMode: createMode
+    }, () => {
+      const { dispatch } = this.props;
+      const DicArr = [
+        "periodYear",
+        "periodSection",
+        "divisions",
+        "medicalType",
+        "paymentRequestType"
+      ];
+      DicArr.forEach(function(item) {
+        dispatch({
+          type: "universal/get" + item,
+          payload: {
+            "start": 0,
+            "length": 1000,
+            "entity": item
+          }
+        });
       });
+      this.loadData();
     });
-    this.loadData();
+
   }
+
+  findOneActById = (id) => {
+    return this.props.dispatch({
+      type: "universal2/getList",
+      payload: {
+        start: 0,
+        length: 1,
+        entity: "act",
+        alias: "actList",
+        filter: {
+          id: id
+        },
+        sort: []
+      }
+    });
+  };
+  findOneContractById = (id) => {
+    return this.props.dispatch({
+      type: "universal2/getList",
+      payload: {
+        start: 0,
+        length: 1,
+        entity: "contract",
+        alias: "contractList",
+        filter: {
+          id: id
+        },
+        sort: []
+      }
+    });
+  };
 
   loadData = () => {
     const { dispatch } = this.props;
-    if (this.props.location.state) {
-      if (this.props.location.state.type === "act") {
-        this.setState({
-          actData: this.props.location.state.data
-        }, () => {
-          this.props.location.state.data.forEach((item) => {
-            dispatch({
-              type: "universal/getobject",
-              payload: {
-                "entity": "act",
-                "alias": null,
-                "id": item.id
-              }
-            }).then(() => {
-              this.setState({
-                loadData: false,
-                specdata: this.props.universal.getObjectData._actItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._actItemValues) : []
-              }, () => {
-                if (this.state.specdata.length > 0) {
+    if (this.state.createMode === "act") {
+
+      this.findOneActById(this.props.location.query.actId)
+        .then((actData) => {
+
+          if (actData.content.length > 0) {
+
+            this.setState({
+              actData: actData.content
+            }, () => {
+              actData.content.forEach((item) => {
+                dispatch({
+                  type: "universal/getobject",
+                  payload: {
+                    "entity": "act",
+                    "alias": null,
+                    "id": item.id
+                  }
+                }).then(() => {
                   this.setState({
-                    specdata: this.state.specdata.concat([{
-                      key: "total",
-                      activity: {
-                        code: "Итого:"
-                      },
-                      sumAdvanceTakeout: this.calculateRow("sumAdvanceTakeout", this.state.specdata),
-                      sumRequested: this.calculateRow("sumRequested", this.state.specdata),
-                      value: this.calculateRow("value", this.state.specdata),
-                      valueRequested: this.calculateRow("valueRequested", this.state.specdata),
-                      valueSum: this.calculateRow("valueSum", this.state.specdata)
-                    }])
+                    loadData: false,
+                    specdata: this.props.universal.getObjectData._actItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._actItemValues) : []
+                  }, () => {
+                    if (this.state.specdata.length > 0) {
+                      this.setState({
+                        specdata: this.state.specdata.concat([{
+                          key: "total",
+                          activity: {
+                            code: "Итого:"
+                          },
+                          sumAdvanceTakeout: this.calculateRow("sumAdvanceTakeout", this.state.specdata),
+                          sumRequested: this.calculateRow("sumRequested", this.state.specdata),
+                          value: this.calculateRow("value", this.state.specdata),
+                          valueRequested: this.calculateRow("valueRequested", this.state.specdata),
+                          valueSum: this.calculateRow("valueSum", this.state.specdata)
+                        }])
+                      });
+                    }
                   });
-                }
+                });
               });
             });
-          });
+          }
         });
-      }
-      if (this.props.location.state.type === "contract") {
-        this.setState({
-          contractData: this.props.location.state.data
-        }, () => {
-          this.props.location.state.data.forEach((item) => {
-            dispatch({
-              type: "universal/getobject",
-              payload: {
-                "entity": "contract",
-                "alias": null,
-                "id": item.id
-              }
-            }).then(() => {
-              this.setState({
-                loadData: false,
-                specdata: this.props.universal.getObjectData._contractItemValue ? this.state.specdata.concat(this.props.universal.getObjectData._contractItemValue) : []
-              }, () => {
-                if (this.state.specdata.length > 0) {
-                  this.setState({
-                    specdata: this.state.specdata.concat([{
-                      key: "total",
-                      activity: {
-                        code: "Итого:"
-                      },
-                      sumAdvanceTakeout: this.calculateRow("sumAdvanceTakeout", this.state.specdata),
-                      sumRequested: this.calculateRow("sumRequested", this.state.specdata),
-                      value: this.calculateRow("value", this.state.specdata),
-                      valueRequested: this.calculateRow("valueRequested", this.state.specdata),
-                      valueSum: this.calculateRow("valueSum", this.state.specdata)
-                    }])
-                  });
-                }
-              });
-            });
-          });
-        });
-      }
+
+
     }
-    else {
+    if (this.state.createMode === "contract") {
+
+      this.findOneContractById(this.props.location.query.contractId)
+        .then((contractData) => {
+          if (contractData.content.length > 0) {
+            this.setState({
+              contractData: contractData.content
+            }, () => {
+              contractData.content.forEach((item) => {
+                dispatch({
+                  type: "universal/getobject",
+                  payload: {
+                    "entity": "contract",
+                    "alias": null,
+                    "id": item.id
+                  }
+                }).then(() => {
+                  this.setState({
+                    loadData: false,
+                    specdata: this.props.universal.getObjectData._contractItemValue ? this.state.specdata.concat(this.props.universal.getObjectData._contractItemValue) : []
+                  }, () => {
+                    if (this.state.specdata.length > 0) {
+                      this.setState({
+                        specdata: this.state.specdata.concat([{
+                          key: "total",
+                          activity: {
+                            code: "Итого:"
+                          },
+                          sumAdvanceTakeout: this.calculateRow("sumAdvanceTakeout", this.state.specdata),
+                          sumRequested: this.calculateRow("sumRequested", this.state.specdata),
+                          value: this.calculateRow("value", this.state.specdata),
+                          valueRequested: this.calculateRow("valueRequested", this.state.specdata),
+                          valueSum: this.calculateRow("valueSum", this.state.specdata)
+                        }])
+                      });
+                    }
+                  });
+                });
+              });
+            });
+          }
+        });
+      return;
+
+
+    }
+    if (this.state.createMode === "request") {
       this.props.dispatch({
         type: "universal/getobject",
         payload: {
           "entity": "paymentRequest",
           "id": this.props.location.query.id
         }
-      }).then(() => {
-        this.setState({
-          loadData: false,
-          specdata: this.props.universal.getObjectData._paymentRequestItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._paymentRequestItemValues) : []
-        }, () => {
-          if (this.state.specdata.length > 0) {
-            this.setState({
-              specdata: this.state.specdata.concat([{
-                key: "total",
-                activity: {
-                  code: "Итого:"
-                },
-                sumAdvanceTakeout: this.calculateRow("sumAdvanceTakeout", this.state.specdata),
-                sumRequested: this.calculateRow("sumRequested", this.state.specdata),
-                value: this.calculateRow("value", this.state.specdata),
-                valueRequested: this.calculateRow("valueRequested", this.state.specdata),
-                valueSum: this.calculateRow("valueSum", this.state.specdata)
-              }])
-            });
-          }
+      })
+        .then(() => {
+          this.setState({
+            loadData: false,
+            specdata: this.props.universal.getObjectData._paymentRequestItemValues ? this.state.specdata.concat(this.props.universal.getObjectData._paymentRequestItemValues) : []
+          }, () => {
+            if (this.state.specdata.length > 0) {
+              this.setState({
+                specdata: this.state.specdata.concat([{
+                  key: "total",
+                  activity: {
+                    code: "Итого:"
+                  },
+                  sumAdvanceTakeout: this.calculateRow("sumAdvanceTakeout", this.state.specdata),
+                  sumRequested: this.calculateRow("sumRequested", this.state.specdata),
+                  value: this.calculateRow("value", this.state.specdata),
+                  valueRequested: this.calculateRow("valueRequested", this.state.specdata),
+                  valueSum: this.calculateRow("valueSum", this.state.specdata)
+                }])
+              });
+            }
+          });
         });
-      });
     }
 
   };
@@ -455,7 +529,7 @@ class ContractRequestsadd extends Component {
     this.setState({
       specdata: []
     }, () => {
-      if (this.props.location.state.type === "act") {
+      if (this.state.createMode === "act") {
         this.state.actData.forEach((item) => {
           dispatch({
             type: "universal/getobject",
@@ -471,7 +545,7 @@ class ContractRequestsadd extends Component {
           });
         });
       }
-      if (this.props.location.state.type === "contract") {
+      if (this.state.createMode === "contract") {
 
         this.state.contractData.forEach((item) => {
           dispatch({
@@ -497,14 +571,14 @@ class ContractRequestsadd extends Component {
     let getObjectData = {};
 
 
-    if (!this.props.location.state && Object.keys(this.props.universal.getObjectData).length > 0) {
+    if (this.state.createMode === "request" && Object.keys(this.props.universal.getObjectData).length > 0) {
       getObjectData = this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
       title = "Заявка №" + getObjectData.number + " от " + getObjectData.documentDate;
       periodYear = getObjectData.periodYear.id;
     }
     else {
-      //console.log(this.props.location.state.data);
-      //periodYear = this.props.location.state.data[0].periodYear.id;
+      let periodYearData = this.props.universal.getObjectData ? this.props.universal.getObjectData : {};
+      periodYear = periodYearData.hasOwnProperty("periodYear") ? periodYearData.periodYear.id : null;
     }
 
     const { form, dispatch } = this.props;
@@ -517,10 +591,10 @@ class ContractRequestsadd extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "/contracts2/acts/table",
+          path: "/contracts2/contractrequests/table",
           breadcrumbName: "Заявки"
         }, {
-          path: "/contracts2/acts/table",
+          path: "/contracts2/contractrequests/table",
           breadcrumbName: "Заявка"
         }]}>
         {this.state.ActModal &&
@@ -556,6 +630,7 @@ class ContractRequestsadd extends Component {
           style={{ padding: "10px" }}
           className={"headPanel"}
           extra={[<Button
+            key={"submit_form_btn"}
             htmlType="submit"
             style={{ float: "left" }}
             onClick={() => {
@@ -603,7 +678,7 @@ class ContractRequestsadd extends Component {
                         ]
                       }
                     ]*/
-                    if ((this.props.location.state ? this.props.location.state.type === "contract" : false)) {
+                    if (this.state.createMode === "contract") {
 
                       Object.keys(uniqueItemData).map((itemKey) => (itemKey)).forEach((item) => {
 
@@ -635,7 +710,7 @@ class ContractRequestsadd extends Component {
                       });
                       data.sourceContracts = this.state.contractData;
                     }
-                    if ((this.props.location.state ? this.props.location.state.type === "act" : false)) {
+                    if (this.state.createMode === "act") {
 
                       Object.keys(uniqueItemData).map((itemKey) => (itemKey)).forEach((item) => {
                         if (item != "undefined") {
@@ -716,29 +791,27 @@ class ContractRequestsadd extends Component {
           >
             Сохранить
           </Button>,
-            <div style={{ float: "left" }}>
+            <div key={"close_div"} style={{ float: "left" }}>
               <Button
+                key={"close"}
                 style={{ margin: "0px 0px 10px 10px" }} onClick={() => {
 
-                if (this.props.location.state) {
-                  if (this.props.location.state.type === "act") {
-                    this.props.history.push("/contracts2/acts/table");
-                    //to do reduxRouter.push('/contract/acts/table');
-                  }
-                  if (this.props.location.state.type === "contract") {
-                    this.props.history.push("/contracts2/contracts/table");
-                    //to do  reduxRouter.push('/contract/contracts/table');
-                  }
+                if (this.state.createMode === "act") {
+                  this.props.history.push("/contracts2/acts/table");
                 }
-                else {
+                if (this.state.createMode === "contract") {
+                  this.props.history.push("/contracts2/contracts/table");
+                }
+                if (this.state.createMode === "request") {
                   this.props.history.push("/contracts2/contractrequests/table");
-                  // to do reduxRouter.push('/contract/contractrequests/table');
                 }
+
               }}>
                 Закрыть
               </Button>
               {this.state.ShowClear &&
               <Button
+                key={"clear"}
                 style={{ margin: "0px 0px 10px 10px" }} onClick={() => {
                 this.props.form.resetFields();
               }}>
@@ -747,115 +820,197 @@ class ContractRequestsadd extends Component {
             </div>
             ,
             <DropDownAction
+              key={"report_action"}
               disabled={!this.props.location.query}
               contractId={this.props.location.query.id}
               entity={"paymentRequest"}
               type={2}/>]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
-          <Spin spinning={this.state.loadData}>
-            <Row style={{ marginTop: "5px" }}>
-              <Form layout="horizontal" hideRequiredMark>
-                <Tabs
-                  type={"card"}
-                  className={"stepFormText"}
-                  defaultActiveKey="form"
-                  onChange={(e) => {
-                    if (e === "form") {
-                      this.setState({
-                        ShowClear: true
-                      });
-                    }
-                    else {
-                      this.setState({
-                        ShowClear: false
-                      });
-                    }
-                  }}
-                  tabPosition={"left"}
+          <Row style={{ marginTop: "5px" }}>
+            <Form layout="horizontal" hideRequiredMark>
+              <Tabs
+                type={"card"}
+                className={"stepFormText"}
+                defaultActiveKey="form"
+                onChange={(e) => {
+                  if (e === "form") {
+                    this.setState({
+                      ShowClear: true
+                    });
+                  }
+                  else {
+                    this.setState({
+                      ShowClear: false
+                    });
+                  }
+                }}
+                tabPosition={"left"}
+              >
+                <TabPane tab="Титульная часть" key="form">
+                  <Card style={{ marginLeft: "-10px" }}>
+                    <div style={{ margin: "10px 0", maxWidth: "70%" }}>
+                      <Form.Item {...formItemLayout} label="Учетный период: год">
+                        {getFieldDecorator("periodYear.id", {
+                          initialValue: periodYear ? periodYear : null,
+                          rules: [{ required: false, message: "не заполнено" }]
+                        })(
+                          <Select
+                            allowClear
+                            style={{ width: "50%" }}
+                          >
+                            {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.year}</Select.Option>;
+                            })}
+                          </Select>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Вид заявки">
+                        {getFieldDecorator("paymentRequestType.id", {
+                          initialValue: getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.id : null) : null,
+                          rules: [{ required: false, message: "не заполнено" }]
+                        })(
+                          <Select
+                            allowClear
+                          >
+                            {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                            })}
+                          </Select>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Номер">
+                        {getFieldDecorator("number", {
+                          initialValue: getObjectData ? getObjectData.number : null,
+                          rules: [{ required: false, message: "не заполнено" }]
+                        })(<Input/>)}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Дата">
+                        {getFieldDecorator("documentDate", {
+                          initialValue: getObjectData ? (getObjectData.documentDate ? moment(getObjectData.documentDate, "DD.MM.YYYY") : null) : null,
+                          rules: [{ required: false, message: "не заполнено" }]
+                        })(
+                          <DatePicker
+                            format={"DD.MM.YYYY"}
+                            style={{ width: "50%" }}
+                            placeholder="Выберите дату"/>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Комментарий">
+                        {getFieldDecorator("descr", {
+                          initialValue: getObjectData ? getObjectData.descr : null,
+                          rules: [{ required: false, message: "не заполнено" }]
+                        })(
+                          <TextArea rows={4}/>
+                        )}
+                      </Form.Item>
+                      <Form.Item {...formItemLayout} label="Подразделение">
+                        {getFieldDecorator("division.id", {
+                          initialValue: getObjectData ? (getObjectData.division ? getObjectData.division.id : null) : null,
+                          rules: [{ required: false, message: "не заполнено" }]
+                        })(
+                          <Select
+                            allowClear
+                          >
+                            {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
+                              return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                            })}
+                          </Select>
+                        )}
+                      </Form.Item>
+                    </div>
+                  </Card>
+                </TabPane>
+                {this.state.createMode === "act" &&
+                <TabPane tab="Акты"
+                         key="acts"
                 >
-                  <TabPane tab="Титульная часть" key="form">
-                    <Card style={{ marginLeft: "-10px" }}>
-                      <div style={{ margin: "10px 0", maxWidth: "70%" }}>
-                        <Form.Item {...formItemLayout} label="Учетный период: год">
-                          {getFieldDecorator("periodYear.id", {
-                            initialValue: periodYear ? periodYear : null,
-                            rules: [{ required: false, message: "не заполнено" }]
-                          })(
-                            <Select
-                              allowClear
-                              style={{ width: "50%" }}
-                            >
-                              {this.props.universal.periodYear.content && this.props.universal.periodYear.content.map((item) => {
-                                return <Select.Option key={item.id}>{item.year}</Select.Option>;
-                              })}
-                            </Select>
-                          )}
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Вид заявки">
-                          {getFieldDecorator("paymentRequestType.id", {
-                            initialValue: getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.id : null) : null,
-                            rules: [{ required: false, message: "не заполнено" }]
-                          })(
-                            <Select
-                              allowClear
-                            >
-                              {this.props.universal.paymentRequestType.content && this.props.universal.paymentRequestType.content.map((item) => {
-                                return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                              })}
-                            </Select>
-                          )}
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Номер">
-                          {getFieldDecorator("number", {
-                            initialValue: getObjectData ? getObjectData.number : null,
-                            rules: [{ required: false, message: "не заполнено" }]
-                          })(<Input/>)}
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Дата">
-                          {getFieldDecorator("documentDate", {
-                            initialValue: getObjectData ? (getObjectData.documentDate ? moment(getObjectData.documentDate, "DD.MM.YYYY") : null) : null,
-                            rules: [{ required: false, message: "не заполнено" }]
-                          })(
-                            <DatePicker
-                              format={"DD.MM.YYYY"}
-                              style={{ width: "50%" }}
-                              placeholder="Выберите дату"/>
-                          )}
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Комментарий">
-                          {getFieldDecorator("descr", {
-                            initialValue: getObjectData ? getObjectData.descr : null,
-                            rules: [{ required: false, message: "не заполнено" }]
-                          })(
-                            <TextArea rows={4}/>
-                          )}
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Подразделение">
-                          {getFieldDecorator("division.id", {
-                            initialValue: getObjectData ? (getObjectData.division ? getObjectData.division.id : null) : null,
-                            rules: [{ required: false, message: "не заполнено" }]
-                          })(
-                            <Select
-                              allowClear
-                            >
-                              {this.props.universal.divisions.content && this.props.universal.divisions.content.map((item) => {
-                                return <Select.Option key={item.id}>{item.name}</Select.Option>;
-                              })}
-                            </Select>
-                          )}
-                        </Form.Item>
-                      </div>
-                    </Card>
-                  </TabPane>
-                  {(this.props.location.state ? (this.props.location.state.type === "act" ? true : false) : false) &&
-                  <TabPane tab="Акты"
-                           key="acts"
-                  >
-                    <Card style={{ marginLeft: "-10px" }}>
+                  <Card style={{ marginLeft: "-10px" }}>
 
+                    <SmartGridView
+                      name={"paymentAct"}
+                      scroll={{ x: "auto" }}
+                      searchButton={false}
+                      fixedBody={true}
+                      rowKey={"id"}
+                      loading={false}
+                      fixedHeader={false}
+                      hideRefreshBtn={true}
+                      hideFilterBtn={true}
+                      rowSelection={true}
+                      showExportBtn={true}
+                      showTotal={true}
+                      hidePagination={true}
+                      columns={this.state.actcolumns}
+                      actionColumns={this.state.actfcolumns}
+                      sorted={true}
+                      showTotal={true}
+                      addonButtons={[<Button
+                        onClick={() => {
+                          this.setState({
+                            ActModal: true
+                          });
+                        }}
+                        key={"select_button"}
+                        style={{ margin: "0px 0px 10px 5px" }}>Выбрать</Button>]}
+                      dataSource={{
+                        total: this.state.actData.length,
+                        pageSize: this.state.actData.length,
+                        page: 1,
+                        data: this.state.actData
+                      }}
+                    />
+
+                  </Card>
+                </TabPane>
+                }
+                {this.state.createMode === "act" &&
+                <TabPane tab="Договоры"
+                         key="contracts"
+                >
+                  <Card style={{ marginLeft: "-10px" }}>
+                    <SmartGridView
+                      name={"contractform"}
+                      scroll={{ x: "auto" }}
+                      searchButton={false}
+                      fixedBody={true}
+                      rowKey={"id"}
+                      loading={false}
+                      fixedHeader={false}
+                      hideRefreshBtn={true}
+                      hideFilterBtn={true}
+                      rowSelection={true}
+                      showExportBtn={true}
+                      showTotal={true}
+                      hidePagination={true}
+                      columns={this.state.contractcolumns}
+                      actionColumns={this.state.contractfcolumn}
+                      showTotal={true}
+                      addonButtons={[<Button
+                        onClick={() => {
+                          this.setState({
+                            ContractModal: true
+                          });
+                        }}
+                        key={"select_button"}
+                        style={{ margin: "0px 0px 10px 5px" }}>Выбрать</Button>]}
+                      dataSource={{
+                        total: this.state.contractData.length,
+                        pageSize: this.state.contractData.length,
+                        page: 1,
+                        data: this.state.contractData
+                      }}
+                    />
+                  </Card>
+                </TabPane>
+                }
+                <TabPane tab="Спецификация"
+                         key="specifications"
+                >
+                  <Card style={{ marginLeft: "-10px" }}>
+                    <div className={TabPageStyle.SpesPage}>
                       <SmartGridView
-                        name={"paymentAct"}
+                        name={"specform"}
                         scroll={{ x: "auto" }}
                         searchButton={false}
                         fixedBody={true}
@@ -868,121 +1023,39 @@ class ContractRequestsadd extends Component {
                         showExportBtn={true}
                         showTotal={true}
                         hidePagination={true}
-                        columns={this.state.actcolumns}
-                        actionColumns={this.state.actfcolumns}
+                        columns={this.state.speccolumns}
+                        actionColumns={this.state.specfcolumn}
                         sorted={true}
+                        onSort={(column) => {
+                        }}
                         showTotal={true}
-                        addonButtons={[<Button
-                          onClick={() => {
-                            this.setState({
-                              ActModal: true
-                            });
-                          }}
-                          key={"select_button"}
-                          style={{ margin: "0px 0px 10px 5px" }}>Выбрать</Button>]}
+                        addonButtons={[]}
                         dataSource={{
-                          total: this.state.actData.length,
-                          pageSize: this.state.actData.length,
+                          total: this.state.specdata.length,
+                          pageSize: this.state.specdata.length,
                           page: 1,
-                          data: this.state.actData
+                          data: this.state.specdata
                         }}
                       />
-
-                    </Card>
-                  </TabPane>
-                  }
-                  {(this.props.location.state ? (this.props.location.state.type === "contract" ? true : false) : false) &&
-                  <TabPane tab="Договоры"
-                           key="contracts"
-                  >
-                    <Card style={{ marginLeft: "-10px" }}>
-                      <SmartGridView
-                        name={"contractform"}
-                        scroll={{ x: "auto" }}
-                        searchButton={false}
-                        fixedBody={true}
-                        rowKey={"id"}
-                        loading={false}
-                        fixedHeader={false}
-                        hideRefreshBtn={true}
-                        hideFilterBtn={true}
-                        rowSelection={true}
-                        showExportBtn={true}
-                        showTotal={true}
-                        hidePagination={true}
-                        columns={this.state.contractcolumns}
-                        actionColumns={this.state.contractfcolumn}
-                        showTotal={true}
-                        addonButtons={[<Button
-                          onClick={() => {
-                            this.setState({
-                              ContractModal: true
-                            });
-                          }}
-                          key={"select_button"}
-                          style={{ margin: "0px 0px 10px 5px" }}>Выбрать</Button>]}
-                        dataSource={{
-                          total: this.state.contractData.length,
-                          pageSize: this.state.contractData.length,
-                          page: 1,
-                          data: this.state.contractData
-                        }}
-                      />
-                    </Card>
-                  </TabPane>
-                  }
-                  <TabPane tab="Спецификация"
-                           key="specifications"
-                  >
-                    <Card style={{ marginLeft: "-10px" }}>
-                      <div className={TabPageStyle.SpesPage}>
-                        <SmartGridView
-                          name={"specform"}
-                          scroll={{ x: "auto" }}
-                          searchButton={false}
-                          fixedBody={true}
-                          rowKey={"id"}
-                          loading={false}
-                          fixedHeader={false}
-                          hideRefreshBtn={true}
-                          hideFilterBtn={true}
-                          rowSelection={true}
-                          showExportBtn={true}
-                          showTotal={true}
-                          hidePagination={true}
-                          columns={this.state.speccolumns}
-                          actionColumns={this.state.specfcolumn}
-                          sorted={true}
-                          onSort={(column) => {
-                          }}
-                          showTotal={true}
-                          addonButtons={[]}
-                          dataSource={{
-                            total: this.state.specdata.length,
-                            pageSize: this.state.specdata.length,
-                            page: 1,
-                            data: this.state.specdata
-                          }}
-                        />
-                      </div>
-                    </Card>
-                  </TabPane>
-                  <TabPane tab="Проводки"
-                           key="provods"
-                  >
-                  </TabPane>
-                </Tabs>
-              </Form>
-            </Row>
-          </Spin>
+                    </div>
+                  </Card>
+                </TabPane>
+                <TabPane tab="Проводки"
+                         key="provods"
+                >
+                </TabPane>
+              </Tabs>
+            </Form>
+          </Row>
         </Card>
       </ContentLayout>
     );
   }
 }
 
-export default connect(({ universal, loading }) => ({
+export default connect(({ universal, universal2, loading }) => ({
   universal,
+  universal2,
   loadingperiodYear: loading.effects["universal/getperiodYear"],
   loadingperiodSection: loading.effects["universal/getperiodSection"],
   loadingorganization: loading.effects["universal/getorganization"],

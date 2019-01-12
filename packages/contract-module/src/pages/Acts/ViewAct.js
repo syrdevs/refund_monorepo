@@ -36,7 +36,7 @@ import saveAs from "file-saver";
 import SignModal from "../../components/SignModal";
 import TabPageStyle from "../CounterAgent/TabPages/TabPages.less";
 import DropDownAction from "../../components/DropDownAction/";
-import ContentLayout from '../../layouts/ContentLayout';
+import ContentLayout from "../../layouts/ContentLayout";
 
 
 const TabPane = Tabs.TabPane;
@@ -57,6 +57,7 @@ class ViewAct extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      createMode: null,
       columns: [
         {
           "title": "Код",
@@ -207,28 +208,43 @@ class ViewAct extends Component {
   componentDidMount() {
     const { dispatch, match } = this.props;
 
+    let createMode = "";
 
-    console.log(this.props);
+    if (this.props.location.query.hasOwnProperty("contractId")) {
+      createMode = "contract";
+    }
+    if (this.props.location.query.hasOwnProperty("id")) {
+      createMode = "act";
+    }
 
-    const DicArr = [
-      "periodYear",
-      "periodSection",
-      "divisions",
-      "medicalType",
-      "attachmentType"
-    ];
-    DicArr.forEach(function(item, index) {
-      dispatch({
-        type: "universal/get" + item,
-        payload: {
-          "start": 0,
-          "length": 1000,
-          "entity": item
-        }
+    if (createMode.length === 0) {
+      this.props.location.history.push("/contracts2/acts/table");
+    }
+
+    this.setState({
+      createMode: createMode
+    }, () => {
+      const DicArr = [
+        "periodYear",
+        "periodSection",
+        "divisions",
+        "medicalType",
+        "attachmentType"
+      ];
+      DicArr.forEach(function(item, index) {
+        dispatch({
+          type: "universal/get" + item,
+          payload: {
+            "start": 0,
+            "length": 1000,
+            "entity": item
+          }
+        });
       });
+
+      this.loadData();
     });
 
-    this.loadData();
 
   };
 
@@ -389,7 +405,7 @@ class ViewAct extends Component {
     this.props.form.validateFields(
       (err, values) => {
         if (data.file.status === "done") {
-          let authToken = localStorage.getItem("token");
+          let authToken = localStorage.getItem("AUTH_TOKEN");
           const formData = new FormData();
           formData.append("entity", "act");
           formData.append("path", "documentAttachments");
@@ -442,7 +458,7 @@ class ViewAct extends Component {
     });
   };
   downloadFile = (file) => {
-    let authToken = localStorage.getItem("token");
+    let authToken = localStorage.getItem("AUTH_TOKEN");
 
     fetch("/api/uicommand/downloadFile",
       {
@@ -529,7 +545,6 @@ class ViewAct extends Component {
                   }
               }
             }).then(() => {
-              console.log(this.props.universal.saveanswer);
               if (!this.props.universal.saveanswer.Message) {
                 Modal.info({
                   title: "Информация",
@@ -560,7 +575,6 @@ class ViewAct extends Component {
               }
             })
               .then(() => {
-                console.log(this.props.universal);
                 this.setState({
                   actid: this.props.universal.saveanswer ? this.props.universal.saveanswer.id : null
                 }, () => {
@@ -583,6 +597,8 @@ class ViewAct extends Component {
 
 
   render() {
+
+    console.log(this.props.universal);
 
     const columns = [
       {
@@ -637,7 +653,6 @@ class ViewAct extends Component {
       }
     }
 
-
     const { getFieldDecorator } = form;
 
     return (
@@ -675,11 +690,13 @@ class ViewAct extends Component {
             breadcrumbName: "Акт выполненных работ"
           }]}>
           <Card
+            key={"card_holder"}
             headStyle={{ padding: 0 }}
             style={{ padding: "10px" }}
             className={"headPanel"}
             extra={[<Button
               htmlType="submit"
+              key={"form_submit"}
               style={{ float: "left" }}
               onClick={(e) => {
                 this.saveAct();
@@ -687,21 +704,23 @@ class ViewAct extends Component {
               }>
               Сохранить
             </Button>,
-              <div style={{ float: "left" }}>
+              <div key={"card_content"} style={{ float: "left" }}>
                 <Button
                   style={{ margin: "0px 0px 10px 10px" }} onClick={() => {
                   if (this.props.location.query.contractId) {
                     //this.props.history.push("")
                     //to doreduxRouter.push("/contract/contracts/table");
+                    this.props.history.push("/contracts2/contracts/table");
                   }
                   else {
-                    this.props.history.push("table");
+                    this.props.history.push("/contracts2/acts/table");
                   }
                 }}>
                   Закрыть
                 </Button>
                 {this.state.ShowClear &&
                 <Button
+                  key={"form_clear"}
                   style={{ margin: "0px 0px 10px 10px" }} onClick={() => {
                   this.props.form.resetFields();
                 }}>
@@ -709,6 +728,7 @@ class ViewAct extends Component {
                 </Button>}
               </div>,
               <DropDownAction
+                key={"dropdown_report"}
                 disabled={!this.props.location.query.id}
                 contractId={this.props.location.query.id}
                 entity={"act"}
@@ -998,9 +1018,10 @@ class ViewAct extends Component {
   }
 }
 
-export default connect(({ universal, act, loading }) => ({
+export default connect(({ universal,universal2, act, loading }) => ({
   universal,
   act,
+  universal2,
   // loadinggetattachmentType: loading.effects['universal/getattachmentType'] && loading.effects['universal/getmedicalType'] && loading.effects['universal/getorganization'] & loading.effects['universal/getperiodSection'] && loading.effects['universal/getperiodYear']),
   loadingdeleteObject: loading.effects["universal/deleteObject"],
   loadingcreateActForContract: loading.effects["universal/createActForContract"],
