@@ -44,7 +44,8 @@ const data = [{
   name: "Айдаров Айбек Ганиевич",
   position: "Эксперт",
   placeWork: "РГП"
-}];
+}
+];
 
 export default class EmployeesModal extends Component {
 
@@ -167,14 +168,17 @@ export default class EmployeesModal extends Component {
           this.props.onCancel();
         }}
         onOk={() => {
-          console.log(this.state.fio);
+          console.log({
+            id:this.state.fio,
+            refundList: this.props.keys
+          });
         }}>
-        <Card>
           <Table columns={columns} dataSource={data}
             // rowSelection={rowSelection}
                  rowClassName={(record, index) => {
                    return this.state.selectedIndex === index ? "active" : "";
                  }}
+                 bordered={true}
                  onRow={(record, index) => ({
 
                    onClick: () => {
@@ -186,7 +190,6 @@ export default class EmployeesModal extends Component {
                    }
                  })}
           />
-        </Card>
       </Modal>
     </div>)
       ;
