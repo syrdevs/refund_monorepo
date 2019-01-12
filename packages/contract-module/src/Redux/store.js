@@ -36,6 +36,7 @@ models.forEach((model) => {
               ...action,
               type: model.namespace + "/" + action.type
             });
+            payloadCb.callback({});
           }
         });
 
@@ -59,7 +60,7 @@ models.forEach((model) => {
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 const sagaMiddleware = createSagaMiddleware();
 const store = createStore(
-  combineReducers({ ...combineReducersData}),
+  combineReducers({ ...combineReducersData }),
   composeEnhancers(applyMiddleware(sagaMiddleware))
 );
 sagaMiddleware.run(function* () {
@@ -70,7 +71,6 @@ sagaMiddleware.run(function* () {
 export default {
   ...store,
   _dispatch: (fn) => {
-
     return new Promise((resolve, reject) => {
       store.dispatch({
         ...fn,

@@ -28,16 +28,6 @@ export default [
           //   name:"viewcounteragent",
           //   component: './CounterAgent/CounterAgentView',
           // },
-          // {
-          //   path: '/contracts2/counteragent/create',
-          //   name:"contractView",
-          //   component: './CounterAgent/CounterAgentCreate',
-          // },
-          // {
-          //   path: '/contracts2/counteragent/editcontract',
-          //   name:'contractView',
-          //   component: './CounterAgent/CounterAgentEdit',
-          // },
         ]
       },
       {
@@ -55,6 +45,16 @@ export default [
           {
             path: "/contracts2/contracts/table",
             component: "./ContractView/ContractTable"
+          },
+          {
+            path: "/contracts2/contracts/create",
+            name: "contractView",
+            component: "./CounterAgent/CounterAgentCreate"
+          },
+          {
+            path: "/contracts2/contracts/edit",
+            name: "contractView",
+            component: "./CounterAgent/CounterAgentEdit"
           }
         ]
       },
@@ -74,46 +74,77 @@ export default [
           {
             path: "/contracts2/acts/table",
             component: "./Acts/main"
+          },
+          {
+            path: "/contracts2/acts/viewAct",
+            name: "actadd",
+            component: "./Acts/ViewAct"
           }
         ]
       },
       {
-        path: '/contracts2/contractrequests',
-        name: 'contractrequests',
-        icon: 'database',
+        path: "/contracts2/contractrequests",
+        name: "contractrequests",
+        icon: "database",
         component: "./CounterAgent/CounterAgentMain",
         hideChildrenInMenu: true,
-        authority: ['ADMIN', 'FSMS1', 'FSMS2'],
+        authority: ["ADMIN", "FSMS1", "FSMS2"],
         routes: [
           {
-            path: '/contracts2/contractrequests',
-            redirect: '/contracts2/contractrequests/table',
+            path: "/contracts2/contractrequests",
+            redirect: "/contracts2/contractrequests/table"
           },
           {
-            path: '/contracts2/contractrequests/table',
-            component: './ContractRequests/main',
+            path: "/contracts2/contractrequests/table",
+            component: "./ContractRequests/main"
+          },
+          {
+            path: "/contracts2/contractrequests/add",
+            name: "add",
+            component: "./ContractRequests/ContractRequestsadd"
           }
-        ],
+        ]
       },
-
       {
-        path: '/contracts2/bills',
-        name: 'bills',
-        icon: 'database',
+        path: "/contracts2/documents",
+        exact: true,
+        icon: "database",
+        name: "documents",
+        component: "./Documents/Documents",
+        authority: ["ADMIN", "FSMS2"]
+      },
+      {
+        path: "/contracts2/documents/view",
+        component: "./Documents/ViewDocument"
+      },
+      {
+        path: "/contracts2/bills",
+        name: "bills",
+        icon: "database",
         component: "./CounterAgent/CounterAgentMain",
         hideChildrenInMenu: true,
-        authority: ['ADMIN', 'FSMS1', 'FSMS2'],
+        authority: ["ADMIN", "FSMS1", "FSMS2"],
         routes: [
           {
-            path: '/contracts2/bills',
-            redirect: '/contracts2/bills/table',
+            path: "/contracts2/bills",
+            redirect: "/contracts2/bills/table"
           },
           {
-            path: '/contracts2/bills/table',
-            component: './Bill/main',
+            path: "/contracts2/bills/table",
+            component: "./Bill/main"
+          },
+          {
+            path: "/contracts2/bills/add",
+            name: "billadd",
+            component: "./Bill/Billsadd"
+          },
+          {
+            path: "/contracts2/bills/viewBill",
+            name: "billadd",
+            component: "./Bill/ViewBill"
           }
-        ],
-      },
+        ]
+      }
     ]
   }
 ];

@@ -1,0 +1,17 @@
+.stepFormText {
+  margin-bottom: 24px;
+}
+
+.stepFormText .ant-form-item-label,.ant-form-item-control {
+  line-height: 22px;
+}
+
+.stepFormText .ant-tabs-nav-container .ant-tabs-tab {
+  text-align: left !important;
+}
+
+.headPanel .ant-card-extra {
+  float: left;
+  padding: 7px 0;
+  margin-left: 0;
+}

@@ -13,6 +13,9 @@ const ruTranslation = {
         template: "Шаблоны",
         staticview: "Статические данные"
       },
+      documents: {
+        _: "Корреспонденция"
+      },
       rpmu: {
         _: "Регистр потребителей",
         payments: "Платежи"
