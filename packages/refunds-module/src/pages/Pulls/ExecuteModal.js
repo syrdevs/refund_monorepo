@@ -1,6 +1,7 @@
 import { Modal, Button } from 'antd';
 import { Component } from "react";
 import React from "react";
+import EmployeesModal from "../Options/EmployeesModal";
 
 export default class ExecuteModal extends Component {
   state = { visible: false }
@@ -21,7 +22,7 @@ export default class ExecuteModal extends Component {
     return (
       <div style={{display:'inline-block'}}>
         <Button key={"executor"} disabled={this.props.disabled} style={{marginLeft:'5px'}} onClick={this.showModal}>Определить исполнителя</Button>
-        <Modal
+        {/*<Modal
           title="Определить исполнителя"
           visible={this.state.visible}
           onOk={this.hideModal}
@@ -30,7 +31,8 @@ export default class ExecuteModal extends Component {
           cancelText="Отменить"
         >
           <p>Текст</p>
-        </Modal>
+        </Modal>*/}
+        {this.state.visible && <EmployeesModal onCancel={this.hideModal}/>}
       </div>
     );
   }
