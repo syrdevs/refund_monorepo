@@ -18,6 +18,7 @@ import {
 } from "antd";
 import connect from "../../../Redux";
 import saveAs from "file-saver";
+import '../../CounterAgent/CounterAgent.css';
 
 const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
@@ -61,7 +62,7 @@ class AttachmentPage extends Component {
 
   downloadFile = (file) => {
 
-    let authToken = localStorage.getItem("token");
+    let authToken = localStorage.getItem("AUTH_TOKEN");
     this.setState({ loading: true });
     fetch("/api/uicommand/downloadFile",
       {
@@ -119,6 +120,7 @@ class AttachmentPage extends Component {
     return (<Card style={{ marginLeft: "-10px" }}>
       <Spin spinning={this.state.loading}>
         <Table
+          className={"attachment_file_list"}
           bordered={true}
           columns={this.state.columns}
           dataSource={this.state.dataSource}

@@ -55,6 +55,11 @@ export default [
             path: "/contracts2/contracts/edit",
             name: "contractView",
             component: "./CounterAgent/CounterAgentEdit"
+          },
+          {
+            path: "/contracts2/contracts/view",
+            name: "contractView",
+            component: "./CounterAgent/CounterAgentView"
           }
         ]
       },

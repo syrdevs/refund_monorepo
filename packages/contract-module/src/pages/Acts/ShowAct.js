@@ -19,6 +19,7 @@ import {
   Modal
 } from "antd";
 import styles from "./style.css";
+import '../CounterAgent/CounterAgent.css';
 
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
@@ -287,7 +288,7 @@ class ShowAct extends Component {
     }, {
       key: 5,
       name: "Договор",
-      value: getObjectData ? (getObjectData.contract ? getObjectData.contract.contractType + " №" + getObjectData.contract.number + " от " + getObjectData.contract.documentDate : "") : ""
+      value: getObjectData ? (getObjectData.contract ? getObjectData.contract.contractType.shortName + " №" + getObjectData.contract.number + " от " + getObjectData.contract.documentDate : "") : ""
     }, {
       key: 6,
       name: "Протокол исполнения договора",
@@ -406,6 +407,7 @@ class ShowAct extends Component {
                 <Card style={{ marginLeft: "-10px" }}>
                   <Row>
                     <Table
+                      className={"attachment_file_list"}
                       columns={columns}
                       dataSource={data}
                       pagination={{ position: "none" }}

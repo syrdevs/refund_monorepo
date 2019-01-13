@@ -25,7 +25,7 @@ export default class InfoPage extends Component {
               cursor: 'pointer',
             }}
             onClick={() => {
-              window.open('viewcontract?id=' + record.href);
+              window.open('view?id=' + record.href);
             }}>{text}</div>;
         }
         return text;
@@ -38,11 +38,13 @@ export default class InfoPage extends Component {
     const { formData } = this.props;
     let dataSourceItem = [];
 
+    console.log(formData);
+
     if (formData.parentContract) {
       dataSourceItem.push({
         href: formData.parentContract.id,
         name: 'Родительский договор',
-        value: `${formData.parentContract.contractType}  №${formData.parentContract.number} от ${formData.parentContract.documentDate}`,
+        value: `${formData.parentContract.contractType.shortName}  №${formData.parentContract.number} от ${formData.parentContract.documentDate}`,
       });
     }
 
@@ -70,7 +72,7 @@ export default class InfoPage extends Component {
     if (formData.contractType) {
       dataSourceItem.push({
         name: 'Вид договора',
-        value: formData.contractType.nameRu,
+        value: formData.contractType.name,
       });
     }
 

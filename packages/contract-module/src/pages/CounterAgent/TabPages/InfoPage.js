@@ -378,7 +378,7 @@ class InfoPage extends Component {
               }}
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
-                window.open("viewcontract?id=" + record.id);
+                window.open("view?id=" + record.id);
               }}
               onDelete={() => {
                 this.setState({ DogovorModal: { visible: false, record: null } });

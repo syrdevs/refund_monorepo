@@ -208,7 +208,7 @@ class CounterAgentCreate extends Component {
         //   title: 'Информация',
         //   content: 'Договор успешно создан',
         // });
-        //reduxRouter.push('/contract/contracts/table');
+        this.props.history.push("/contracts2/contracts/table");
       }
     });
 
