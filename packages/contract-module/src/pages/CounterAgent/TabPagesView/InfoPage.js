@@ -44,7 +44,7 @@ export default class InfoPage extends Component {
       dataSourceItem.push({
         href: formData.parentContract.id,
         name: 'Родительский договор',
-        value: `${formData.parentContract.contractType}  №${formData.parentContract.number} от ${formData.parentContract.documentDate}`,
+        value: `${formData.parentContract.contractType.shortName}  №${formData.parentContract.number} от ${formData.parentContract.documentDate}`,
       });
     }
 

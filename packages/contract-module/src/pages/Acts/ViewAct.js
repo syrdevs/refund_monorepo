@@ -823,7 +823,7 @@ class ViewAct extends Component {
                           )}
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Договор">
-                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.contractType + " №" + getObjectData.contract.number + " от " + getObjectData.contract.documentDate : "") : ""}</p>
+                          <p>{getObjectData ? (getObjectData.contract ? getObjectData.contract.contractType.shortName + " №" + getObjectData.contract.number + " от " + getObjectData.contract.documentDate : "") : ""}</p>
                         </Form.Item>
                         <Form.Item {...formItemLayout} label="Протокол исполнения договора">
                           {/*<p>Протокол 1</p>*/}

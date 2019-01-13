@@ -288,7 +288,7 @@ class ShowAct extends Component {
     }, {
       key: 5,
       name: "Договор",
-      value: getObjectData ? (getObjectData.contract ? getObjectData.contract.contractType + " №" + getObjectData.contract.number + " от " + getObjectData.contract.documentDate : "") : ""
+      value: getObjectData ? (getObjectData.contract ? getObjectData.contract.contractType.shortName + " №" + getObjectData.contract.number + " от " + getObjectData.contract.documentDate : "") : ""
     }, {
       key: 6,
       name: "Протокол исполнения договора",
