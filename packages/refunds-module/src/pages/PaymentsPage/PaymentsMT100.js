@@ -112,7 +112,7 @@ class PaymentsMT100 extends Component {
       {
         label: 'Дата поступления информации',
         name: 'createdOn',
-        type: 'betweenDate',
+        type: 'listbetweenDateTime',
       },
       {
       label: 'БИН',
@@ -167,6 +167,7 @@ class PaymentsMT100 extends Component {
       }, {
         'title': 'Дата поступления информации',
         'dataIndex': 'createdOn',
+
       },
       {
         'title': 'Статус загрузки',
@@ -263,7 +264,7 @@ class PaymentsMT100 extends Component {
   }
 
   exportToExcel = () => {
-
+    console.log(556);
     let authToken = localStorage.getItem("AUTH_TOKEN");
 
     fetch('/api/refund/exportToExcel',
@@ -340,7 +341,7 @@ class PaymentsMT100 extends Component {
       key={'mt100paymentBtn'}
       onClick={() => {
         if (this.state.selectedRecord !== null) {
-          this.props.onSelect(this.state.selectedRecord);
+          this.props.onSelect(this.state.selectedRecord.id);
         }
       }}>
       Платежи МТ102</Button>];

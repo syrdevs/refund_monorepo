@@ -39,27 +39,27 @@ class ViewDocument extends Component {
     };
   }
 
-  loadActData = (id) => {
-    this.props.dispatch({
-      type: "universal/getObjectByEntity",
-      payload: {
-        "entity": "documentToSign",
-        "alias": "routes",
-        "id": id //'this.props.location.query.id'
-      }
-    }).then(() => {
-      this.setState({
-        data: this.props.universal.getObjectEntities["documentToSign"]
-      });
-    });
-  };
+  // loadActData = (id) => {
+  //   this.props.dispatch({
+  //     type: "universal/getObjectByEntity",
+  //     payload: {
+  //       "entity": "documentToSign",
+  //       "alias": "routes",
+  //       "id": id //'this.props.location.query.id'
+  //     }
+  //   }).then(() => {
+  //     this.setState({
+  //       data: this.props.universal.getObjectEntities["documentToSign"]
+  //     });
+  //   });
+  // };
+
 
   componentDidMount() {
-    console.log("ViewDocument");
 
     const { dispatch } = this.props;
     console.log(this.props.location.query.id);
-    this.loadActData(this.props.location.query.id);
+    this.loadDataById(this.props.location.query.id);
     this.loadDocRoutePath();
   }
 
@@ -101,6 +101,28 @@ class ViewDocument extends Component {
         ShowSign: true
       }
     );
+  };
+
+  loadDataById = (id) => {
+    fetch("/api/uicommand/getObject", {
+      headers: {
+        "Content-Type": "application/json; charset=utf-8",
+        Authorization: "Bearer " + localStorage.getItem("AUTH_TOKEN")
+      },
+      method: "post",
+      body: JSON.stringify({
+        "entity": "correspondence",
+        "alias": "routes",
+        "id": id
+      })
+    })
+      .then(response => response.json())
+      .then(data => {
+        this.setState({
+            data: data
+          }
+        );
+      });
   };
 
   loadDocRoutePath = () => {
@@ -154,9 +176,9 @@ class ViewDocument extends Component {
       breadcrumbRoutes={[{
         path: "/",
         breadcrumbName: "Главная"
-      },{
-        path:"/contracts2/documents",
-        breadcrumbName:"Корреспонденция",
+      }, {
+        path: "/contracts2/documents",
+        breadcrumbName: "Корреспонденция"
       }, {
         path: "/",
         breadcrumbName: formatMessage({ id: "app.module.documents.title.view" })
@@ -256,7 +278,8 @@ class ViewDocument extends Component {
 
                   <p style={{ marginTop: "10px" }}><h3>{this.state.data ? this.state.data.descr : ""}</h3></p>
                   <p>Опубликовал: {this.state.data ? this.state.data.initiatorUser ? this.state.data.initiatorUser.userName : "" : ""}</p>
-                  <p>Тип документа: Договор</p>
+                  <p>Тип
+                    документа: {this.state.data ? this.state.data.documentType ? this.state.data.documentType.entDesc : "" : ""}</p>
                   <p>{this.state.data ? this.state.data.statusDate ? this.state.data.status.statusDate : "" : ""}</p>
 
 

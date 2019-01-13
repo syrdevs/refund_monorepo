@@ -377,6 +377,45 @@ class ShowPayment extends Component {
 
     const { form, dispatch } = this.props;
     const { getFieldDecorator } = form;
+    const tablecolumns = [{
+      title: "Наименование",
+      dataIndex: "name",
+      render: (text) => <div style={{ color: "black" }}>{text}</div>,
+      width: 100
+
+    }, {
+      title: "Значения",
+      dataIndex: "value",
+      key: "value",
+      width: 150
+    }
+    ];
+    const tabledata = [{
+      key: 1,
+      name: "Учетный период: год",
+      value: getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id : null) : null
+    }, {
+      key: 2,
+      name: "Вид заявки",
+      value: getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.id : null) : null
+    }, {
+      key: 3,
+      name: "Номер",
+      value: getObjectData ? getObjectData.number : null
+    }, {
+      key: 4,
+      name: "Дата",
+      value: getObjectData ? getObjectData.documentDate : null
+    }, {
+      key: 5,
+      name: "Комментарий",
+      value: getObjectData ? getObjectData.descr : null
+    }, {
+      key: 6,
+      name: "Подразделение",
+      value: getObjectData ? (getObjectData.division ? getObjectData.division.id : null) : null
+    }
+    ];
 
     return (
       <ContentLayout
@@ -420,25 +459,34 @@ class ShowPayment extends Component {
                 >
                   <TabPane tab="Титульная часть" key="form">
                     <Card style={{ marginLeft: "-10px" }}>
+                      {/*<div style={{ margin: "10px 0", maxWidth: "70%" }}>*/}
+                        {/*<Form.Item {...formItemLayout} label="Учетный период: год">*/}
+                          {/*<p>{getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id : null) : null}</p>*/}
+                        {/*</Form.Item>*/}
+                        {/*<Form.Item {...formItemLayout} label="Вид заявки">*/}
+                          {/*<p>{getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.id : null) : null}</p>*/}
+                        {/*</Form.Item>*/}
+                        {/*<Form.Item {...formItemLayout} label="Номер">*/}
+                          {/*<p>{getObjectData ? getObjectData.number : null}</p>*/}
+                        {/*</Form.Item>*/}
+                        {/*<Form.Item {...formItemLayout} label="Дата">*/}
+                          {/*<p>{getObjectData ? getObjectData.documentDate : null}</p>*/}
+                        {/*</Form.Item>*/}
+                        {/*<Form.Item {...formItemLayout} label="Комментарий">*/}
+                          {/*<p>{getObjectData ? getObjectData.descr : null}</p>*/}
+                        {/*</Form.Item>*/}
+                        {/*<Form.Item {...formItemLayout} label="Подразделение">*/}
+                          {/*<p>{getObjectData ? (getObjectData.division ? getObjectData.division.id : null) : null}</p>*/}
+                        {/*</Form.Item>*/}
+                      {/*</div>*/}
                       <div style={{ margin: "10px 0", maxWidth: "70%" }}>
-                        <Form.Item {...formItemLayout} label="Учетный период: год">
-                          <p>{getObjectData ? (getObjectData.periodYear ? getObjectData.periodYear.id : null) : null}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Вид заявки">
-                          <p>{getObjectData ? (getObjectData.paymentRequestType ? getObjectData.paymentRequestType.id : null) : null}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Номер">
-                          <p>{getObjectData ? getObjectData.number : null}</p>
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Дата">
-                          <p>{getObjectData ? getObjectData.documentDate : null}</p>,
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Комментарий">
-                          <p>{getObjectData ? getObjectData.descr : null}</p>,
-                        </Form.Item>
-                        <Form.Item {...formItemLayout} label="Подразделение">
-                          <p>{getObjectData ? (getObjectData.division ? getObjectData.division.id : null) : null}</p>
-                        </Form.Item>
+                        <Table
+                          columns={tablecolumns}
+                          dataSource={tabledata}
+                          pagination={{ pageSize: 50, position: "none" }}
+                          showHeader={false}
+                          size={"default"}
+                        />
                       </div>
                     </Card>
                   </TabPane>

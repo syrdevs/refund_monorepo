@@ -27,7 +27,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
 import { Animated } from "react-animated-css";
-import moment from 'moment/moment';
+import moment from "moment/moment";
+
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
@@ -196,20 +197,20 @@ class PaymentsMT102 extends Component {
     this.setState({
       sortedInfo: {},
       parameters: {
-        start: 0,
-        length: 10,
+        start: this.state.parameters.start,
+        length: this.state.parameters.length,
         entity: this.state.parameters.entity,
         filter: {},
-        sort: []
-      }
+        sort: [],
+      },
     }, () => {
       this.loadGridData();
     });
   };
 
   applyFilter = (filter) => {
-    if(filter.knpList!=null && filter.knpList.length===0){
-      delete filter['knpList'];
+    if (filter.knpList != null && filter.knpList.length === 0) {
+      delete filter["knpList"];
     }
     this.setState({
       sortedInfo: {},
@@ -219,7 +220,14 @@ class PaymentsMT102 extends Component {
         sort: []
       }
     }, () => {
-      this.loadGridData();
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal/paymentsData",
+        payload: {
+          ...this.state.parameters,
+          start: 0
+        }
+      });
     });
   };
 
@@ -252,6 +260,7 @@ class PaymentsMT102 extends Component {
 
     console.log(this.props);
 
+    console.log(this.props.state);
     dispatch({
       type: "universal/paymentsData",
       payload: this.state.parameters
@@ -261,24 +270,24 @@ class PaymentsMT102 extends Component {
 
   exportToExcel = () => {
 
-    let authToken = localStorage.getItem('AUTH_TOKEN');
+    let authToken = localStorage.getItem("AUTH_TOKEN");
 
-    fetch('/api/refund/exportToExcel',
+    fetch("/api/refund/exportToExcel",
       {
         headers: {
-          'Content-Type': 'application/json; charset=utf-8',
-          Authorization: 'Bearer ' + authToken,
+          "Content-Type": "application/json; charset=utf-8",
+          Authorization: "Bearer " + authToken
         },
-        method: 'post',
+        method: "post",
         body: JSON.stringify({
-          'entityClass': this.state.parameters.entity,
-          'fileName': this.state.parameters.entity === 'mt100' ? formatMessage({ id: 'menu.payments.payment100' }) : formatMessage({ id: 'menu.payments.payment102' }),
-          'src': {
-            'searched': true,
-            'data': this.state.parameters.filter,
+          "entityClass": this.state.parameters.entity,
+          "fileName": this.state.parameters.entity === "mt100" ? formatMessage({ id: "menu.payments.payment100" }) : formatMessage({ id: "menu.payments.payment102" }),
+          "src": {
+            "searched": true,
+            "data": this.state.parameters.filter
           },
-          'columns': this.state.parameters.entity == 'mt100' ? JSON.parse(localStorage.getItem('paymentspagemt100columns')).filter(item => item.isVisible === 'true') : JSON.parse(localStorage.getItem('paymentspagemt102columns')).filter(item => item.isVisible === 'true'),
-        }),
+          "columns": this.state.parameters.entity == "mt100" ? JSON.parse(localStorage.getItem("paymentspagemt100columns")).filter(item => item.isVisible === "true") : JSON.parse(localStorage.getItem("paymentspagemt102columns")).filter(item => item.isVisible === "true")
+        })
       })
     // .then(response => response.blob())
     // .then(responseBlob => {
@@ -298,17 +307,17 @@ class PaymentsMT102 extends Component {
       .then(response => {
         if (response.ok) {
           return response.blob().then(blob => {
-            let disposition = response.headers.get('content-disposition');
+            let disposition = response.headers.get("content-disposition");
             return {
               fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob,
+              raw: blob
             };
           });
         }
       })
       .then(data => {
         if (data) {
-          saveAs(data.raw, moment().format('DDMMYYYY') + data.fileName);
+          saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
         }
       });
 
@@ -319,10 +328,10 @@ class PaymentsMT102 extends Component {
     let filename;
     let filenames;
     if (matches != null && matches[3]) {
-      filename = matches[3].replace(/['"]/g, '');
+      filename = matches[3].replace(/['"]/g, "");
       let match = regex.exec(filename);
       if (match != null && match[3]) {
-        filenames = match[3].replace(/['"]/g, '').replace('utf-8', '');
+        filenames = match[3].replace(/['"]/g, "").replace("utf-8", "");
       }
     }
     return decodeURI(filenames);
@@ -365,79 +374,79 @@ class PaymentsMT102 extends Component {
 
       </Col>
       <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-          <SmartGridView
-            name={"paymentspagemt102columns"}
-            scroll={{ x: "auto" }}
-            fixedBody={true}
-            actionColumns={[]}
-            showTotal={true}
-            // selectedRowCheckBox={true}
-            searchButton={false}
-            selectedRowKeys={this.state.selectedRowKeys}
-            rowKey={"id"}
-            loading={this.props.loadingData}
-            fixedHeader={true}
-            rowSelection={true}
-            // rowClassName={(record) => {
-            //   if (record.isRefunded) {
-            //     return 'redRow';
-            //   }
-            // }
-            // }
-            columns={this.state.columns}
-            onColumnsChange={(isChanged, dataIndex) => {
-              console.log(dataIndex);
-            }}
-            sorted={true}
-            sortedInfo={this.state.sortedInfo}
-            showExportBtn={true}
-            dataSource={{
-              total: paymentsData.totalElements,
-              pageSize: paymentsData.size,
-              page: this.state.parameters.start + 1,
-              data: paymentsData.content
-            }}
-            onSort={(column) => {
+        <SmartGridView
+          name={"paymentspagemt102columns"}
+          scroll={{ x: "auto" }}
+          fixedBody={true}
+          actionColumns={[]}
+          showTotal={true}
+          // selectedRowCheckBox={true}
+          searchButton={false}
+          selectedRowKeys={this.state.selectedRowKeys}
+          rowKey={"id"}
+          loading={this.props.loadingData}
+          fixedHeader={true}
+          rowSelection={true}
+          // rowClassName={(record) => {
+          //   if (record.isRefunded) {
+          //     return 'redRow';
+          //   }
+          // }
+          // }
+          columns={this.state.columns}
+          onColumnsChange={(isChanged, dataIndex) => {
+            console.log(dataIndex);
+          }}
+          sorted={true}
+          sortedInfo={this.state.sortedInfo}
+          showExportBtn={true}
+          dataSource={{
+            total: paymentsData.totalElements,
+            pageSize: paymentsData.size,
+            page: this.state.parameters.start + 1,
+            data: paymentsData.content
+          }}
+          onSort={(column) => {
 
-              if (Object.keys(column).length === 0) {
-                this.setState(prevState => ({
-                  parameters: {
-                    ...prevState.parameters,
-                    sort: []
-                  },
-                  sortedInfo: {}
-                }), () => {
-                  this.loadGridData();
-                });
-                return;
-              }
-
+            if (Object.keys(column).length === 0) {
               this.setState(prevState => ({
-                sortedInfo: column,
                 parameters: {
                   ...prevState.parameters,
-                  sort: [{ field: column.field, "desc": column.order === "descend" }]
-                }
+                  sort: []
+                },
+                sortedInfo: {}
               }), () => {
                 this.loadGridData();
               });
-            }}
-            actionExport={() => this.exportToExcel()}
-            extraButtons={extraButtons}
-            addonButtons={addonButtons}
-            onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
-            onRefresh={() => {
+              return;
+            }
+
+            this.setState(prevState => ({
+              sortedInfo: column,
+              parameters: {
+                ...prevState.parameters,
+                sort: [{ field: column.field, "desc": column.order === "descend" }]
+              }
+            }), () => {
               this.loadGridData();
-            }}
-            onSearch={() => {
-              this.filterPanelState();
-            }}
-            onSelectCheckboxChange={(selectedRowKeys) => {
-              this.setState({
-                selectedRowKeys: selectedRowKeys
-              });
-            }}
-          />
+            });
+          }}
+          actionExport={() => this.exportToExcel()}
+          extraButtons={extraButtons}
+          addonButtons={addonButtons}
+          onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
+          onRefresh={() => {
+            this.loadGridData();
+          }}
+          onSearch={() => {
+            this.filterPanelState();
+          }}
+          onSelectCheckboxChange={(selectedRowKeys) => {
+            this.setState({
+              selectedRowKeys: selectedRowKeys
+            });
+          }}
+        />
       </Col>
     </Row>);
   };
