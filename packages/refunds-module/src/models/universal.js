@@ -149,26 +149,35 @@ export default {
       });
     },
     * mt102preview(payload, { call, put }) {
-
       const response = yield call(mt102preview, payload);
       yield put({
         type: 'mt102prevReducer',
         payload: response,
       });
-      if (response.refundKnpList.length > 0) {
-        payload.payload.src.searched = true;
-        payload.payload.src.data['knpList'] = {
+
+      /*if (response.refundKnpList.length > 0) {
+        payload.payload.searched = true;
+        payload.payload.data['knpList'] = {
           id: response.refundKnpList[0].id,
         };
-        const data = yield call(getmainViewTable, payload);
+        payload.payload = {
+          "entity": "Refund",
+          "start": 0,
+          "length": 15,
+          "sort": [],
+          "filter": payload.payload
+        }
+        console.log(payload);
+        //const data = yield call(getmainViewTable, payload);
+        const data = yield call(getList, payload);
         yield put({
           type: 'mt102dataReducer',
           payload: data,
         });
-      }
+      }*/
     },
     * mt102view(payload, { call, put }) {
-      const data = yield call(getmainViewTable, payload);
+      const data = yield call(getList, payload);
       yield put({
         type: 'mt102dataReducer',
         payload: data,
@@ -468,12 +477,15 @@ export default {
       };
     },
     mt102dataReducer(state, { payload }) {
+      console.log(payload);
       return {
         ...state,
         modalgridviewdata: payload,
       };
     },
     mt102prevReducer(state, { payload }) {
+      console.log(payload);
+      console.log("b");
       return {
         ...state,
         refundKnpList: payload.refundKnpList,

@@ -17,14 +17,7 @@ class ModalGridView extends Component {
       dataSource: [],
       dataColumn: [],
       isVisible: false,
-      filter: {
-        'start': 0,
-        'length': 15,
-        'src': {
-          'searched': false,
-          'data': {},
-        },
-      },
+      filter: {},
       fcolumn: [
         {
           title: formatMessage({ id: 'menu.mainview.fio' }),
@@ -33,7 +26,6 @@ class ModalGridView extends Component {
           isVisible: true,
           width: 150,
           render: (item) => {
-            //console.log(i);
             return item.personSurname + ' ' + item.personFirstname + ' ' + item.personPatronname;
           },
         },
@@ -62,7 +54,8 @@ class ModalGridView extends Component {
         'isVisible': true,
         width: 120,
         'dataIndex': 'payPeriod',
-      }],
+      }
+      ],
     };
   }
 
@@ -79,10 +72,34 @@ class ModalGridView extends Component {
 
   componentDidMount() {
 
-    const filter = this.props.filter;
-    filter.src.data.dappRefundStatusList = [{ id: '8050e0eb-74c0-48cd-9bd5-5089585cc577' }];
+    /*{
+      "entity": "Refund",
+        "start": 0,
+        "length": 15,
+        "sort": [],
+        "filter": payload.payload
+    }*/
+    /*{
+      "searched": true,
+        "data": {
+      "dappRefundStatusId.code": [
+        "00007"
+      ]
+    }
+    }*/
+
+
+
+    const data = this.props.filter;
+   // data.filter.dappRefundStatusList = [{ id: '8050e0eb-74c0-48cd-9bd5-5089585cc577' }];
     this.setState({
-      filter: filter,
+      filter: {
+        ...data,
+        filter:{
+          ...data.filter,
+          "dappRefundStatusId.code": ["00007"]
+        }
+      },
     }, () => {
       this.firstLoad();
     });
@@ -95,25 +112,36 @@ class ModalGridView extends Component {
     dispatch({
       type: 'universal/mt102preview',
       payload: {
-        ...filter,
+        "searched": true,
+        "data": {
+          "dappRefundStatusId.code": [
+            "00007"
+          ]
+        }
       },
     }).then((e) => {
+      console.log(e);
       if (this.props.universal.refundKnpList.length > 0) {
+       console.log(this.props.universal.refundKnpList[0].id);
         this.setState({
-          filter: {
-            start: this.state.filter.start,
-            length: this.state.filter.length,
-            src: {
-              searched: this.state.filter.src.searched,
-              data: {
-                ...this.state.filter.src.data,
-                knpList: { id: this.props.universal.refundKnpList[0].id },
-              },
+            filter: {
+              ...this.state.filter,
+              filter: {
+                ...this.state.filter.filter,
+                knpList: [{ id: this.props.universal.refundKnpList[0].id }],
+              }
             },
-          },
-          dataSource: this.props.universal.modalgridviewdata,
-          dataColumn: this.props.universal.refundKnpList,
+           dataColumn: this.props.universal.refundKnpList,
         });
+        console.log(this.props.universal.modalgridviewdata);
+        dispatch({
+          type: 'universal/mt102view',
+          payload: this.state.filter,
+        }).then(()=>{
+          this.setState({
+            dataSource: this.props.universal.modalgridviewdata,
+          })
+        })
       } else {
         this.props.resetshow();
         Modal.info({
@@ -138,15 +166,11 @@ class ModalGridView extends Component {
 
     this.setState({
       filter: {
-        start: this.state.filter.start,
-        length: this.state.filter.length,
-        src: {
-          searched: this.state.filter.src.searched,
-          data: {
-            ...this.state.filter.src.data,
-            knpList: { id: e },
-          },
-        },
+        ...this.state.filter,
+        filter: {
+          ...this.state.filter.filter,
+          knpList: [{ id: e }],
+        }
       },
     }, () => {
       dispatch({
@@ -179,23 +203,19 @@ class ModalGridView extends Component {
           Authorization: 'Bearer ' + authToken,
         },
         method: 'post',
-        body: JSON.stringify(this.state.filter.src),
+        body: JSON.stringify({
+          "searched": true,
+          "data": {
+          "dappRefundStatusId.code": [
+            "00007"
+            ]
+          }
+        }),
       })
-    // .then(response => response.blob())
-    // .then(responseBlob => {
-    //   this.setState({
-    //     downloadBtn102Loading: false,
-    //   });
-    //
-    //   let blob = new Blob([responseBlob], { type: responseBlob.type }),
-    //     url = window.URL.createObjectURL(blob);
-    //   window.open(url, '_self');
-    // });
       .then(response => {
         if (response.ok) {
           return response.blob().then(blob => {
             let disposition = response.headers.get('content-disposition');
-            console.log(this.getFileNameByContentDisposition(disposition));
             return {
               fileName: this.getFileNameByContentDisposition(disposition),
               raw: blob,
@@ -225,11 +245,9 @@ class ModalGridView extends Component {
 
     return filename;
   };
-
   handleSave = () => {
     this.downloadFile();
   };
-
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
@@ -250,9 +268,7 @@ class ModalGridView extends Component {
   };
 
   render() {
-
     const { visible, universal } = this.props;
-
     return (<Modal
       width={1000}
       centered
@@ -288,7 +304,6 @@ class ModalGridView extends Component {
                       paddingTop: 15,
                       display: 'inline-block',
                     }}>{formatMessage({ id: 'system.totalAmount' })}: {tabItem.totalAmount}</div>]}
-
                   onShowSizeChange={(pageNumber, pageSize) => {
                     this.onShowSizeChange(pageNumber, pageSize);
                   }}

@@ -278,7 +278,7 @@ export async function getmt102file(params) {
 export async function mt102preview(params) {
   return request('/api/refund/mt102GroupByKnpPreview', {
     method: 'POST',
-    body: params.payload.src,
+    body: params.payload,
   });
 }
 
