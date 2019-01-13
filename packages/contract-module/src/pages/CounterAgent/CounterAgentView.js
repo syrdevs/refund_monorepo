@@ -13,6 +13,7 @@ import { ContragentsPage, SpecPage, InfoPage, DogovorPage } from "./TabPagesView
 import "./CounterAgent.css";
 import connect from "../../Redux";
 import AttachmentPage from "./TabPagesView/AttachmentPage";
+import ContentLayout from "../../layouts/ContentLayout";
 
 const TabPane = Tabs.TabPane;
 const dateFormat = "DD.MM.YYYY";
@@ -90,6 +91,13 @@ class CounterAgentView extends Component {
   render = () => {
     const { location, children } = this.props;
 
+    let contractName = "";
+    if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractType) {
+      let contractType = this.props.universal.getObjectData.contractType ? this.props.universal.getObjectData.contractType.shortName : "";
+      contractName = contractType + " №" + this.props.universal.getObjectData.number + " от " + this.props.universal.getObjectData.documentDate;
+    }
+
+
     if (this.state.errorText !== null) {
       return (<Card
         headStyle={{ padding: 0 }}
@@ -101,7 +109,18 @@ class CounterAgentView extends Component {
       </Card>);
     }
 
-    return (<div>
+    return (<ContentLayout
+      contentName={contractName}
+      breadcrumbRoutes={[{
+        path: "/",
+        breadcrumbName: "Главная"
+      }, {
+        path: "/contracts2/contracts/table",
+        breadcrumbName: "Договоры"
+      }, {
+        path: "/contracts2/contracts/create",
+        breadcrumbName: "Просмотр"
+      }]}>
       <Card
         headStyle={{ padding: 0 }}
         title={""}
@@ -140,7 +159,7 @@ class CounterAgentView extends Component {
           </Spin>
         </Row>
       </Card>
-    </div>);
+    </ContentLayout>);
   };
 }
 

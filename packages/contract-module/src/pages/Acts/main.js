@@ -121,7 +121,7 @@ class ActsTable extends Component {
         isVisible: true,
         render: (item) => {
           if (item) {
-            return item.contractType + " №" + item.number + " от " + item.documentDate;
+            return item.contractType.shortName + " №" + item.number + " от " + item.documentDate;
           }
         }
       },

@@ -37,7 +37,7 @@ import SignModal from "../../components/SignModal";
 import TabPageStyle from "../CounterAgent/TabPages/TabPages.less";
 import DropDownAction from "../../components/DropDownAction/";
 import ContentLayout from "../../layouts/ContentLayout";
-
+import '../CounterAgent/CounterAgent.css';
 
 const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
@@ -998,6 +998,7 @@ class ViewAct extends Component {
                       </Row>
                       <Row>
                         <Table
+                          className={"attachment_file_list"}
                           columns={columns}
                           dataSource={data}
                           pagination={{ position: "none" }}
