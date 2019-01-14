@@ -454,20 +454,21 @@ class PaymentsPage extends Component {
     });
     //     //test commit
 
-    if (e !== 'searcher' && e !== 'searcherJur') {
-      // this.setState({
-      //   sortedInfo: {},
-      //   parameters: {
-      //     start: 0,
-      //     length: 15,
-      //     entity: e,
-      //     filter: Object.keys(tabFilter).length > 0 ? tabFilter : {},
-      //    // sort:[],
-      //      sort: e==='mt100'? [{field: "createdOn", 'desc': true}]:[{field: "createdon", 'desc': true}],
-      //   },
-      // }, () => this.loadGridData()
-      // );
-    }
+    // if (e !== 'searcher' && e !== 'searcherJur') {
+    //   console.log('asdfasdf')
+    //   this.setState({
+    //     sortedInfo: {},
+    //     parameters: {
+    //       start: 0,
+    //       length: 15,
+    //       entity: e,
+    //       filter: Object.keys(tabFilter).length > 0 ? tabFilter : {},
+    //      // sort:[],
+    //        sort: e==='mt100'? [{field: "createdOn", 'desc': true}]:[{field: "createdon", 'desc': true}],
+    //     },
+    //   }, () => this.loadGridData()
+    //   );
+    // }
 
 
   };
@@ -490,8 +491,10 @@ class PaymentsPage extends Component {
             'searched': true,
             'data': this.state.parameters.filter,
           },
+
           'columns': this.state.parameters.entity == 'mt100' ? JSON.parse(localStorage.getItem('paymentspagemt100columns')).filter(item => item.isVisible === 'true') : JSON.parse(localStorage.getItem('paymentspagemt102columns')).filter(item => item.isVisible === 'true'),
         }),
+
       })
     // .then(response => response.blob())
     // .then(responseBlob => {
@@ -598,8 +601,18 @@ class PaymentsPage extends Component {
             <PaymentsMT100
               onSelect={(recordId) => {
                 this.setState({
-                  activeKey: 'mt102',
-                  tabFilter: recordId,
+                  sortedInfo: {},
+                  parameters: {
+                    ...this.state.parameters,
+                    'entity': 'mt102',
+                    'filter': { 'mt100Id': recordId },
+                    'sort': [],
+                  },
+                }, () => {
+                  this.loadGridData();
+                  this.setState({
+                    activeKey: 'mt102',
+                  });
                 });
               }}
             />

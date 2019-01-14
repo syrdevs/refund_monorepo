@@ -546,7 +546,7 @@ class MainView extends Component {
       }
     ];
   };
-  setStatusRecord = (statusCode, sntatusText) => {
+  setStatusRecord = (statusCode, statusText) => {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
 

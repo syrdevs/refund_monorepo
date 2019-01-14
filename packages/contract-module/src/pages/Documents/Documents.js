@@ -150,7 +150,7 @@ class Documents extends Component {
       "entity": "correspondence",
       "alias": "routes",
       "filter": {
-        "documentIn": true
+        // "documentIn": true
       }
     },
     // searchButton: false,
