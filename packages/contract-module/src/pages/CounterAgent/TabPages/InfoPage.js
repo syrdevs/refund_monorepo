@@ -199,7 +199,6 @@ class InfoPage extends Component {
 
     if (this.props.form.getFieldValue("parentContract") && this.props.form.getFieldValue("parentContract").hasOwnProperty("value") && this.props.form.getFieldValue("parentContract").value !== null) {
       contractTypeDataSource = contractTypeDataSource.filter(x => x.props.prop.code !== "1");
-      console.log(contractTypeDataSource);
     }
 
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
@@ -233,6 +232,7 @@ class InfoPage extends Component {
         yearSectionId: getObjectData.periodYear
       });
     }
+
 
     return (<Card style={{ marginLeft: "-10px" }}>
 
@@ -412,12 +412,16 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Протокол распределения объемов">
           {(getObjectData.planProtocol && getObjectData.planProtocol.number) &&
           <span
-            className="ant-form-text">№ {getObjectData.planProtocol.number} от {getObjectData.planProtocol.documentDate}</span>
+            className="ant-form-text">
+            {getObjectData._documentSources ? getObjectData._documentSources.map((protocol) => {
+              return <div>№ {protocol.number} от {protocol.documentDate}</div>;
+            }) : null}
+ </span>
           }
         </Form.Item>
 
 
-        <Form.Item {...formItemLayout} label="Заявка на объемы">
+        < Form.Item {...formItemLayout} label="Заявка на объемы">
           {(getObjectData.proposal && getObjectData.proposal.number) &&
           <span
             className="ant-form-text">№{getObjectData.proposal.number} от {getObjectData.proposal.documentDate}</span>

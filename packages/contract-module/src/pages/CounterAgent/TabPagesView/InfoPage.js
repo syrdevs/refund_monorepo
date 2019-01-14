@@ -1,36 +1,36 @@
-import React, { Component } from 'react';
-import connect from '../../../Redux';
-import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card } from 'antd';
-import formatMessage from '../../../utils/formatMessage';
+import React, { Component } from "react";
+import connect from "../../../Redux";
+import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card } from "antd";
+import formatMessage from "../../../utils/formatMessage";
 
 class InfoPage extends Component {
   state = {
     columns: [{
-      title: 'Наименование',
-      dataIndex: 'name',
-      render: (text) => <div style={{ color: 'black' }}>{text}</div>,
-      width: 100,
+      title: "Наименование",
+      dataIndex: "name",
+      render: (text) => <div style={{ color: "black" }}>{text}</div>,
+      width: 100
 
     }, {
-      title: 'Значения',
-      dataIndex: 'value',
-      key: 'value',
+      title: "Значения",
+      dataIndex: "value",
+      key: "value",
       width: 150,
       render: (text, record) => {
         if (record.href) {
           return <div
             style={{
-              color: '#1890ff',
-              textDecoration: 'underline',
-              cursor: 'pointer',
+              color: "#1890ff",
+              textDecoration: "underline",
+              cursor: "pointer"
             }}
             onClick={() => {
-              window.open('view?id=' + record.href);
+              window.open("view?id=" + record.href);
             }}>{text}</div>;
         }
         return text;
-      },
-    }],
+      }
+    }]
   };
 
   render = () => {
@@ -43,92 +43,94 @@ class InfoPage extends Component {
     if (formData.parentContract) {
       dataSourceItem.push({
         href: formData.parentContract.id,
-        name: 'Родительский договор',
-        value: `${formData.parentContract.contractType.shortName}  №${formData.parentContract.number} от ${formData.parentContract.documentDate}`,
+        name: "Родительский договор",
+        value: `${formData.parentContract.contractType.shortName}  №${formData.parentContract.number} от ${formData.parentContract.documentDate}`
       });
     }
 
-    if (formData.planProtocol) {
+    if (formData._documentSources) {
       dataSourceItem.push({
-        name: 'Протокол распределения объемов',
-        value: `№${formData.planProtocol.number} от ${formData.planProtocol.number}`,
+        name: "Протокол распределения объемов",
+        value: formData._documentSources ? formData._documentSources.map((protocol) => {
+          return <div>№ {protocol.number} от {protocol.documentDate}</div>;
+        }) : null
       });
     }
 
     if (formData.proposal) {
       dataSourceItem.push({
-        name: 'Заявка на объемы',
-        value: `№${formData.proposal.number} от ${formData.proposal.number}`,
+        name: "Заявка на объемы",
+        value: `№${formData.proposal.number} от ${formData.proposal.number}`
       });
     }
 
     if (formData.periodYear) {
       dataSourceItem.push({
-        name: 'Учетный период: год',
-        value: formData.periodYear.year,
+        name: "Учетный период: год",
+        value: formData.periodYear.year
       });
     }
 
     if (formData.contractType) {
       dataSourceItem.push({
-        name: 'Вид договора',
-        value: formData.contractType.name,
+        name: "Вид договора",
+        value: formData.contractType.name
       });
     }
 
     if (formData.contractAlterationReasons) {
       dataSourceItem.push({
-        name: 'Причина',
-        value: formData.contractAlterationReasons[0].dictionaryBase.nameRu,
+        name: "Причина",
+        value: formData.contractAlterationReasons[0].dictionaryBase.nameRu
       });
     }
 
     if (formData.number) {
       dataSourceItem.push({
-        name: 'Номер',
-        value: formData.number,
+        name: "Номер",
+        value: formData.number
       });
     }
 
     if (formData.documentDate) {
       dataSourceItem.push({
-        name: 'Дата',
-        value: formData.documentDate,
+        name: "Дата",
+        value: formData.documentDate
       });
     }
 
     if (formData.dateBegin) {
       dataSourceItem.push({
-        name: 'Дата начала',
-        value: formData.dateBegin,
+        name: "Дата начала",
+        value: formData.dateBegin
       });
     }
 
     if (formData.dateEnd) {
       dataSourceItem.push({
-        name: 'Дата окончания',
-        value: formData.dateEnd,
+        name: "Дата окончания",
+        value: formData.dateEnd
       });
     }
 
     if (formData.descr) {
       dataSourceItem.push({
-        name: 'Комментарий',
-        value: formData.descr,
+        name: "Комментарий",
+        value: formData.descr
       });
     }
 
     if (formData.division) {
       dataSourceItem.push({
-        name: 'Подразделение',
-        value: formData.division.name,
+        name: "Подразделение",
+        value: formData.division.name
       });
     }
 
 
-    return (<Card style={{ marginLeft: '-10px' }}>
-      <div style={{ margin: '0px 15px', maxWidth: '70%' }}>
-        <Table pagination={{ position: 'none' }}
+    return (<Card style={{ marginLeft: "-10px" }}>
+      <div style={{ margin: "0px 15px", maxWidth: "70%" }}>
+        <Table pagination={{ position: "none" }}
                showHeader={false}
                columns={this.state.columns}
                dataSource={dataSourceItem}/>
@@ -136,4 +138,5 @@ class InfoPage extends Component {
     </Card>);
   };
 }
+
 export default InfoPage;

@@ -396,13 +396,14 @@ class CounterAgentEdit extends Component {
         <Card
           headStyle={{ padding: 0 }}
           title={""}
+          key={"edit_card"}
           className={"headPanel"}
           extra={[<Button
             key={"save_btn"}
             htmlType="submit">Сохранить</Button>,
-            <span>
+            <span key={"document_span"}>
                 {(documentStatus === null || documentStatus === 2) &&
-                <span>
+                <span key={"documentStatus_span"}>
                     {this.state.publish &&
                     <Button
                       key={"publish"}
@@ -456,6 +457,7 @@ class CounterAgentEdit extends Component {
                 this.props.history.push("/contracts2/contracts/table");
               }}>Закрыть</Button>,
             <DropDownAction
+              key={"dropdown_action_btn"}
               contractId={this.props.location.query.id}
               entity={"contract"}
               type={2}/>
@@ -484,7 +486,7 @@ class CounterAgentEdit extends Component {
               {/*</TabPane>*/}
               <TabPane forceRender={true} tab={<Badge count={this.state.tabRecordsCount.specCount}
                                                       style={{ backgroundColor: "#1990FF" }}>
-                <div><span style={{ paddingRight: "15px" }}> Спецификация</span></div>
+                <div key={"badge_value"}><span style={{ paddingRight: "15px" }}> Спецификация</span></div>
               </Badge>}
                        key="specification">
                 {Object.keys(this.state.SpecData).length > 0 ?
