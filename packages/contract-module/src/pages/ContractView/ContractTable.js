@@ -446,7 +446,7 @@ class ContractTable extends Component {
               });
             });
 
-            isOne ? this.props.history.push("/contracts2/contractrequests/create?contractId="+contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1)[0].id) : Modal.error({
+            isOne ? this.props.history.push("/contracts2/contractrequests/create?contractId=" + contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1)[0].id) : Modal.error({
               title: "Ошибка",
               content: "Нельзя создать заявку на разные учетные периоды"
             });
@@ -498,14 +498,13 @@ class ContractTable extends Component {
 
     ];
 
-    if (this.state.selectedRowKeys.length !== 0) {
-      addonButtons.push(<DropDownAction
-        key={"dropdown_btn"}
-        contractId={this.state.selectedRowKeys}
-        entity={"contract"}
-        type={2}
-      />);
-    }
+    addonButtons.push(<DropDownAction
+      key={"dropdown_btn"}
+      disabled={this.state.selectedRowKeys.length === 0}
+      contractId={this.state.selectedRowKeys}
+      entity={"contract"}
+      type={2}
+    />);
 
     return (
       <ContentLayout

@@ -2,7 +2,7 @@ import { Modal, Button } from 'antd';
 import { Component } from "react";
 import React from "react";
 
-export default class ApproveModal extends Component {
+ class ApproveModal extends Component {
   state = { visible: false }
 
   showModal = () => {
@@ -35,3 +35,5 @@ export default class ApproveModal extends Component {
     );
   }
 }
+
+export default ApproveModal;

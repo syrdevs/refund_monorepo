@@ -31,7 +31,7 @@ const Content = styled.div`
 `;
 
 
-let RoutingCollection = renderRoutes(routerConfig);
+//let RoutingCollection = renderRoutes(routerConfig);
 let leftMenuCollection = [];
 
 
@@ -125,11 +125,11 @@ class App extends React.Component {
           <ContentLayout
             contentName={bcRoutes.length > 0 ? bcRoutes[bcRoutes.length - 1].breadcrumbName : null}
             breadcrumbRoutes={bcRoutes}>
-            <Suspense fallback={<div>...</div>}>
-              <Switch>
-                {RoutingCollection}
-              </Switch>
-            </Suspense>
+            {/*<Suspense fallback={<div>...</div>}>*/}
+              {/*<Switch>*/}
+                {/*{RoutingCollection}*/}
+              {/*</Switch>*/}
+            {/*</Suspense>*/}
           </ContentLayout>
         </Content>
       </RootContainer>

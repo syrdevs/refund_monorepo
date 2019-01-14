@@ -25,7 +25,7 @@ import formatMessage from '../../utils/formatMessage';
 import ImportModalGrid from './ImportModalGrid';
 import connect from '../../Redux';
 
-export default class ImportXMLModal extends Component {
+class ImportXMLModal extends Component {
   state = {
     ImportModalGrid: {
       visible: true,
@@ -84,3 +84,4 @@ export default class ImportXMLModal extends Component {
     </div>);
   };
 }
+export default ImportXMLModal;

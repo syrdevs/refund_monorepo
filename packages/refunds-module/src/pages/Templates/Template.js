@@ -25,7 +25,7 @@ import formatMessage from "../../utils/formatMessage";
 
 
 
-export default class Template extends Component {
+class Template extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -133,3 +133,4 @@ export default class Template extends Component {
     );
   }
 }
+export default Template;

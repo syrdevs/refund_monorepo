@@ -4,7 +4,7 @@ import { Form, Input, Button, Select, Divider, DatePicker, Icon, Table, Row, Col
 
 
 
-export default class LinkModal extends Component {
+ class LinkModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -118,3 +118,5 @@ export default class LinkModal extends Component {
     </div>);
   };
 }
+
+export default LinkModal;

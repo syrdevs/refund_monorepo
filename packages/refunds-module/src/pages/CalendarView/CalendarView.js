@@ -20,7 +20,7 @@ import {
   Divider
 } from "antd";
 
-export default class CalendarView extends Component {
+ class CalendarView extends Component {
   constructor(props) {
     super(props);
   }
@@ -35,3 +35,5 @@ export default class CalendarView extends Component {
   }
 
 }
+
+export default CalendarView;

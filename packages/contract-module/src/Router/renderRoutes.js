@@ -1,6 +1,7 @@
 import React from "react";
 import { Switch, Route, withRouter, Redirect } from "react-router-dom";
 import Loadable from "react-loadable";
+import routerList from "./routingList";
 
 const loader = () => {
   return <div></div>;
@@ -9,7 +10,6 @@ const loader = () => {
 const NotFound = (props) => {
   return (<div>Not Found</div>);
 };
-
 
 const CustomComponent = (props) => {
 
@@ -66,7 +66,7 @@ function RouteNest(props) {
 
                    if (typeof path === "string" || path instanceof String) {
                      p.history.push({
-                       pathname:  pathname.substring(0, querySymIndex),
+                       pathname: pathname.substring(0, querySymIndex),
                        search: searchUrl
                      });
                    } else {
@@ -97,10 +97,12 @@ function renderRoutes(routesData) {
     let routeProps = {};
 
     if (routeItem.component) {
-      routeProps.component = Loadable({
-        loader: () => import("../pages/" + routeItem.component.replace("./", "")),
-        loading: loader
-      });
+      // routeProps.component = Loadable({
+      //   loader: () => import("../pages/" + routeItem.component.replace("./", "")),
+      //   loading: loader
+      // });
+
+      routeProps.component = routerList["../pages/" + routeItem.component.replace("./", "")];
     } else {
       routeProps.component = (props) => (<CustomComponent  {...props}/>);
     }

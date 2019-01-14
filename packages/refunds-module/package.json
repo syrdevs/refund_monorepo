@@ -40,8 +40,9 @@
     "cross-env": "^5.2.0"
   },
   "scripts": {
-    "start": "cross-env BABEL_ENV=development yarn clean && babel src --out-dir build/dist --source-maps -w --copy-files",
-    "build": "cross-env BABEL_ENV=production yarn clean && babel src --out-dir build/dist --minified --copy-files",
+    "start": "cross-env BABEL_ENV=development yarn clean && yarn deploy_router && babel src --out-dir build/dist --source-maps -w --copy-files",
+    "build": "cross-env BABEL_ENV=production yarn clean  && yarn deploy_router && babel src --out-dir build/dist --minified --copy-files",
+    "deploy_router": "node functions/deployment.js",
     "clean": " "
   },
   "eslintConfig": {
@@ -64,9 +65,21 @@
       "@babel/preset-env"
     ],
     "plugins": [
-      ["@babel/plugin-syntax-dynamic-import"],
-      ["@babel/plugin-proposal-decorators", { "legacy": true }],
-      ["@babel/plugin-proposal-class-properties", { "loose" : true }]
+      [
+        "@babel/plugin-syntax-dynamic-import"
+      ],
+      [
+        "@babel/plugin-proposal-decorators",
+        {
+          "legacy": true
+        }
+      ],
+      [
+        "@babel/plugin-proposal-class-properties",
+        {
+          "loose": true
+        }
+      ]
     ]
   }
 }

@@ -20,7 +20,7 @@ import {
 const TabPane = Tabs.TabPane;
 
 
-export default class ModalGraphView extends Component {
+class ModalGraphView extends Component {
 
   constructor(props) {
     super(props);
@@ -204,3 +204,4 @@ export default class ModalGraphView extends Component {
       </Modal>);
   }
 }
+export default ModalGraphView;

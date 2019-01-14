@@ -47,7 +47,7 @@ const data = [{
 }
 ];
 
-export default class EmployeesModal extends Component {
+class EmployeesModal extends Component {
 
   state = {
     selectedIndex: null,
@@ -198,3 +198,4 @@ export default class EmployeesModal extends Component {
 
 
 }
+export default EmployeesModal;

@@ -10,7 +10,7 @@ const { Meta } = Card;
 const Panel = Collapse.Panel;
 const Search = Input.Search;
 
-export default class PullFilter extends Component {
+class PullFilter extends Component {
   state = {
     ImportModalGrid: {
       visible: true,
@@ -111,3 +111,4 @@ export default class PullFilter extends Component {
     );
   };
 }
+export default PullFilter;

@@ -33,7 +33,7 @@ import ModalContent from './ModalContent';
 const Option = Select.Option;
 
 
-export default class SelectList extends Component {
+class SelectList extends Component {
   state = {
 
     modalForm: {
@@ -140,3 +140,4 @@ export default class SelectList extends Component {
     </div>);
   };
 }
+export default SelectList;

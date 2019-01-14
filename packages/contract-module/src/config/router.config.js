@@ -63,7 +63,6 @@ export default [
           }
         ]
       },
-
       {
         path: "/contracts2/acts",
         name: "acts",

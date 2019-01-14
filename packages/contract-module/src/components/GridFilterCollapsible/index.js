@@ -27,7 +27,7 @@ import GridFilter from '@/components/GridFilter';
 const Panel = Collapse.Panel;
 
 
-export default class GridFilterCollapsible extends Component {
+class GridFilterCollapsible extends Component {
 
 
   state = {
@@ -130,3 +130,4 @@ export default class GridFilterCollapsible extends Component {
     </div>);
   }
 }
+export default GridFilterCollapsible;

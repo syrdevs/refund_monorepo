@@ -125,7 +125,7 @@ class BodyCell extends Component {
   }
 }
 
-export default class SmartGridView extends Component {
+class SmartGridView extends Component {
   constructor(props) {
     super(props);
 
@@ -401,3 +401,4 @@ export default class SmartGridView extends Component {
   }
 
 }
+export default SmartGridView;

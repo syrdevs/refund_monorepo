@@ -8,7 +8,7 @@ import formatMessage from "../../utils/formatMessage";
 
 const dateFormat = "DD.MM.YYYY";
 
-export default class CounterAgentMain extends Component {
+ class CounterAgentMain extends Component {
   state = {
 
     titles: {
@@ -40,3 +40,5 @@ export default class CounterAgentMain extends Component {
     return children ? children : null;
   };
 }
+
+export default CounterAgentMain;

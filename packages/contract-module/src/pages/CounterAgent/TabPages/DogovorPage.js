@@ -3,7 +3,7 @@ import formatMessage from '../../../utils/formatMessage';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Col, Tabs, Card } from 'antd';
 import DogovorModal from '../Modals/DogovorModal';
 
-export default class DogovorPage extends Component {
+class DogovorPage extends Component {
   state = {
 
     modalForm: {
@@ -82,3 +82,4 @@ export default class DogovorPage extends Component {
     </Card>);
   };
 }
+export default DogovorPage;

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-export default class SmartGridColumn extends PureComponent {
+ class SmartGridColumn extends PureComponent {
   constructor(props) {
     super(props);
   }
@@ -10,3 +10,4 @@ export default class SmartGridColumn extends PureComponent {
     return this.props.value;
   }
 }
+export default SmartGridColumn;

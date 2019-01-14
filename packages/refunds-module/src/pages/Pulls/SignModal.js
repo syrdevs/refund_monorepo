@@ -2,7 +2,7 @@ import { Modal, Button } from 'antd';
 import { Component } from "react";
 import React from "react";
 
-export default class SignModal extends Component {
+class SignModal extends Component {
   state = { visible: false }
 
   showModal = () => {
@@ -39,3 +39,4 @@ export default class SignModal extends Component {
     );
   }
 }
+export default SignModal;

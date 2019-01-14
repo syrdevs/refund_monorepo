@@ -16,7 +16,7 @@ function formatNumber(value) {
   return `${prefix}${result}${list[1] ? `.${list[1]}` : ''}`;
 }
 
-export default class NumberInput extends Component {
+class NumberInput extends Component {
 
   state = {
     defaultValue: 0,
@@ -66,3 +66,4 @@ export default class NumberInput extends Component {
       <input {...inputProps}/>);
   }
 }
+export default NumberInput;

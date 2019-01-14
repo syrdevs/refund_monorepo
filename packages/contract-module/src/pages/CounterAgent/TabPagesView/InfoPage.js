@@ -3,7 +3,7 @@ import connect from '../../../Redux';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card } from 'antd';
 import formatMessage from '../../../utils/formatMessage';
 
-export default class InfoPage extends Component {
+class InfoPage extends Component {
   state = {
     columns: [{
       title: 'Наименование',
@@ -136,3 +136,4 @@ export default class InfoPage extends Component {
     </Card>);
   };
 }
+export default InfoPage;

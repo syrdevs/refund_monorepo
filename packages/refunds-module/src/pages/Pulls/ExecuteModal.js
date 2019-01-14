@@ -3,7 +3,7 @@ import { Component } from "react";
 import React from "react";
 import EmployeesModal from "../Options/EmployeesModal";
 
-export default class ExecuteModal extends Component {
+class ExecuteModal extends Component {
   state = { visible: false }
 
   showModal = () => {
@@ -27,3 +27,5 @@ export default class ExecuteModal extends Component {
     );
   }
 }
+
+export default ExecuteModal;

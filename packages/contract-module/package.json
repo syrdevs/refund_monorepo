@@ -1,6 +1,6 @@
 {
   "name": "@vitacore/contract-module",
-  "main": "build/dist/App.js",
+  "main": "build/dist/index.js",
   "version": "1.0.0",
   "private": true,
   "dependencies": {
@@ -37,8 +37,9 @@
     "cross-env": "^5.2.0"
   },
   "scripts": {
-    "start": "cross-env BABEL_ENV=development yarn clean && babel src --out-dir build/dist --source-maps -w --copy-files",
-    "build": "cross-env BABEL_ENV=production yarn clean && babel src --out-dir build/dist --minified --copy-files",
+    "start": "cross-env BABEL_ENV=development yarn clean && yarn deploy_router && babel src --out-dir build/dist --source-maps -w --copy-files",
+    "build": "cross-env BABEL_ENV=production yarn clean && yarn deploy_router && babel src --out-dir build/dist --minified --copy-files",
+    "deploy_router": "node functions/deployment.js",
     "clean": " "
   },
   "eslintConfig": {

@@ -3,7 +3,7 @@ import connect from '../../../Redux';
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Tag } from 'antd';
 import formatMessage from '../../../utils/formatMessage';
 
-export default class SpecPage extends Component {
+class SpecPage extends Component {
   state = {
     smarttabDataSource: [],
     columns: [
@@ -404,3 +404,4 @@ export default class SpecPage extends Component {
     </Card>);
   };
 }
+export default SpecPage;

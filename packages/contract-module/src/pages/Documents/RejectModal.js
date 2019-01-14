@@ -11,7 +11,7 @@ const formItemLayout = {
   //   span: 14,
   // },
 };
-export default class RejectModal extends Component {
+ class RejectModal extends Component {
 
   constructor(props) {
     super(props);
@@ -82,3 +82,4 @@ export default class RejectModal extends Component {
 
 
 }
+export default RejectModal;
