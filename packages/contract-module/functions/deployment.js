@@ -28,7 +28,20 @@ pageFileList.forEach((file, idx) => {
 content.push("\n");
 content.push("module.exports = {" + components + "}");
 
-fs.writeFile("./src/Router/routingList.js", content.join(""), function(err) {
-  if (err) throw err;
-  console.log("Saved!");
-});
+
+if (!fs.existsSync("./src/Router/routingList.js")) {
+  fs.writeFile("./src/Router/routingList.js", content.join(""), function(err) {
+    if (err) throw err;
+    console.log("router created!");
+  });
+}
+else if (fs.existsSync("./src/Router/routingList.js")) {
+  var data = fs.readFileSync("./src/Router/routingList.js", "utf8");
+
+  if (content.join("").length !== data.length) {
+    fs.writeFile("./src/Router/routingList.js", content.join(""), function(err) {
+      if (err) throw err;
+      console.log("router created!");
+    });
+  }
+}
