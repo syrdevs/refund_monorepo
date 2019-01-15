@@ -73,13 +73,11 @@ class Requests extends Component {
       serverFileList: [],
       sortedInfo: {},
       pagingConfig: {
+        "entity": "application",
         "start": 0,
         "length": 10,
-        "src": {
-          "searched": false,
-          "data": {}
-        },
-        "sort": []
+        "sort": [],
+        "filter": {}
       }
     };
   }
@@ -99,11 +97,9 @@ class Requests extends Component {
     const { dispatch } = this.props;
 
     dispatch({
-      type: "universal2/data",
-      payload: {
-        table: "getApplicationPage",
-        ...this.state.pagingConfig
-      }
+      type: "universal2/getList",
+
+      payload: this.state.pagingConfig
     });
   };
 
@@ -116,13 +112,11 @@ class Requests extends Component {
     this.setState({
       sortedInfo: {},
       pagingConfig: {
+        "entity": "application",
         "start": 0,
         "length": 10,
-        "src": {
-          "searched": false,
-          "data": {}
-        },
-        "sort": []
+        "sort": [],
+        "filter": {}
       }
     }, () => {
       this.loadMainGridData();
@@ -136,13 +130,11 @@ class Requests extends Component {
     this.setState(prevState => ({
       sortedInfo: {},
       pagingConfig: {
+        "entity": "application",
         "start": 0,
         "length": 10,
-        "src": {
-          "searched": true,
-          "data": filters
-        },
-        sort: []
+        "sort": [],
+        "filter": {...filters}
       }
     }), () => {
       this.loadMainGridData();
@@ -209,10 +201,9 @@ class Requests extends Component {
     const min = max - pageSize;
     const { dispatch } = this.props;
     dispatch({
-      type: "universal2/data",
+      type: "universal2/getList",
       payload: {
         ...this.state.pagingConfig,
-        table: "getApplicationPage",
         start: current,
         length: pageSize
       }
@@ -393,6 +384,9 @@ class Requests extends Component {
     const dateFormat = "DD.MM.YYYY";
     let { columns, dataStore } = this.props.universal2;
 
+    const universal = {
+      table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
+    };
     columns = [
       {
         "title": "Номер заявки",
@@ -580,10 +574,10 @@ class Requests extends Component {
                   showExportBtn={true}
 
                   dataSource={{
-                    total: dataStore.totalElements,
+                    total: universal.table.totalElements,
                     pageSize: this.state.pagingConfig.length,
                     page: this.state.pagingConfig.start + 1,
-                    data: dataStore.content
+                    data: universal.table.content
                   }}
                   actionExport={() => this.exportToExcel()}
                   onShowSizeChange={(pageNumber, pageSize) => {

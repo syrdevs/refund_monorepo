@@ -492,7 +492,7 @@ class PaymentsPage extends Component {
             'data': this.state.parameters.filter,
           },
 
-          'columns': this.state.parameters.entity == 'mt100' ? JSON.parse(localStorage.getItem('paymentspagemt100columns')).filter(item => item.isVisible === 'true') : JSON.parse(localStorage.getItem('paymentspagemt102columns')).filter(item => item.isVisible === 'true'),
+          'columns': this.state.parameters.entity == 'mt100' ? JSON.parse(localStorage.getItem('paymentspagemt100columns')).filter(item => item.isVisible === 'true'  || item.isVisible === true) : JSON.parse(localStorage.getItem('paymentspagemt102columns')).filter(item => item.isVisible === 'true' || item.isVisible === true),
         }),
 
       })

@@ -32,7 +32,16 @@ class ModalChangeDate extends Component {
   };
 
   handleCancel = () => {
-    this.props.hideModal();
+    if (this.props.universal.files.length !== 0 && this.state.changeDateValue === null) {
+      this.removeFiles(this.props.universal.files, () => {
+        this.props.hideModal();
+      });
+    } else {
+      this.props.hideModal();
+    }
+
+
+    //
   };
 
   uploadFile = (data) => {
@@ -61,6 +70,25 @@ class ModalChangeDate extends Component {
         id: file.uid
       }
     }).then(() => this.getFileList());
+  };
+
+  removeFiles = (files, cb) => {
+    let completed = 0;
+    files.forEach((file) => {
+      this.props.dispatch({
+        type: "universal/removeFileRequest",
+        payload: {
+          id: file.id
+        }
+      }).then(() => {
+        completed++;
+        if (files.length === completed && cb) {
+          cb();
+        }
+      });
+    });
+
+
   };
 
   getFileList = () => {
