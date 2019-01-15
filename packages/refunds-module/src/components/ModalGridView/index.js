@@ -189,8 +189,9 @@ class ModalGridView extends Component {
   };
 
   downloadFile() {
+    console.log(this.state.filter);
 
-    let authToken = localStorage.getItem('token');
+    let authToken = localStorage.getItem('AUTH_TOKEN');
 
     this.setState({
       downloadBtn102Loading: true,
@@ -206,9 +207,7 @@ class ModalGridView extends Component {
         body: JSON.stringify({
           "searched": true,
           "data": {
-          "dappRefundStatusId.code": [
-            "00007"
-            ]
+          ...this.state.filter.filter
           }
         }),
       })
@@ -266,7 +265,7 @@ class ModalGridView extends Component {
       });
     });
   };
-
+//<Button key={'exportExcel'}>{formatMessage({ id: 'system.excelExport' })}</Button>,
   render() {
     const { visible, universal } = this.props;
     return (<Modal
@@ -275,7 +274,6 @@ class ModalGridView extends Component {
       onCancel={this.handleCancel}
       footer={[<Button loading={this.state.downloadBtn102Loading} key={'savemt'} onClick={this.handleSave}>Скачать
         МТ102</Button>,
-        <Button key={'exportExcel'}>{formatMessage({ id: 'system.excelExport' })}</Button>,
         <Button key={'closeExcel'} onClick={this.handleCancel}>{formatMessage({ id: 'system.close' })}</Button>]}
       visible={visible}>
       <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingFirst}>
