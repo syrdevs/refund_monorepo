@@ -128,7 +128,6 @@ class CounterAgentView extends Component {
         bordered={false}
         bodyStyle={{ padding: 0 }}>
         <Row style={{ marginTop: "5px" }}>
-          <Spin spinning={this.props.loadingData}>
             <Form layout="horizontal" hideRequiredMark>
               <Tabs
                 tabBarStyle={{ textAlign: "left" }}
@@ -156,7 +155,6 @@ class CounterAgentView extends Component {
                 </TabPane>
               </Tabs>
             </Form>
-          </Spin>
         </Row>
       </Card>
     </ContentLayout>);
