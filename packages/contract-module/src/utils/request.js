@@ -137,9 +137,9 @@ export default function request(url, option) {
     }
   }
 */
+  let baseUrl = "http://185.27.192.177:6307";
 
-
-  newOptions.url = url;
+  newOptions.url = baseUrl + url;
   newOptions.data = newOptions.body;
 
   return axios(newOptions)
