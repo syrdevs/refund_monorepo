@@ -41,6 +41,8 @@ import PullFilter from "../Pulls/PullFilter";
 import ExecuteModal from "../Pulls/ExecuteModal";
 import ApproveModal from "../Pulls/ApproveModal";
 import SignModal from "../Pulls/SignModal";
+import saveAs from "file-saver";
+import request from "../../utils/request";
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -54,7 +56,8 @@ class MainView extends Component {
     this.state = {
 
       ImportXMLModal: {
-        visible: false
+        visible: false,
+        data:[]
       },
       showpull: false,
       sortedInfo: {},
@@ -236,6 +239,7 @@ class MainView extends Component {
       }
     };
   }
+
   componentWillUnmount() {
     const { dispatch } = this.props;
     dispatch({
@@ -245,6 +249,7 @@ class MainView extends Component {
       }
     });
   }
+
   loadMainGridData = () => {
 
     const { dispatch } = this.props;
@@ -271,6 +276,7 @@ class MainView extends Component {
     }
   });*/
   };
+
   componentDidMount() {
     this.loadMainGridData();
 
@@ -293,6 +299,7 @@ class MainView extends Component {
         payload: {},
       });*/
   }
+
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
@@ -318,11 +325,9 @@ class MainView extends Component {
   setBadgeStatus = (value) => {
     if (value) {
       return "success";
-    }
-    else if (value === undefined) {
+    } else if (value === undefined) {
       return "default";
-    }
-    else {
+    } else {
       return "error";
     }
   };
@@ -334,13 +339,13 @@ class MainView extends Component {
   };
 
   togglePulls() {
-   //showpull
+    //showpull
     this.setState({
       isHidden: false,
       searchButton: false,
       searchercont: 7,
       tablecont: 17,
-      showpull:true
+      showpull: true
     });
   }
 
@@ -350,7 +355,7 @@ class MainView extends Component {
       isHidden: false,
       searchercont: 7,
       tablecont: 17,
-      showpull:false
+      showpull: false
     });
   }
 
@@ -360,37 +365,37 @@ class MainView extends Component {
       isHidden: false,
       searchercont: 8,
       tablecont: 16,
-      showpull:false
+      showpull: false
     });
   }
 
   confirming = () => {
     Modal.confirm({
-      title: 'Подтвердить',
-      content: 'Подтверждаете что надо подтвердить подтверждение?',
-      okText: 'Подтвердить',
-      cancelText: 'Отмена',
+      title: "Подтвердить",
+      content: "Подтверждаете что надо подтвердить подтверждение?",
+      okText: "Подтвердить",
+      cancelText: "Отмена",
       onOk() {
-        console.log('OK');
+        console.log("OK");
       },
       onCancel() {
-        console.log('Cancel');
-      },
+        console.log("Cancel");
+      }
     });
   };
 
-  rejecting= () => {
+  rejecting = () => {
     Modal.confirm({
-      title: 'Отклонить',
-      content: 'Подтверждаете что надо отклонить отклонение?',
-      okText: 'Подтвердить',
-      cancelText: 'Отмена',
+      title: "Отклонить",
+      content: "Подтверждаете что надо отклонить отклонение?",
+      okText: "Подтвердить",
+      cancelText: "Отмена",
       onOk() {
-        console.log('OK');
+        console.log("OK");
       },
       onCancel() {
-        console.log('Cancel');
-      },
+        console.log("Cancel");
+      }
     });
   };
 
@@ -401,7 +406,7 @@ class MainView extends Component {
         searchButton: false,
         searchercont: 0,
         tablecont: 24,
-        showpull:false
+        showpull: false
       });
     }
   }
@@ -802,8 +807,24 @@ class MainView extends Component {
     }
     return decodeURI(filenames);
   };
-  importXmlAction = () => {
-    this.setState(prevState => ({ ImportXMLModal: { visible: true } }));
+
+
+  importXmlAction = (file) => {
+
+    let formData = new FormData();
+    formData.append("content", file.file);
+    request("/api/refund/importPaymentStatment",{
+      method: 'POST',
+      body: formData,
+    }).then((response)=>{
+      this.setState({
+        ImportXMLModal: {
+          visible: true,
+          data: response
+        }
+      });
+    })
+
   };
 
   render() {
@@ -824,6 +845,10 @@ class MainView extends Component {
         {this.state.ImportXMLModal.visible &&
         <ImportXMLModal
           closeAction={() => this.setState(prevState => ({ ImportXMLModal: { visible: false } }))}
+          columns={this.state.columns}
+          fcolumn={this.state.fcolumn}
+          loadingData={this.props.loadingData}
+          xmldata={this.state.ImportXMLModal.data}
           onSelectedRows={(selectedRecords) => console.log(selectedRecords)}
         />}
 
@@ -854,114 +879,123 @@ class MainView extends Component {
 
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
-            <Card bodyStyle={{ padding: 5 }} style={{marginTop:'5px'}}>
-                <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length} selectedRows={this.state.selectedRowKeys}/>
-                <Button onClick={() => {
-                  this.confirming()
+            <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "5px" }}>
+              <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length}
+                            selectedRows={this.state.selectedRowKeys}/>
+              <Button onClick={() => {
+                this.confirming();
+              }}
+                      disabled={true}
+                      style={{ marginLeft: "5px" }}
+                      key={"confirm"}
+              >
+                Подтвердить
+              </Button>
+              <Button
+                disabled={true}
+                onClick={() => {
+                  this.rejecting();
                 }}
-                        disabled={true}
-                        style={{marginLeft:'5px'}}
-                        key={"confirm"}
-                >
-                  Подтвердить
-                </Button>
-                <Button
-                  disabled={true}
-                  onClick={() => {
-                  this.rejecting()
-                }}
-                        style={{marginLeft:'5px'}}
-                        key={"reject"}
-                >
-                  Отклонить
-                </Button>
-                <ApproveModal disabled={true}/>
-                <SignModal disabled={true}/>
+                style={{ marginLeft: "5px" }}
+                key={"reject"}
+              >
+                Отклонить
+              </Button>
+              <ApproveModal disabled={true}/>
+              <SignModal disabled={true}/>
             </Card>
-            <Card bodyStyle={{ padding: 5 }} style={{margin:'5px 0 10px 0'}}>
-                <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: "menu.mainview.approveBtn" }))}
-                        disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                        style={{marginLeft:'5px'}}
-                        key={"odobrit"} className={"btn-success"}
-                >
-                  {formatMessage({ id: "menu.mainview.approveBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-                </Button>
-                <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: "menu.mainview.cancelBtn" }))}
-                        disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                        key={"cancel"}
-                        style={{marginLeft:'5px'}}
-                        className={"btn-danger"}>
-                  {formatMessage({ id: "menu.mainview.cancelBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-                </Button>
-                <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: "menu.mainview.saveBtn" }))}
-                        disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                        style={{marginLeft:'5px'}}
-                        key={"save"}>{formatMessage({ id: "menu.mainview.saveBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>
-                <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: "menu.mainview.performBtn" }))}
-                        disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                        style={{marginLeft:'5px', marginRight:'5px'}}
-                        key={"run"}>{formatMessage({ id: "menu.mainview.performBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>
-                <Dropdown key={"dropdown"} trigger={["click"]} overlay={<Menu>
-                  <Menu.Item
-                    disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
-                    key="1"
-                    onClick={this.AppRefundStatusAuto}>
-                    {formatMessage({ id: "menu.mainview.verifyRPMUBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
-                  </Menu.Item>
-                  <Menu.Item
-                    key="2" onClick={this.exportToExcel}>
-                    {formatMessage({ id: 'menu.mainview.excelBtn' })}
-                  </Menu.Item>
-                  <Menu.Item
-                    disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.selectedRowKeys.length === 0])}
-                    key="3"
-                    onClick={() => {
-                      this.setState({ ModalChangeDateRefund: true });
+            <Card bodyStyle={{ padding: 5 }} style={{ margin: "5px 0 10px 0" }}>
+              <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: "menu.mainview.approveBtn" }))}
+                      disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                      style={{ marginLeft: "5px" }}
+                      key={"odobrit"} className={"btn-success"}
+              >
+                {formatMessage({ id: "menu.mainview.approveBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+              </Button>
+              <Button onClick={() => this.setStatusRecord(2, formatMessage({ id: "menu.mainview.cancelBtn" }))}
+                      disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                      key={"cancel"}
+                      style={{ marginLeft: "5px" }}
+                      className={"btn-danger"}>
+                {formatMessage({ id: "menu.mainview.cancelBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+              </Button>
+              <Button onClick={() => this.setStatusRecord(3, formatMessage({ id: "menu.mainview.saveBtn" }))}
+                      disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                      style={{ marginLeft: "5px" }}
+                      key={"save"}>{formatMessage({ id: "menu.mainview.saveBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>
+              <Button onClick={() => this.setStatusRecord(4, formatMessage({ id: "menu.mainview.performBtn" }))}
+                      disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                      style={{ marginLeft: "5px", marginRight: "5px" }}
+                      key={"run"}>{formatMessage({ id: "menu.mainview.performBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>
+              <Dropdown key={"dropdown"} trigger={["click"]} overlay={<Menu>
+                <Menu.Item
+                  disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                  key="1"
+                  onClick={this.AppRefundStatusAuto}>
+                  {formatMessage({ id: "menu.mainview.verifyRPMUBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
+                </Menu.Item>
+                <Menu.Item
+                  key="2" onClick={this.exportToExcel}>
+                  {formatMessage({ id: "menu.mainview.excelBtn" })}
+                </Menu.Item>
+                <Menu.Item
+                  disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.selectedRowKeys.length === 0])}
+                  key="3"
+                  onClick={() => {
+                    this.setState({ ModalChangeDateRefund: true });
+                  }}>
+                  {formatMessage({ id: "menu.mainview.setDateBtn" })}
+                </Menu.Item>
+                <Menu.Item disabled={hasRole(["ADMIN", "FSMS2"])} key="4" onClick={() => {
+                  this.showModal();
+                }}>
+                  {formatMessage({ id: "menu.mainview.mt102Btn" })}
+                </Menu.Item>
+
+                <Menu.Item disabled={hasRole(["ADMIN"])} key="5" onClick={() => {
+                }}>
+
+                  <Upload
+                    showUploadList={false}
+                    openFileDialogOnClick={true}
+                    onRemove={() => {
+
+                    }}
+                    onPreview={() => {
+
+                    }}
+                    beforeUpload={(file) => {
+                      /*this.setState(state => ({
+                        fileList: [...state.fileList, file],
+                      }));
+                      return false;*/
+                      //console.log("test");
+                      //this.importXmlAction(file);
+                      return false;
+                    }}
+                    onChange={(file) => {
+                      if (file.status !== "removing") {
+                        this.importXmlAction(file);
+                      }
                     }}>
-                    {formatMessage({ id: "menu.mainview.setDateBtn" })}
-                  </Menu.Item>
-                  <Menu.Item disabled={hasRole(["ADMIN", "FSMS2"])} key="4" onClick={() => {
-                    this.showModal();
-                  }}>
-                    {formatMessage({ id: "menu.mainview.mt102Btn" })}
-                  </Menu.Item>
-
-                  <Menu.Item disabled={hasRole(['ADMIN'])} key="5" onClick={() => {
-                  }}>
-
-                    <Upload
-                      showUploadList={false}
-                      openFileDialogOnClick={true}
-                      onRemove={() => {
-
-                      }}
-                      onPreview={() => {
-
-                      }}
-                      onChange={(e) => {
-                        if (e.file.status === 'done') {
-                          console.log(e.file);
-                          this.importXmlAction();
-                        }
-                      }}>
-                      {formatMessage({ id: 'menu.mainview.xmlBtn' })}
-                    </Upload>
-                  </Menu.Item>
-                  <Menu.Item disabled={hasRole(["ADMIN"])} key="6" onClick={() => {
-                    this.showGraphic();
-                  }}>
-                    {formatMessage({ id: "menu.mainview.infographBtn" })}
-                  </Menu.Item>
-                  <Menu.Item disabled={hasRole(["FSMS1", "FSMS2", "ADMIN"])} key="7" onClick={() => {
-                    this.refundsReceiver();
-                  }}>
-                    {formatMessage({ id: "menu.mainview.refundreceiver" })}
-                  </Menu.Item>
-                </Menu>}>
-                  <Button disabled={hasRole(["FSMS2", "ADMIN"])}
-                          key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
-                    type="down"/></Button>
-                </Dropdown>
+                    {formatMessage({ id: "menu.mainview.xmlBtn" })}
+                  </Upload>
+                </Menu.Item>
+                <Menu.Item disabled={hasRole(["ADMIN"])} key="6" onClick={() => {
+                  this.showGraphic();
+                }}>
+                  {formatMessage({ id: "menu.mainview.infographBtn" })}
+                </Menu.Item>
+                <Menu.Item disabled={hasRole(["FSMS1", "FSMS2", "ADMIN"])} key="7" onClick={() => {
+                  this.refundsReceiver();
+                }}>
+                  {formatMessage({ id: "menu.mainview.refundreceiver" })}
+                </Menu.Item>
+              </Menu>}>
+                <Button disabled={hasRole(["FSMS2", "ADMIN"])}
+                        key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
+                  type="down"/></Button>
+              </Dropdown>
             </Card>
           </Row>
           <Row>
@@ -1113,7 +1147,9 @@ class MainView extends Component {
                 }}
                 addonButtons={[
                   <Button
-                    onClick={() => { this.togglePulls(); }}
+                    onClick={() => {
+                      this.togglePulls();
+                    }}
                     disabled={false}
                     key={"pulls"}
                   >
