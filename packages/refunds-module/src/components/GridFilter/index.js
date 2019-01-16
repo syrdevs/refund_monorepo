@@ -210,6 +210,7 @@ class GridFilter extends Component {
         [filterItem.name]: value
       }
     });
+
   };
   withmaxfieldOnChange = (filterItem, value, max) => {
 
@@ -252,6 +253,11 @@ class GridFilter extends Component {
 
         /// to do is null  prefix
         if (["betweenDate"].indexOf(fields[field].type) !== -1) {
+          filterData[field + "Start"] = fields[field].disabled ? null : formFilters[field][0];
+          filterData[field + "End"] = fields[field].disabled ? null : formFilters[field][1];
+          return;
+        }
+        if (["betweenMonthPicker"].indexOf(fields[field].type) !== -1) {
           filterData[field + "Start"] = fields[field].disabled ? null : formFilters[field][0];
           filterData[field + "End"] = fields[field].disabled ? null : formFilters[field][1];
           return;
@@ -372,6 +378,62 @@ class GridFilter extends Component {
                 />
               </LocaleProvider>
             </Col>
+          </Row>
+        </div>);
+      }
+
+      case "betweenMonthPicker": {
+
+        let RangeDateProps = {
+          ref: React.createRef(),
+          /*     defaultValue: formFilters[filterItem.name] ? formFilters[filterItem.name] : [moment(new Date(), dateFormat), moment(new Date(), dateFormat)],*/
+          format: dateFormat,
+          onChange: (moment, dateString) => {
+            this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString);
+          }
+        };
+
+        if (isClearFilter) {
+          RangeDateProps.value = null;
+          /*this.setState({
+            isClearFilter: false,
+          });*/
+        }
+
+        // let mode= ['month', 'month'];
+        // let value = [];
+
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
+
+          <Row>
+            <Col md={22}>
+              <LocaleProvider locale={componentLocal}>
+                <RangePicker   {...RangeDateProps}
+                               format={"MM.YYYY"}
+                               placeholder={[
+                                 formatMessage({ id: "datepicker.start.label" }),
+                                 formatMessage({ id: "datepicker.end.label" })
+                               ]}
+                               // value={value}
+                               mode={['month', 'month']}
+                               disabledDate={this.disabledDate}
+                               disabled={fields[filterItem.name].disabled}/>
+              </LocaleProvider>
+            </Col>
+            {filterItem.nullBtn &&
+            <Col md={2}>
+              <div style={{ margin: "5px" }}>
+                <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
+                  fields[filterItem.name].disabled = e.target.checked;
+                  this.setState({
+                    fields: fields,
+                    formFilters: formFilters
+                  });
+                }}/>
+              </div>
+            </Col>
+            }
+
           </Row>
         </div>);
       }

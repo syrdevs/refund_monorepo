@@ -34,6 +34,7 @@ import SearcherJur from '../SearchPhysical/SearcherJur';
 import saveAs from 'file-saver';
 import PaymentsMT100 from './PaymentsMT100';
 import PaymentsMT102 from './PaymentsMT102';
+import Consumer from "./Consumer";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -619,6 +620,9 @@ class PaymentsPage extends Component {
           </TabPane>
           <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="mt102">
             <PaymentsMT102/>
+          </TabPane>
+          <TabPane tab={'Потребитель'} key="consumer">
+            <Consumer/>
           </TabPane>
         </Tabs>
       </Card>
