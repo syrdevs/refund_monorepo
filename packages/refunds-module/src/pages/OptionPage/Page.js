@@ -38,7 +38,9 @@ import connect from "../../Redux";
 // import { Animated } from "react-animated-css";
 // import componentLocal from '../../locales/components/componentLocal';
 // import ImportXMLModal from './ImportXMLModal';
-// import saveAs from "file-saver";
+import saveAs from "file-saver";
+import request from "../../utils/request";
+import Guid from "../../utils/Guid";
 
 function formatMessage(langItem) {
   return langItem.id;
@@ -706,54 +708,88 @@ class MainView extends Component {
   };
   exportToExcel = () => {
 
-    let authToken = localStorage.getItem("token");
     let columns = JSON.parse(localStorage.getItem("RefundsPageColumns"));
 
-    fetch("/api/refund/exportToExcel",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
+    request("/api/refund/mt102GroupByKnp", {
+      responseType: "blob",
+      method: "POST",
+      body: {
+        "entityClass": "Refund",
+        "fileName": formatMessage({ id: "menu.refunds" }),
+        "src": {
+          "searched": true,
+          "data": this.state.pagingConfig.src.data
         },
-        method: "post",
-        body: JSON.stringify({
-          "entityClass": "Refund",
-          "fileName": formatMessage({ id: "menu.refunds" }),
-          "src": {
-            "searched": true,
-            "data": this.state.pagingConfig.src.data
-          },
-          "columns": [{
-            "title": "Статус заявки на возврат",
-            "dataIndex": "dappRefundStatusId.nameRu"
-          }, {
-            "dataIndex": "personSurname",
-            "title": "Фамилия"
-          }, {
-            "dataIndex": "personFirstname",
-            "title": "Имя"
-          }, {
-            "dataIndex": "personPatronname",
-            "title": "Отчество"
-          }].concat(columns.filter(column => column.isVisible))
-        })
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
-          });
+        "columns": [{
+          "title": "Статус заявки на возврат",
+          "dataIndex": "dappRefundStatusId.nameRu"
+        }, {
+          "dataIndex": "personSurname",
+          "title": "Фамилия"
+        }, {
+          "dataIndex": "personFirstname",
+          "title": "Имя"
+        }, {
+          "dataIndex": "personPatronname",
+          "title": "Отчество"
+        }].concat(columns.filter(column => column.isVisible))
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
         }
-      })
-      .then(data => {
-        if (data) {
-          saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
-        }
-      });
+      }
+    });
+
+    // let authToken = localStorage.getItem("token");
+    //
+    //
+    // fetch("/api/refund/exportToExcel",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       "entityClass": "Refund",
+    //       "fileName": formatMessage({ id: "menu.refunds" }),
+    //       "src": {
+    //         "searched": true,
+    //         "data": this.state.pagingConfig.src.data
+    //       },
+    //       "columns": [{
+    //         "title": "Статус заявки на возврат",
+    //         "dataIndex": "dappRefundStatusId.nameRu"
+    //       }, {
+    //         "dataIndex": "personSurname",
+    //         "title": "Фамилия"
+    //       }, {
+    //         "dataIndex": "personFirstname",
+    //         "title": "Имя"
+    //       }, {
+    //         "dataIndex": "personPatronname",
+    //         "title": "Отчество"
+    //       }].concat(columns.filter(column => column.isVisible))
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
+    //     }
+    //   });
 
   };
   getFileNameByContentDisposition = (contentDisposition) => {

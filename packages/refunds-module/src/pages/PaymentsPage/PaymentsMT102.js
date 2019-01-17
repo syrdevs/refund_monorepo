@@ -28,6 +28,10 @@ import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
 import { Animated } from "react-animated-css";
 import moment from "moment/moment";
+import request from "../../utils/request";
+import Guid from "../../utils/Guid";
+import saveAs from "file-saver";
+
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -272,54 +276,74 @@ class PaymentsMT102 extends Component {
 
     let authToken = localStorage.getItem("AUTH_TOKEN");
 
-    fetch("/api/refund/exportToExcel",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
+    request("/api/refund/exportToExcel", {
+      responseType: "blob",
+      method: "post",
+      body: {
+        "entityClass": this.state.parameters.entity,
+        "fileName": this.state.parameters.entity === "mt100" ? formatMessage({ id: "menu.payments.payment100" }) : formatMessage({ id: "menu.payments.payment102" }),
+        "src": {
+          "searched": true,
+          "data": this.state.parameters.filter
         },
-        method: "post",
-        body: JSON.stringify({
-          "entityClass": this.state.parameters.entity,
-          "fileName": this.state.parameters.entity === "mt100" ? formatMessage({ id: "menu.payments.payment100" }) : formatMessage({ id: "menu.payments.payment102" }),
-          "src": {
-            "searched": true,
-            "data": this.state.parameters.filter
-          },
-          "columns": this.state.parameters.entity == "mt100" ? JSON.parse(localStorage.getItem("paymentspagemt100columns")).filter(item => item.isVisible === "true" || item.isVisible === true) : JSON.parse(localStorage.getItem("paymentspagemt102columns")).filter(item => item.isVisible === "true"  || item.isVisible === true)
-        })
-      })
-    // .then(response => response.blob())
-    // .then(responseBlob => {
-    //
-    //   var reader = new FileReader();
-    //   reader.addEventListener('loadend', function() {
-    //     var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
-    //     var url = URL.createObjectURL(blob);
-    //     window.open(url, '_self');
+        "columns": this.state.parameters.entity == "mt100" ? JSON.parse(localStorage.getItem("paymentspagemt100columns")).filter(item => item.isVisible === "true" || item.isVisible === true) : JSON.parse(localStorage.getItem("paymentspagemt102columns")).filter(item => item.isVisible === "true" || item.isVisible === true)
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        }
+      }
+    });
+
+    // fetch("/api/refund/exportToExcel",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       "entityClass": this.state.parameters.entity,
+    //       "fileName": this.state.parameters.entity === "mt100" ? formatMessage({ id: "menu.payments.payment100" }) : formatMessage({ id: "menu.payments.payment102" }),
+    //       "src": {
+    //         "searched": true,
+    //         "data": this.state.parameters.filter
+    //       },
+    //       "columns": this.state.parameters.entity == "mt100" ? JSON.parse(localStorage.getItem("paymentspagemt100columns")).filter(item => item.isVisible === "true" || item.isVisible === true) : JSON.parse(localStorage.getItem("paymentspagemt102columns")).filter(item => item.isVisible === "true" || item.isVisible === true)
+    //     })
+    //   })
+    // // .then(response => response.blob())
+    // // .then(responseBlob => {
+    // //
+    // //   var reader = new FileReader();
+    // //   reader.addEventListener('loadend', function() {
+    // //     var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
+    // //     var url = URL.createObjectURL(blob);
+    // //     window.open(url, '_self');
+    // //   });
+    // //   reader.readAsArrayBuffer(responseBlob);
+    // //
+    // //   /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
+    // //      url = window.URL.createObjectURL(blob);
+    // //    window.open(url, '_self');*/
+    // // });
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
+    //     }
     //   });
-    //   reader.readAsArrayBuffer(responseBlob);
-    //
-    //   /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
-    //      url = window.URL.createObjectURL(blob);
-    //    window.open(url, '_self');*/
-    // });
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
-          });
-        }
-      })
-      .then(data => {
-        if (data) {
-          saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
-        }
-      });
 
   };
   getFileNameByContentDisposition = (contentDisposition) => {

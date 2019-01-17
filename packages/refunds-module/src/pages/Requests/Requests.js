@@ -19,6 +19,8 @@ import formatMessage from "../../utils/formatMessage";
 import { Animated } from "react-animated-css";
 import saveAs from "file-saver";
 import moment from "moment";
+import request from "../../utils/request";
+import Guid from "../../utils/Guid";
 
 class Requests extends Component {
   constructor(props) {
@@ -124,8 +126,8 @@ class Requests extends Component {
   };
 
   setFilter = (filters) => {
-    if(filters.knpList!=null && filters.knpList.length===0){
-      delete filters['knpList'];
+    if (filters.knpList != null && filters.knpList.length === 0) {
+      delete filters["knpList"];
     }
     this.setState(prevState => ({
       sortedInfo: {},
@@ -134,7 +136,7 @@ class Requests extends Component {
         "start": 0,
         "length": 10,
         "sort": [],
-        "filter": {...filters}
+        "filter": { ...filters }
       }
     }), () => {
       this.loadMainGridData();
@@ -298,72 +300,115 @@ class Requests extends Component {
       }
     ];
 
-    fetch("/api/refund/exportToExcel",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
+    request("/api/refund/exportToExcel", {
+      method: "post",
+      responseType: "blob",
+      body: {
+        "entityClass": "application",
+        "fileName": formatMessage({ id: "menu.refunds.requests" }),
+        "src": {
+          "searched": true,
+          "data": this.state.pagingConfig.src.data
         },
-        method: "post",
-        body: JSON.stringify({
-          "entityClass": "application",
-          "fileName": formatMessage({ id: "menu.refunds.requests" }),
-          "src": {
-            "searched": true,
-            "data": this.state.pagingConfig.src.data
-          },
-          "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
-        })
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
-          });
+        "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
         }
-      })
-      .then(data => {
-        if (data) {
-          saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
-        }
-      });
+      }
+    });
+
+
+    // fetch("/api/refund/exportToExcel",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       "entityClass": "application",
+    //       "fileName": formatMessage({ id: "menu.refunds.requests" }),
+    //       "src": {
+    //         "searched": true,
+    //         "data": this.state.pagingConfig.src.data
+    //       },
+    //       "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
+    //     }
+    //   });
   };
 
   getservicenote = () => {
-    let filename = "";
-    let authToken = localStorage.getItem("AUTH_TOKEN");
+
     let columns = JSON.parse(localStorage.getItem("journalPageColumns"));
-    fetch("/api/refund/get/oletter",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
-        },
-        method: "post",
-        body: JSON.stringify({
-          "src": {
-            "alias": "d05cafe5-ebf2-4655-88cd-e5c17fe92bc1",
-            "searched": true,
-            "data": this.state.pagingConfig.src.data
-          }
-        })
-      })
-      .then(response => {
-        if (response.ok) {
-          let disposition = response.headers.get("content-disposition");
 
-          filename = this.getFileNameByContentDisposition(disposition);
-
-          return response.blob();
+    request("/api/refund/exportToExcel", {
+      method: "post",
+      responseType: "blob",
+      body: {
+        "src": {
+          "alias": "d05cafe5-ebf2-4655-88cd-e5c17fe92bc1",
+          "searched": true,
+          "data": this.state.pagingConfig.src.data
         }
-      })
-      .then(responseBlob => {
-        saveAs(responseBlob, filename);
-      });
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        }
+      }
+    });
+
+    // let filename = "";
+    // let authToken = localStorage.getItem("AUTH_TOKEN");
+    //
+    // fetch("/api/refund/get/oletter",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       "src": {
+    //         "alias": "d05cafe5-ebf2-4655-88cd-e5c17fe92bc1",
+    //         "searched": true,
+    //         "data": this.state.pagingConfig.src.data
+    //       }
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       let disposition = response.headers.get("content-disposition");
+    //
+    //       filename = this.getFileNameByContentDisposition(disposition);
+    //
+    //       return response.blob();
+    //     }
+    //   })
+    //   .then(responseBlob => {
+    //     saveAs(responseBlob, filename);
+    //   });
+
   };
   getFileNameByContentDisposition = (contentDisposition) => {
     let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
@@ -558,92 +603,92 @@ class Requests extends Component {
             </Col>
             <Col sm={24} md={this.state.tablecont}>
               {/*<Spin tip={formatMessage({ id: "system.loading" })} spinning={this.props.loadingData}>*/}
-                <SmartGridView
-                  name='RequestPageColumns'
-                  searchButton={this.state.searchButton}
-                  fixedBody={true}
-                  rowKey={"id"}
-                  loading={this.props.loadingData}
-                  fixedHeader={true}
-                  rowSelection={true}
-                  actionColumns={this.state.columns.concat(actionColumns)}
-                  columns={propColumns}
-                  sorted={true}
-                  sortedInfo={this.state.sortedInfo}
-                  showTotal={true}
-                  showExportBtn={true}
+              <SmartGridView
+                name='RequestPageColumns'
+                searchButton={this.state.searchButton}
+                fixedBody={true}
+                rowKey={"id"}
+                loading={this.props.loadingData}
+                fixedHeader={true}
+                rowSelection={true}
+                actionColumns={this.state.columns.concat(actionColumns)}
+                columns={propColumns}
+                sorted={true}
+                sortedInfo={this.state.sortedInfo}
+                showTotal={true}
+                showExportBtn={true}
 
-                  dataSource={{
-                    total: universal.table.totalElements,
-                    pageSize: this.state.pagingConfig.length,
-                    page: this.state.pagingConfig.start + 1,
-                    data: universal.table.content
-                  }}
-                  actionExport={() => this.exportToExcel()}
-                  onShowSizeChange={(pageNumber, pageSize) => {
-                    this.onShowSizeChange(pageNumber, pageSize);
-                  }}
-                  addonButtons={[
-                    <Dropdown key={"dropdown"} trigger={["click"]} overlay={
-                      <Menu>
+                dataSource={{
+                  total: universal.table.totalElements,
+                  pageSize: this.state.pagingConfig.length,
+                  page: this.state.pagingConfig.start + 1,
+                  data: universal.table.content
+                }}
+                actionExport={() => this.exportToExcel()}
+                onShowSizeChange={(pageNumber, pageSize) => {
+                  this.onShowSizeChange(pageNumber, pageSize);
+                }}
+                addonButtons={[
+                  <Dropdown key={"dropdown"} trigger={["click"]} overlay={
+                    <Menu>
 
-                        <Menu.Item key="4" onClick={() => {
+                      <Menu.Item key="4" onClick={() => {
 
-                          this.getservicenote();
-                        }}>
-                          {formatMessage({ id: "menu.requests.servicenote" })}
-                        </Menu.Item>
-                      </Menu>}>
-                      <Button
-                        key='action'
-                      >{formatMessage({ id: "menu.mainview.actionBtn" })}
-                        <Icon
-                          type="down"/>
-                      </Button>
-                    </Dropdown>
-                  ]}
-                  onSort={(column) => {
+                        this.getservicenote();
+                      }}>
+                        {formatMessage({ id: "menu.requests.servicenote" })}
+                      </Menu.Item>
+                    </Menu>}>
+                    <Button
+                      key='action'
+                    >{formatMessage({ id: "menu.mainview.actionBtn" })}
+                      <Icon
+                        type="down"/>
+                    </Button>
+                  </Dropdown>
+                ]}
+                onSort={(column) => {
 
-                    if (Object.keys(column).length === 0) {
-                      this.setState(prevState => ({
-                        sortedInfo: {},
-                        pagingConfig: {
-                          ...prevState.pagingConfig,
-                          sort: []
-                        }
-                      }), () => {
-                        this.loadMainGridData();
-                      });
-                      return;
-                    }
-
+                  if (Object.keys(column).length === 0) {
                     this.setState(prevState => ({
-                      sortedInfo: column,
+                      sortedInfo: {},
                       pagingConfig: {
                         ...prevState.pagingConfig,
-                        sort: [{ field: column.field, "desc": column.order === "descend" }]
+                        sort: []
                       }
                     }), () => {
                       this.loadMainGridData();
                     });
+                    return;
+                  }
 
-                  }}
-                  onSelectCell={(cellIndex, cell) => {
+                  this.setState(prevState => ({
+                    sortedInfo: column,
+                    pagingConfig: {
+                      ...prevState.pagingConfig,
+                      sort: [{ field: column.field, "desc": column.order === "descend" }]
+                    }
+                  }), () => {
+                    this.loadMainGridData();
+                  });
 
-                  }}
-                  onSelectRow={(record) => {
+                }}
+                onSelectCell={(cellIndex, cell) => {
 
-                  }}
-                  onFilter={(filters) => {
+                }}
+                onSelectRow={(record) => {
 
-                  }}
-                  onRefresh={() => {
-                    this.refreshTable();
-                  }}
-                  onSearch={() => {
-                    this.toggleSearcher();
-                  }}
-                />
+                }}
+                onFilter={(filters) => {
+
+                }}
+                onRefresh={() => {
+                  this.refreshTable();
+                }}
+                onSearch={() => {
+                  this.toggleSearcher();
+                }}
+              />
               {/*</Spin>*/}
             </Col>
           </Row>

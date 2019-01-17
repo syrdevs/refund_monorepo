@@ -238,6 +238,7 @@ class ShowAct extends Component {
     // todo download
 
     request("/api/uicommand/downloadFile", {
+      responseType: "blob",
       method: "POST",
       body: {
         "entity": "act",

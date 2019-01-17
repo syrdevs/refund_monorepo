@@ -27,6 +27,8 @@ import formatMessage from "../../utils/formatMessage";
 import componentLocal from "../../locales/components/componentLocal";
 import ru_RU from "antd/lib/locale-provider/ru_RU";
 import saveAs from "file-saver";
+import request from "../../utils/request";
+import Guid from "../../utils/Guid";
 
 class ReportsGrid extends Component {
   state = {
@@ -124,32 +126,53 @@ class ReportsGrid extends Component {
 
   downloadFile = async (param) => {
 
-    let authToken = localStorage.getItem("AUTH_TOKEN");
-
-    fetch("/api/report/getReportResult?id=" + param.id,
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
-        },
-        method: "GET"
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
+    request("/api/report/getReportResult?id=" + param.id, {
+      responseType: "blob",
+      getResponse: (response) => {
+        if (response.status === 400) {
+          Modal.error({
+            title: "Ошибка",
+            content: response.data
           });
+        } else {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
         }
-      })
-      .then(data => {
-        if (data) {
-          saveAs(data.raw, data.fileName);
-        }
-      });
+      }
+    });
+    // .then((result) => {
+    //   if (!result.error) {
+    //     if (response.data && response.data.type)
+    //       saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+    //   }
+    // });
+
+    // let authToken = localStorage.getItem("AUTH_TOKEN");
+
+    // fetch("/api/report/getReportResult?id=" + param.id,
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "GET"
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, data.fileName);
+    //     }
+    //   });
 
     ///api/report/getReportResult?id=
 
@@ -206,21 +229,36 @@ class ReportsGrid extends Component {
   }
 
   getOrder = async (taskItem, count, call) => {
-    let token = localStorage.getItem("AUTH_TOKEN");
 
-    const res = await fetch("/api/report/getReportStatus?id=" + taskItem, {
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Authorization: "Bearer " + token
+    request("/api/report/getReportStatus?id=" + taskItem, {
+      getResponse: (response) => {
+        if (response.status === 200) {
+          const json = response.data;
+
+          if (json.status !== 0) {
+            this.setStatus(taskItem, json, call);
+          } else if (count === 0) {
+            this.setStatus(taskItem, { status: 2, message: formatMessage({ id: "system.system.timeout" }) }, call);
+          }
+        }
       }
     });
-    const json = await res.json();
 
-    if (json.status !== 0) {
-      this.setStatus(taskItem, json, call);
-    } else if (count === 0) {
-      this.setStatus(taskItem, { status: 2, message: formatMessage({ id: "system.system.timeout" }) }, call);
-    }
+    // let token = localStorage.getItem("AUTH_TOKEN");
+    //
+    // const res = await fetch("/api/report/getReportStatus?id=" + taskItem, {
+    //   headers: {
+    //     "Content-Type": "application/json; charset=utf-8",
+    //     Authorization: "Bearer " + token
+    //   }
+    // });
+    // const json = await res.json();
+    //
+    // if (json.status !== 0) {
+    //   this.setStatus(taskItem, json, call);
+    // } else if (count === 0) {
+    //   this.setStatus(taskItem, { status: 2, message: formatMessage({ id: "system.system.timeout" }) }, call);
+    // }
   };
 
   setStatus = async (taskItem, json, call) => {
@@ -247,29 +285,52 @@ class ReportsGrid extends Component {
 
   saveOrder = async () => {
 
-    let token = localStorage.getItem("AUTH_TOKEN");
-
-    const res = await fetch("/api/report/createReport", {
+    request("/api/report/createReport", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Authorization: "Bearer " + token
-      },
-      body: JSON.stringify({
+      body: {
         "id": this.props.record.id,
         "parameters": this.props.filterData
-      })
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          let result = response.data;
+          result.reportId = this.props.record;
+
+          this.setState(prevState => ({
+            isErrorReport: !prevState.isErrorReport,
+            dataSource: [result, ...prevState.dataSource]
+          }), () => {
+            this.createTask(result);
+          });
+        }
+      }
     });
 
-    let result = await res.json();
-    result.reportId = this.props.record;
+    // let token = localStorage.getItem("AUTH_TOKEN");
+    //
+    // const res = await fetch("/api/report/createReport", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json; charset=utf-8",
+    //     Authorization: "Bearer " + token
+    //   },
+    //   body: JSON.stringify({
+    //     "id": this.props.record.id,
+    //     "parameters": this.props.filterData
+    //   })
+    // });
+    //
+    // let result = await res.json();
+    // result.reportId = this.props.record;
+    //
+    // this.setState(prevState => ({
+    //   isErrorReport: !prevState.isErrorReport,
+    //   dataSource: [result, ...prevState.dataSource]
+    // }), () => {
+    //   this.createTask(result);
+    // });
 
-    this.setState(prevState => ({
-      isErrorReport: !prevState.isErrorReport,
-      dataSource: [result, ...prevState.dataSource]
-    }), () => {
-      this.createTask(result);
-    });
+
   };
 
   componentDidUpdate() {

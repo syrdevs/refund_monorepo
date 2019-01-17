@@ -463,6 +463,7 @@ class ViewAct extends Component {
 
 
     request("/api/uicommand/downloadFile", {
+      responseType: "blob",
       method: "POST",
       body: {
         "entity": "documentAttachment",

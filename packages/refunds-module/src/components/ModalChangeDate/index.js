@@ -4,6 +4,8 @@ import moment from "moment";
 import formatMessage from "../../utils/formatMessage";
 import connect from "../../Redux";
 import saveAs from "file-saver";
+import request from "../../utils/request";
+import Guid from "../../utils/Guid";
 
 class ModalChangeDate extends Component {
 
@@ -144,6 +146,7 @@ class ModalChangeDate extends Component {
         uid: file.id,
         name: file.filename
       })),
+      beforeUpload: () => (false),
       onRemove: (file) => {
         if (this.props.universal.files.length === 1 && this.props.dataSource.value !== null) {
           Modal.error({
@@ -157,32 +160,41 @@ class ModalChangeDate extends Component {
       },
       onPreview: (file) => {
 
-        let authToken = localStorage.getItem("AUTH_TOKEN");
+        request("/api/refund/upload/application/download/" + file.uid, {
+          responseType: "blob",
+          method: "POST",
+          getResponse: (response) => {
+            if (response.data && response.data.type)
+              saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+          }
+        });
 
-        fetch("/api/refund/upload/application/download/" + file.uid,
-          {
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: "Bearer " + authToken
-            },
-            method: "post"
-          })
-          .then(response => {
-            if (response.ok) {
-              return response.blob().then(blob => {
-                let disposition = response.headers.get("content-disposition");
-                return {
-                  fileName: this.getFileNameByContentDisposition(disposition),
-                  raw: blob
-                };
-              });
-            }
-          })
-          .then(data => {
-            if (data) {
-              saveAs(data.raw, data.fileName);
-            }
-          });
+        // let authToken = localStorage.getItem("AUTH_TOKEN");
+        //
+        // fetch("/api/refund/upload/application/download/" + file.uid,
+        //   {
+        //     headers: {
+        //       "Content-Type": "application/json; charset=utf-8",
+        //       Authorization: "Bearer " + authToken
+        //     },
+        //     method: "post"
+        //   })
+        //   .then(response => {
+        //     if (response.ok) {
+        //       return response.blob().then(blob => {
+        //         let disposition = response.headers.get("content-disposition");
+        //         return {
+        //           fileName: this.getFileNameByContentDisposition(disposition),
+        //           raw: blob
+        //         };
+        //       });
+        //     }
+        //   })
+        //   .then(data => {
+        //     if (data) {
+        //       saveAs(data.raw, data.fileName);
+        //     }
+        //   });
       },
       onChange: (file, fileList) => {
         if (file.status !== "removing") {
