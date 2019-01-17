@@ -340,16 +340,6 @@ class MainView extends Component {
     });
   };
 
-  togglePulls() {
-    //showpull
-    this.setState({
-      isHidden: false,
-      searchButton: false,
-      searchercont: 7,
-      tablecont: 17,
-      showpull: true
-    });
-  }
 
   toggleSearcher() {
     this.setState({
@@ -371,35 +361,24 @@ class MainView extends Component {
     });
   }
 
-  confirming = () => {
-    Modal.confirm({
-      title: "Подтвердить",
-      content: "Подтверждаете что надо подтвердить подтверждение?",
-      okText: "Подтвердить",
-      cancelText: "Отмена",
-      onOk() {
-        console.log("OK");
-      },
-      onCancel() {
-        console.log("Cancel");
+  createPull=()=>{
+    console.log("creating")
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal/createPack",
+      payload: {
+        "entity":"Refund",
+        "filter":{
+          ...this.state.pagingConfig.filter
+        }
       }
-    });
-  };
-
-  rejecting = () => {
-    Modal.confirm({
-      title: "Отклонить",
-      content: "Подтверждаете что надо отклонить отклонение?",
-      okText: "Подтвердить",
-      cancelText: "Отмена",
-      onOk() {
-        console.log("OK");
-      },
-      onCancel() {
-        console.log("Cancel");
-      }
-    });
-  };
+    }).then(()=>{
+      Modal.success({
+        title: formatMessage({ id: "menu.mainview.pullbtn" }),
+        content: 'Успешно создан!',
+      });
+    })
+  }
 
   hideleft() {
     if (!this.state.isHidden) {
@@ -911,31 +890,6 @@ class MainView extends Component {
 
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
-            <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "5px" }}>
-              <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length}
-                            selectedRows={this.state.selectedRowKeys}/>
-              <Button onClick={() => {
-                this.confirming();
-              }}
-                      disabled={true}
-                      style={{ marginLeft: "5px" }}
-                      key={"confirm"}
-              >
-                Подтвердить
-              </Button>
-              <Button
-                disabled={true}
-                onClick={() => {
-                  this.rejecting();
-                }}
-                style={{ marginLeft: "5px" }}
-                key={"reject"}
-              >
-                Отклонить
-              </Button>
-              <ApproveModal disabled={true}/>
-              <SignModal disabled={true}/>
-            </Card>
             <Card bodyStyle={{ padding: 5 }} style={{ margin: "5px 0 10px 0" }}>
               <Button onClick={() => this.setStatusRecord(1, formatMessage({ id: "menu.mainview.approveBtn" }))}
                       disabled={this.btnIsDisabled(hasRole(["FSMS1", "FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
@@ -959,6 +913,13 @@ class MainView extends Component {
                       disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
                       style={{ marginLeft: "5px", marginRight: "5px" }}
                       key={"run"}>{formatMessage({ id: "menu.mainview.performBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>
+
+              <Button onClick={() => {this.createPull()}}
+                     /* disabled={this.state.selectedRowKeys.length === 0}*/
+                      style={{ marginLeft: "5px", marginRight: "5px" }}
+                      key={"pull"}>
+                {formatMessage({ id: "menu.mainview.pullbtn" })} {/* {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}*/}
+              </Button>
               <Dropdown key={"dropdown"} trigger={["click"]} overlay={<Menu>
                 <Menu.Item
                   disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
@@ -1136,21 +1097,6 @@ class MainView extends Component {
                   </Card>
                 </Animated>
                 }
-                {this.state.showpull &&
-                <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-                  <Card
-                    style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
-                    bodyStyle={{ padding: 0 }}
-                    type="inner"
-                    title={formatMessage({ id: "menu.mainview.pullLocale" })}
-                    extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
-                      icon={faTimes}/></Icon>}
-                  >
-                    <PullFilter/>
-                  </Card>
-                </Animated>
-                }
-
               </div>
             </Col>
             <Col sm={24} md={this.state.tablecont}>
@@ -1177,17 +1123,7 @@ class MainView extends Component {
                   page: this.state.pagingConfig.start + 1,
                   data: universal.table.content
                 }}
-                addonButtons={[
-                  <Button
-                    onClick={() => {
-                      this.togglePulls();
-                    }}
-                    disabled={false}
-                    key={"pulls"}
-                  >
-                    {formatMessage({ id: "menu.mainview.pulls" })}
-                  </Button>
-                ]}
+                addonButtons={[]}
                 actionExport={() => this.exportToExcel()}
                 onShowSizeChange={(pageNumber, pageSize) => {
                   this.onShowSizeChange(pageNumber, pageSize);

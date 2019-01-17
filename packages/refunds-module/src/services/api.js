@@ -225,13 +225,20 @@ export async function getMainSelect1(params) {
   return request('/api/refund/mainselect1');
 }
 export async function setAccept(params) {
-  console.log(params)
-  console.log("-----")
   return request('/api/refund/setAcceptToRefund', {
     method: 'POST',
     body: params.payload,
   });
 }
+
+export async function createRefunkPack(params) {
+
+  return request('/api/refund/createRefundPack', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
 
 export async function getOptionsdata(params) {
   return request('/api/refund/getUserOptionList');

@@ -392,9 +392,9 @@ class Pulls extends Component {
                     extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}
                   >
-                    <PullFilter loadPull={(id)=>this.loadPull(id)} clearPull={
-                      universal
-                    }/>
+                    <PullFilter loadPull={(id)=>this.loadPull(id)} clearPull={()=>{
+                      console.log("clear pull")
+                    }}/>
                   </Card>
                 </Animated>
                 }

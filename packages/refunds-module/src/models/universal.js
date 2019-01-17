@@ -31,7 +31,8 @@ import {
   deleteObject,
   getList,
   getCommands,
-  createSubContract, setAccept
+  createSubContract, setAccept,
+  createRefunkPack
 } from "../services/api";
 
 export default {
@@ -226,6 +227,14 @@ export default {
       const response = yield call(setAccept, payload);
       yield put({
         type: 'setAcceptToRefundReducer',
+        payload: response,
+      });
+    },
+    * createPack(payload, { call, put }) {
+      console.log("createRefundPack");
+      const response = yield call(createRefunkPack, payload);
+      yield put({
+        type: 'createRefunkPackReducer',
         payload: response,
       });
     },
@@ -551,6 +560,12 @@ export default {
       return {
         ...state,
         setAcceptToRefund: payload,
+      };
+    },
+    createRefunkPackReducer(state, { payload }) {
+      return {
+        ...state,
+        createRefunkPack: payload,
       };
     },
     OptionReducer(state, { payload }) {
