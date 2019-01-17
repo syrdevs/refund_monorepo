@@ -1352,7 +1352,7 @@ class SpecPage extends Component {
       }]);
     }
 
-    return (<Spin spinning={this.props.loadingData}>
+    return (
       <Card bodyStyle={{ padding: 5 }} style={{ marginLeft: "-10px" }}>
         {/*<Button onClick={() => {*/}
         {/*this.setState({*/}
@@ -1431,8 +1431,7 @@ class SpecPage extends Component {
             bordered={true}
             dataSource={dataSource} columns={this.state.columns}/>
         </div>
-      </Card>
-    </Spin>);
+      </Card>);
   };
 }
 export default connect(({ universal2, loading }) => ({
