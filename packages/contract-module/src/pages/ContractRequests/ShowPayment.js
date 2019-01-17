@@ -424,10 +424,10 @@ class ShowPayment extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "/contracts2/documents",
+          path: "/contracts/v2/documents",
           breadcrumbName: "Корреспонденция"
         }, {
-          path: "contracts2/counteragent/main",
+          path: "/contracts/v2/counteragent/main",
           breadcrumbName: formatMessage({ id: "app.module.documents.title.view" })
         }]}>
         <Card

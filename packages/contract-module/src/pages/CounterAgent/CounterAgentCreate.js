@@ -208,7 +208,7 @@ class CounterAgentCreate extends Component {
         //   title: 'Информация',
         //   content: 'Договор успешно создан',
         // });
-        this.props.history.push("/contracts2/contracts/table");
+        this.props.history.push("/contracts/v2/contracts/table");
       }
     });
 
@@ -238,7 +238,7 @@ class CounterAgentCreate extends Component {
     }
 
     if (createMode.length === 0) {
-      this.props.history.push("/contracts2/contracts/table");
+      this.props.history.push("/contracts/v2/contracts/table");
     }
 
     this.setState({
@@ -283,10 +283,10 @@ class CounterAgentCreate extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "/contracts2/contracts/table",
+          path: "/contracts/v2/contracts/table",
           breadcrumbName: "Договоры"
         }, {
-          path: "/contracts2/contracts/create",
+          path: "/contracts/v2/contracts/table",
           breadcrumbName: "Новый договор"
         }]}>
         <Form
@@ -324,7 +324,7 @@ class CounterAgentCreate extends Component {
                       value: {}
                     }
                   }).then(() => {
-                    this.props.history.push("/contracts2/contracts/table");
+                    this.props.history.push("/contracts/v2/contracts/table");
                   });
                 }}>Закрыть</Button>,
               <Button

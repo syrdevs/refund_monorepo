@@ -248,7 +248,7 @@ class BillsTable extends Component {
           key="2"
           disabled={this.state.selectedRowKeys.length !== 1}
           onClick={() => {
-            this.props.history.push("/contracts2/bills/edit?id="+this.state.selectedRowKeys[0]);
+            this.props.history.push("/contracts/v2/bills/edit?id="+this.state.selectedRowKeys[0]);
             //router.push("/contract/bills/viewBill?id="+this.state.selectedRowKeys[0])
           }}>
           Открыть
@@ -312,7 +312,7 @@ class BillsTable extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "/contracts2/bills/table",
+          path: "/contracts/v2/bills/table",
           breadcrumbName: "Счет реестр"
         }]}>
         <Row>

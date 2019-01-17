@@ -20,6 +20,8 @@ import {
 } from "antd";
 import "./style.css";
 import LinkModal from "../../components/LinkModal";
+import request from "../../utils/request";
+import Guid from "../../utils/Guid";
 
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
@@ -37,7 +39,7 @@ import SignModal from "../../components/SignModal";
 import TabPageStyle from "../CounterAgent/TabPages/TabPages.less";
 import DropDownAction from "../../components/DropDownAction/";
 import ContentLayout from "../../layouts/ContentLayout";
-import '../CounterAgent/CounterAgent.css';
+import "../CounterAgent/CounterAgent.css";
 
 const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
@@ -218,7 +220,7 @@ class ViewAct extends Component {
     }
 
     if (createMode.length === 0) {
-      this.props.location.history.push("/contracts2/acts/table");
+      this.props.history.push("/contracts/v2/acts/table");
     }
 
     this.setState({
@@ -404,40 +406,62 @@ class ViewAct extends Component {
   uploadFile = (data) => {
     this.props.form.validateFields(
       (err, values) => {
-        if (data.file.status === "done") {
-          let authToken = localStorage.getItem("AUTH_TOKEN");
-          const formData = new FormData();
-          formData.append("entity", "act");
-          formData.append("path", "documentAttachments");
-          formData.append("id", this.state.actid);
-          formData.append("filedata", JSON.stringify({
-            "entity": "documentAttachment",
-            "alias": null,
-            "data": {
-              "fileDescription": values.fileDescription,
-              "attachmentType": { "id": this.state.selectedAttachment ? this.state.selectedAttachment : "cb751382-b9a9-41eb-848c-c9d332f45427" }
-            }
-          }));
-          formData.append("content", data.file.originFileObj);
 
-          const options = {
-            headers: {
-              Authorization: "Bearer " + authToken
-            },
-            method: "POST",
-            body: formData
-          };
-          fetch("/api/uicommand/uploadFile", options)
-            .then(function(response) {
-              if (response.status >= 400) {
-                //throw new Error("Bad response from server");
-              }
-              return response.json();
-            })
-            .then(() => {
-              this.loadData();
-            });
-        }
+        if (err) throw err;
+
+        const formData = new FormData();
+        formData.append("entity", "act");
+        formData.append("path", "documentAttachments");
+        formData.append("id", this.state.actid);
+        formData.append("filedata", JSON.stringify({
+          "entity": "documentAttachment",
+          "alias": null,
+          "data": {
+            "fileDescription": values.fileDescription,
+            "attachmentType": { "id": this.state.selectedAttachment ? this.state.selectedAttachment : "cb751382-b9a9-41eb-848c-c9d332f45427" }
+          }
+        }));
+        formData.append("content", data.file);
+
+        request("/api/uicommand/uploadFile", {
+          method: "post",
+          body: formData
+        }).then(() => this.loadData());
+
+        // if (data.file.status === "done") {
+        //   let authToken = localStorage.getItem("AUTH_TOKEN");
+        //   const formData = new FormData();
+        //   formData.append("entity", "act");
+        //   formData.append("path", "documentAttachments");
+        //   formData.append("id", this.state.actid);
+        //   formData.append("filedata", JSON.stringify({
+        //     "entity": "documentAttachment",
+        //     "alias": null,
+        //     "data": {
+        //       "fileDescription": values.fileDescription,
+        //       "attachmentType": { "id": this.state.selectedAttachment ? this.state.selectedAttachment : "cb751382-b9a9-41eb-848c-c9d332f45427" }
+        //     }
+        //   }));
+        //   formData.append("content", data.file.originFileObj);
+        //
+        //   const options = {
+        //     headers: {
+        //       Authorization: "Bearer " + authToken
+        //     },
+        //     method: "POST",
+        //     body: formData
+        //   };
+        //   fetch("/api/uicommand/uploadFile", options)
+        //     .then(function(response) {
+        //       if (response.status >= 400) {
+        //         //throw new Error("Bad response from server");
+        //       }
+        //       return response.json();
+        //     })
+        //     .then(() => {
+        //       this.loadData();
+        //     });
+        // }
 
 
       });
@@ -458,38 +482,52 @@ class ViewAct extends Component {
     });
   };
   downloadFile = (file) => {
-    let authToken = localStorage.getItem("AUTH_TOKEN");
 
-    fetch("/api/uicommand/downloadFile",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
-        },
-        method: "post",
-        body: JSON.stringify(
-          {
-            "entity": "documentAttachment",
-            "id": file.id
-          }
-        )
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
-          });
-        }
-      })
-      .then(data => {
-        if (data) {
-          saveAs(data.raw, data.fileName);
-        }
-      });
+    request("/api/uicommand/downloadFile", {
+      responseType: "blob",
+      method: "POST",
+      body: {
+        "entity": "documentAttachment",
+        "id": file.id
+      },
+      getResponse: (response) => {
+        if (response.data && response.data.type)
+          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+      }
+    });
+
+    // let authToken = localStorage.getItem("AUTH_TOKEN");
+    //
+    // fetch("http://185.27.192.177:6307/api/uicommand/downloadFile",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify(
+    //       {
+    //         "entity": "documentAttachment",
+    //         "id": file.id
+    //       }
+    //     )
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, data.fileName);
+    //     }
+    //   });
   };
   getFileNameByContentDisposition = (contentDisposition) => {
     var filename = "";
@@ -597,9 +635,6 @@ class ViewAct extends Component {
 
 
   render() {
-
-    console.log(this.props.universal);
-
     const columns = [
       {
         title: "Документ",
@@ -639,6 +674,7 @@ class ViewAct extends Component {
       onRemove: (file) => {
         this.removeFile(file);
       },
+      beforeUpload: () => (false),
       onChange: this.uploadFile
     };
     let title = "Акт выполненных работ";
@@ -683,10 +719,10 @@ class ViewAct extends Component {
             path: "/",
             breadcrumbName: "Главная"
           }, {
-            path: "/contracts2/acts/table",
+            path: "/contracts/v2/acts/table",
             breadcrumbName: "Акты"
           }, {
-            path: "/contracts2/acts/table",
+            path: "/contracts/v2/acts/table",
             breadcrumbName: "Акт выполненных работ"
           }]}>
           <Card
@@ -710,10 +746,10 @@ class ViewAct extends Component {
                   if (this.props.location.query.contractId) {
                     //this.props.history.push("")
                     //to doreduxRouter.push("/contract/contracts/table");
-                    this.props.history.push("/contracts2/contracts/table");
+                    this.props.history.push("/contracts/v2/contracts/table");
                   }
                   else {
-                    this.props.history.push("/contracts2/acts/table");
+                    this.props.history.push("/contracts/v2/acts/table");
                   }
                 }}>
                   Закрыть
@@ -1019,7 +1055,7 @@ class ViewAct extends Component {
   }
 }
 
-export default connect(({ universal,universal2, act, loading }) => ({
+export default connect(({ universal, universal2, act, loading }) => ({
   universal,
   act,
   universal2,

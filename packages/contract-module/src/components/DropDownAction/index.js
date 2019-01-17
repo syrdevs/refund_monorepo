@@ -21,6 +21,8 @@ import {
 import connect from "../../Redux";
 import moment from "moment/moment";
 import saveAs from "file-saver";
+import request from '../../utils/request';
+import Guid from "../../utils/Guid";
 
 class DropDownAction extends Component {
   state = {
@@ -41,43 +43,59 @@ class DropDownAction extends Component {
 
   downloadFile = (contractId, menuId) => {
 
-    let authToken = localStorage.getItem("AUTH_TOKEN");
+    request("/api/uicommand/runCommand", {
+      responseType: "blob",
+      method: "POST",
+      body: {
+        "id": menuId,
+        "parameters": [],
+        "obj_ids": Array.isArray(contractId) ? contractId : [
+          contractId
+        ]
+      },
+      getResponse: (response) => {
+        if (response.data && response.data.type)
+          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+      }
+    });
 
-    this.setState({ loading: true });
-
-    fetch("/api/uicommand/runCommand",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
-        },
-        method: "post",
-        body: JSON.stringify({
-          "id": menuId,
-          "parameters": [],
-          "obj_ids": Array.isArray(contractId) ? contractId : [
-            contractId
-          ]
-        })
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
-            this.setState({ loading: false });
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
-          });
-        }
-      })
-      .then(data => {
-        if (data) {
-
-          saveAs(data.raw, data.fileName);
-        }
-      });
+    // let authToken = localStorage.getItem("AUTH_TOKEN");
+    //
+    // this.setState({ loading: true });
+    //
+    // fetch("/api/uicommand/runCommand",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       "id": menuId,
+    //       "parameters": [],
+    //       "obj_ids": Array.isArray(contractId) ? contractId : [
+    //         contractId
+    //       ]
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //         this.setState({ loading: false });
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //
+    //       saveAs(data.raw, data.fileName);
+    //     }
+    //   });
   };
   getFileNameByContentDisposition = (contentDisposition) => {
     let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;

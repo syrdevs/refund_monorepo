@@ -374,10 +374,10 @@ class CounterAgentEdit extends Component {
         path: "/",
         breadcrumbName: "Главная"
       }, {
-        path: "/contracts2/contracts/table",
+        path: "/contracts/v2/contracts/table",
         breadcrumbName: "Договоры"
       }, {
-        path: "/contracts2/contracts/create",
+        path: "/contracts/v2/contracts/create",
         breadcrumbName: "Редактирование"
       }]}>
       <Form
@@ -454,7 +454,7 @@ class CounterAgentEdit extends Component {
                     value: {}
                   }
                 });
-                this.props.history.push("/contracts2/contracts/table");
+                this.props.history.push("/contracts/v2/contracts/table");
               }}>Закрыть</Button>,
             <DropDownAction
               key={"dropdown_action_btn"}

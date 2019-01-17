@@ -21,6 +21,8 @@ import {
 } from "antd";
 import connect from "../../../Redux";
 import saveAs from "file-saver";
+import request from "../../../utils/request";
+import Guid from "../../../utils/Guid";
 
 const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
@@ -102,40 +104,52 @@ class AttachmentPage extends Component {
 
   downloadFile = (file) => {
 
-    let authToken = localStorage.getItem("AUTH_TOKEN");
-    this.setState({ loading: true });
-    fetch("/api/uicommand/downloadFile",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
-        },
-        method: "post",
-        body: JSON.stringify(
-          {
-            "entity": "documentAttachment",
-            "id": file.id
-          }
-        )
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
+    request("/api/uicommand/downloadFile", {
+      method: "POST",
+      body: {
+        "entity": "documentAttachment",
+        "id": file.id
+      },
+      getResponse: (response) => {
+        if (response.data && response.data.type)
+          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+      }
+    });
 
-            this.setState({ loading: false });
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
-          });
-        }
-      })
-      .then(data => {
-        if (data) {
-          saveAs(data.raw, data.fileName);
-        }
-      });
+    // let authToken = localStorage.getItem("AUTH_TOKEN");
+    // this.setState({ loading: true });
+    // fetch("/api/uicommand/downloadFile",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify(
+    //       {
+    //         "entity": "documentAttachment",
+    //         "id": file.id
+    //       }
+    //     )
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //
+    //         this.setState({ loading: false });
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, data.fileName);
+    //     }
+    //   });
 
   };
   removeFile = (file) => {
@@ -186,31 +200,44 @@ class AttachmentPage extends Component {
           }));
           formData.append("content", data.file);
 
-          const options = {
-            headers: {
-              Authorization: "Bearer " + authToken
-            },
-            method: "POST",
-            body: formData
-          };
-
-          this.setState({ loading: true });
-
-          fetch("/api/uicommand/uploadFile", options)
-            .then((response) => {
-
+          request("/api/uicommand/uploadFile", {
+            method: "post",
+            body: formData,
+            getResponse: (response) => {
               if (response.status === 400) {
-                response.json().then((res) => {
-                  Modal.error({
-                    title: "Информация",
-                    content: res.Message
-                  });
+                Modal.error({
+                  title: "Информация",
+                  content: response.data.Message
                 });
               }
+            }
+          }).then(() => this.getFilesData());
 
-              this.setState({ loading: false });
-              this.getFilesData();
-            });
+          // const options = {
+          //   headers: {
+          //     Authorization: "Bearer " + authToken
+          //   },
+          //   method: "POST",
+          //   body: formData
+          // };
+          //
+          // this.setState({ loading: true });
+          //
+          // fetch("/api/uicommand/uploadFile", options)
+          //   .then((response) => {
+          //
+          //     if (response.status === 400) {
+          //       response.json().then((res) => {
+          //         Modal.error({
+          //           title: "Информация",
+          //           content: res.Message
+          //         });
+          //       });
+          //     }
+          //
+          //     this.setState({ loading: false });
+          //     this.getFilesData();
+          //   });
         }
       });
 

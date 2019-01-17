@@ -48,11 +48,7 @@ var MainContainer = /** @class */ (function (_super) {
                 React.createElement(Col, { span: 4 },
                     React.createElement(AppTile, { to: "/refunds" },
                         React.createElement("img", { src: fakeLogo, alt: "\u0412\u043E\u0437\u0432\u0440\u0430\u0442\u044B" }),
-                        React.createElement("p", null, "\u0412\u043E\u0437\u0432\u0440\u0430\u0442\u044B"))),
-                React.createElement(Col, { span: 4 },
-                    React.createElement(AppTile, { to: "/contracts2" },
-                        React.createElement("img", { src: fakeLogo, alt: "\u0414\u043E\u0433\u043E\u0432\u043E\u0440\u04302" }),
-                        React.createElement("p", null, "\u0414\u043E\u0433\u043E\u0432\u043E\u0440\u04302"))))));
+                        React.createElement("p", null, "\u0412\u043E\u0437\u0432\u0440\u0430\u0442\u044B"))))));
     };
     return MainContainer;
 }(React.Component));

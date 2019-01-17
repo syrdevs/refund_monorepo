@@ -4,6 +4,7 @@ import moment from "moment";
 import formatMessage from "../../utils/formatMessage";
 import connect from "../../Redux";
 import saveAs from "file-saver";
+import Guid from "../../utils/Guid";
 
 class ModalChangeDate extends Component {
 
@@ -127,34 +128,44 @@ class ModalChangeDate extends Component {
           this.removeFile(file);
         }
       },
+      beforeUpload: () => (false),
       onPreview: (file) => {
 
-        let authToken = localStorage.getItem("AUTH_TOKEN");
+        //let authToken = localStorage.getItem("AUTH_TOKEN");
 
-        fetch("/api/refund/upload/application/download/" + file.uid,
-          {
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: "Bearer " + authToken
-            },
-            method: "post"
-          })
-          .then(response => {
-            if (response.ok) {
-              return response.blob().then(blob => {
-                let disposition = response.headers.get("content-disposition");
-                return {
-                  fileName: this.getFileNameByContentDisposition(disposition),
-                  raw: blob
-                };
-              });
-            }
-          })
-          .then(data => {
-            if (data) {
-              saveAs(data.raw, data.fileName);
-            }
-          });
+
+        request("/api/refund/upload/application/download/" + file.uid, {
+          method: "POST",
+          getResponse: (response) => {
+            if (response.data && response.data.type)
+              saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+          }
+        });
+
+        // fetch("/api/refund/upload/application/download/" + file.uid,
+        //   {
+        //     headers: {
+        //       "Content-Type": "application/json; charset=utf-8",
+        //       Authorization: "Bearer " + authToken
+        //     },
+        //     method: "post"
+        //   })
+        //   .then(response => {
+        //     if (response.ok) {
+        //       return response.blob().then(blob => {
+        //         let disposition = response.headers.get("content-disposition");
+        //         return {
+        //           fileName: this.getFileNameByContentDisposition(disposition),
+        //           raw: blob
+        //         };
+        //       });
+        //     }
+        //   })
+        //   .then(data => {
+        //     if (data) {
+        //       saveAs(data.raw, data.fileName);
+        //     }
+        //   });
       },
       onChange: (file, fileList) => {
         if (file.status !== "removing") {

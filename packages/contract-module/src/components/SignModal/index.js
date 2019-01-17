@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Modal, Input, Form, Icon, Button, Row, Select, Card } from 'antd';
 import formatMessage from '../../utils/formatMessage';
 import connect from "../../Redux";
-
+import request from '../../utils/request';
 
 const formItemLayout = {
   labelCol: {
@@ -113,18 +113,25 @@ class SignModal extends Component {
       });
      console.log(this.props.universal.getXml)
     })*/
-    fetch('/api/contract/documentAsXml?entity=contract&id=25e78a7f-d4b0-4de4-a129-5b5954b35731', {
-      headers: {
-        Authorization: 'Bearer ' + localStorage.getItem('token'),
-      },
-      method: 'get',
-    })
-      .then(response => response.text())
-      .then(data => {
-        this.setState({
-          xml: data
-        })
+
+    request("/api/contract/documentAsXml?entity=contract&id=25e78a7f-d4b0-4de4-a129-5b5954b35731").then(data => {
+      this.setState({
+        xml: data
       })
+    })
+
+    // fetch('/api/contract/documentAsXml?entity=contract&id=25e78a7f-d4b0-4de4-a129-5b5954b35731', {
+    //   headers: {
+    //     Authorization: 'Bearer ' + localStorage.getItem('token'),
+    //   },
+    //   method: 'get',
+    // })
+    //   .then(response => response.text())
+    //   .then(data => {
+    //     this.setState({
+    //       xml: data
+    //     })
+    //   })
 
   };
 

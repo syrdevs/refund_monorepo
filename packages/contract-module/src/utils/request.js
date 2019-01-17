@@ -85,7 +85,9 @@ export default function request(url, option) {
   const defaultOptions = {
       credentials: "include"
     };
-  const newOptions = { ...defaultOptions, ...options };
+  const newOptions = {
+    ...defaultOptions, ...options
+  };
   // if (
   //   newOptions.method === "POST" ||
   //   newOptions.method === "PUT" ||
@@ -147,7 +149,9 @@ export default function request(url, option) {
   //.then(response => cachedSave(response, hashcode))
     .then(response => {
 
-
+      if (newOptions.getResponse) {
+        newOptions.getResponse(response);
+      }
 
       // // DELETE and 204 do not return data by default
       // // using .json will report an error.
@@ -158,6 +162,7 @@ export default function request(url, option) {
       return response.data;
     })
     .catch(e => {
+
       //const status = e.status;
 
       // if (status === 401) {
@@ -186,10 +191,14 @@ export default function request(url, option) {
       //   //router.push('/exception/404');
       // }
 
+      if (newOptions.getResponse && e.response) {
+        newOptions.getResponse(e.response);
+      }
+
       return {
         error: true,
-        status: e.response.status,
-        message: e.response.statusText
+        status: e.response && e.response.status ? e.response.status : null,
+        message: e.response && e.response.statusText ? e.response.statusText : null
       };
     });
 }

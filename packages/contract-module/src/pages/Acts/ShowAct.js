@@ -19,12 +19,15 @@ import {
   Modal
 } from "antd";
 import styles from "./style.css";
-import '../CounterAgent/CounterAgent.css';
+import "../CounterAgent/CounterAgent.css";
 
 const { Option } = Select;
 const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
+import request from "../../utils/request";
+import saveAs from "file-saver";
+import Guid from "../../utils/Guid";
 
 const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
@@ -231,6 +234,22 @@ class ShowAct extends Component {
 
   };
 
+  downloadFile = (file) => {
+    // todo download
+
+    request("/api/uicommand/downloadFile", {
+      method: "POST",
+      body: {
+        "entity": "act",
+        "id": file.id
+      },
+      getResponse: (response) => {
+        if (response.data && response.data.type)
+          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+      }
+    });
+  };
+
 
   render() {
 
@@ -308,7 +327,7 @@ class ShowAct extends Component {
     }
     ];
 
-    return (<Spin spinning={this.state.loadData && this.props.universal.loadingsave && this.state.loadFile}>
+    return (
       <Card
         headStyle={{ padding: 0 }}
         style={{ padding: "10px" }}
@@ -420,8 +439,7 @@ class ShowAct extends Component {
             </Tabs>
           </Form>
         </Row>
-      </Card>
-    </Spin>);
+      </Card>);
   }
 }
 

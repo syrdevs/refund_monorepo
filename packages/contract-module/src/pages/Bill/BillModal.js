@@ -152,7 +152,7 @@ class BillModal extends Component {
         })
 
         isOne ? this.props.history.push({
-          pathname: '/contract/acts/paymentrequestadd',
+          pathname: '/contracts/v2/acts/paymentrequestadd',
           state: {
             data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
             type: 'act'
@@ -166,7 +166,6 @@ class BillModal extends Component {
 
       }}
       visible={true}>
-      <Spin spinning={this.props.loading}>
         <div className={style.DogovorModal}>
           <SmartGridView
             scroll={{ x: 'auto', y:280 }}
@@ -205,7 +204,6 @@ class BillModal extends Component {
             }}
           />
         </div>
-      </Spin>
     </Modal>);
   };
 }

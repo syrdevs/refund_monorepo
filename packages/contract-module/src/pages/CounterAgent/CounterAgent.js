@@ -154,7 +154,7 @@ class CounterAgent extends Component {
           disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
           key='register_document'
           onClick={() => {
-            this.props.history.push("/contracts2/contracts/create?counterAgentId=" + this.state.selectedRecord.id);
+            this.props.history.push("/contracts/v2/contracts/create?counterAgentId=" + this.state.selectedRecord.id);
             // this.props.history.push({
             //   pathname: "/contracts2/contracts/create",
             //   state: {
@@ -180,7 +180,7 @@ class CounterAgent extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "contracts2/counteragent/main",
+          path: "/contracts/v2/counteragent/main",
           breadcrumbName: "Контрагенты"
         }]}>
         <Row>

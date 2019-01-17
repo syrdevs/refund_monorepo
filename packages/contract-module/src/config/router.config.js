@@ -1,14 +1,14 @@
 export default [
   {
-    path: "/contracts2",
+    path: "/contracts/v2",
     authority: ["ADMIN", "FSMS1", "FSMS2"],
     routes: [
       {
-        path: "/contracts2",
-        redirect: "/contracts2/counteragent/main"
+        path: "/contracts/v2",
+        redirect: "/contracts/v2/counteragent/main"
       },
       {
-        path: "/contracts2/counteragent",
+        path: "/contracts/v2/counteragent",
         name: "counteragent",
         icon: "database",
         component: "./CounterAgent/CounterAgentMain",
@@ -16,22 +16,22 @@ export default [
         hideChildrenInMenu: true,
         routes: [
           {
-            path: "/contracts2/counteragent",
-            redirect: "/contracts2/counteragent/main"
+            path: "/contracts/v2/counteragent",
+            redirect: "/contracts/v2/counteragent/main"
           },
           {
-            path: "/contracts2/counteragent/main",
+            path: "/contracts/v2/counteragent/main",
             component: "./CounterAgent/CounterAgent"
           }
           // {
-          //   path: '/contracts2/counteragent/viewcontract',
+          //   path: '/contracts/v2/counteragent/viewcontract',
           //   name:"viewcounteragent",
           //   component: './CounterAgent/CounterAgentView',
           // },
         ]
       },
       {
-        path: "/contracts2/contracts",
+        path: "/contracts/v2/contracts",
         name: "contracts",
         component: "./CounterAgent/CounterAgentMain",
         icon: "database",
@@ -39,32 +39,32 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"],
         routes: [
           {
-            path: "/contracts2/contracts",
-            redirect: "/contracts2/contracts/table"
+            path: "/contracts/v2/contracts",
+            redirect: "/contracts/v2/contracts/table"
           },
           {
-            path: "/contracts2/contracts/table",
+            path: "/contracts/v2/contracts/table",
             component: "./ContractView/ContractTable"
           },
           {
-            path: "/contracts2/contracts/create",
+            path: "/contracts/v2/contracts/create",
             name: "contractView",
             component: "./CounterAgent/CounterAgentCreate"
           },
           {
-            path: "/contracts2/contracts/edit",
+            path: "/contracts/v2/contracts/edit",
             name: "contractView",
             component: "./CounterAgent/CounterAgentEdit"
           },
           {
-            path: "/contracts2/contracts/view",
+            path: "/contracts/v2/contracts/view",
             name: "contractView",
             component: "./CounterAgent/CounterAgentView"
           }
         ]
       },
       {
-        path: "/contracts2/acts",
+        path: "/contracts/v2/acts",
         name: "acts",
         icon: "database",
         component: "./CounterAgent/CounterAgentMain",
@@ -72,27 +72,27 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"],
         routes: [
           {
-            path: "/contracts2/acts",
-            redirect: "/contracts2/acts/table"
+            path: "/contracts/v2/acts",
+            redirect: "/contracts/v2/acts/table"
           },
           {
-            path: "/contracts2/acts/table",
+            path: "/contracts/v2/acts/table",
             component: "./Acts/main"
           },
           {
-            path: "/contracts2/acts/create",
+            path: "/contracts/v2/acts/create",
             name: "actview",
             component: "./Acts/ViewAct"
           },
           {
-            path: "/contracts2/acts/edit",
+            path: "/contracts/v2/acts/edit",
             name: "actadd",
             component: "./Acts/ViewAct"
           }
         ]
       },
       {
-        path: "/contracts2/contractrequests",
+        path: "/contracts/v2/contractrequests",
         name: "contractrequests",
         icon: "database",
         component: "./CounterAgent/CounterAgentMain",
@@ -100,26 +100,26 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"],
         routes: [
           {
-            path: "/contracts2/contractrequests",
-            redirect: "/contracts2/contractrequests/table"
+            path: "/contracts/v2/contractrequests",
+            redirect: "/contracts/v2/contractrequests/table"
           },
           {
-            path: "/contracts2/contractrequests/table",
+            path: "/contracts/v2/contractrequests/table",
             component: "./ContractRequests/main"
           },
           {
-            path: "/contracts2/contractrequests/create",
+            path: "/contracts/v2/contractrequests/create",
             component: "./ContractRequests/ContractRequestsadd"
           },
           {
-            path: "/contracts2/contractrequests/edit",
+            path: "/contracts/v2/contractrequests/edit",
             name: "add",
             component: "./ContractRequests/ContractRequestsadd"
           }
         ]
       },
       {
-        path: "/contracts2/documents",
+        path: "/contracts/v2/documents",
         exact: true,
         icon: "database",
         name: "documents",
@@ -127,11 +127,11 @@ export default [
         authority: ["ADMIN", "FSMS2"]
       },
       {
-        path: "/contracts2/documents/view",
+        path: "/contracts/v2/documents/view",
         component: "./Documents/ViewDocument"
       },
       {
-        path: "/contracts2/bills",
+        path: "/contracts/v2/bills",
         name: "bills",
         icon: "database",
         component: "./CounterAgent/CounterAgentMain",
@@ -139,20 +139,20 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"],
         routes: [
           {
-            path: "/contracts2/bills",
-            redirect: "/contracts2/bills/table"
+            path: "/contracts/v2/bills",
+            redirect: "/contracts/v2/bills/table"
           },
           {
-            path: "/contracts2/bills/table",
+            path: "/contracts/v2/bills/table",
             component: "./Bill/main"
           },
           {
-            path: "/contracts2/bills/add",
+            path: "/contracts/v2/bills/add",
             name: "billadd",
             component: "./Bill/Billsadd"
           },
           {
-            path: "/contracts2/bills/edit",
+            path: "/contracts/v2/bills/edit",
             name: "billadd",
             component: "./Bill/ViewBill"
           }

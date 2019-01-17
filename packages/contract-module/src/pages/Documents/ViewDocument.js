@@ -20,6 +20,7 @@ import { faEnvelope } from "@fortawesome/free-solid-svg-icons/faEnvelope";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
 import ShowPayment from "../ContractRequests/ShowPayment";
 import ContentLayout from "../../layouts/ContentLayout";
+import request from "../../utils/request";
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
@@ -104,46 +105,75 @@ class ViewDocument extends Component {
   };
 
   loadDataById = (id) => {
-    fetch("/api/uicommand/getObject", {
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Authorization: "Bearer " + localStorage.getItem("AUTH_TOKEN")
-      },
-      method: "post",
-      body: JSON.stringify({
+
+    request("/api/uicommand/getObject", {
+      method: "POST",
+      body: {
         "entity": "correspondence",
         "alias": "routes",
         "id": id
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        this.setState({
-            data: data
-          }
-        );
-      });
+      }
+    }).then(data => {
+      this.setState({
+          data: data
+        }
+      );
+    });
+
+    // fetch("/api/uicommand/getObject", {
+    //   headers: {
+    //     "Content-Type": "application/json; charset=utf-8",
+    //     Authorization: "Bearer " + localStorage.getItem("AUTH_TOKEN")
+    //   },
+    //   method: "post",
+    //   body: JSON.stringify({
+    //     "entity": "correspondence",
+    //     "alias": "routes",
+    //     "id": id
+    //   })
+    // })
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     this.setState({
+    //         data: data
+    //       }
+    //     );
+    //   });
   };
 
   loadDocRoutePath = () => {
-    fetch("/api/contract/getDocumentRoutePath", {
-      headers: {
-        "Content-Type": "application/json; charset=utf-8",
-        Authorization: "Bearer " + localStorage.getItem("AUTH_TOKEN")
-      },
-      method: "post",
-      body: JSON.stringify({
+
+    request("/api/contract/getDocumentRoutePath", {
+      method: "POST",
+      body: {
         "entity": "contract",
         "id": this.props.location.query.id
-      })
-    })
-      .then(response => response.json())
-      .then(data => {
-        this.setState({
-            dataRoutePath: data
-          }
-        );
-      });
+      }
+    }).then(data => {
+      this.setState({
+          dataRoutePath: data
+        }
+      );
+    });
+
+    // fetch("/api/contract/getDocumentRoutePath", {
+    //   headers: {
+    //     "Content-Type": "application/json; charset=utf-8",
+    //     Authorization: "Bearer " + localStorage.getItem("AUTH_TOKEN")
+    //   },
+    //   method: "post",
+    //   body: JSON.stringify({
+    //     "entity": "contract",
+    //     "id": this.props.location.query.id
+    //   })
+    // })
+    //   .then(response => response.json())
+    //   .then(data => {
+    //     this.setState({
+    //         dataRoutePath: data
+    //       }
+    //     );
+    //   });
   };
 
 
@@ -177,7 +207,7 @@ class ViewDocument extends Component {
         path: "/",
         breadcrumbName: "Главная"
       }, {
-        path: "/contracts2/documents",
+        path: "/contracts/v2/documents",
         breadcrumbName: "Корреспонденция"
       }, {
         path: "/",
@@ -210,37 +240,64 @@ class ViewDocument extends Component {
         visible={this.state.ShowSign}
         getKey={(e) => {
 
-          fetch("/api/contract/uploadSignedDocument", {
-            headers: {
-              "Content-Type": "application/json; charset=utf-8",
-              Authorization: "Bearer " + localStorage.getItem("token")
-            },
-            method: "post",
-            body: JSON.stringify({
+          request("/api/contract/uploadSignedDocument", {
+            method: "POST",
+            body: {
               "entity": "contract",
               "alias": null,
               "id": this.props.location.query.id,
               "xml": e[0].xml
-            })
-          })
-            .then(data => {
-              console.log(data);
-              this.setState({
-                ShowSign: false,
-                buttonShow: false
-              }, () => {
-                // router.push('/documents');
-                Modal.info({
-                  content: "Документ подписан"
-                });
-                console.log(e);
+            }
+          }).then(data => {
+            console.log(data);
+            this.setState({
+              ShowSign: false,
+              buttonShow: false
+            }, () => {
+              // router.push('/documents');
+              Modal.info({
+                content: "Документ подписан"
               });
-            })
+              console.log(e);
+            });
+          })
             .catch(function(e) {
               Modal.error({
                 content: "some messages...some messages..."
               });
             });
+
+          // fetch("/api/contract/uploadSignedDocument", {
+          //   headers: {
+          //     "Content-Type": "application/json; charset=utf-8",
+          //     Authorization: "Bearer " + localStorage.getItem("token")
+          //   },
+          //   method: "post",
+          //   body: JSON.stringify({
+          //     "entity": "contract",
+          //     "alias": null,
+          //     "id": this.props.location.query.id,
+          //     "xml": e[0].xml
+          //   })
+          // })
+          //   .then(data => {
+          //     console.log(data);
+          //     this.setState({
+          //       ShowSign: false,
+          //       buttonShow: false
+          //     }, () => {
+          //       // router.push('/documents');
+          //       Modal.info({
+          //         content: "Документ подписан"
+          //       });
+          //       console.log(e);
+          //     });
+          //   })
+          //   .catch(function(e) {
+          //     Modal.error({
+          //       content: "some messages...some messages..."
+          //     });
+          //   });
         }}
       />}
       <Card style={{ borderRadius: "5px", marginBottom: "10px" }} bodyStyle={{ padding: 0 }} bordered={true}>

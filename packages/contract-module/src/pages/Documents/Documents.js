@@ -19,6 +19,8 @@ import { faFolder } from "@fortawesome/free-solid-svg-icons/faFolder";
 import { faCheckSquare } from "@fortawesome/free-solid-svg-icons/faCheckSquare";
 import { faClock } from "@fortawesome/free-solid-svg-icons/faClock";
 import ContentLayout from "../../layouts/ContentLayout";
+import request from "../../utils/request";
+import Guid from "../../utils/Guid";
 
 const SubMenu = Menu.SubMenu;
 const { Header, Sider, Content } = Layout;
@@ -407,39 +409,57 @@ class Documents extends Component {
       }
     ];
 
-    fetch("/api/refund/exportToExcel",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
+
+    request("/api/contract/rejectDocument", {
+      method: "POST",
+      body: {
+        "entityClass": "application",
+        "fileName": formatMessage({ id: "menu.refunds.requests" }),
+        "src": {
+          "searched": true,
+          "data": this.state.pagingConfig.src.data
         },
-        method: "post",
-        body: JSON.stringify({
-          "entityClass": "application",
-          "fileName": formatMessage({ id: "menu.refunds.requests" }),
-          "src": {
-            "searched": true,
-            "data": this.state.pagingConfig.src.data
-          },
-          "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
-        })
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
-          });
-        }
-      })
-      .then(data => {
-        if (data) {
-          saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
-        }
-      });
+        "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
+      },
+      getResponse: (response) => {
+        if (response.data && response.data.type)
+          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+      }
+    })
+
+    // fetch("/api/refund/exportToExcel",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       "entityClass": "application",
+    //       "fileName": formatMessage({ id: "menu.refunds.requests" }),
+    //       "src": {
+    //         "searched": true,
+    //         "data": this.state.pagingConfig.src.data
+    //       },
+    //       "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
+    //     }
+    //   });
   };
 
 
@@ -499,7 +519,7 @@ class Documents extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "contracts2/counteragent/main",
+          path: "/contracts/v2/counteragent/main",
           breadcrumbName: "Корреспонденция"
         }]}>
         <Card style={{ borderRadius: "5px", marginBottom: "10px" }} bodyStyle={{ padding: 0 }} bordered={true}>
@@ -612,7 +632,7 @@ class Documents extends Component {
 
                               }}
                               onSelectRow={(record) => {
-                                this.props.history.push("/contracts2/documents/view?id=" + record.id + "&type=" + record.documentType.entName);
+                                this.props.history.push("/contracts/v2/documents/view?id=" + record.id + "&type=" + record.documentType.entName);
 
                               }}
                               onFilter={(filters) => {

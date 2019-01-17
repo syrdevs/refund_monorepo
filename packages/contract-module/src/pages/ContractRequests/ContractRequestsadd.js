@@ -325,7 +325,7 @@ class ContractRequestsadd extends Component {
     }
 
     if (createMode.length === 0) {
-      this.props.history.push("/contracts2/contractrequests/table");
+      this.props.history.push("/contracts/v2/contractrequests/table");
     }
 
     this.setState({
@@ -591,10 +591,10 @@ class ContractRequestsadd extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "/contracts2/contractrequests/table",
+          path: "/contracts/v2/contractrequests/table",
           breadcrumbName: "Заявки"
         }, {
-          path: "/contracts2/contractrequests/table",
+          path: "/contracts/v2/contractrequests/table",
           breadcrumbName: "Заявка"
         }]}>
         {this.state.ActModal &&
@@ -797,13 +797,13 @@ class ContractRequestsadd extends Component {
                 style={{ margin: "0px 0px 10px 10px" }} onClick={() => {
 
                 if (this.state.createMode === "act") {
-                  this.props.history.push("/contracts2/acts/table");
+                  this.props.history.push("/contracts/v2/acts/table");
                 }
                 if (this.state.createMode === "contract") {
-                  this.props.history.push("/contracts2/contracts/table");
+                  this.props.history.push("/contracts/v2/contracts/table");
                 }
                 if (this.state.createMode === "request") {
-                  this.props.history.push("/contracts2/contractrequests/table");
+                  this.props.history.push("/contracts/v2/contractrequests/table");
                 }
 
               }}>

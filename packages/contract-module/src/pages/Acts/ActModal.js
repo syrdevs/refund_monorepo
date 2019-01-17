@@ -151,7 +151,7 @@ class ActModal extends Component {
           });
 
           isOne ? this.props.history.push({
-            pathname: "/contract/acts/paymentrequestadd",
+            pathname: "/contracts/v2/acts/paymentrequestadd",
             state: {
               data: act.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
               type: "act"

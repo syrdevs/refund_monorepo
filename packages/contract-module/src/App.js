@@ -18,10 +18,10 @@ const RootContainer = styled.div`
 `;
 
 const Content = styled.div`
-  border-left: 1px solid #d6d6d6;
-  padding: 0 15px;
+  // border-left: 1px solid #d6d6d6;
+  // padding: 0 15px;
   background-color: white;
-  border-top: 4px solid ${COLORS.MAIN_GREEN};
+  // border-top: 4px solid ${COLORS.MAIN_GREEN};
   min-width: 0;
   overflow-x: hidden;
   width:100%;
@@ -76,6 +76,7 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+
     if (this.props.subscribeToUserLanguageChange) {
       this.props.subscribeToUserLanguageChange(() => {
         window.location.reload();
@@ -88,8 +89,8 @@ class App extends React.Component {
 
     return (<Provider store={store}>
         <RootContainer>
-          <LeftMenu leftMenuItems={leftMenuCollection} location={location}
-                    goToLink={this.props.history.push}/>
+          {/*<LeftMenu leftMenuItems={leftMenuCollection} location={location}*/}
+                    {/*goToLink={this.props.history.push}/>*/}
           <Content>
             <Suspense fallback={<div>...</div>}>
               <Switch>

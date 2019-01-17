@@ -115,10 +115,10 @@ class CounterAgentView extends Component {
         path: "/",
         breadcrumbName: "Главная"
       }, {
-        path: "/contracts2/contracts/table",
+        path: "/contracts/v2/contracts/table",
         breadcrumbName: "Договоры"
       }, {
-        path: "/contracts2/contracts/create",
+        path: "/contracts/v2/contracts/table",
         breadcrumbName: "Просмотр"
       }]}>
       <Card

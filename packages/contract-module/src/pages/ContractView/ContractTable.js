@@ -423,7 +423,7 @@ class ContractTable extends Component {
             let record = this.props.universal2.references[this.state.gridParameters.entity].content.find(x => x.id === recordId);
 
 
-            this.props.history.push("/contracts2/contracts/edit?id=" + this.state.selectedRowKeys[0]);
+            this.props.history.push("/contracts/v2/contracts/edit?id=" + this.state.selectedRowKeys[0]);
 
           }}
           key='2'>
@@ -446,7 +446,7 @@ class ContractTable extends Component {
               });
             });
 
-            isOne ? this.props.history.push("/contracts2/contractrequests/create?contractId=" + contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1)[0].id) : Modal.error({
+            isOne ? this.props.history.push("/contracts/v2/contractrequests/create?contractId=" + contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1)[0].id) : Modal.error({
               title: "Ошибка",
               content: "Нельзя создать заявку на разные учетные периоды"
             });
@@ -468,7 +468,7 @@ class ContractTable extends Component {
             //   }
             // });
 
-            this.props.history.push("/contracts2/contracts/create?contractId=" + record.id);
+            this.props.history.push("/contracts/v2/contracts/create?contractId=" + record.id);
           }}
           key="6">
           Создать договор
@@ -477,7 +477,7 @@ class ContractTable extends Component {
           key="5"
           onClick={() => {
             //router.push('/contract/contracts/acts/add');
-            this.props.history.push("/contracts2/acts/create?contractId=" + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
+            this.props.history.push("/contracts/v2/acts/create?contractId=" + contracts.content.filter(item => item.id === this.state.selectedRowKeys[0])[0].id);
             /* this.props.history.push({
                pathname: '/contract/contracts/acts/add',
                state: {
@@ -513,7 +513,7 @@ class ContractTable extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "/contracts2/contracts/table",
+          path: "/contracts/v2/contracts/table",
           breadcrumbName: "Договоры"
         }]}>
         <Row>

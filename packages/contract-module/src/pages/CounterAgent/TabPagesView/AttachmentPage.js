@@ -19,6 +19,8 @@ import {
 import connect from "../../../Redux";
 import saveAs from "file-saver";
 import '../../CounterAgent/CounterAgent.css';
+import request from "../../../utils/request";
+import Guid from "../../../utils/Guid";
 
 const TabPane = Tabs.TabPane;
 const { TextArea } = Input;
@@ -62,40 +64,52 @@ class AttachmentPage extends Component {
 
   downloadFile = (file) => {
 
-    let authToken = localStorage.getItem("AUTH_TOKEN");
-    this.setState({ loading: true });
-    fetch("/api/uicommand/downloadFile",
-      {
-        headers: {
-          "Content-Type": "application/json; charset=utf-8",
-          Authorization: "Bearer " + authToken
-        },
-        method: "post",
-        body: JSON.stringify(
-          {
-            "entity": "documentAttachment",
-            "id": file.id
-          }
-        )
-      })
-      .then(response => {
-        if (response.ok) {
-          return response.blob().then(blob => {
+    request("/api/uicommand/downloadFile", {
+      method: "POST",
+      body: {
+        "entity": "documentAttachment",
+        "id": file.id
+      },
+      getResponse: (response) => {
+        if (response.data && response.data.type)
+          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+      }
+    });
 
-            this.setState({ loading: false });
-            let disposition = response.headers.get("content-disposition");
-            return {
-              fileName: this.getFileNameByContentDisposition(disposition),
-              raw: blob
-            };
-          });
-        }
-      })
-      .then(data => {
-        if (data) {
-          saveAs(data.raw, data.fileName);
-        }
-      });
+    // let authToken = localStorage.getItem("AUTH_TOKEN");
+    // this.setState({ loading: true });
+    // fetch("/api/uicommand/downloadFile",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify(
+    //       {
+    //         "entity": "documentAttachment",
+    //         "id": file.id
+    //       }
+    //     )
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //
+    //         this.setState({ loading: false });
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, data.fileName);
+    //     }
+    //   });
 
   };
 
@@ -118,7 +132,6 @@ class AttachmentPage extends Component {
 
 
     return (<Card style={{ marginLeft: "-10px" }}>
-      <Spin spinning={this.state.loading}>
         <Table
           className={"attachment_file_list"}
           bordered={true}
@@ -126,7 +139,6 @@ class AttachmentPage extends Component {
           dataSource={this.state.dataSource}
           pagination={{ position: "none" }}
         />
-      </Spin>
     </Card>);
   }
 }

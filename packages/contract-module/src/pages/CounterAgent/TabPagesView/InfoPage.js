@@ -25,7 +25,7 @@ class InfoPage extends Component {
               cursor: "pointer"
             }}
             onClick={() => {
-              window.open("view?id=" + record.href);
+              window.open("/contracts/v2/contracts/view?id=" + record.href);
             }}>{text}</div>;
         }
         return text;

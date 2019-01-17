@@ -1,6 +1,7 @@
 import { COLORS, LeftMenu, LeftMenuRootNode } from '@vitacore/shared-ui'
 import React from 'react'
 const TestModule = Promise.resolve().then(() => require('@vitacore/test-module')) as Promise<ModuleType>
+const ContractModule = Promise.resolve().then(() => require('@vitacore/contract-module')) as Promise<ModuleType>
 import * as ZakupModule from '@vitacore/zakup-module'
 import styled from 'styled-components'
 
@@ -42,6 +43,7 @@ const updateLeftMenuHrefs = (leftMenuItems: LeftMenuRootNode[], prefix: string) 
 const modules = [
   { module: ZakupModule, route: '/zakup', dynamic: false, resolved: true },
   { module: TestModule, route: '/two', dynamic: true, resolved: false },
+  { module: ContractModule, route: '/v2', dynamic: true, resolved: false },
 ]
 
 type State = {

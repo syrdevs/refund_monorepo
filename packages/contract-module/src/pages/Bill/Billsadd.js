@@ -219,10 +219,10 @@ class Billsadd extends Component {
           path: "/",
           breadcrumbName: "Главная"
         }, {
-          path: "/contracts2/bills/table",
+          path: "/contracts/v2/bills/table",
           breadcrumbName: "Счет реестр"
         }, {
-          path: "/contracts2/bills/table",
+          path: "/contracts/v2/bills/table",
           breadcrumbName: "Редактирование"
         }]}>
         {this.state.DogovorModal.visible && <DogovorModal
