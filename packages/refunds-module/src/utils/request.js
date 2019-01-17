@@ -162,6 +162,7 @@ export default function request(url, option) {
       return response.data;
     })
     .catch(e => {
+
       //const status = e.status;
 
       // if (status === 401) {
@@ -191,7 +192,7 @@ export default function request(url, option) {
       // }
 
       if (newOptions.getResponse && e.response) {
-        newOptions.getResponse(e);
+        newOptions.getResponse(e.response);
       }
 
       return {
