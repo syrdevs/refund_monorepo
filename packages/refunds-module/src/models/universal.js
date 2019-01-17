@@ -31,8 +31,9 @@ import {
   deleteObject,
   getList,
   getCommands,
-  createSubContract
-} from '../services/api';
+  createSubContract, setAccept,
+  createRefunkPack
+} from "../services/api";
 
 export default {
   namespace: 'universal',
@@ -93,7 +94,6 @@ export default {
         payload: response,
       });
     },
-
     * receiversRefund(payload, { call, put }) {
       yield  call(getReceiversRefund, payload);
     },
@@ -220,6 +220,21 @@ export default {
 
       yield put({
         type: 'mainSelect1Reduce',
+        payload: response,
+      });
+    },
+    * setAcceptToRefunds(payload, { call, put }) {
+      const response = yield call(setAccept, payload);
+      yield put({
+        type: 'setAcceptToRefundReducer',
+        payload: response,
+      });
+    },
+    * createPack(payload, { call, put }) {
+      console.log("createRefundPack");
+      const response = yield call(createRefunkPack, payload);
+      yield put({
+        type: 'createRefunkPackReducer',
         payload: response,
       });
     },
@@ -378,7 +393,6 @@ export default {
         payload: response,
       });
     },
-
     * getSubContract(payload, { call, put }) {
       const response = yield call(createSubContract, payload);
 
@@ -420,8 +434,6 @@ export default {
         payload: response,
       });
     },
-
-
   },
 
   reducers: {
@@ -477,15 +489,12 @@ export default {
       };
     },
     mt102dataReducer(state, { payload }) {
-      console.log(payload);
       return {
         ...state,
         modalgridviewdata: payload,
       };
     },
     mt102prevReducer(state, { payload }) {
-      console.log(payload);
-      console.log("b");
       return {
         ...state,
         refundKnpList: payload.refundKnpList,
@@ -545,6 +554,18 @@ export default {
       return {
         ...state,
         select1: payload,
+      };
+    },
+    setAcceptToRefundReducer(state, { payload }) {
+      return {
+        ...state,
+        setAcceptToRefund: payload,
+      };
+    },
+    createRefunkPackReducer(state, { payload }) {
+      return {
+        ...state,
+        createRefunkPack: payload,
       };
     },
     OptionReducer(state, { payload }) {

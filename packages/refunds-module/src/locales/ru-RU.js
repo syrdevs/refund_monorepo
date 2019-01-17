@@ -114,6 +114,7 @@ export default {
   "menu.mainview.cancelBtn": "Отклонить",
   "menu.mainview.saveBtn": "Сохранить",
   "menu.mainview.performBtn": "Выпонить",
+  "menu.mainview.pullbtn": "Создать пул",
   "menu.mainview.verifyRPMUBtn": "Сверить с платежами",
   "menu.mainview.setDateBtn": "Установить дату осуществления возврата",
   "menu.mainview.excelBtn": "Выгрузить в Excel",

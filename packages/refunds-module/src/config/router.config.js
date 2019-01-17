@@ -88,13 +88,13 @@ export default [
         component: "./Options/Options",
         authority: ["ADMIN", "FSMS1", "FSMS2"]
       },
-      /*{
+      {
         path: "/refunds/pulls",
         icon: "database",
         name: "pulls",
         component: "./Pulls/Pulls",
         authority: ["ADMIN", "FSMS1", "FSMS2"]
-      },*/
+      },
       {
         path: "/refunds/journal",
         icon: "database",

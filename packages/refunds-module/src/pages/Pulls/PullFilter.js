@@ -5,6 +5,7 @@ import {
   Row, Col, Input, DatePicker, Sea, Card, Collapse, Pagination
 } from "antd";
 import './PullFilter.css';
+import connect from "../../Redux";
 
 const { Meta } = Card;
 const Panel = Collapse.Panel;
@@ -15,6 +16,12 @@ class PullFilter extends Component {
     ImportModalGrid: {
       visible: true,
     },
+    pullpagingConfig: {
+      "start": 0,
+      "length": 10,
+      "entity": "refundPack",
+      "alias": null
+    },
   };
 
   componentWillUnmount = () => {
@@ -22,8 +29,16 @@ class PullFilter extends Component {
   };
 
   componentDidMount = () => {
+   this.loadpullcard();
 
   };
+  loadpullcard = () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal2/getList",
+      payload: this.state.pullpagingConfig
+    });
+  }
 
   handleSubmit = (e) => {
 
@@ -32,26 +47,36 @@ class PullFilter extends Component {
   normFile = (e) => {
 
   }
-  cardClick = (e) => {
-    /*Array.from(document.getElementsByClassName('clickedcard')).forEach(
-      function(element, index, array) {
-        element.classList.remove("clickedcard");
-      }
-    );*/
-    // e.target.closest('.cardbtn').classList.add('clickedcard');
-
+  cardClick = (e, id) => {
     document.getElementById("clickedcard") && document.getElementById("clickedcard").removeAttribute("id")
     e.target.closest('.cardbtn').id = 'clickedcard';
+    this.props.loadPull(id);
   }
+  onShowSizeChange = (current) =>  {
+    console.log(current);
+    this.setState({
+      pullpagingConfig: {
+        ...this.state.pullpagingConfig,
+        start: current*10
+      }
+    }, () => {
+      this.loadpullcard();
+      this.props.clearPull;
+    })
+  }
+
+
 
 
   
 
   render = () => {
-    const formItemLayout = {
-      labelCol: { span: 6 },
-      wrapperCol: { span: 14 },
+
+    const universal = {
+      table: this.props.universal2.references[this.state.pullpagingConfig.entity] ? this.props.universal2.references[this.state.pullpagingConfig.entity] : {}
     };
+
+
     const pullStyle = { width: "95%", margin: '16px auto 0 auto', borderRadius:'5px' };
 
     return (
@@ -66,11 +91,28 @@ class PullFilter extends Component {
         <Search
           enterButton
           size="large"
-          onSearch={value => console.log(value)}
-          style={{width:'90%', marginBottom:'10px'}}
+          onSearch={value => this.props.clearPull}
+          style={{width:'90%', marginBottom:'10px', marginTop:'10px'}}
         />
         <Card  bodyStyle={{ overflowY: "auto" , height:'700px', padding: '5px', marginBottom:'5px'}} style={{width:'96%', margin:'0 2% 0 2%'}}>
-          <Card
+          {
+            universal.table.content && universal.table.content.map((item) => {
+            return <Card
+              style={pullStyle}
+              className={'cardbtn'}
+              bodyStyle={{textAlign:'left'}}
+              key={item.id}
+              onClick={(e)=>this.cardClick(e, item.id)}
+            >
+              <Meta
+                title={"№"+item.number+""}
+                description={"Пользователь: "+item.users.id}
+              />
+              <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)'}}>{item.documentDate}</div>
+            </Card>
+          })
+            }
+          {/*<Card
             style={pullStyle}
             className={'cardbtn'}
             bodyStyle={{textAlign:'left'}}
@@ -104,11 +146,16 @@ class PullFilter extends Component {
               description="Количество возвратов: 302"
             />
             <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)'}}>06.01.2019</div>
-          </Card>
+          </Card>*/}
         </Card>
-        <Pagination simple defaultCurrent={2} total={50} style={{margin:'10px'}} />
+        <Pagination simple onChange={(a)=>this.onShowSizeChange(a)} defaultCurrent={1} total={universal.table.content ? universal.table.content.length : 0} style={{margin:'10px'}} />
       </Row>
     );
   };
 }
-export default PullFilter;
+export default connect(({ universal, universal2, references, loading }) => ({
+  universal,
+  universal2,
+  references,
+  loadingData: loading.effects["universal2/getList"],
+}))(PullFilter);
