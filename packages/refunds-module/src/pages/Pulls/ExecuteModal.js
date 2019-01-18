@@ -21,7 +21,7 @@ class ExecuteModal extends Component {
   render() {
     return (
       <div style={{display:'inline-block'}}>
-        <Button key={"executor"} disabled={this.props.disabled} style={{marginLeft:'5px'}} onClick={this.showModal}>Определить исполнителя  {this.props.count > 0 && ` (${this.props.count})`}</Button>
+        <Button key={"executor"} disabled={this.props.disabled} style={{marginLeft:'5px'}} onClick={this.showModal}>Назначить исполнителя  {this.props.count > 0 && ` (${this.props.count})`}</Button>
         {this.state.visible && <EmployeesModal onCancel={this.hideModal} keys={this.props.selectedRows}/>}
       </div>
     );

@@ -72,13 +72,13 @@ class Pulls extends Component {
       stepFormValues: {},
       fcolumn: [
         {
-          title: "Accept",
+          title: "Статус рассмотрения",
           order: 0,
           key: "accept",
           isVisible: true,
           width: 150,
           render: (item) => {
-            return item.isAccepted ? "Yes" : "NO";
+            return item.isAccepted ? "Подтвержден" : "Отклонен";
           }
         },
         {
@@ -230,7 +230,30 @@ class Pulls extends Component {
   };
   componentDidMount() {
     this.loadMainGridData();
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal2/getList",
+      payload: {
+        "start": 0,
+        "length": 10,
+        "entity": "refundPack",
+        "alias": null,
+        sort: [{field: "number", desc: true}]
+      }
+    }).then(()=>{
+      console.log("loadpulls");
+      if(this.props.universal2.references['refundPack'].content){
+        if (this.props.universal2.references['refundPack'].content.length>0) {
+          console.log(this.props.universal2.references['refundPack'].content[0].id);
+          this.loadPull(this.props.universal2.references['refundPack'].content[0].id);
+        }
+      }
+    })
   }
+  componentDidUpdate() {
+    console.log("test")
+  }
+
   onShowSizeChange = (current, pageSize) => {
     this.setState({
       pagingConfig:{
@@ -324,6 +347,7 @@ class Pulls extends Component {
     });
   };
   loadPull=(id)=>{
+    console.log("ers")
     this.setState({
       pagingConfig: {
         ...this.state.pagingConfig,
@@ -354,6 +378,15 @@ class Pulls extends Component {
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
             <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "5px" }}>
+              <Button
+                onClick={() => {
+                  this.togglePulls();
+                }}
+                disabled={false}
+                key={"pulls"}
+              >
+                {formatMessage({ id: "menu.mainview.pulls" })}
+              </Button>
               <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length}
                             selectedRows={this.state.selectedRowKeys}/>
               <Button onClick={() => {
@@ -385,7 +418,7 @@ class Pulls extends Component {
                 {this.state.showpull &&
                 <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                   <Card
-                    style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
+                    style={{ margin: "10px 5px 10px 0px", borderRadius: "5px" }}
                     bodyStyle={{ padding: 0 }}
                     type="inner"
                     title={formatMessage({ id: "menu.mainview.pullLocale" })}
@@ -424,17 +457,7 @@ class Pulls extends Component {
                   page: this.state.pagingConfig.start + 1,
                   data: universal.table.content
                 }}
-                addonButtons={[
-                  <Button
-                    onClick={() => {
-                      this.togglePulls();
-                    }}
-                    disabled={false}
-                    key={"pulls"}
-                  >
-                    {formatMessage({ id: "menu.mainview.pulls" })}
-                  </Button>
-                ]}
+                addonButtons={[]}
                 onShowSizeChange={(pageNumber, pageSize) => {
                   this.onShowSizeChange(pageNumber, pageSize);
                 }}

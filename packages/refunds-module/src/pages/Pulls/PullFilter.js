@@ -20,8 +20,10 @@ class PullFilter extends Component {
       "start": 0,
       "length": 10,
       "entity": "refundPack",
-      "alias": null
+      "alias": null,
+      sort: [{field: "number", desc: true}]
     },
+
   };
 
   componentWillUnmount = () => {
@@ -29,7 +31,20 @@ class PullFilter extends Component {
   };
 
   componentDidMount = () => {
-   this.loadpullcard();
+   //this.loadpullcard();
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal2/getList",
+      payload: this.state.pullpagingConfig
+    }).then(()=>{
+      let elements = document.getElementsByClassName('.cardbtn');
+      let requiredElement = elements[0];
+      console.log(requiredElement);
+      console.log("requiredElement");
+    })
+
+    /*var elements = document.getElementsByClassName('className');
+    var requiredElement = elements[0];*/
 
   };
   loadpullcard = () => {
@@ -105,10 +120,10 @@ class PullFilter extends Component {
               onClick={(e)=>this.cardClick(e, item.id)}
             >
               <Meta
-                title={"№"+item.number+""}
-                description={"Пользователь: "+item.users.id}
+                title={"Номер: "+item.number+""}
+                description={"Инициатор: "+item.users.userName}
               />
-              <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)'}}>{item.documentDate}</div>
+              <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)', marginTop:'5px'}}>{item.documentDate}</div>
             </Card>
           })
             }

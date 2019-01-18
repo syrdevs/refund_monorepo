@@ -89,7 +89,7 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"]
       },
       {
-        path: "/refunds/pulls",
+        path: "/refunds/pool",
         icon: "database",
         name: "pulls",
         component: "./Pulls/Pulls",

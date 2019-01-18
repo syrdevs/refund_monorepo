@@ -496,6 +496,11 @@ class MainView extends Component {
         name: "ddenyReason",
         label: formatMessage({ id: "menu.filter.RefusalReason" }),
         type: "combobox"
+      },
+      {
+        name: "includedInPack",
+        label: "Включен в пул",
+        type: "checkbox"
       }
     ];
   };
