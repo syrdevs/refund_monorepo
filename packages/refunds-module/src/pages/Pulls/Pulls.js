@@ -72,13 +72,32 @@ class Pulls extends Component {
       stepFormValues: {},
       fcolumn: [
         {
-          title: "Статус рассмотрения",
+          title: "Исполнитель",
           order: 0,
+          key: "accept",
+          isVisible: true,
+          width: 250,
+          render: (item) => {
+            return item.needAcceptedUser ? (item.needAcceptedUser.userName ? item.needAcceptedUser.userName : ''): '';
+          }
+        },
+        {
+          title: "Статус рассмотрения",
+          order: 1,
           key: "accept",
           isVisible: true,
           width: 150,
           render: (item) => {
-            return item.isAccepted ? "Подтвержден" : "Отклонен";
+            if (item.isAccepted === true){
+              return "Подтвержден";
+            }
+            else if (item.isAccepted === true){
+              return "Отклонен";
+            }
+            else {
+              return " ";
+            }
+
           }
         },
         {
@@ -211,23 +230,23 @@ class Pulls extends Component {
   }
 
   componentWillUnmount() {
-    /*const { dispatch } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: "universal2/clear",
       payload: {
-        table: "requests"
+        table: "refundPack"
       }
-    });*/
+    });
   }
-  loadMainGridData = () => {
 
+  loadMainGridData = () => {
     /*const { dispatch } = this.props;
     dispatch({
       type: "universal2/getList",
       payload: this.state.pagingConfig
     });*/
-
   };
+
   componentDidMount() {
     this.loadMainGridData();
     const { dispatch } = this.props;
@@ -248,6 +267,7 @@ class Pulls extends Component {
       }
     })
   }
+
   componentDidUpdate() {
   }
 
@@ -263,14 +283,17 @@ class Pulls extends Component {
     })
 
   };
+
   showModal = () => {
     this.setState({
       ShowModal: true
     });
   };
+
   setColor = (value) => {
     return "#000000a6";
   };
+
   setBadgeStatus = (value) => {
     if (value) {
       return "success";
@@ -280,6 +303,7 @@ class Pulls extends Component {
       return "error";
     }
   };
+
   togglePulls() {
     //showpull
     this.setState({
@@ -290,6 +314,7 @@ class Pulls extends Component {
       showpull: true
     });
   }
+
   setAcceptToRefund=(accept)=>{
     const { dispatch } = this.props;
     dispatch({
@@ -310,6 +335,7 @@ class Pulls extends Component {
       })
 
   }
+
   confirming = () => {
     Modal.confirm({
       title: "Подтвердить",
@@ -322,6 +348,7 @@ class Pulls extends Component {
       }
     });
   };
+
   rejecting = () => {
     Modal.confirm({
       title: "Отклонить",
@@ -334,6 +361,7 @@ class Pulls extends Component {
       }
     });
   };
+
   hideleft() {
     if (!this.state.isHidden) {
       this.setState({
@@ -345,11 +373,13 @@ class Pulls extends Component {
       });
     }
   };
+
   checkStatus = (selectedRowKeys) => {
     this.setState({
       selectedRowKeys: selectedRowKeys
     });
   };
+
   onSetUser =(id)=>{
     const { dispatch } = this.props;
     dispatch({
@@ -370,6 +400,7 @@ class Pulls extends Component {
       })
 
   }
+
   loadPull=(id)=>{
     this.setState({
       pagingConfig: {
@@ -470,7 +501,6 @@ class Pulls extends Component {
                 columns={this.state.columns}
                 hideFilterBtn
                 hideRefreshBtn
-                sorted={true}
                 sortedInfo={this.state.sortedInfo}
                 showTotal={true}
                 showExportBtn={false}
@@ -484,8 +514,7 @@ class Pulls extends Component {
                 onShowSizeChange={(pageNumber, pageSize) => {
                   this.onShowSizeChange(pageNumber, pageSize);
                 }}
-                onSort={(column) => {
-                }}
+
                 onSelectCell={(cellIndex, cell) => {
 
                 }}

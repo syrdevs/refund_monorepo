@@ -203,7 +203,6 @@ class EmployeesModal extends Component {
           });
         }}>
           <Table columns={columns} dataSource={data.content}
-               rowSelection={rowSelection}
                  rowKey={'id'}
                  rowClassName={(record, index) => {
                    return this.state.selectedIndex === index ? "active" : "";
