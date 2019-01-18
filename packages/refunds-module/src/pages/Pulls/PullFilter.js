@@ -37,10 +37,10 @@ class PullFilter extends Component {
       type: "universal2/getList",
       payload: this.state.pullpagingConfig
     }).then(()=>{
-      let elements = document.getElementsByClassName('.cardbtn');
+      /*let elements = document.getElementsByClassName('.cardbtn');
       let requiredElement = elements[0];
       console.log(requiredElement);
-      console.log("requiredElement");
+      console.log("requiredElement");*/
     })
 
     /*var elements = document.getElementsByClassName('className');
@@ -68,7 +68,6 @@ class PullFilter extends Component {
     this.props.loadPull(id);
   }
   onShowSizeChange = (current) =>  {
-    console.log(current);
     this.setState({
       pullpagingConfig: {
         ...this.state.pullpagingConfig,

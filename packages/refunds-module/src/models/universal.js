@@ -32,7 +32,7 @@ import {
   getList,
   getCommands,
   createSubContract, setAccept,
-  createRefunkPack
+  createRefunkPack, getUsers, setRefundNeedAcceptUser
 } from "../services/api";
 
 export default {
@@ -83,6 +83,7 @@ export default {
     counterAgentData: {},
     uploadanswer: {},
     commandResult: [],
+    users:{},
   },
   effects: {
     * getCommandResult(payload, { call, put }) {
@@ -230,8 +231,22 @@ export default {
         payload: response,
       });
     },
+
+    * setRefundNeedAcceptUser(payload, { call, put }) {
+      const response = yield call(setRefundNeedAcceptUser, payload);
+      yield put({
+        type: 'setRefundNeedAcceptUserReducer',
+        payload: response,
+      });
+    },
+    * getUsers(payload, { call, put }) {
+      const response = yield call(getUsers, payload);
+      yield put({
+        type: 'getUsersReducer',
+        payload: response,
+      });
+    },
     * createPack(payload, { call, put }) {
-      console.log("createRefundPack");
       const response = yield call(createRefunkPack, payload);
       yield put({
         type: 'createRefunkPackReducer',
@@ -560,6 +575,18 @@ export default {
       return {
         ...state,
         setAcceptToRefund: payload,
+      };
+    },
+    setRefundNeedAcceptUserReducer(state, { payload }) {
+      return {
+        ...state,
+        setRefundNeedAcceptUser: payload,
+      };
+    },
+    getUsersReducer(state, { payload }) {
+      return {
+        ...state,
+        users: payload,
       };
     },
     createRefunkPackReducer(state, { payload }) {

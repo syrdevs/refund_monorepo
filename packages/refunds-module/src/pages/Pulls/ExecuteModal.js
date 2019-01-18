@@ -22,7 +22,9 @@ class ExecuteModal extends Component {
     return (
       <div style={{display:'inline-block'}}>
         <Button key={"executor"} disabled={this.props.disabled} style={{marginLeft:'5px'}} onClick={this.showModal}>Назначить исполнителя  {this.props.count > 0 && ` (${this.props.count})`}</Button>
-        {this.state.visible && <EmployeesModal onCancel={this.hideModal} keys={this.props.selectedRows}/>}
+        {this.state.visible && <EmployeesModal
+          onChecked={(id)=>this.props.onChecked(id)}
+          onCancel={this.hideModal} keys={this.props.selectedRows}/>}
       </div>
     );
   }

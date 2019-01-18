@@ -230,7 +230,19 @@ export async function setAccept(params) {
     body: params.payload,
   });
 }
-
+export async function setRefundNeedAcceptUser(params) {
+  return request('/api/refund/setRefundNeedAcceptUser', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+export async function getUsers(params) {
+  console.log(params.payload);
+  return request('api/uicommand/getList', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
 export async function createRefunkPack(params) {
 
   return request('/api/refund/createRefundPack', {

@@ -22,6 +22,7 @@ import {
 } from "antd";
 import Highlighter from "react-highlight-words";
 import SmartGridView from "../../components/SmartGridView";
+import connect from "../../Redux";
 
 
 const data = [{
@@ -52,7 +53,14 @@ class EmployeesModal extends Component {
   state = {
     selectedIndex: null,
     searchText: "",
-    fio: ""
+    fio: "",
+    recordid: null,
+    config:  {
+      "start":0,
+      "length":10,
+      "entity":"users",
+      "alias":null
+    }
   };
 
   componentWillUnmount = () => {
@@ -60,13 +68,15 @@ class EmployeesModal extends Component {
   };
 
   componentDidMount = () => {
-
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal2/getList",
+      payload: this.state.config
+    })
   };
 
   getColumnSearchProps = (dataIndex) => ({
-    filterDropdown: ({
-                       setSelectedKeys, selectedKeys, confirm, clearFilters
-                     }) => (
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters }) => (
       <div className="custom-filter-dropdown">
         <Input
           ref={node => {
@@ -122,15 +132,31 @@ class EmployeesModal extends Component {
     clearFilters();
     this.setState({ searchText: "" });
   };
-
+  onShowSizeChange = (current, pageSize) => {
+    console.log(current)
+    console.log(pageSize)
+    this.setState({
+      config:  {
+        ...this.state.config,
+        "start":current,
+      }
+    }, () => {
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal2/getList",
+        payload: this.state.config
+      })
+    })
+  }
 
   render = () => {
+    const data = this.props.universal2.references['users'] ? this.props.universal2.references['users'] : [];
     const columns = [{
       title: "ФИО",
-      dataIndex: "name",
-      key: "name",
+      dataIndex: "userName",
+      key: "userName",
       width: "30%",
-      ...this.getColumnSearchProps("name")
+      ...this.getColumnSearchProps("userName")
     }, {
       title: "Должность",
       dataIndex: "position",
@@ -139,10 +165,11 @@ class EmployeesModal extends Component {
       ...this.getColumnSearchProps("position")
     }, {
       title: "Место работы",
-      dataIndex: "placeWork",
-      key: "placeWork",
-      ...this.getColumnSearchProps("placeWork")
-    }];
+      dataIndex: "company",
+      key: "company",
+      ...this.getColumnSearchProps("company")
+    }
+    ];
 
     const rowSelection = {
       onChange: (selectedRowKeys, selectedRows) => {
@@ -168,13 +195,16 @@ class EmployeesModal extends Component {
           this.props.onCancel();
         }}
         onOk={() => {
+          this.props.onChecked(this.state.recordid)
+          this.props.onCancel();
           console.log({
-            id:this.state.fio,
-            refundList: this.props.keys
+            id:this.state.selectedIndex,
+            fio: this.state.fio
           });
         }}>
-          <Table columns={columns} dataSource={data}
-            // rowSelection={rowSelection}
+          <Table columns={columns} dataSource={data.content}
+               rowSelection={rowSelection}
+                 rowKey={'id'}
                  rowClassName={(record, index) => {
                    return this.state.selectedIndex === index ? "active" : "";
                  }}
@@ -185,17 +215,27 @@ class EmployeesModal extends Component {
 
                      this.setState({
                        selectedIndex: index,
-                       fio: record.name
+                       fio: record.name,
+                       recordid: record.id
                      });
                    }
                  })}
+                 pagination={false}
+
           />
+        <Pagination defaultCurrent={1} total={100}
+                    onChange={(page, pageSize) => {
+                      this.onShowSizeChange(page - 1, pageSize);
+                    }}
+        />
       </Modal>
-    </div>)
-      ;
+    </div>);
 
   };
 
 
 }
-export default EmployeesModal;
+export default connect(({ universal, universal2 }) => ({
+  universal,
+  universal2
+}))(EmployeesModal);

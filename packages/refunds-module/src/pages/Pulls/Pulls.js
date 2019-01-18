@@ -241,17 +241,14 @@ class Pulls extends Component {
         sort: [{field: "number", desc: true}]
       }
     }).then(()=>{
-      console.log("loadpulls");
       if(this.props.universal2.references['refundPack'].content){
         if (this.props.universal2.references['refundPack'].content.length>0) {
-          console.log(this.props.universal2.references['refundPack'].content[0].id);
           this.loadPull(this.props.universal2.references['refundPack'].content[0].id);
         }
       }
     })
   }
   componentDidUpdate() {
-    console.log("test")
   }
 
   onShowSizeChange = (current, pageSize) => {
@@ -302,9 +299,16 @@ class Pulls extends Component {
         "id":this.state.selectedRowKeys,
         "IsAccept":accept
       }
-    }).then(()=>{
+    }).then((e)=>{
       this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
-    });
+    })
+      .catch((e)=>{
+        Modal.error({
+          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message): 'Ошибка на стороне сервера!',
+        });
+        this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
+      })
+
   }
   confirming = () => {
     Modal.confirm({
@@ -346,8 +350,27 @@ class Pulls extends Component {
       selectedRowKeys: selectedRowKeys
     });
   };
+  onSetUser =(id)=>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal/setRefundNeedAcceptUser",
+      payload: {
+        "entity":"refundItem",
+        "id":this.state.selectedRowKeys,
+        "userID": id
+      }
+    }).then((e)=>{
+      this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
+    })
+      .catch((e)=>{
+        Modal.error({
+          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message): 'Ошибка на стороне сервера!',
+        });
+        this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
+      })
+
+  }
   loadPull=(id)=>{
-    console.log("ers")
     this.setState({
       pagingConfig: {
         ...this.state.pagingConfig,
@@ -388,6 +411,7 @@ class Pulls extends Component {
                 {formatMessage({ id: "menu.mainview.pulls" })}
               </Button>
               <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length}
+                            onChecked={(id)=>this.onSetUser(id)}
                             selectedRows={this.state.selectedRowKeys}/>
               <Button onClick={() => {
                 this.confirming();
@@ -426,7 +450,6 @@ class Pulls extends Component {
                       icon={faTimes}/></Icon>}
                   >
                     <PullFilter loadPull={(id)=>this.loadPull(id)} clearPull={()=>{
-                      console.log("clear pull")
                     }}/>
                   </Card>
                 </Animated>
@@ -467,7 +490,6 @@ class Pulls extends Component {
 
                 }}
                 onSelectRow={(record) => {
-                  //console.log(record);
                 }}
                 onFilter={(filters) => {
 
