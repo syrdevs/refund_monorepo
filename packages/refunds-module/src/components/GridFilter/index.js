@@ -14,6 +14,7 @@ import {
   Form,
   Input,
   DatePicker,
+  Switch,
   Select,
   Checkbox,
   LocaleProvider,
@@ -271,8 +272,8 @@ class GridFilter extends Component {
         }
         if (["listbetweenDateTime"].indexOf(fields[field].type) !== -1) {
           filterData[field] = {
-            "from": fields[field].disabled ? null : formFilters[field][0]+' 00:00:00',
-            "to": fields[field].disabled ? null : formFilters[field][1]+' 00:00:00'
+            "from": fields[field].disabled ? null : formFilters[field][0] + " 00:00:00",
+            "to": fields[field].disabled ? null : formFilters[field][1] + " 00:00:00"
           };
           return;
         }//
@@ -414,8 +415,8 @@ class GridFilter extends Component {
                                  formatMessage({ id: "datepicker.start.label" }),
                                  formatMessage({ id: "datepicker.end.label" })
                                ]}
-                               // value={value}
-                               mode={['month', 'month']}
+                  // value={value}
+                               mode={["month", "month"]}
                                disabledDate={this.disabledDate}
                                disabled={fields[filterItem.name].disabled}/>
               </LocaleProvider>
@@ -674,6 +675,17 @@ class GridFilter extends Component {
                                                                                    //to do filter
                                                                                    //console.log(record);
                                                                                  }}/></div>);
+      }
+
+      case "checkbox": {
+
+        if (isClearFilter) {
+          params.isClearFilter = isClearFilter;
+        }
+
+        return (<div key={_index} style={mBottom}><Checkbox onChange={(e) => {
+          this.fieldOnChange(filterItem, e.target.checked);
+        }}/> : {filterItem.label}</div>);
       }
 
       default:
