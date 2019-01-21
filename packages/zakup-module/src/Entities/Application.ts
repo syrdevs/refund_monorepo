@@ -16,6 +16,7 @@ export interface Application extends Identifiable {
   clinic?: ClinicPick
   region?: DictionaryBaseML
   role?: ApplicationRole
+  status?: string
 }
 
 export interface ApplicationItem extends Identifiable {

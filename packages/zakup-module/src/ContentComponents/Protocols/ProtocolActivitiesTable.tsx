@@ -89,7 +89,6 @@ class ProtocolActivitiesTable extends React.Component<Props, CompState> {
       }
     }
 
-    console.log(this.state.protocolActivityGroupInfos)
     return (
       <ProtocolItemsTable
         size="small"
@@ -150,9 +149,9 @@ class ProtocolActivitiesTable extends React.Component<Props, CompState> {
 
           return {
             protocolActivityGroupInfos: clonedGroups,
-            fetched:
-              clonedGroups.filter(i => i.measureUnitValues.length > 0).length ===
-              state.protocolActivityGroupInfos.length,
+            fetched: true,
+            // clonedGroups.filter(i => i.measureUnitValues.length > 0).length ===
+            // state.protocolActivityGroupInfos.length,
           }
         })
       })
@@ -220,7 +219,7 @@ class ProtocolActivitiesTable extends React.Component<Props, CompState> {
   }
 
   private onGroupExpanding = (activityId: string) => {
-    const { protocolItemsByActivity } = this.state
+    const { protocolItemsByActivity, protocolActivityGroupInfos } = this.state
     const protocolItemInfo = protocolItemsByActivity.find(i => i.activityId === activityId)
     if (protocolItemInfo) {
       return
@@ -238,7 +237,35 @@ class ProtocolActivitiesTable extends React.Component<Props, CompState> {
             page: defaultPage,
             pageSize: defaultPageSize,
             totalElements: resp.totalElements,
-            items: resp.content,
+            items: (resp.content as ProtocolItem[]).map(pi => {
+              const itemValues = pi.planProtocolItemValues || []
+              const itemValuesMeasureUnitIds = itemValues.map(i => i.measureUnit)
+              const groupInfo = protocolActivityGroupInfos.find(i => i.activity.id === pi.activity.id)!
+              const valuesToAdd = groupInfo.measureUnitValues.filter(
+                i => !itemValuesMeasureUnitIds.some(k => i.measureUnit.id === k.id)
+              )
+
+              if (valuesToAdd.length) {
+                itemValues.push(
+                  ...valuesToAdd.map(i => ({
+                    value: 0,
+                    valueSum: null,
+                    proposalItemValue: {
+                      value: 0,
+                      valueSum: null,
+                    },
+                    measureUnit: {
+                      ...i.measureUnit,
+                    },
+                  }))
+                )
+              }
+
+              return {
+                ...pi,
+                planProtocolItemValues: itemValues,
+              }
+            }),
           },
         },
       ] as ProtocolItemsByActivity[]

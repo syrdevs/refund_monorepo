@@ -43,7 +43,7 @@ const updateLeftMenuHrefs = (leftMenuItems: LeftMenuRootNode[], prefix: string) 
 const modules = [
   { module: ZakupModule, route: '/zakup', dynamic: false, resolved: true },
   { module: TestModule, route: '/two', dynamic: true, resolved: false },
-  { module: ContractModule, route: '/v2', dynamic: true, resolved: false },
+  { module: ContractModule, route: '/v2', dynamic: true, resolved: false }
 ]
 
 type State = {
@@ -91,7 +91,6 @@ class ContractsModule extends React.Component<any, State> {
             const mRoute = `${this.props.moduleName}${M.route}`
             const routeGoesInside = location.startsWith(mRoute)
             const RComponent = (M.module as ModuleType).default
-
 
             return (
               <RComponent

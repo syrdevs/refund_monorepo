@@ -221,6 +221,11 @@ class ApplicationsList extends React.Component<Props, State> {
         sorter: (a: Application, b: Application) => a.role!.name.localeCompare(b.role!.name),
       },
       {
+        title: 'Статус',
+        dataIndex: 'status',
+        width: '120px',
+      },
+      {
         title: 'Комментарий',
         dataIndex: 'descr',
         width: '120px',
