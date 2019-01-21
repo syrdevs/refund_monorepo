@@ -17,7 +17,7 @@
   "scripts": {
     "start": "cross-env BABEL_ENV=development yarn clean && babel src --out-dir build/dist --source-maps -w",
     "build": "cross-env BABEL_ENV=production yarn clean && babel src --out-dir build/dist --minified",
-    "clean": "rm -rf build"
+    "clean": " "
   },
   "eslintConfig": {
     "extends": "react-app"

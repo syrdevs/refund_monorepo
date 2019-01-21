@@ -12,7 +12,7 @@
     "compile-ts-watch": "tsc -p tsconfig.build.json -w --preserveWatchOutput",
     "start": "yarn clean && yarn run compile-ts-watch",
     "build": "yarn clean && yarn run compile-ts",
-    "clean": "rm -rf build"
+    "clean": " "
   },
   "devDependencies": {
     "prettier": "^1.15.3",

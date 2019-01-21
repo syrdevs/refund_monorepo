@@ -24,7 +24,7 @@
   "scripts": {
     "start": "yarn clean && react-scripts-ts start",
     "build-main": "yarn clean && react-scripts-ts --max_old_space_size=4096 build",
-    "clean": "rm -rf build"
+    "clean": " "
   },
   "devDependencies": {
     "@types/history": "^4.7.2",
