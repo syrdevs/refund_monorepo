@@ -277,6 +277,11 @@ class GridFilter extends Component {
           };
           return;
         }//
+        if (["dateTime"].indexOf(fields[field].type) !== -1) {
+          console.log(formFilters[field]);
+          filterData[field] = fields[field].disabled ? null : formFilters[field] + " 00:00:00";
+          return;
+        }//
 
         if (fields[field].filterName) {
           filterData[fields[field].filterName] = fields[field].disabled ? null : formFilters[field];
@@ -295,6 +300,8 @@ class GridFilter extends Component {
       this.props.filterOnChange(filterData);
     }
   };
+
+
 
   clearFilters = () => {
     const { clearFilter } = this.props;
@@ -325,6 +332,36 @@ class GridFilter extends Component {
     switch (filterItem.type) {
 
       case "date": {
+        let params = {
+          style: {
+            width: "100%"
+          },
+          format: dateFormat,
+          onChange: (moment, dateString) => {
+            filterItem.filterName ? this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString) :
+              this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString.replace(".", ""));
+          }
+        };
+
+        if (isClearFilter) {
+          params.value = null;
+        }
+
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
+          <Row>
+            <Col md={24}>
+              <LocaleProvider locale={componentLocal}>
+                <DatePicker   {...params}
+                              format={"DD.MM.YYYY"}
+                />
+              </LocaleProvider>
+            </Col>
+          </Row>
+        </div>);
+
+      }
+
+      case "dateTime": {
         let params = {
           style: {
             width: "100%"

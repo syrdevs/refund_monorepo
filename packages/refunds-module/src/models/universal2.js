@@ -6,7 +6,8 @@ import {
   getReportsList,
   getReportParameters,
   getFormedReports,
-  getList, getObject, getPublish
+  getList, getObject, getPublish,
+  addSpecial
 } from '../services/api';
 
 export default {
@@ -115,6 +116,14 @@ export default {
         payload: response,
       });
     },
+    * addSpecial(payload, { call, put }) {
+      const response = yield call(addSpecial, payload);
+
+      yield put({
+        type: 'addSpecialReducer',
+        payload: response,
+      });
+    },
     * clearContract(payload, { call, put }) {
       yield put({
         type: 'clearContractData',
@@ -157,6 +166,12 @@ export default {
         ...state,
         columns: [],
         dataStore: [],
+      };
+    },
+    addSpecialReducer(state, { payload }) {
+      return {
+        ...state,
+        dataStore: payload,
       };
     },
     getData(state, { payload }) {

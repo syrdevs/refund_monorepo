@@ -17,8 +17,10 @@ import {
   Select,
   Checkbox,
   Spin,
-  Divider, Modal
+  Divider, Modal, message, Upload, Collapse
 } from "antd";
+
+const Panel = Collapse.Panel;
 
 import formatMessage from "../../utils/formatMessage";
 import GridFilter from "../../components/GridFilter";
@@ -31,12 +33,13 @@ import moment from "moment/moment";
 import "./Payments.css";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
+import saveAs from "file-saver";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
-const dateFormat = "YYYY/MM/DD";
+const dateFormat = "DD.MM.YYYY";
 const formItemLayout = {
   labelCol: { span: 4 },
   wrapperCol: { span: 18 }
@@ -49,7 +52,7 @@ class Consumer extends Component {
     parameters: {
       start: 0,
       length: 10,
-      entity: "mt100",
+      entity: "specialList",
       filter: {},
       sort: []
     },
@@ -57,12 +60,12 @@ class Consumer extends Component {
 
       {
         label: "ИИН",
-        name: "recipientBin",
+        name: "iin",
         type: "text"
       }, {
         label: "Дата создания",
-        name: "lastname",
-        type: "text"
+        name: "createDateTime",
+        type: "dateTime"
       }, {
         label: "Пользователь",
         name: "firstname",
@@ -73,11 +76,12 @@ class Consumer extends Component {
     sortedInfo: {},
     selectedRowKeys: [],
     visibleAddConsumer: false,
+    visibleModal: false,
     filterContainer: 0,
     columns: [
       {
         "title": "ИИН",
-        "dataIndex": "recipientBin",
+        "dataIndex": "iin",
         "isVisible": "true"
       }
     ]
@@ -98,6 +102,41 @@ class Consumer extends Component {
       this.loadGridData();
     });
   };
+
+  showModal = () => {
+    this.setState({
+      visibleModal: true
+    });
+  };
+
+  removeFile = (file) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal/deleteObject",
+      payload: {
+        "entity": "specialList",
+        "id": file.id
+      }
+    }).then(() => {
+
+      this.loadGridData();
+    });
+  };
+
+  handleOk = (e) => {
+
+    this.removeFile(this.state.selectedRecord);
+    this.setState({
+      visibleModal: false
+    });
+  };
+
+  handleCancel = (e) => {
+    console.log(e);
+    this.setState({
+      visibleModal: false
+    });
+  };
 //test
   applyFilter = (filter) => {
     if (filter.knpList != null && filter.knpList.length === 0) {
@@ -114,7 +153,7 @@ class Consumer extends Component {
 
       const { dispatch } = this.props;
       dispatch({
-        type: "universal/paymentsData",
+        type: "universal2/getList",
         payload: {
           ...this.state.parameters,
           start: 0
@@ -134,7 +173,7 @@ class Consumer extends Component {
         length: pageSize
       }
     }), () => dispatch({
-      type: "universal/paymentsData",
+      type: "universal2/getList",
       payload: {
         ...this.state.parameters,
         start: current,
@@ -153,7 +192,7 @@ class Consumer extends Component {
     const { dispatch } = this.props;
     let sortField = this.state.sortedInfo;
     dispatch({
-      type: "universal/paymentsData",
+      type: "universal2/getList",
       payload: this.state.parameters
     });
   };
@@ -161,6 +200,22 @@ class Consumer extends Component {
   componentDidMount() {
     this.loadGridData();
   }
+
+  addSpecial = (iin) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal2/addSpecial",
+      payload: iin
+    }).then(() => {
+      this.loadGridData();
+    })
+
+      .catch((r) => {
+        // console.log(r)
+        let msg = r.getResponseValue();
+        message.warning(msg.data.Message);
+      });
+  };
 
   exportToExcel = () => {
     console.log(556);
@@ -252,17 +307,123 @@ class Consumer extends Component {
     return decodeURI(filenames);
   };
 
+  uploadFile = (data) => {
+
+    let formData = new FormData();
+    formData.append('file', data.file);
+    request("/api/refund/addSpecialList", {
+      method: "POST",
+      body: formData,
+      getResponse: (response) => {
+        if (response.status === 400) {
+          console.log(response)
+          // let msg = response.getResponseValue();
+          message.warning(response.data.Message);
+          // if (response.data && response.data.type)
+          //   saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        }
+      }
+    }).then(() => {
+      this.loadGridData();
+    })
+
+  };
+
   render = () => {
 
-    const paymentsData = this.props.universal.paymentsData[this.state.parameters.entity];
-    const CardHeight = { height: "auto", marginBottom: "10px" };
-    let addonButtons = [<Button
-      onClick={() => {
-        this.setState({
-          visibleAddConsumer: true
+    let uploadProps = {
+      fileList: this.props.universal.files.map((file) => ({
+        uid: file.id,
+        name: file.filename
+      })),
+      onRemove: (file) => {
+        if (this.props.universal.files.length === 1 && this.props.dataSource.value !== null) {
+          Modal.error({
+            title: "Внимание",
+            content: "Файл не может быть удален. Пожалуйста, удалите сначала дату"
+          });
+          return false;
+        } else {
+          this.removeFile(file);
+        }
+      },
+      beforeUpload: () => (false),
+      onPreview: (file) => {
+
+        //let authToken = localStorage.getItem("AUTH_TOKEN");
+        console.log(111);
+
+        request("/api/refund/addSpecialList/", {
+          method: "POST",
+          getResponse: (response) => {
+            if (response.data && response.data.type)
+              saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+          }
         });
-      }}>
-      Добавить</Button>];
+
+        // fetch("/api/refund/upload/application/download/" + file.uid,
+        //   {
+        //     headers: {
+        //       "Content-Type": "application/json; charset=utf-8",
+        //       Authorization: "Bearer " + authToken
+        //     },
+        //     method: "post"
+        //   })
+        //   .then(response => {
+        //     if (response.ok) {
+        //       return response.blob().then(blob => {
+        //         let disposition = response.headers.get("content-disposition");
+        //         return {
+        //           fileName: this.getFileNameByContentDisposition(disposition),
+        //           raw: blob
+        //         };
+        //       });
+        //     }
+        //   })
+        //   .then(data => {
+        //     if (data) {
+        //       saveAs(data.raw, data.fileName);
+        //     }
+        //   });
+      },
+      onChange: (file, fileList) => {
+        if (file.status !== "removing") {
+          this.uploadFile(file);
+        }
+      }
+    };
+
+    const paymentsData = this.props.universal2.references[this.state.parameters.entity] ? this.props.universal2.references[this.state.parameters.entity] : {};
+    const CardHeight = { height: "auto", marginBottom: "10px" };
+    let addonButtons = [
+      <Button
+        onClick={() => {
+
+          this.setState({
+            visibleAddConsumer: true
+          });
+        }}>
+        Добавить</Button>];
+    let delButtons = [
+      <Button
+        disabled={this.state.selectedRecord === null}
+        onClick={this.showModal}
+      >
+        Удалить</Button>
+
+
+    ];
+    let importButtons = [
+      <Upload
+        {...uploadProps}
+        showUploadList={false}
+        name="logo"
+      >
+        <Button>
+          <Icon type="upload"/> Загрузить
+        </Button>
+      </Upload>
+    ];
     let extraButtons = [<span key={"total-count"} style={{
       color: "#002140",
       fontSize: "12px",
@@ -277,19 +438,22 @@ class Consumer extends Component {
             style={{ height: "140px", marginBottom: "10px" }}
             type="inner"
             bodyStyle={{ padding: 25 }}
-            title={'Добавить сотрудника'}
+            title={"Добавить сотрудника"}
+            extra={<p onClick={() => {
+              this.setState({
+                visibleAddConsumer: false
+              });
+            }}><Icon type="close" /></p>}
           >
 
             <Col span={18}>
               <Search
                 placeholder="Введите ИИН"
-                enterButton={'Добавить'}
+                enterButton={"Сохранить"}
                 size="large"
                 maxLength={12}
-                style={{ width: 600 }}
-                onSearch={() =>   this.setState({
-                  visibleAddConsumer: false
-                })}
+                style={{ width: 600}}
+                onSearch={value => this.addSpecial(value)}
 
               />
             </Col>
@@ -298,6 +462,17 @@ class Consumer extends Component {
         </div>
       </Row>
       }
+
+
+      <Modal
+        title="Внимание!"
+        visible={this.state.visibleModal}
+        onOk={this.handleOk}
+        onCancel={this.handleCancel}
+      >
+        <h4> Вы действительно хотите удалить сотрудника с
+          ИИН {this.state.selectedRecord ? this.state.selectedRecord.iin : ""}</h4>
+      </Modal>
 
       <Col sm={24} md={this.state.filterContainer}>
         <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
@@ -387,14 +562,14 @@ class Consumer extends Component {
           }}
           actionExport={() => this.exportToExcel()}
           // extraButtons={extraButtons}
-          addonButtons={addonButtons}
-          // onSelectRow={(record, index) => {
-          //   console.log(record);
-          //   this.setState({
-          //     selectedRecord: record
-          //   });
-          //   //this.selectedRecord = record;
-          // }}
+          addonButtons={[addonButtons, delButtons, importButtons]}
+          onSelectRow={(record, index) => {
+            console.log(record);
+            this.setState({
+              selectedRecord: record
+            });
+            //this.selectedRecord = record;
+          }}
           onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
           onRefresh={() => {
             this.loadGridData();
@@ -414,7 +589,7 @@ class Consumer extends Component {
   };
 }
 
-export default connect(({ universal, loading }) => ({
-  universal,
-  loadingData: loading.effects["universal/paymentsData"]
+export default connect(({ universal2, loading }) => ({
+  universal2,
+  loadingData: loading.effects["universal2/getList"]
 }))(Consumer);

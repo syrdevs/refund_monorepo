@@ -17,6 +17,11 @@ export async function getColumns(params) {
   return request(`/apis/refund/${params.payload.table}column`);
 }
 
+export async function addSpecial(params) {
+  return request(`/api/refund/addSpecial?iin=`+params.payload);
+
+}
+
 export async function getData(params) {
   if (['payment', 'paymentcolumn', 'templates', 'journaldata', 'journal'].indexOf(params.payload.table) !== -1) {
     return request(`/apis/refund/${params.payload.table}data`);
