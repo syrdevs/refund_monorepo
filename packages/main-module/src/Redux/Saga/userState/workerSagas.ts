@@ -1,7 +1,7 @@
 import { AUTH_TOKEN, AxiosData, ReduxActionType } from '@vitacore/shared-ui'
 import { message } from 'antd'
-import { call, put } from 'redux-saga/effects'
-import { default as User } from '../../../Models/User'
+import { call, fork, put } from 'redux-saga/effects'
+import { default as User, UserInfo } from '../../../Models/User'
 import { getAuthToken } from '../../../Services/AuthenticationService'
 import { createApiClient } from '../../../utils'
 import { checkAuthInProgress, checkAuthTokenSuccess, loginSuccess } from '../../Actions/userStateActions'
@@ -19,16 +19,14 @@ export function* tryLogin(
     )
 
     if (user.data) {
-      yield put(loginSuccess(user.data))
       localStorage.setItem(AUTH_TOKEN, user.data.token)
-      history.push(action.payload.redirectTo || '/')
+      yield fork(getUserInfo, user.data, false, undefined, action.payload.redirectTo)
     } else {
       localStorage.removeItem(AUTH_TOKEN)
       yield put({ type: LOGIN_FAILED, payload: 'Не удалось авторизоваться на сайте' })
       message.error('Не удалось авторизоваться на сайте')
     }
   } catch (e) {
-    console.log(e)
     yield put({ type: LOGIN_FAILED, payload: 'Не удалось авторизоваться на сайте' })
     message.error('Не удалось авторизоваться на сайте')
   }
@@ -47,8 +45,7 @@ export function* checkAuthToken(
         token: getAuthToken(),
       } as User
 
-      yield put(checkAuthTokenSuccess(userData))
-      action.payload.promiseResolve(true)
+      yield fork(getUserInfo, userData, true, action.payload.promiseResolve, undefined)
     } else {
       localStorage.removeItem(AUTH_TOKEN)
       yield put({ type: CHECK_AUTH_TOKEN_FAILED, payload: 'Не удалось авторизоваться на сайте' })
@@ -68,5 +65,36 @@ export function* logout() {
     localStorage.removeItem(AUTH_TOKEN)
     yield put({ type: LOGOUT_SUCCESS })
     history.push('/login')
+  }
+}
+
+function* getUserInfo(
+  userData: User,
+  fromCheckToken: boolean,
+  promiseResolve?: (value?: boolean | PromiseLike<boolean>) => void,
+  redirectTo?: string | undefined
+) {
+  try {
+    const userInfo: AxiosData<UserInfo & { roles: string }> = yield call(createApiClient().getUserInfo)
+    if (userInfo) {
+      const rolesStr = userInfo.data.roles as string
+      const finalUserData = {
+        ...userData,
+        userInfo: {
+          ...userInfo.data,
+          roles: rolesStr && rolesStr.split(',').map(i => i.trim()),
+        },
+      } as User
+
+      if (fromCheckToken) {
+        yield put(checkAuthTokenSuccess(finalUserData))
+        promiseResolve!(true)
+      } else {
+        yield put(loginSuccess(finalUserData))
+        history.push(redirectTo || '/')
+      }
+    }
+  } catch (e) {
+    message.error(e)
   }
 }

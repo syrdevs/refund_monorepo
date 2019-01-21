@@ -92,3 +92,7 @@ p {
     border-bottom-color: #444;
     top: -3px;
 }
+
+.ant-btn.ant-btn-primary.christmas:before {
+  display: none!important;
+}

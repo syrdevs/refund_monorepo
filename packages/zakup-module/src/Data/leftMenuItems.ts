@@ -46,7 +46,7 @@ const leftMenuItems: LeftMenuRootNode[] = [
     iconName: 'schedule',
     translationKey: 'leftMenu.contracts.protocols._',
     subItems: [],
-  }
+  },
 ]
 
 export default leftMenuItems

@@ -8,7 +8,7 @@ import { Loader } from './Layout/Loader'
 import LoginRoute from './Routing/LoginRoute'
 import LogoutRoute from './Routing/LogoutRoute'
 import { getAuthToken, isUserAuthenticated, isUserAuthenticatedSimple } from './Services/AuthenticationService'
-import { addUserLanguageChangeCb, getUserLanguage, requestFinished, requestStarted } from './utils'
+import { addUserLanguageChangeCb, getUserInfo, getUserLanguage, requestFinished, requestStarted } from './utils'
 
 const ContractModule = lazy(() => import('@vitacore/contract-module'))
 const ContractsModule = lazy(() => import('@vitacore/contracts-module'))
@@ -59,11 +59,11 @@ class MainApp extends React.Component<Props> {
                   <PrivateRoute
                     simpleAuthCheck={isUserAuthenticatedSimple}
                     promiseAuthCheck={isUserAuthenticated}
-                    path="/refunds"
+                    path="/contracts"
                     render={props => (
-                      <RefundsModule
-                        moduleName="/refunds"
-                        defaultRoute="/refunds/home"
+                      <ContractsModule
+                        moduleName="/contracts"
+                        defaultRoute="/contracts/zakup/notices/all/1"
                         simpleAuthCheck={isUserAuthenticatedSimple}
                         promiseAuthCheck={isUserAuthenticated}
                         getAuthToken={getAuthToken}
@@ -71,6 +71,27 @@ class MainApp extends React.Component<Props> {
                         requestFinished={requestFinished}
                         getUserLanguage={getUserLanguage}
                         subscribeToUserLanguageChange={addUserLanguageChangeCb}
+                        getUserInfo={getUserInfo}
+                        {...props}
+                      />
+                    )}
+                  />
+                  <PrivateRoute
+                    simpleAuthCheck={isUserAuthenticatedSimple}
+                    promiseAuthCheck={isUserAuthenticated}
+                    path="/refunds"
+                    render={props => (
+                      <RefundsModule
+                        moduleName="/refunds"
+                        defaultRoute="/refunds/main"
+                        simpleAuthCheck={isUserAuthenticatedSimple}
+                        promiseAuthCheck={isUserAuthenticated}
+                        getAuthToken={getAuthToken}
+                        requestStarted={requestStarted}
+                        requestFinished={requestFinished}
+                        getUserLanguage={getUserLanguage}
+                        subscribeToUserLanguageChange={addUserLanguageChangeCb}
+                        getUserInfo={getUserInfo}
                         {...props}
                       />
                     )}
@@ -90,25 +111,7 @@ class MainApp extends React.Component<Props> {
                         requestFinished={requestFinished}
                         getUserLanguage={getUserLanguage}
                         subscribeToUserLanguageChange={addUserLanguageChangeCb}
-                        {...props}
-                      />
-                    )}
-                  />
-                  <PrivateRoute
-                    simpleAuthCheck={isUserAuthenticatedSimple}
-                    promiseAuthCheck={isUserAuthenticated}
-                    path="/contracts"
-                    render={props => (
-                      <ContractsModule
-                        moduleName="/contracts"
-                        defaultRoute="/contracts/zakup/notices/all/1"
-                        simpleAuthCheck={isUserAuthenticatedSimple}
-                        promiseAuthCheck={isUserAuthenticated}
-                        getAuthToken={getAuthToken}
-                        requestStarted={requestStarted}
-                        requestFinished={requestFinished}
-                        getUserLanguage={getUserLanguage}
-                        subscribeToUserLanguageChange={addUserLanguageChangeCb}
+                        getUserInfo={getUserInfo}
                         {...props}
                       />
                     )}

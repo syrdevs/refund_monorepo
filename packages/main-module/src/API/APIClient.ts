@@ -101,6 +101,10 @@ class APIClient implements IAPIClient {
   public logout() {
     return APIClient.doApiCall('/logout', 'POST')
   }
+
+  public getUserInfo() {
+    return APIClient.doApiCall('/getUserInfo', 'GET')
+  }
 }
 
 export default APIClient

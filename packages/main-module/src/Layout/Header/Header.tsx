@@ -89,11 +89,13 @@ type PropsType = {
 
 class Header extends React.Component<PropsType> {
   public render() {
+    const { userData } = this.props
+
     const userInfoElement = this.props.isUserAuthenticated ? (
       <UserContainer>
         <UserInfoContainer>
-          <UserName>{this.props.userData.userName}</UserName>
-          <UserOrganization>ФНАО «ФСМС» по Акмолинской области</UserOrganization>
+          <UserName>{userData.userName}</UserName>
+          <UserOrganization>{userData.userInfo!.company}</UserOrganization>
         </UserInfoContainer>
         <Link to={'/logout'}>
           <AntIcon type="logout" />
@@ -131,6 +133,7 @@ const mapStateToProps = (state: State) => {
     isUserAuthenticated: state.userState.isAuthenticated && !state.userState.loginInProgress,
     userData: {
       userName: state.userState.user.userName,
+      userInfo: state.userState.user.userInfo,
     },
   }
 }

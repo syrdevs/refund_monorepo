@@ -21,7 +21,7 @@
   "scripts": {
     "compile-ts": "tsc -p tsconfig.build.json",
     "compile-ts-watch": "tsc -p tsconfig.build.json -w --preserveWatchOutput",
-    "copy-assets": " ",
+    "copy-assets": "  ",
     "start": "yarn clean && yarn copy-assets && yarn compile-ts-watch",
     "build": "yarn clean && yarn copy-assets && yarn compile-ts",
     "clean": " "

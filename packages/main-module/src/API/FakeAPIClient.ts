@@ -1,5 +1,6 @@
 import { AxiosData, AxiosDataUntyped } from '@vitacore/shared-ui'
 import { User } from '../Models'
+import { UserInfo } from '../Models/User'
 import { getAuthToken } from '../Services/AuthenticationService'
 import { emulateRequest } from '../utils'
 import IAPIClient from './IAPIClient'
@@ -37,6 +38,22 @@ class FakeAPIClient implements IAPIClient {
         } else {
           reject(new Error('Logout exception'))
         }
+      }, 1200)
+    })
+  }
+
+  public getUserInfo() {
+    return new Promise<AxiosData<UserInfo>>(resolve => {
+      emulateRequest(() => {
+        resolve({
+          data: {
+            roles: ['FSMS1', 'FSMS2', 'Администратор'],
+            company: 'Департамент информационных технологий',
+            eMail: 'odin@itdepartment',
+            phoneNumber: '+7-776-173-13-33',
+            position: 'Главный администратор',
+          },
+        })
       }, 1200)
     })
   }

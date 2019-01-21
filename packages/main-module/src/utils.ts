@@ -74,3 +74,7 @@ export const isTrue = (value: any) => {
 
   return !!value
 }
+
+export const getUserInfo = () => {
+  return store.getState().userState.user.userInfo
+}
