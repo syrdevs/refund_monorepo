@@ -18,6 +18,7 @@ import {
   Select,
   Checkbox,
   LocaleProvider,
+  Radio,
   Divider,
   Spin
 } from "antd";
@@ -27,6 +28,8 @@ import formatMessage from "../../utils/formatMessage";
 import SelectList from "../../components/SelectList";
 import componentLocal from "../../locales/components/componentLocal";
 import { Animated } from "react-animated-css";
+import ButtonGroup from "./ButtonGroup";
+
 
 const FormItem = Form.Item;
 const { RangePicker, MonthPicker } = DatePicker;
@@ -233,8 +236,8 @@ class GridFilter extends Component {
 
     let filterData = {};
     Object.keys(fields).forEach((field) => {
-      if (formFilters[field]) {
 
+      if (formFilters[field] || formFilters[field] === false) {
 
         if (["multibox", "combobox"].indexOf(fields[field].type) !== -1) {
 
@@ -323,6 +326,22 @@ class GridFilter extends Component {
     const mBottom = { marginBottom: "5px" };
 
     switch (filterItem.type) {
+
+      case "ButtonGroup": {
+
+        let params = {};
+
+        if (isClearFilter) {
+          params.value = null;
+        }
+
+        return (<div key={_index} style={mBottom}>
+          {filterItem.label}:
+          <ButtonGroup  {...filterItem} {...params} key={_index + "_BtnGroup"} onChange={(e) => {
+            this.fieldOnChange(filterItem, e);
+          }}/>
+        </div>);
+      }
 
       case "date": {
         let params = {
@@ -648,8 +667,16 @@ class GridFilter extends Component {
         return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Select
             {...params}
+            showSearch
             style={{ width: "100%" }}
             placeholder={filterItem.label && filterItem.label}
+            filterOption={(input, option) => {
+
+              if (typeof option.props.children === "string" || option.props.children instanceof String) {
+                return option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0;
+              }
+              return -1;
+            }}
             onChange={(value) => {
               this.fieldOnChange(filterItem, value);
             }}

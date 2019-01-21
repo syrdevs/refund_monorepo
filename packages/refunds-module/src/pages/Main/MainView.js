@@ -361,24 +361,24 @@ class MainView extends Component {
     });
   }
 
-  createPull=()=>{
-    console.log("creating")
+  createPull = () => {
+    console.log("creating");
     const { dispatch } = this.props;
     dispatch({
       type: "universal/createPack",
       payload: {
-        "entity":"Refund",
-        "filter":{
+        "entity": "Refund",
+        "filter": {
           ...this.state.pagingConfig.filter
         }
       }
-    }).then(()=>{
+    }).then(() => {
       Modal.success({
         title: formatMessage({ id: "menu.mainview.pullbtn" }),
-        content: 'Успешно создан!',
+        content: "Успешно создан!"
       });
-    })
-  }
+    });
+  };
 
   hideleft() {
     if (!this.state.isHidden) {
@@ -499,8 +499,18 @@ class MainView extends Component {
       },
       {
         name: "includedInPack",
-        label: "Включен в пул",
-        type: "checkbox"
+        label: "Пул",
+        type: "ButtonGroup",
+        buttons: [{
+          label: "Все",
+          value: null
+        }, {
+          label: "Не включен",
+          value: false
+        }, {
+          label: "Включен",
+          value: true
+        }]
       }
     ];
   };
@@ -919,8 +929,10 @@ class MainView extends Component {
                       style={{ marginLeft: "5px", marginRight: "5px" }}
                       key={"run"}>{formatMessage({ id: "menu.mainview.performBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>
 
-              <Button onClick={() => {this.createPull()}}
-                     /* disabled={this.state.selectedRowKeys.length === 0}*/
+              <Button onClick={() => {
+                this.createPull();
+              }}
+                /* disabled={this.state.selectedRowKeys.length === 0}*/
                       style={{ marginLeft: "5px", marginRight: "5px" }}
                       key={"pull"}>
                 {formatMessage({ id: "menu.mainview.pullbtn" })} {/* {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}*/}
