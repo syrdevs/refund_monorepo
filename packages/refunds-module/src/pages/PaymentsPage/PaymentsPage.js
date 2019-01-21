@@ -35,6 +35,7 @@ import saveAs from 'file-saver';
 import PaymentsMT100 from './PaymentsMT100';
 import PaymentsMT102 from './PaymentsMT102';
 import Consumer from "./Consumer";
+import Employees from "./Employees";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -621,7 +622,11 @@ class PaymentsPage extends Component {
           <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="mt102">
             <PaymentsMT102/>
           </TabPane>
-          <TabPane tab={'Потребитель'} key="consumer">
+
+          {/*<TabPane tab={'Список плательщиков'} key="employees">*/}
+            {/*<Employees/>*/}
+          {/*</TabPane>*/}
+          <TabPane tab={'Сотрудники'} key="consumer">
             <Consumer/>
           </TabPane>
         </Tabs>

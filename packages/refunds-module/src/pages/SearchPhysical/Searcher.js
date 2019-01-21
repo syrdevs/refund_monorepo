@@ -19,6 +19,7 @@ import {
 } from "antd";
 import connect from "../../Redux";
 import style from "./Searcher.less";
+import Employees from "../PaymentsPage/Employees";
 
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -568,7 +569,13 @@ class Searcher extends Component {
               >
                 <div></div>
               </TabPane>
-
+              <TabPane
+                tab={'Список плательщиков'}
+                key="4"
+                disabled={!personRPN.iin}
+              >
+               <Employees/>
+              </TabPane>
             </Tabs>
           </Row>
         </Spin>

@@ -32,7 +32,6 @@ import "./Payments.css";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 
-const Search = Input.Search;
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
@@ -42,9 +41,11 @@ const formItemLayout = {
   wrapperCol: { span: 18 }
 };
 
-class Consumer extends Component {
+class Employees extends Component {
 
   state = {
+    mode: ['month', 'month'],
+    value: [],
     selectedRecord: null,
     parameters: {
       start: 0,
@@ -53,77 +54,31 @@ class Consumer extends Component {
       filter: {},
       sort: []
     },
-    filterForm: [
-
-      {
-        label: "ИИН",
-        name: "recipientBin",
-        type: "text"
-      }, {
-        label: "Дата создания",
-        name: "lastname",
-        type: "text"
-      }, {
-        label: "Пользователь",
-        name: "firstname",
-        type: "text"
-      }
-
-    ],
     sortedInfo: {},
     selectedRowKeys: [],
     visibleAddConsumer: false,
     filterContainer: 0,
     columns: [
       {
-        "title": "ИИН",
+        "title": "Период (с)",
+        "dataIndex": "iin",
+        "isVisible": "true"
+      }, {
+        "title": "Период (по)",
+        "dataIndex": "lastname",
+        "isVisible": "true"
+      }, {
+        "title": "Плательщик (БИН/ИИН)",
         "dataIndex": "recipientBin",
+        "isVisible": "true"
+      }, {
+        "title": "Плательщик (Наименование/ФИО)",
+        "dataIndex": "recipientName",
         "isVisible": "true"
       }
     ]
   };
 
-  clearFilter = (pageNumber) => {
-    console.log(this.state.parameters);
-    this.setState({
-      sortedInfo: {},
-      parameters: {
-        start: this.state.parameters.start,
-        length: this.state.parameters.length,
-        entity: this.state.parameters.entity,
-        filter: {},
-        sort: []
-      }
-    }, () => {
-      this.loadGridData();
-    });
-  };
-//test
-  applyFilter = (filter) => {
-    if (filter.knpList != null && filter.knpList.length === 0) {
-      delete filter["knpList"];
-    }
-    this.setState({
-      sortedInfo: {},
-      parameters: {
-        ...this.state.parameters,
-        filter: { ...filter },
-        sort: []
-      }
-    }, () => {
-
-      const { dispatch } = this.props;
-      dispatch({
-        type: "universal/paymentsData",
-        payload: {
-          ...this.state.parameters,
-          start: 0
-        }
-      });
-
-
-    });
-  };
 
   onShowSizeChange = (current, pageSize) => {
     const { dispatch } = this.props;
@@ -163,8 +118,6 @@ class Consumer extends Component {
   }
 
   exportToExcel = () => {
-    console.log(556);
-
     request("/api/refund/exportToExcel", {
       body: {
         "entityClass": this.state.parameters.entity,
@@ -185,56 +138,6 @@ class Consumer extends Component {
       }
     });
 
-    // let authToken = localStorage.getItem("AUTH_TOKEN");
-    //
-    // fetch("/api/refund/exportToExcel",
-    //   {
-    //     headers: {
-    //       "Content-Type": "application/json; charset=utf-8",
-    //       Authorization: "Bearer " + authToken
-    //     },
-    //     method: "post",
-    //     body: JSON.stringify({
-    //       "entityClass": this.state.parameters.entity,
-    //       "fileName": this.state.parameters.entity === "mt100" ? formatMessage({ id: "menu.payments.payment100" }) : formatMessage({ id: "menu.payments.payment102" }),
-    //       "src": {
-    //         "searched": true,
-    //         "data": this.state.parameters.filter
-    //       },
-    //       "columns": this.state.parameters.entity == "mt100" ? JSON.parse(localStorage.getItem("paymentspagemt100columns")).filter(item => item.isVisible === "true" || item.isVisible === true) : JSON.parse(localStorage.getItem("paymentspagemt102columns")).filter(item => item.isVisible === "true" || item.isVisible === true)
-    //     })
-    //   })
-    // // .then(response => response.blob())
-    // // .then(responseBlob => {
-    // //
-    // //   var reader = new FileReader();
-    // //   reader.addEventListener('loadend', function() {
-    // //     var blob = new Blob([reader.result], { type: 'application/vnd.ms-excel' }); // pass a useful mime type here
-    // //     var url = URL.createObjectURL(blob);
-    // //     window.open(url, '_self');
-    // //   });
-    // //   reader.readAsArrayBuffer(responseBlob);
-    // //
-    // //   /* let blob = new Blob([responseBlob], { type: responseBlob.type }),
-    // //      url = window.URL.createObjectURL(blob);
-    // //    window.open(url, '_self');*/
-    // // });
-    //   .then(response => {
-    //     if (response.ok) {
-    //       return response.blob().then(blob => {
-    //         let disposition = response.headers.get("content-disposition");
-    //         return {
-    //           fileName: this.getFileNameByContentDisposition(disposition),
-    //           raw: blob
-    //         };
-    //       });
-    //     }
-    //   })
-    //   .then(data => {
-    //     if (data) {
-    //       saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
-    //     }
-    //   });
 
   };
   getFileNameByContentDisposition = (contentDisposition) => {
@@ -252,10 +155,21 @@ class Consumer extends Component {
     return decodeURI(filenames);
   };
 
-  render = () => {
+  handlePanelChange = (value, mode) => {
+    this.setState({
+      value,
+      mode: [
+        mode[0] === 'date' ? 'month' : mode[0],
+        mode[1] === 'date' ? 'month' : mode[1],
+      ],
+    });
+  }
 
+  render = () => {
+    const dt = moment(new Date()).format('DD.MM.YYYY');
     const paymentsData = this.props.universal.paymentsData[this.state.parameters.entity];
-    const CardHeight = { height: "auto", marginBottom: "10px" };
+    const { value, mode } = this.state;
+
     let addonButtons = [<Button
       onClick={() => {
         this.setState({
@@ -270,67 +184,46 @@ class Consumer extends Component {
     }}>{formatMessage({ id: "system.totalAmount" })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
 
     return (<Row>
-      {this.state.visibleAddConsumer &&
-      <Row>
-        <div style={CardHeight}>
-          <Card
-            style={{ height: "140px", marginBottom: "10px" }}
-            type="inner"
-            bodyStyle={{ padding: 25 }}
-            title={'Добавить сотрудника'}
-          >
 
-            <Col span={18}>
-              <Search
-                placeholder="Введите ИИН"
-                enterButton={'Добавить'}
-                size="large"
-                maxLength={12}
-                style={{ width: 600 }}
-                onSearch={() =>   this.setState({
-                  visibleAddConsumer: false
-                })}
-
-              />
-            </Col>
-
-          </Card>
-        </div>
-      </Row>
-      }
-
-      <Col sm={24} md={this.state.filterContainer}>
-        <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-          <Card
-            headStyle={{
-              padding: "0 14px"
-            }}
-            style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
-            type="inner"
-            title={formatMessage({ id: "system.filter" })}
-            extra={<Icon style={{ "cursor": "pointer" }} onClick={this.filterPanelState}><FontAwesomeIcon
-              icon={faTimes}/></Icon>}>
-            <GridFilter
-              // clearFilter={this.clearFilter(pageNumber)}
-              clearFilter={(pageNumber) => this.clearFilter(pageNumber)}
-              applyFilter={(filter) => this.applyFilter(filter)} key={"1"}
-              filterForm={this.state.filterForm}
-              dateFormat={dateFormat}/>
-          </Card>
-        </Animated>
-
-      </Col>
+      <Card bodyStyle={{padding: 5}} style={{marginTop: '40px',}}>
+        <Row type="flex" justify="center">
+          <Col>
+            <Card bodyStyle={{padding: 5}}>
+              <RangePicker
+                defaultValue={[moment(dt, 'DD.MM.YYYY'), moment(dt, 'DD.MM.YYYY')]}
+                placeholder={[formatMessage({id: 'datepicker.start.label'}), formatMessage({id: 'datepicker.end.label'})]}
+                format="YYYY-MM"
+                value={value}
+                mode={mode}
+                onPanelChange={this.handlePanelChange}
+                onChange={(date, dateString) => {
+                  this.setState((prevState) => ({
+                    filters: {
+                      ...prevState.filters,
+                      dateValues: dateString,
+                    },
+                  }));
+                }}/>
+              <Button style={{margin: '10px'}} onClick={() => {
+                this.loadGridData();
+              }
+              }>{formatMessage({id: 'button.apply'})}</Button>
+            </Card>
+          </Col>
+        </Row>
+      </Card>
       <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
 
         <SmartGridView
           // name={'paymentspagemt100columns'}
           // scroll={{ x: "auto" }}
           fixedBody={true}
+          hideFilterBtn={true}
           actionColumns={[]}
           showTotal={true}
           // selectedRowCheckBox={true}
-          searchButton={false}
-          selectedRowKeys={this.state.selectedRowKeys}
+          // searchButton={false}
+          // selectedRowKeys={this.state.selectedRowKeys}
           rowKey={"id"}
           loading={this.props.loadingData}
           fixedHeader={true}
@@ -350,7 +243,7 @@ class Consumer extends Component {
           // }}
           sorted={true}
           sortedInfo={this.state.sortedInfo}
-          showExportBtn={true}
+          // showExportBtn={true}
           dataSource={{
             total: paymentsData.totalElements,
             pageSize: paymentsData.size,
@@ -387,7 +280,7 @@ class Consumer extends Component {
           }}
           actionExport={() => this.exportToExcel()}
           // extraButtons={extraButtons}
-          addonButtons={addonButtons}
+          // addonButtons={addonButtons}
           // onSelectRow={(record, index) => {
           //   console.log(record);
           //   this.setState({
@@ -399,14 +292,14 @@ class Consumer extends Component {
           onRefresh={() => {
             this.loadGridData();
           }}
-          onSearch={() => {
-            this.filterPanelState();
-          }}
-          onSelectCheckboxChange={(selectedRowKeys) => {
-            this.setState({
-              selectedRowKeys: selectedRowKeys
-            });
-          }}
+          // onSearch={() => {
+          //   this.filterPanelState();
+          // }}
+          // onSelectCheckboxChange={(selectedRowKeys) => {
+          //   this.setState({
+          //     selectedRowKeys: selectedRowKeys
+          //   });
+          // }}
         />
 
       </Col>
@@ -417,4 +310,4 @@ class Consumer extends Component {
 export default connect(({ universal, loading }) => ({
   universal,
   loadingData: loading.effects["universal/paymentsData"]
-}))(Consumer);
+}))(Employees);
