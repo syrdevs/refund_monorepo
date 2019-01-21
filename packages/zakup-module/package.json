@@ -21,10 +21,10 @@
   "scripts": {
     "compile-ts": "tsc -p tsconfig.build.json",
     "compile-ts-watch": "tsc -p tsconfig.build.json -w --preserveWatchOutput",
-    "copy-assets": " ",
+    "copy-assets": "mkdir -p ./build/dist/ && cp -r ./src/assets ./build/dist/assets",
     "start": "yarn clean && yarn copy-assets && yarn compile-ts-watch",
     "build": "yarn clean && yarn copy-assets && yarn compile-ts",
-    "clean": " "
+    "clean": "rm -rf build"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.6",
