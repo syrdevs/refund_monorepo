@@ -1,7 +1,12 @@
-module.exports = (roles) => {
+let userState = {};
 
-  //todo authority
+module.exports = (roles, _userState) => {
 
-  let userRoles = ["ADMIN"];
+  if (roles === null && _userState) {
+    userState = _userState;
+    return;
+  }
+
+  let userRoles = userState.roles ? userState.roles : [];
   return !userRoles.some(r => roles.indexOf(r) >= 0);
 };

@@ -10,6 +10,7 @@ import Loadable from "react-loadable";
 import { Row, Col, Layout, Menu, Breadcrumb, Icon } from "antd";
 import formatMessage from "./utils/formatMessage";
 import renderRoutes from "./Router/renderRoutes";
+import hasRole from "./utils/hasRole";
 
 import "./App.css";
 
@@ -73,6 +74,7 @@ function menuItemRender() {
     }
   });
 }
+
 menuItemRender();
 
 class App extends React.Component {
@@ -81,6 +83,11 @@ class App extends React.Component {
   }
 
   componentDidMount() {
+
+    if (this.props.getUserInfo) {
+      hasRole(null, this.props.getUserInfo());
+    }
+
     if (this.props.subscribeToUserLanguageChange) {
       this.props.subscribeToUserLanguageChange(() => {
         window.location.reload();

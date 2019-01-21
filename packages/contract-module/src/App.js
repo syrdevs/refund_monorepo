@@ -8,6 +8,8 @@ import routerConfig from "./config/router.config";
 import Loadable from "react-loadable";
 import formatMessage from "./utils/formatMessage";
 import renderRoutes from "./Router/renderRoutes";
+import hasRole from "./utils/hasRole";
+
 import "./App.css";
 
 const RootContainer = styled.div`
@@ -77,6 +79,10 @@ class App extends React.Component {
 
   componentDidMount() {
 
+    if (this.props.getUserInfo) {
+      hasRole(null, this.props.getUserInfo());
+    }
+
     if (this.props.subscribeToUserLanguageChange) {
       this.props.subscribeToUserLanguageChange(() => {
         window.location.reload();
@@ -90,7 +96,7 @@ class App extends React.Component {
     return (<Provider store={store}>
         <RootContainer>
           {/*<LeftMenu leftMenuItems={leftMenuCollection} location={location}*/}
-                    {/*goToLink={this.props.history.push}/>*/}
+          {/*goToLink={this.props.history.push}/>*/}
           <Content>
             <Suspense fallback={<div>...</div>}>
               <Switch>

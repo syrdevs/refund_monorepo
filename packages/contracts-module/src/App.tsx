@@ -102,6 +102,7 @@ class ContractsModule extends React.Component<any, State> {
                 simpleAuthCheck={this.props.simpleAuthCheck}
                 promiseAuthCheck={this.props.promiseAuthCheck}
                 getAuthToken={this.props.getAuthToken}
+                getUserInfo={this.props.getUserInfo}
                 requestStarted={this.props.requestStarted}
                 requestFinished={this.props.requestFinished}
                 getUserLanguage={this.props.getUserLanguage}
