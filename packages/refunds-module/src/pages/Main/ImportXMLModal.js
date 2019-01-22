@@ -143,7 +143,6 @@ class ImportXMLModal extends Component {
         errors = errors.concat(data);
       }
     });
-    console.log(confirmRefundList);
     this.setState({
       confirmRefundList: confirmRefundList,
       cancelRefundList: cancelRefundList,
@@ -163,6 +162,38 @@ class ImportXMLModal extends Component {
       return "error";
     }
   };
+  checkSuccess = (selectedRowKeys) => {
+    this.setState({
+      selectedRowKeys: selectedRowKeys
+    });
+  };
+  setDate = () => {
+    if(this.state.selectedRowKeys.length){
+        this.state.selectedRowKeys.forEach((item)=>{
+
+          const { dispatch } = this.props;
+          dispatch({
+            type: 'universal/changeDateRefund',
+            payload: {
+              refundDate: this.state.confirmRefundList.find(i => i.id === item).xmlrefundDate,
+              refundList: this.state.selectedRowKeys.map((item) => ({ id: item })),
+            },
+          });
+        });
+    }
+    this.props.closeAction();
+  };
+
+  /*savewitDate=(date, id)=>{
+    const { dispatch } = this.props;
+    dispatch({
+      type: 'universal/changeDateRefund',
+      payload: {
+        refundDate: date,
+        refundList: id,
+      },
+    });
+  }*/
 
   render = () => {
     const { closeAction } = this.props;
@@ -178,12 +209,9 @@ class ImportXMLModal extends Component {
         visible={true}
         width={1200}
         onCancel={() => closeAction()}
+        okText="Сохранить"
         onOk={() => {
-          this.setState({
-            ImportModalGrid: {
-              visible: true
-            }
-          });
+          this.setDate();
         }}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Успешные" key="1">
@@ -226,7 +254,7 @@ class ImportXMLModal extends Component {
                   //this.toggleSearcher();
                 }}
                 onSelectCheckboxChange={(selectedRowKeys) => {
-                 // this.checkStatus(selectedRowKeys);
+                  this.checkSuccess(selectedRowKeys);
                 }}
               />
             </Card>
@@ -236,8 +264,6 @@ class ImportXMLModal extends Component {
               <SmartGridView
                 name={"importxmlcancelTable"}
                 scroll={{ x: "auto"}}
-                selectedRowCheckBox={true}
-                selectedRowKeys={this.state.selectedRowKeys}
                 rowKey={"id"}
                 loading={this.props.loadingData}
                 actionColumns={this.state.fcolumn}
@@ -270,9 +296,6 @@ class ImportXMLModal extends Component {
                 onSearch={() => {
                   //this.toggleSearcher();
                 }}
-                onSelectCheckboxChange={(selectedRowKeys) => {
-                  // this.checkStatus(selectedRowKeys);
-                }}
               />
             </Card>
           </TabPane>
@@ -292,4 +315,6 @@ class ImportXMLModal extends Component {
   };
 }
 
-export default ImportXMLModal;
+export default connect(({ universal }) => ({
+  universal,
+}))(ImportXMLModal);
