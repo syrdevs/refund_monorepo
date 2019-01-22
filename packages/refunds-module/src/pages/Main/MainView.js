@@ -13,6 +13,7 @@ import {
   Upload,
   Form,
   Modal,
+  Radio,
   Input,
   DatePicker,
   LocaleProvider,
@@ -140,7 +141,63 @@ class MainView extends Component {
             href="#"> <span><Badge
             status={this.setBadgeStatus(value.isRefundConfirm)}/></span> {value.dappRefundStatusId ? value.dappRefundStatusId.nameRu : null}
           </a>
-        }],
+        },
+        {
+          title: "Загрузить",
+          order: 50,
+          key: "upload",
+          className: "action_column",
+          isVisible: true,
+          onCell: record => {
+            return {
+              onClick: () => {
+
+              }
+            };
+          },
+          render: (record) => (
+            <Upload
+              showUploadList={false}
+              openFileDialogOnClick={true}
+              onRemove={() => {}}
+              onPreview={() => {}}
+              beforeUpload={(file) => { return false;}}
+              onChange={(file) => {
+                if (file.status !== "removing") {
+                  this.uploadFile(record.id, file);
+                }
+              }}>
+              <Icon type="database" theme="outlined"/>
+            </Upload>
+          )
+        },
+        {
+          title: "Файлы",
+          order: 51,
+          key: "files",
+          width: 250,
+          className: "action_column",
+          isVisible: true,
+          onCell: record => {
+            return {
+              onClick: () => {
+
+              }
+            };
+          },
+          render: (record) => (
+            <div>
+              {record.refundFiles && record.refundFiles.map((item) => {
+                return <p><span>{item.filename}</span>  <span><a onClick={()=>{
+                  this.deleteFile(record, item);
+                }}>x</a></span></p>
+              })}
+            </div>
+          )
+        },
+
+
+        ],
       columns: [
         {
           "title": "Номер заявки",
@@ -202,19 +259,30 @@ class MainView extends Component {
         }, {
           "title": "Кол-во отчислений и (или) взносов за последние 12 календарных месяцев",
           "dataIndex": "lastMedcarePayCount"
-        }, { "title": "Статус страхования", "dataIndex": "medinsStatus" }, {
+        },
+        // { "title": "Статус страхования", "dataIndex": "medinsStatus" },
+        {
           "title": "Референс",
           "dataIndex": "applicationId.reference"
-        }, { "title": "Причина отказа", "dataIndex": "ddenyReasonId.nameRu" }, {
-          "title": "Отчет об отказе",
-          "dataIndex": "refundStatus"
-        }, { "title": "Осталось дней", "dataIndex": "daysLeft" }, {
+        }, { "title": "Причина отказа", "dataIndex": "ddenyReasonId.nameRu" },
+        // {
+        //   "title": "Отчет об отказе",
+        //   "dataIndex": "refundStatus"
+        // },
+        { "title": "Осталось дней", "dataIndex": "daysLeft" }, {
           "title": "Дата изменения статуса заявки",
           "dataIndex": "changeDate"
-        }, { "title": "Период", "dataIndex": "payPeriod" }, {
-          "title": "Веб-сервис (сообщение) ",
-          "dataIndex": "wsStatusMessage"
-        }],
+        }, { "title": "Период", "dataIndex": "payPeriod" },
+        {
+          "title": "ID платежа",
+          "dataIndex": "mt102Id",
+          "isVisible": true
+        }
+        // {
+        //   "title": "Веб-сервис (сообщение) ",
+        //   "dataIndex": "wsStatusMessage"
+        // }
+      ],
       isHidden: true,
       searchercont: 0,
       selectedRowKeys: [],
@@ -302,6 +370,46 @@ class MainView extends Component {
       });*/
   }
 
+
+
+  deleteFile=(record, item)=>{
+    Modal.confirm({
+      title: 'Вы действительно хотите удалить этот файл?',
+      okText: "Подтвердить",
+      onOk:()=> {
+        const { dispatch } = this.props;
+        dispatch({
+          type: "universal/deleteObject",
+          payload: {
+            "entity":"refundFile",
+            "alias":null,
+            "id": item.id
+          }
+        }).then(() => {
+          //this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+          this.loadMainGridData();
+        });
+      },
+      onCancel() {
+
+      },
+    });
+  }
+
+  uploadFile=(id, file)=>{
+    let formData = new FormData();
+    formData.append("content", file.file);
+    formData.append("entity", "Refund");
+    formData.append("path", "refundFiles");
+    formData.append("id", id);
+    request("/api/uicommand/uploadFile", {
+      method: "POST",
+      body: formData
+    }).then(() => {
+          this.loadMainGridData();
+    });
+  }
+
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
     const min = max - pageSize;
@@ -355,8 +463,8 @@ class MainView extends Component {
     this.setState({
       searchButton: false,
       isHidden: false,
-      searchercont: 8,
-      tablecont: 16,
+      searchercont: this.state.searchercont === 0 || this.state.searchercont === 7 ? 8 : this.state.searchercont,
+      tablecont: this.state.searchercont === 0 || this.state.searchercont === 7 ? 16 : this.state.tablecont,
       showpull: false
     });
   }
@@ -467,12 +575,12 @@ class MainView extends Component {
         type: "listbetweenDate"
       },
       {
-        name: "refundEntryDate",
+        name: "_entryDate",
         label: formatMessage({ id: "menu.filter.RefundComeDate" }),
         type: "listbetweenDate"
       },
       {
-        name: "refundEntryDate",
+        name: "_refundEntryDate",
         label: formatMessage({ id: "menu.filter.RefundFundDate" }),
         type: "listbetweenDate"
       },
@@ -496,6 +604,11 @@ class MainView extends Component {
         name: "ddenyReason",
         label: formatMessage({ id: "menu.filter.RefusalReason" }),
         type: "combobox"
+      },
+      {
+        name: "mt102Id",
+        label: "ID платежа",
+        type: "text"
       },
       {
         name: "includedInPack",
@@ -866,6 +979,7 @@ class MainView extends Component {
     const rpmuColumns = this.rpmuColumn();
     const GridFilterData = this.stateFilter();
 
+
     return (
       <div>
         {this.state.ImportXMLModal.visible &&
@@ -1011,11 +1125,13 @@ class MainView extends Component {
           <Row>
             <Col sm={24} md={this.state.searchercont}>
               <div>
-
-                {(this.state.searchercont === 7 && !this.state.showpull) &&
                 <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                   <Card
-                    style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
+                    style={{
+                      margin: "0px 5px 10px 0px",
+                      borderRadius: "5px",
+                      display: [8, 12, 16].indexOf(this.state.searchercont) === -1 && !this.state.showpull ? "block" : "none"
+                    }}
                     type="inner"
                     title={formatMessage({ id: "system.filter" })}
                     headStyle={{
@@ -1034,22 +1150,41 @@ class MainView extends Component {
                       filterForm={GridFilterData}
                       dateFormat={dateFormat}/>
                   </Card>
-                </Animated>}
+                </Animated>
 
-                {(this.state.searchercont === 8 && !this.state.showpull) &&
+                {([8, 12, 16].indexOf(this.state.searchercont) !== -1 && !this.state.showpull) &&
                 <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                   <Card
                     style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
-                    bodyStyle={{ padding: 0 }}
+                    bodyStyle={{ padding: 5 }}
                     type="inner"
                     title={formatMessage({ id: "menu.mainview.rpmuLocale" })}
-                    extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
-                      icon={faTimes}/></Icon>}
+                    extra={[<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>]}
                   >
                     <LocaleProvider locale={componentLocal}>
                       <SmartGridView
                         name={"RefundsRPMUColumns"}
                         rowKey={"id"}
+                        showTotal
+                        addonButtons={[<Radio.Group
+                          size={"default"}
+                          style={{
+                            display: "block",
+                            float: "left",
+                            margin: "5px 2px 8px"
+                          }}
+                          value={this.state.searchercont}
+                          onChange={(e) => {
+                            this.setState({
+                              searchercont: parseInt(e.target.value),
+                              tablecont: 24 - parseInt(e.target.value)
+                            });
+                          }}>
+                          <Radio.Button value={8}>30%</Radio.Button>
+                          <Radio.Button value={12}>50%</Radio.Button>
+                          <Radio.Button value={16}>70%</Radio.Button>
+                        </Radio.Group>]}
                         scroll={{ x: this.state.xsize }}
                         actionColumns={[
                           {
@@ -1057,7 +1192,7 @@ class MainView extends Component {
                             key: "lastname",
                             order: 0,
                             isVisible: true,
-                            width: 100,
+                            width: 200,
                             render: (text, record) => (<div>
                                 {text.lastname + " " + text.firstname + " " + text.secondname}
                                 <br/>

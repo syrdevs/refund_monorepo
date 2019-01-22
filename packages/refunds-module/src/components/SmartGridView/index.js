@@ -20,7 +20,6 @@ import {
   LocaleProvider,
   Divider
 } from "antd";
-import styles from "./index.css";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSyncAlt} from '@fortawesome/free-solid-svg-icons';
 import {faCreditCard, faColumns} from '@fortawesome/free-solid-svg-icons/index';
@@ -28,6 +27,7 @@ import {faCreditCard, faColumns} from '@fortawesome/free-solid-svg-icons/index';
 //import {formatMessage, FormattedMessage, getLocale} from 'umi/locale';
 import componentLocal from "../../locales/components/componentLocal";
 import formatMessage from "../../utils/formatMessage";
+import './index.css';
 
 import ru_RU from "antd/lib/locale-provider/ru_RU";
 
@@ -386,7 +386,7 @@ class BodyCell extends Component {
           defaultPageSize={this.props.dataSource.pageSize}
           style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
           showSizeChanger
-          pageSizeOptions={["10","15", "30", "40", "50", "100"]}
+          pageSizeOptions={["15", "30", "40", "50", "100"]}
           onShowSizeChange={(page, pageSize) => {
             this.props.onShowSizeChange(page - 1, pageSize);
           }}

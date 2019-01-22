@@ -44,7 +44,8 @@ class JournalPage extends Component {
           }
         }
       ],
-      columns: [{
+      columns: [
+        {
         "title": "Дата и время",
         "dataIndex": "entryDate",
         "width": 200,
@@ -99,6 +100,12 @@ class JournalPage extends Component {
           "title": "Пользователь",
           "width": 200,
           "dataIndex": "userId.userName"
+        },
+        {
+          "title": "ID платежа",
+          "width": 200,
+          "dataIndex": "refundId.mt102Id",
+          "isVisible": true
         }
       ],
       filterContainer: 0,
@@ -128,7 +135,12 @@ class JournalPage extends Component {
           name: "dappRefundStatus",
           label: "Действие",
           type: "multibox"
-        }
+        },
+        {
+          name:"refundId.mt102Id",
+          label: "ID платежа",
+          type: "text"
+        },
       ],
       pagingConfig: {
         "start": 0,

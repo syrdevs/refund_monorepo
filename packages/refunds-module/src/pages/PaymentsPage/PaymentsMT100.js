@@ -49,7 +49,7 @@ class PaymentsMT100 extends Component {
     selectedRecord: null,
     parameters: {
       start: 0,
-      length: 10,
+      length: 15,
       entity: "mt100",
       filter: {},
       sort: []
@@ -431,7 +431,7 @@ class PaymentsMT100 extends Component {
           showExportBtn={true}
           dataSource={{
             total: paymentsData.totalElements,
-            pageSize: paymentsData.size,
+            pageSize: this.state.parameters.length,
             page: this.state.parameters.start + 1,
             data: paymentsData.content
           }}

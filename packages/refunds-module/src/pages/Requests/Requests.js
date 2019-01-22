@@ -77,7 +77,7 @@ class Requests extends Component {
       pagingConfig: {
         "entity": "application",
         "start": 0,
-        "length": 10,
+        "length": 15,
         "sort": [],
         "filter": {}
       }
@@ -116,7 +116,7 @@ class Requests extends Component {
       pagingConfig: {
         "entity": "application",
         "start": 0,
-        "length": 10,
+        "length": 15,
         "sort": [],
         "filter": {}
       }
@@ -134,7 +134,7 @@ class Requests extends Component {
       pagingConfig: {
         "entity": "application",
         "start": 0,
-        "length": 10,
+        "length": 15,
         "sort": [],
         "filter": { ...filters }
       }
@@ -360,14 +360,14 @@ class Requests extends Component {
 
     let columns = JSON.parse(localStorage.getItem("journalPageColumns"));
 
-    request("/api/refund/exportToExcel", {
+    request("/api/refund/get/oletter", {
       method: "post",
       responseType: "blob",
       body: {
         "src": {
           "alias": "d05cafe5-ebf2-4655-88cd-e5c17fe92bc1",
           "searched": true,
-          "data": this.state.pagingConfig.src.data
+          "data": this.state.pagingConfig.filter
         }
       },
       getResponse: (response) => {

@@ -473,5 +473,9 @@ export async function getCommands(params) {
 export async function getPublish(params) {
   return request("/api/contract/publishDocument?entity=contract&id="+params.payload.id);
 }
+export async function publishing(params) {
+  return request("/api/contract/publishDocument?entity="+params.payload.entity+"&id="+params.payload.id);
+}
+
 
 
