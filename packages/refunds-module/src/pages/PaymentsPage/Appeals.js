@@ -271,7 +271,10 @@ class Appeals extends Component {
       .catch((r) => {
         // console.log(r)
         let msg = r.getResponseValue();
-        message.warning(msg.data.Message);
+        Modal.error({
+          title: "Внимание",
+          content: msg.data.Message
+        });
       });
   };
 
@@ -582,7 +585,7 @@ class Appeals extends Component {
           showExportBtn={true}
           dataSource={{
             total: paymentsData.totalElements,
-            pageSize: paymentsData.size,
+            pageSize: this.state.parameters.length,
             page: this.state.parameters.start + 1,
             data: paymentsData.content
           }}
