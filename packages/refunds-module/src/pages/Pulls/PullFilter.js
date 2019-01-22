@@ -36,7 +36,8 @@ class PullFilter extends Component {
     dispatch({
       type: "universal2/getList",
       payload: this.state.pullpagingConfig
-    }).then(()=>{
+    }).then((response)=>{
+
       /*let elements = document.getElementsByClassName('.cardbtn');
       let requiredElement = elements[0];
       console.log(requiredElement);
@@ -52,7 +53,9 @@ class PullFilter extends Component {
     dispatch({
       type: "universal2/getList",
       payload: this.state.pullpagingConfig
-    });
+    })
+      .then(()=>{
+      })
   }
 
   handleSubmit = (e) => {
@@ -62,10 +65,13 @@ class PullFilter extends Component {
   normFile = (e) => {
 
   }
-  cardClick = (e, id) => {
+  cardClick = (e, item) => {
     document.getElementById("clickedcard") && document.getElementById("clickedcard").removeAttribute("id")
     e.target.closest('.cardbtn').id = 'clickedcard';
-    this.props.loadPull(id);
+    this.props.loadPull(item.id);
+    console.log(item);
+    //
+      this.props.statuss(!item.documentStatuss)
   }
   onShowSizeChange = (current) =>  {
     this.setState({
@@ -116,7 +122,7 @@ class PullFilter extends Component {
               className={'cardbtn'}
               bodyStyle={{textAlign:'left'}}
               key={item.id}
-              onClick={(e)=>this.cardClick(e, item.id)}
+              onClick={(e)=>this.cardClick(e, item)}
             >
               <Meta
                 title={"Номер: "+item.number+""}

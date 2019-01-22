@@ -32,7 +32,7 @@ import {
   getList,
   getCommands,
   createSubContract, setAccept,
-  createRefunkPack, getUsers, setRefundNeedAcceptUser
+  createRefunkPack, getUsers, setRefundNeedAcceptUser, publishing
 } from "../services/api";
 
 export default {
@@ -84,6 +84,7 @@ export default {
     uploadanswer: {},
     commandResult: [],
     users:{},
+    publishanswer: {}
   },
   effects: {
     * getCommandResult(payload, { call, put }) {
@@ -449,6 +450,14 @@ export default {
         payload: response,
       });
     },
+    * publishing(payload, { call, put }) {
+      const response = yield call(publishing, payload);
+
+      yield put({
+        type: 'publishReducer',
+        payload: response || {},
+      });
+    },
   },
 
   reducers: {
@@ -459,7 +468,12 @@ export default {
         commandResult: payload,
       };
     },
-
+    publishReducer(state, { payload }) {
+      return {
+        ...state,
+        publishanswer: payload,
+      };
+    },
     deleteObjectReducer(state, { payload }) {
       return {
         ...state,

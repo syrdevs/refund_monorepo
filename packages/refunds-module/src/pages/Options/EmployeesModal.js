@@ -222,7 +222,8 @@ class EmployeesModal extends Component {
                  pagination={false}
 
           />
-        <Pagination defaultCurrent={1} total={100}
+        <Pagination defaultCurrent={1} total={data.totalPages}
+                    style={{marginTop:'5px'}}
                     onChange={(page, pageSize) => {
                       this.onShowSizeChange(page - 1, pageSize);
                     }}

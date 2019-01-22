@@ -23,7 +23,7 @@ import {
   Badge
 } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faFileUpload, faTimes } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
@@ -42,6 +42,7 @@ import SignModal from "../Pulls/SignModal";
 import saveAs from "file-saver";
 import request from "../../utils/request";
 import { setAcceptToRefund } from "../../services/api";
+import { faUpload } from '@fortawesome/free-solid-svg-icons/index';
 
 const { TextArea } = Input;
 const FormItem = Form.Item;
@@ -160,7 +161,8 @@ class Pulls extends Component {
                   this.uploadFile(record.refund.id, file);
                 }
               }}>
-              <Icon type="database" theme="outlined"/>
+              {/*<Icon type="database" theme="outlined"/>*/}
+              <Icon><FontAwesomeIcon icon={faFileUpload}/></Icon>
             </Upload>
           )
         },
@@ -183,7 +185,7 @@ class Pulls extends Component {
               {record.refund.refundFiles && record.refund.refundFiles.map((item) => {
                 return <p >{item.filename}  <a onClick={()=>{
                   this.deleteFile(record, item);
-                }}>x</a></p>;
+                }}>удалить</a></p>;
               })}
             </div>
           )
@@ -294,7 +296,8 @@ class Pulls extends Component {
         "filter": {
           "refundPack.id": null
         }
-      }
+      },
+      ispublish: true
     };
   }
 
@@ -365,7 +368,7 @@ class Pulls extends Component {
         "alias": null,
         sort: [{ field: "number", desc: true }]
       }
-    }).then(() => {
+    }).then((response) => {
       if (this.props.universal2.references["refundPack"].content) {
         if (this.props.universal2.references["refundPack"].content.length > 0) {
           this.loadPull(this.props.universal2.references["refundPack"].content[0].id);
@@ -455,6 +458,30 @@ class Pulls extends Component {
       }
     });
   };
+  publish = () => {
+    if (this.state.pagingConfig.filter["refundPack.id"] != null){
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal/publishing",
+        payload: {
+          "entity": "refundPack",
+          "id": (this.state.pagingConfig.filter["refundPack.id"]),
+        }
+      }).then((response)=>{
+        Modal.success({
+          content: 'Документ успешно опубликован',
+        });
+        this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+      })
+        .catch((res)=>{
+          Modal.error({
+            title: 'Ошибка',
+            content: res.getResponseValue().data.Message,
+          });
+          this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+        })
+    }
+  }
 
   rejecting = () => {
 
@@ -515,6 +542,10 @@ class Pulls extends Component {
       selectedRowKeys: selectedRowKeys
     });
   };
+  checkStatuss = () =>{
+      //console.log(this.props.universal2.references[this.state.pagingConfig.entity]);
+      return false;
+  }
 
   onSetUser = (id) => {
     const { dispatch } = this.props;
@@ -552,7 +583,8 @@ class Pulls extends Component {
         payload: {
           ...this.state.pagingConfig
         }
-      });
+      }).then((response)=>{
+      })
     });
   };
 
@@ -601,6 +633,16 @@ class Pulls extends Component {
               </Button>
               {/*<ApproveModal disabled={true}/>
               <SignModal disabled={true}/>*/}
+              <Button
+                disabled={this.state.ispublish}
+                onClick={() => {
+                  this.publish();
+                }}
+                style={{ marginLeft: "5px" }}
+                key={"publish"}
+                  >
+                Опубликовать
+              </Button>
             </Card>
           </Row>
           <Row>
@@ -616,8 +658,15 @@ class Pulls extends Component {
                     extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}
                   >
-                    <PullFilter loadPull={(id) => this.loadPull(id)} clearPull={() => {
-                    }}/>
+                    <PullFilter loadPull={(id) => this.loadPull(id)}
+                                statuss={(bol)=>{
+                                    this.setState({
+                                      ispublish: !bol
+                                    })
+                                }}
+                                clearPull={() => {
+                                }}
+                    />
                   </Card>
                 </Animated>
                 }
