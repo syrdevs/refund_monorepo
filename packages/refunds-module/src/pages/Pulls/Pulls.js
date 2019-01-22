@@ -43,19 +43,32 @@ import saveAs from "file-saver";
 import request from "../../utils/request";
 import { setAcceptToRefund } from "../../services/api";
 
+const { TextArea } = Input;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const { RangePicker } = DatePicker;
 
+const RejectModalContent = (prop) => {
+  return (<div>
+    Причина отклонения:
+    <TextArea
+      onChange={(e) => {
+        prop.setReject(e.target.value);
+      }}
+      style={{ marginTop: "5px" }}
+      rows={2}/>
+  </div>);
+};
 
 class Pulls extends Component {
   constructor(props) {
     super(props);
 
     this.state = {
+
       ImportXMLModal: {
         visible: false,
-        data:[]
+        data: []
       },
       showpull: false,
       sortedInfo: {},
@@ -78,7 +91,7 @@ class Pulls extends Component {
           isVisible: true,
           width: 250,
           render: (item) => {
-            return item.needAcceptedUser ? (item.needAcceptedUser.userName ? item.needAcceptedUser.userName : ''): '';
+            return item.needAcceptedUser ? (item.needAcceptedUser.userName ? item.needAcceptedUser.userName : "") : "";
           }
         },
         {
@@ -88,10 +101,10 @@ class Pulls extends Component {
           isVisible: true,
           width: 150,
           render: (item) => {
-            if (item.isAccepted === true){
+            if (item.isAccepted === true) {
               return "Подтвержден";
             }
-            else if (item.isAccepted === true){
+            else if (item.isAccepted === true) {
               return "Отклонен";
             }
             else {
@@ -211,7 +224,7 @@ class Pulls extends Component {
           "title": "refundStatus",
           "dataIndex": "refundStatus.nameRu"
         }
-        ],
+      ],
       isHidden: true,
       searchercont: 0,
       selectedRowKeys: [],
@@ -222,7 +235,7 @@ class Pulls extends Component {
         "length": 10,
         "entity": "refundItem",
         "alias": null,
-        "filter":{
+        "filter": {
           "refundPack.id": null
         }
       }
@@ -257,15 +270,15 @@ class Pulls extends Component {
         "length": 10,
         "entity": "refundPack",
         "alias": null,
-        sort: [{field: "number", desc: true}]
+        sort: [{ field: "number", desc: true }]
       }
-    }).then(()=>{
-      if(this.props.universal2.references['refundPack'].content){
-        if (this.props.universal2.references['refundPack'].content.length>0) {
-          this.loadPull(this.props.universal2.references['refundPack'].content[0].id);
+    }).then(() => {
+      if (this.props.universal2.references["refundPack"].content) {
+        if (this.props.universal2.references["refundPack"].content.length > 0) {
+          this.loadPull(this.props.universal2.references["refundPack"].content[0].id);
         }
       }
-    })
+    });
   }
 
   componentDidUpdate() {
@@ -273,14 +286,14 @@ class Pulls extends Component {
 
   onShowSizeChange = (current, pageSize) => {
     this.setState({
-      pagingConfig:{
+      pagingConfig: {
         ...this.state.pagingConfig,
         start: current,
         length: pageSize
       }
-    },()=>{
-      this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
-    })
+    }, () => {
+      this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+    });
 
   };
 
@@ -315,49 +328,79 @@ class Pulls extends Component {
     });
   }
 
-  setAcceptToRefund=(accept)=>{
+  setAcceptToRefund = (accept, rejectText) => {
     const { dispatch } = this.props;
     dispatch({
       type: "universal/setAcceptToRefunds",
       payload: {
-        "entity":"refundItem",
-        "id":this.state.selectedRowKeys,
-        "IsAccept":accept
+        "entity": "refundItem",
+        "id": this.state.selectedRowKeys,
+        "isAccept": accept,
+        "rejectText": rejectText
       }
-    }).then((e)=>{
-      this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
+    }).then((e) => {
+      this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
     })
-      .catch((e)=>{
+      .catch((e) => {
         Modal.error({
-          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message): 'Ошибка на стороне сервера!',
+          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
         });
-        this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
-      })
+        this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+      });
 
-  }
+  };
 
   confirming = () => {
     Modal.confirm({
       title: "Подтвердить",
       okText: "Подтвердить",
       cancelText: "Отмена",
-      onOk: ()=> {
+      onOk: () => {
         this.setAcceptToRefund(true);
       },
-      onCancel: ()=> {
+      onCancel: () => {
       }
     });
   };
 
   rejecting = () => {
-    Modal.confirm({
+
+    let rejectText = "";
+    let modal = null;
+    modal = Modal.confirm({
       title: "Отклонить",
       okText: "Подтвердить",
       cancelText: "Отмена",
-      onOk: ()=> {
-        this.setAcceptToRefund(false);
+      okButtonProps: {
+        disabled: true
       },
-      onCancel: ()=> {
+      content: <RejectModalContent setReject={(text) => {
+        rejectText = text;
+
+        if (rejectText.length > 0) {
+          modal.update({
+            okButtonProps: {
+              disabled: false
+            }
+          });
+        }
+        if (rejectText.length === 0) {
+          modal.update({
+            okButtonProps: {
+              disabled: true
+            }
+          });
+        }
+      }}/>,
+      onOk: () => {
+        this.setAcceptToRefund(false, rejectText);
+      },
+      onCancel: () => {
+        modal.update({
+          okButtonProps: {
+            disabled: true
+          }
+        });
       }
     });
   };
@@ -380,32 +423,32 @@ class Pulls extends Component {
     });
   };
 
-  onSetUser =(id)=>{
+  onSetUser = (id) => {
     const { dispatch } = this.props;
     dispatch({
       type: "universal/setRefundNeedAcceptUser",
       payload: {
-        "entity":"refundItem",
-        "id":this.state.selectedRowKeys,
+        "entity": "refundItem",
+        "id": this.state.selectedRowKeys,
         "userID": id
       }
-    }).then((e)=>{
-      this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
+    }).then((e) => {
+      this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
     })
-      .catch((e)=>{
+      .catch((e) => {
         Modal.error({
-          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message): 'Ошибка на стороне сервера!',
+          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
         });
-        this.loadPull(this.state.pagingConfig.filter["refundPack.id"])
-      })
+        this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+      });
 
-  }
+  };
 
-  loadPull=(id)=>{
+  loadPull = (id) => {
     this.setState({
       pagingConfig: {
         ...this.state.pagingConfig,
-        "filter":{
+        "filter": {
           "refundPack.id": id
         }
       }
@@ -414,11 +457,11 @@ class Pulls extends Component {
       dispatch({
         type: "universal2/getList",
         payload: {
-          ...this.state.pagingConfig,
+          ...this.state.pagingConfig
         }
       });
-    })
-  }
+    });
+  };
 
   render() {
     const universal = {
@@ -442,7 +485,7 @@ class Pulls extends Component {
                 {formatMessage({ id: "menu.mainview.pulls" })}
               </Button>
               <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length}
-                            onChecked={(id)=>this.onSetUser(id)}
+                            onChecked={(id) => this.onSetUser(id)}
                             selectedRows={this.state.selectedRowKeys}/>
               <Button onClick={() => {
                 this.confirming();
@@ -480,7 +523,7 @@ class Pulls extends Component {
                     extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}
                   >
-                    <PullFilter loadPull={(id)=>this.loadPull(id)} clearPull={()=>{
+                    <PullFilter loadPull={(id) => this.loadPull(id)} clearPull={() => {
                     }}/>
                   </Card>
                 </Animated>

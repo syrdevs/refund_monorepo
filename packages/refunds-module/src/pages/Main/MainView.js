@@ -202,19 +202,25 @@ class MainView extends Component {
         }, {
           "title": "Кол-во отчислений и (или) взносов за последние 12 календарных месяцев",
           "dataIndex": "lastMedcarePayCount"
-        }, { "title": "Статус страхования", "dataIndex": "medinsStatus" }, {
+        },
+        // { "title": "Статус страхования", "dataIndex": "medinsStatus" },
+        {
           "title": "Референс",
           "dataIndex": "applicationId.reference"
-        }, { "title": "Причина отказа", "dataIndex": "ddenyReasonId.nameRu" }, {
-          "title": "Отчет об отказе",
-          "dataIndex": "refundStatus"
-        }, { "title": "Осталось дней", "dataIndex": "daysLeft" }, {
+        }, { "title": "Причина отказа", "dataIndex": "ddenyReasonId.nameRu" },
+        // {
+        //   "title": "Отчет об отказе",
+        //   "dataIndex": "refundStatus"
+        // },
+        { "title": "Осталось дней", "dataIndex": "daysLeft" }, {
           "title": "Дата изменения статуса заявки",
           "dataIndex": "changeDate"
-        }, { "title": "Период", "dataIndex": "payPeriod" }, {
-          "title": "Веб-сервис (сообщение) ",
-          "dataIndex": "wsStatusMessage"
-        }],
+        }, { "title": "Период", "dataIndex": "payPeriod" }
+        // {
+        //   "title": "Веб-сервис (сообщение) ",
+        //   "dataIndex": "wsStatusMessage"
+        // }
+      ],
       isHidden: true,
       searchercont: 0,
       selectedRowKeys: [],
@@ -1011,11 +1017,13 @@ class MainView extends Component {
           <Row>
             <Col sm={24} md={this.state.searchercont}>
               <div>
-
-                {(this.state.searchercont === 7 && !this.state.showpull) &&
                 <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                   <Card
-                    style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
+                    style={{
+                      margin: "0px 5px 10px 0px",
+                      borderRadius: "5px",
+                      display: this.state.searchercont !== 8 && !this.state.showpull ? "block" : "none"
+                    }}
                     type="inner"
                     title={formatMessage({ id: "system.filter" })}
                     headStyle={{
@@ -1034,7 +1042,7 @@ class MainView extends Component {
                       filterForm={GridFilterData}
                       dateFormat={dateFormat}/>
                   </Card>
-                </Animated>}
+                </Animated>
 
                 {(this.state.searchercont === 8 && !this.state.showpull) &&
                 <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>

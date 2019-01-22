@@ -386,7 +386,7 @@ class BodyCell extends Component {
           defaultPageSize={this.props.dataSource.pageSize}
           style={{ display: "flex", justifyContent: "center", alignItems: "center" }}
           showSizeChanger
-          pageSizeOptions={["10","15", "30", "40", "50", "100"]}
+          pageSizeOptions={["15", "30", "40", "50", "100"]}
           onShowSizeChange={(page, pageSize) => {
             this.props.onShowSizeChange(page - 1, pageSize);
           }}
