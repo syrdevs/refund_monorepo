@@ -29,7 +29,7 @@ import SelectList from "../../components/SelectList";
 import componentLocal from "../../locales/components/componentLocal";
 import { Animated } from "react-animated-css";
 import ButtonGroup from "./ButtonGroup";
-
+import ListBetweenDate from "./listbetweenDate";
 
 const FormItem = Form.Item;
 const { RangePicker, MonthPicker } = DatePicker;
@@ -236,7 +236,6 @@ class GridFilter extends Component {
 
     let filterData = {};
     Object.keys(fields).forEach((field) => {
-
       if (formFilters[field] || formFilters[field] === false) {
 
         if (["multibox", "combobox"].indexOf(fields[field].type) !== -1) {
@@ -266,11 +265,27 @@ class GridFilter extends Component {
           filterData[field + "End"] = fields[field].disabled ? null : formFilters[field][1];
           return;
         }
+
         if (["listbetweenDate"].indexOf(fields[field].type) !== -1) {
-          filterData[field] = {
-            "from": fields[field].disabled ? null : formFilters[field][0],
-            "to": fields[field].disabled ? null : formFilters[field][1]
-          };
+
+          if (formFilters[field].isNullable) {
+            filterData[field] = null;
+          } else {
+            filterData[field] = {
+              "from": formFilters[field][0],
+              "to": formFilters[field][1]
+            };
+          }
+
+          // if (formFilters[field] === false) {
+          //   filterData[field] = null;
+          // } else {
+          //   filterData[field] = {
+          //     "from": fields[field].disabled ? null : formFilters[field][0],
+          //     "to": fields[field].disabled ? null : formFilters[field][1]
+          //   };
+          // }
+
           return;
         }
         if (["listbetweenDateTime"].indexOf(fields[field].type) !== -1) {
@@ -281,7 +296,6 @@ class GridFilter extends Component {
           return;
         }//
         if (["dateTime"].indexOf(fields[field].type) !== -1) {
-          console.log(formFilters[field]);
           filterData[field] = fields[field].disabled ? null : formFilters[field] + " 00:00:00";
           return;
         }//
@@ -303,7 +317,6 @@ class GridFilter extends Component {
       this.props.filterOnChange(filterData);
     }
   };
-
 
 
   clearFilters = () => {
@@ -584,6 +597,7 @@ class GridFilter extends Component {
               <div style={{ margin: "5px" }}>
                 <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
                   fields[filterItem.name].disabled = e.target.checked;
+
                   this.setState({
                     fields: fields,
                     formFilters: formFilters
@@ -601,10 +615,7 @@ class GridFilter extends Component {
         let RangeDateProps = {
           ref: React.createRef(),
           /*     defaultValue: formFilters[filterItem.name] ? formFilters[filterItem.name] : [moment(new Date(), dateFormat), moment(new Date(), dateFormat)],*/
-          format: dateFormat,
-          onChange: (moment, dateString) => {
-            this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString);
-          }
+          format: dateFormat
         };
 
         if (isClearFilter) {
@@ -613,37 +624,14 @@ class GridFilter extends Component {
             isClearFilter: false,
           });*/
         }
-
-        return (<div key={_index} style={mBottom}>{filterItem.label}:
-
-          <Row>
-            <Col md={22}>
-              <LocaleProvider locale={componentLocal}>
-                <RangePicker   {...RangeDateProps}
-                               format={"DD.MM.YYYY"}
-                               placeholder={[
-                                 formatMessage({ id: "datepicker.start.label" }),
-                                 formatMessage({ id: "datepicker.end.label" })
-                               ]}
-                               disabledDate={this.disabledDate}
-                               disabled={fields[filterItem.name].disabled}/>
-              </LocaleProvider>
-            </Col>
-            {filterItem.nullBtn &&
-            <Col md={2}>
-              <div style={{ margin: "5px" }}>
-                <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
-                  fields[filterItem.name].disabled = e.target.checked;
-                  this.setState({
-                    fields: fields,
-                    formFilters: formFilters
-                  });
-                }}/>
-              </div>
-            </Col>
-            }
-
-          </Row>
+        //this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString);
+        return (<div key={_index} style={mBottom}>{filterItem.label}: <ListBetweenDate
+          RangeDateProps={RangeDateProps}
+          filterItem={filterItem}
+          field={fields[filterItem.name]}
+          onChange={(value) => {
+            this.fieldOnChange(filterItem, value);
+          }}/>
         </div>);
       }
       case "text": {

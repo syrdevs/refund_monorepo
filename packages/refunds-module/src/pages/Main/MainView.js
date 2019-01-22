@@ -159,9 +159,13 @@ class MainView extends Component {
             <Upload
               showUploadList={false}
               openFileDialogOnClick={true}
-              onRemove={() => {}}
-              onPreview={() => {}}
-              beforeUpload={(file) => { return false;}}
+              onRemove={() => {
+              }}
+              onPreview={() => {
+              }}
+              beforeUpload={(file) => {
+                return false;
+              }}
               onChange={(file) => {
                 if (file.status !== "removing") {
                   this.uploadFile(record.id, file);
@@ -188,16 +192,16 @@ class MainView extends Component {
           render: (record) => (
             <div>
               {record.refundFiles && record.refundFiles.map((item) => {
-                return <p >{item.filename}  <a onClick={()=>{
+                return <p>{item.filename} <a onClick={() => {
                   this.deleteFile(record, item);
                 }}>удалить</a></p>;
               })}
             </div>
           )
-        },
+        }
 
 
-        ],
+      ],
       columns: [
         {
           "title": "Номер заявки",
@@ -371,18 +375,17 @@ class MainView extends Component {
   }
 
 
-
-  deleteFile=(record, item)=>{
+  deleteFile = (record, item) => {
     Modal.confirm({
-      title: 'Вы действительно хотите удалить этот файл?',
+      title: "Вы действительно хотите удалить этот файл?",
       okText: "Подтвердить",
-      onOk:()=> {
+      onOk: () => {
         const { dispatch } = this.props;
         dispatch({
           type: "universal/deleteObject",
           payload: {
-            "entity":"refundFile",
-            "alias":null,
+            "entity": "refundFile",
+            "alias": null,
             "id": item.id
           }
         }).then(() => {
@@ -392,11 +395,11 @@ class MainView extends Component {
       },
       onCancel() {
 
-      },
+      }
     });
-  }
+  };
 
-  uploadFile=(id, file)=>{
+  uploadFile = (id, file) => {
     let formData = new FormData();
     formData.append("content", file.file);
     formData.append("entity", "Refund");
@@ -406,9 +409,9 @@ class MainView extends Component {
       method: "POST",
       body: formData
     }).then(() => {
-          this.loadMainGridData();
+      this.loadMainGridData();
     });
-  }
+  };
 
   onShowSizeChange = (current, pageSize) => {
     const max = current * pageSize;
@@ -486,12 +489,12 @@ class MainView extends Component {
         content: "Успешно создан!"
       });
     })
-      .catch((e)=>{
+      .catch((e) => {
         Modal.error({
           title: formatMessage({ id: "system.error" }),
           content: e.getResponseValue().data.Message
         });
-      })
+      });
   };
 
   hideleft() {
@@ -588,12 +591,14 @@ class MainView extends Component {
       {
         name: "_refundEntryDate",
         label: formatMessage({ id: "menu.filter.RefundFundDate" }),
-        type: "listbetweenDate"
+        type: "listbetweenDate",
+        nullBtn: true
       },
       {
         name: "refundDate",
         label: formatMessage({ id: "menu.filter.RefusalDate" }),
-        type: "listbetweenDate"
+        type: "listbetweenDate",
+        nullBtn: true
       },
       {
         name: "knp",
