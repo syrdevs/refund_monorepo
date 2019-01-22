@@ -104,7 +104,7 @@ class JournalPage extends Component {
         {
           "title": "ID платежа",
           "width": 200,
-          "dataIndex": "paymentMt102Id",
+          "dataIndex": "mt102Id",
           "isVisible": true
         }
       ],
@@ -137,7 +137,7 @@ class JournalPage extends Component {
           type: "multibox"
         },
         {
-          name:"paymentMt102Id",
+          name:"mt102Id",
           label: "ID платежа",
           type: "text"
         },

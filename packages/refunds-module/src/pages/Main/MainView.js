@@ -218,7 +218,7 @@ class MainView extends Component {
         }, { "title": "Период", "dataIndex": "payPeriod" },
         {
           "title": "ID платежа",
-          "dataIndex": "paymentMt102Id",
+          "dataIndex": "mt102Id",
           "isVisible": true
         }
         // {
@@ -509,7 +509,7 @@ class MainView extends Component {
         type: "combobox"
       },
       {
-        name:"paymentMt102Id",
+        name:"mt102Id",
         label: "ID платежа",
         type: "text"
       },
