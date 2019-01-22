@@ -61,7 +61,12 @@ export async function getList(params) {
     body: params.payload,
   });
 }
-
+export async function getPayerList(params) {
+  return request('/api/uicommand/getGroupsList', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
 export async function paymentsData(params) {
   return request('/api/uicommand/getList', {
     method: 'POST',

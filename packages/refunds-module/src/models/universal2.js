@@ -7,7 +7,7 @@ import {
   getReportParameters,
   getFormedReports,
   getList, getObject, getPublish,
-  addSpecial
+  addSpecial,getPayerList
 } from '../services/api';
 
 export default {
@@ -19,7 +19,8 @@ export default {
     columns: [],
     contractData: {},
     references: {},
-    publish: {}
+    publish: {},
+    getPayerList:{ mt102: {}}
   },
   effects: {
     * getContractById(payload, { call, put }) {
@@ -43,6 +44,17 @@ export default {
       const response = yield call(getList, payload);
       yield put({
         type: 'getListData',
+        payload: {
+          type: payload.payload.entity,
+          response: response || {},
+        },
+      });
+
+    },
+    * getPayerList(payload, { call, put }) {
+      const response = yield call(getPayerList, payload);
+      yield put({
+        type: 'getPayerListReduce',
         payload: {
           type: payload.payload.entity,
           response: response || {},
@@ -156,6 +168,15 @@ export default {
         ...state,
         references: {
           ...state.references,
+          [payload.type]: payload.response,
+        },
+      };
+    },
+    getPayerListReduce(state, { payload }) {
+      return {
+        ...state,
+        getPayerList: {
+          ...state.getPayerList,
           [payload.type]: payload.response,
         },
       };

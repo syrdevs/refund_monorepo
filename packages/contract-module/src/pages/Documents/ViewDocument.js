@@ -146,7 +146,7 @@ class ViewDocument extends Component {
     request("/api/contract/getDocumentRoutePath", {
       method: "POST",
       body: {
-        "entity": "contract",
+        "entity": this.props.location.query.type ,
         "id": this.props.location.query.id
       }
     }).then(data => {

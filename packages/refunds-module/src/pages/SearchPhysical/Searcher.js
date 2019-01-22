@@ -20,6 +20,7 @@ import {
 import connect from "../../Redux";
 import style from "./Searcher.less";
 import Employees from "../PaymentsPage/Employees";
+import Appeals from "../PaymentsPage/Appeals";
 
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -134,6 +135,41 @@ class Searcher extends Component {
           result = (
             <div
               style={{ backgroundColor: "#EEF9E9", height: "100%", width: "100%", padding: "10px" }}
+              onClick={() => {
+                this.ShowDetailofMonth(item.detailList, value);
+              }}
+            >
+              <p>Сумма: {item.totalAmount}</p>
+              <p>Кол-во: {item.totalElements}</p>
+            </div>
+          );
+        }
+      });
+    }
+    return result;
+  };
+
+  monthCellRender2 = (value) => {
+    /*let isPayed  = false;
+    this.state.payes.map((item) => {
+      if(item.period===value.format('MMYYYY')) {
+        isPayed=true
+      }
+    });
+    if(isPayed){
+      return (<div style={{backgroundColor: '#52c41a', opacity: '0.1',  height: '100%', width: '100%'}}></div>)
+    }
+    else {
+      return (<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>)
+    }
+*/
+    let result = (<div style={{ backgroundColor: "green", opacity: "0.1", height: "100%", width: "100%" }}></div>);
+    if (this.state.payes !== undefined && this.state.payes.length > 0) {
+      this.state.payes.forEach((item) => {
+        if (item.period === value.format("MMYYYY")) {
+          result = (
+            <div
+              style={{ backgroundColor: "red", height: "100%", width: "100%", padding: "10px" }}
               onClick={() => {
                 this.ShowDetailofMonth(item.detailList, value);
               }}
@@ -291,6 +327,7 @@ class Searcher extends Component {
       });
     });
   };
+
 
   getpersonMED = () => {
     const { dispatch } = this.props;
@@ -574,8 +611,39 @@ class Searcher extends Component {
                 key="4"
                 disabled={!personRPN.iin}
               >
-               <Employees/>
+               <Employees
+               onSearch={this.state.iin}
+               />
               </TabPane>
+              <TabPane tab={"История о задолженности"}
+                       key="5"
+              >
+                <Row>
+                  <Col span={24}>
+                    <Card
+                      style={{ height: "600", marginTop: "10px" }}
+                      title={formatMessage({ id: "История о задолженности" })}
+                      type="inner"
+                    >
+                      <Calendar
+                        onPanelChange={this.onPanelChange}
+                        mode='year'
+                        className={style.customCalendar}
+                        monthCellRender={this.monthCellRender2}
+                        fullscreen
+                      />
+                    </Card>
+                  </Col>
+                </Row>
+              </TabPane>
+              <TabPane
+                tab={'Обращения'}
+                key="6"
+                // disabled={!personRPN.iin}
+              >
+                <Appeals/>
+              </TabPane>
+
             </Tabs>
           </Row>
         </Spin>

@@ -17,9 +17,9 @@ import {
   Select,
   Checkbox,
   Spin,
-  Divider, Modal
+  Divider, Modal, LocaleProvider
 } from "antd";
-
+const { MonthPicker, WeekPicker } = DatePicker;
 import formatMessage from "../../utils/formatMessage";
 import GridFilter from "../../components/GridFilter";
 import { faTimes } from "@fortawesome/free-solid-svg-icons/index";
@@ -31,9 +31,9 @@ import moment from "moment/moment";
 import "./Payments.css";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
+import saveAs from "file-saver";
 
 const FormItem = Form.Item;
-const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
 const dateFormat = "YYYY/MM/DD";
 const formItemLayout = {
@@ -44,15 +44,36 @@ const formItemLayout = {
 class Employees extends Component {
 
   state = {
-    mode: ['month', 'month'],
-    value: [],
     selectedRecord: null,
     parameters: {
       start: 0,
-      length: 10,
-      entity: "mt100",
-      filter: {},
-      sort: []
+      length: 15,
+      entity: "mt102",
+      filter: { "iin": this.props.onSearch },
+      "sort": [
+        {
+          "field": "paymentperiod",
+          "desc": true
+        }
+      ],
+      "group": [
+        {
+          "field": "senderBin"
+        },
+        {
+          "field": "senderName"
+        },
+        {
+          "field": "paymentperiod"
+        },
+        {
+          "field": "knp"
+        },
+        {
+          "field": "paymentsum",
+          "needSum": true
+        }
+      ]
     },
     sortedInfo: {},
     selectedRowKeys: [],
@@ -60,20 +81,16 @@ class Employees extends Component {
     filterContainer: 0,
     columns: [
       {
-        "title": "Период (с)",
-        "dataIndex": "iin",
-        "isVisible": "true"
-      }, {
-        "title": "Период (по)",
-        "dataIndex": "lastname",
+        "title": "Период",
+        "dataIndex": "paymentperiod",
         "isVisible": "true"
       }, {
         "title": "Плательщик (БИН/ИИН)",
-        "dataIndex": "recipientBin",
+        "dataIndex": "senderBin",
         "isVisible": "true"
       }, {
         "title": "Плательщик (Наименование/ФИО)",
-        "dataIndex": "recipientName",
+        "dataIndex": "senderName",
         "isVisible": "true"
       }
     ]
@@ -89,7 +106,7 @@ class Employees extends Component {
         length: pageSize
       }
     }), () => dispatch({
-      type: "universal/paymentsData",
+      type: "universal2/getPayerList",
       payload: {
         ...this.state.parameters,
         start: current,
@@ -108,7 +125,7 @@ class Employees extends Component {
     const { dispatch } = this.props;
     let sortField = this.state.sortedInfo;
     dispatch({
-      type: "universal/paymentsData",
+      type: "universal2/getPayerList",
       payload: this.state.parameters
     });
   };
@@ -118,18 +135,19 @@ class Employees extends Component {
   }
 
   exportToExcel = () => {
+
+    let authToken = localStorage.getItem("AUTH_TOKEN");
+    let columns = JSON.parse(localStorage.getItem("EmployessPageColumns"));
+
     request("/api/refund/exportToExcel", {
-      body: {
-        "entityClass": this.state.parameters.entity,
-        "fileName": this.state.parameters.entity === "mt100" ? formatMessage({ id: "menu.payments.payment100" }) : formatMessage({ id: "menu.payments.payment102" }),
-        "src": {
-          "searched": true,
-          "data": this.state.parameters.filter
-        },
-        "columns": this.state.parameters.entity == "mt100" ? JSON.parse(localStorage.getItem("paymentspagemt100columns")).filter(item => item.isVisible === "true" || item.isVisible === true) : JSON.parse(localStorage.getItem("paymentspagemt102columns")).filter(item => item.isVisible === "true" || item.isVisible === true)
-      },
-      method: "post",
+      method: "POST",
       responseType: "blob",
+      body: {
+        "entityClass": "specialList",
+        "fileName": "Сотрудники",
+        "filter": this.state.parameters.filter,
+        "columns": [].concat(columns.filter(column => column.isVisible))
+      },
       getResponse: (response) => {
         if (response.status === 200) {
           if (response.data && response.data.type)
@@ -138,6 +156,49 @@ class Employees extends Component {
       }
     });
 
+
+    // fetch("/api/refund/exportToExcel",
+    //   {
+    //     headers: {
+    //       "Content-Type": "application/json; charset=utf-8",
+    //       Authorization: "Bearer " + authToken
+    //     },
+    //     method: "post",
+    //     body: JSON.stringify({
+    //       "entityClass": "Refund",
+    //       "fileName": formatMessage({ id: "menu.refunds" }),
+    //       "filter": this.state.pagingConfig.filter,
+    //       "columns": [{
+    //         "title": "Статус заявки на возврат",
+    //         "dataIndex": "dappRefundStatusId.nameRu"
+    //       }, {
+    //         "dataIndex": "personSurname",
+    //         "title": "Фамилия"
+    //       }, {
+    //         "dataIndex": "personFirstname",
+    //         "title": "Имя"
+    //       }, {
+    //         "dataIndex": "personPatronname",
+    //         "title": "Отчество"
+    //       }].concat(columns.filter(column => column.isVisible))
+    //     })
+    //   })
+    //   .then(response => {
+    //     if (response.ok) {
+    //       return response.blob().then(blob => {
+    //         let disposition = response.headers.get("content-disposition");
+    //         return {
+    //           fileName: this.getFileNameByContentDisposition(disposition),
+    //           raw: blob
+    //         };
+    //       });
+    //     }
+    //   })
+    //   .then(data => {
+    //     if (data) {
+    //       saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
+    //     }
+    //   });
 
   };
   getFileNameByContentDisposition = (contentDisposition) => {
@@ -155,19 +216,31 @@ class Employees extends Component {
     return decodeURI(filenames);
   };
 
-  handlePanelChange = (value, mode) => {
-    this.setState({
-      value,
-      mode: [
-        mode[0] === 'date' ? 'month' : mode[0],
-        mode[1] === 'date' ? 'month' : mode[1],
-      ],
-    });
-  }
+  // handlePanelChange = (value, mode) => {
+  //   this.setState({
+  //     value,
+  //     mode: [
+  //       mode[0] === "date" ? "month" : mode[0],
+  //       mode[1] === "date" ? "month" : mode[1]
+  //     ]
+  //   });
+  // };
 
   render = () => {
-    const dt = moment(new Date()).format('DD.MM.YYYY');
-    const paymentsData = this.props.universal.paymentsData[this.state.parameters.entity];
+    // if(this.props.onSearch){
+    //   this.setState((prevState) => ({
+    //     filters: {
+    //       ...prevState.filters,
+    //      iin : this.props.onSearch,
+    //     },
+    //   }), () => {
+    //     this.loadGridData();
+    //   });
+    // }
+    const dt = moment(new Date()).format("DD.MM.YYYY");
+    const paymentsData = Array.isArray(this.props.universal2.getPayerList[this.state.parameters.entity]) ? this.props.universal2.getPayerList[this.state.parameters.entity] : [];
+
+    console.log(paymentsData);
     const { value, mode } = this.state;
 
     let addonButtons = [<Button
@@ -177,37 +250,54 @@ class Employees extends Component {
         });
       }}>
       Добавить</Button>];
-    let extraButtons = [<span key={"total-count"} style={{
-      color: "#002140",
-      fontSize: "12px",
-      paddingLeft: "10px"
-    }}>{formatMessage({ id: "system.totalAmount" })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
+    // let extraButtons = [<span key={"total-count"} style={{
+    //   color: "#002140",
+    //   fontSize: "12px",
+    //   paddingLeft: "10px"
+    // }}>{formatMessage({ id: "system.totalAmount" })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
 
     return (<Row>
 
-      <Card bodyStyle={{padding: 5}} style={{marginTop: '40px',}}>
+      <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "40px" }}>
         <Row type="flex" justify="center">
           <Col>
-            <Card bodyStyle={{padding: 5}}>
-              <RangePicker
-                defaultValue={[moment(dt, 'DD.MM.YYYY'), moment(dt, 'DD.MM.YYYY')]}
-                placeholder={[formatMessage({id: 'datepicker.start.label'}), formatMessage({id: 'datepicker.end.label'})]}
-                format="YYYY-MM"
-                value={value}
-                mode={mode}
-                onPanelChange={this.handlePanelChange}
-                onChange={(date, dateString) => {
-                  this.setState((prevState) => ({
-                    filters: {
-                      ...prevState.filters,
-                      dateValues: dateString,
-                    },
-                  }));
-                }}/>
-              <Button style={{margin: '10px'}} onClick={() => {
+            <Card bodyStyle={{ padding: 5 }}>
+              {/*<RangePicker*/}
+              {/*defaultValue={[moment(dt, 'DD.MM.YYYY'), moment(dt, 'DD.MM.YYYY')]}*/}
+              {/*placeholder={[formatMessage({id: 'datepicker.start.label'}), formatMessage({id: 'datepicker.end.label'})]}*/}
+              {/*format="YYYY-MM"*/}
+              {/*value={value}*/}
+              {/*mode={mode}*/}
+              {/*onPanelChange={this.handlePanelChange}*/}
+              {/*onChange={(date, dateString) => {*/}
+              {/*this.setState((prevState) => ({*/}
+              {/*filters: {*/}
+              {/*...prevState.filters,*/}
+              {/*dateValues: dateString,*/}
+              {/*},*/}
+              {/*}));*/}
+              {/*}}/>*/}
+              <MonthPicker
+                format={"MM.YYYY"}
+                onChange={(moment, dateString) => {
+                  this.setState({
+                    parameters: {
+                      ...this.state.parameters,
+                      filter: { ...this.state.parameters.filter ,paymentperiod: dateString.toString().length <= 1 ? null : dateString.replace(".", "")},
+                    }
+                  });
+                  // this.setState((parameters) => ({
+                  //   filter: {
+                  //     ...parameters.filter,
+                  //     paymentperiod: dateString.toString().length <= 1 ? null : dateString.replace(".", "")
+                  //   }
+                  // }));
+                }}
+              />
+              <Button style={{ margin: "10px" }} onClick={() => {
                 this.loadGridData();
               }
-              }>{formatMessage({id: 'button.apply'})}</Button>
+              }>{formatMessage({ id: "button.apply" })}</Button>
             </Card>
           </Col>
         </Row>
@@ -215,7 +305,7 @@ class Employees extends Component {
       <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
 
         <SmartGridView
-          // name={'paymentspagemt100columns'}
+          name={"EmployessPageColumns"}
           // scroll={{ x: "auto" }}
           fixedBody={true}
           hideFilterBtn={true}
@@ -245,10 +335,10 @@ class Employees extends Component {
           sortedInfo={this.state.sortedInfo}
           // showExportBtn={true}
           dataSource={{
-            total: paymentsData.totalElements,
-            pageSize: paymentsData.size,
+            total: paymentsData.length,
+            pageSize: 100,
             page: this.state.parameters.start + 1,
-            data: paymentsData.content
+            data: paymentsData
           }}
           onSort={(column) => {
 

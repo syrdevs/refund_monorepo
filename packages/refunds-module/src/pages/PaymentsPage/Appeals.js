@@ -45,33 +45,58 @@ const formItemLayout = {
   wrapperCol: { span: 18 }
 };
 
-class Consumer extends Component {
+class Appeals extends Component {
 
   state = {
     selectedRecord: null,
     parameters: {
       start: 0,
       length: 15,
-      entity: "specialList",
+      entity: "personRequest",
       filter: {},
       sort: []
     },
     filterForm: [
 
       {
-        label: "ИИН",
-        name: "iin",
+        label: "ИИН Заявителя",
+        name: "iIN",
         type: "text",
         withMax: 12
+      },{
+        label: "Фамилия",
+        name: "person.lastName",
+        type: "text",
+      },{
+        label: "Имя",
+        name: "person.firstName",
+        type: "text",
+      },{
+        label: "Отчество",
+        name: "person.patronymic",
+        type: "text",
+      },  {
+        label: "Дата обращения",
+        name: "requestDate",
+        type: "listbetweenDate"
       }, {
-        label: "Период",
-        name: "createDateTime",
-        type: "listbetweenDateTime"
-      }, {
-        label: "Пользователь",
-        name: "users.userName",
+        label: "Номер обращения",
+        name: "requestNumber",
         type: "text"
-      }
+      },{
+        label: "Дата ответа на обращение",
+        name: "responceDate",
+        type: "listbetweenDate"
+      }, {
+        label: "Номер ответа на обращение",
+        name: "responceNumber",
+        type: "text"
+      },
+      {
+        label: "Краткое содержание",
+        name: "descr",
+        type: "text"
+      },
 
     ],
     sortedInfo: {},
@@ -81,10 +106,42 @@ class Consumer extends Component {
     filterContainer: 0,
     columns: [
       {
-        "title": "ИИН",
-        "dataIndex": "iin",
+        "title": "ИИН Заявителя",
+        "dataIndex": "iIN",
         "isVisible": "true"
-      }
+      }, {
+        "title": "Фамилия",
+        "dataIndex": "person.lastName",
+        "isVisible": "true"
+      }, {
+        "title": "Имя",
+        "dataIndex": "person.firstName",
+        "isVisible": "true"
+      }, {
+        "title": "Отчество",
+        "dataIndex": "person.patronymic",
+        "isVisible": "true"
+      },{
+        "title": "Дата обращения",
+        "dataIndex": "requestDate",
+        "isVisible": "true"
+      }, {
+        "title": "Номер обращения",
+        "dataIndex": "requestNumber",
+        "isVisible": "true"
+      }, {
+        "title": "Дата ответа на обращение",
+        "dataIndex": "responceDate",
+        "isVisible": "true"
+      }, {
+        "title": "Номер ответа на обращение",
+        "dataIndex": "responceNumber",
+        "isVisible": "true"
+      },{
+        "title": "Краткое содержание",
+        "dataIndex": "descr",
+        "isVisible": "true"
+      },
     ]
   };
 
@@ -227,16 +284,11 @@ class Consumer extends Component {
       method: "POST",
       responseType: "blob",
       body: {
-        "entityClass": "specialList",
-        "fileName": "Сотрудники",
+        "entityClass": "personRequest",
+        "fileName": "Обращения",
         "filter": this.state.parameters.filter,
         "columns": [
-          {
-            "title": "ИИН",
-            "dataIndex": "iin",
-            "isVisible": "true"
-          }
-        ]
+        ].concat(columns.filter(column => column.isVisible))
       },
       getResponse: (response) => {
         if (response.status === 200) {
@@ -391,7 +443,10 @@ class Consumer extends Component {
       }
     };
 
-    const paymentsData = this.props.universal2.references[this.state.parameters.entity] ? this.props.universal2.references[this.state.parameters.entity] : {};
+    let paymentsData = this.props.universal2.references[this.state.parameters.entity] ? this.props.universal2.references[this.state.parameters.entity] : {};
+
+
+
     const CardHeight = { height: "auto", marginBottom: "10px" };
     let addonButtons = [
       <Button
@@ -498,6 +553,7 @@ class Consumer extends Component {
         <SmartGridView
           // name={'paymentspagemt100columns'}
           // scroll={{ x: "auto" }}
+          name={"AppealPageColumns"}
           fixedBody={true}
           actionColumns={[]}
           showTotal={true}
@@ -560,7 +616,7 @@ class Consumer extends Component {
           }}
           actionExport={() => this.exportToExcel()}
           // extraButtons={extraButtons}
-          addonButtons={[addonButtons, delButtons, importButtons]}
+          // addonButtons={[addonButtons, delButtons, importButtons]}
           onSelectRow={(record, index) => {
             console.log(record);
             this.setState({
@@ -590,4 +646,4 @@ class Consumer extends Component {
 export default connect(({ universal2, loading }) => ({
   universal2,
   loadingData: loading.effects["universal2/getList"]
-}))(Consumer);
+}))(Appeals);

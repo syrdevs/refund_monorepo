@@ -63,7 +63,7 @@ class ModalChangeDate extends Component {
       }
     }).then(() => this.getFileList());
   };
-  
+
 
   getFileList = () => {
 
