@@ -25,7 +25,7 @@ import {
   message
 } from "antd";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import { faFileUpload, faTimes } from "@fortawesome/free-solid-svg-icons";
 import moment from "moment";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
@@ -167,7 +167,7 @@ class MainView extends Component {
                   this.uploadFile(record.id, file);
                 }
               }}>
-              <Icon type="database" theme="outlined"/>
+              <Icon><FontAwesomeIcon icon={faFileUpload}/></Icon>
             </Upload>
           )
         },
@@ -188,9 +188,9 @@ class MainView extends Component {
           render: (record) => (
             <div>
               {record.refundFiles && record.refundFiles.map((item) => {
-                return <p><span>{item.filename}</span>  <span><a onClick={()=>{
+                return <p >{item.filename}  <a onClick={()=>{
                   this.deleteFile(record, item);
-                }}>x</a></span></p>
+                }}>удалить</a></p>;
               })}
             </div>
           )
@@ -485,7 +485,13 @@ class MainView extends Component {
         title: formatMessage({ id: "menu.mainview.pullbtn" }),
         content: "Успешно создан!"
       });
-    });
+    })
+      .catch((e)=>{
+        Modal.error({
+          title: formatMessage({ id: "system.error" }),
+          content: e.getResponseValue().data.Message
+        });
+      })
   };
 
   hideleft() {
@@ -1076,7 +1082,7 @@ class MainView extends Component {
                   {formatMessage({ id: "menu.mainview.mt102Btn" })}
                 </Menu.Item>
 
-                <Menu.Item disabled={hasRole(["ADMIN"])} key="5" onClick={() => {
+                <Menu.Item disabled={hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="5" onClick={() => {
                 }}>
 
                   <Upload
