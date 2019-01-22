@@ -141,7 +141,63 @@ class MainView extends Component {
             href="#"> <span><Badge
             status={this.setBadgeStatus(value.isRefundConfirm)}/></span> {value.dappRefundStatusId ? value.dappRefundStatusId.nameRu : null}
           </a>
-        }],
+        },
+        {
+          title: "Загрузить",
+          order: 50,
+          key: "upload",
+          className: "action_column",
+          isVisible: true,
+          onCell: record => {
+            return {
+              onClick: () => {
+
+              }
+            };
+          },
+          render: (record) => (
+            <Upload
+              showUploadList={false}
+              openFileDialogOnClick={true}
+              onRemove={() => {}}
+              onPreview={() => {}}
+              beforeUpload={(file) => { return false;}}
+              onChange={(file) => {
+                if (file.status !== "removing") {
+                  this.uploadFile(record.id, file);
+                }
+              }}>
+              <Icon type="database" theme="outlined"/>
+            </Upload>
+          )
+        },
+        {
+          title: "Файлы",
+          order: 51,
+          key: "files",
+          width: 250,
+          className: "action_column",
+          isVisible: true,
+          onCell: record => {
+            return {
+              onClick: () => {
+
+              }
+            };
+          },
+          render: (record) => (
+            <div>
+              {record.refundFiles && record.refundFiles.map((item) => {
+                return <p><span>{item.filename}</span>  <span><a onClick={()=>{
+                  this.deleteFile(record, item);
+                }}>x</a></span></p>
+              })}
+            </div>
+          )
+        },
+
+
+        ],
       columns: [
         {
           "title": "Номер заявки",
@@ -312,6 +368,46 @@ class MainView extends Component {
         type: 'universal/rpmuTable',
         payload: {},
       });*/
+  }
+
+
+
+  deleteFile=(record, item)=>{
+    Modal.confirm({
+      title: 'Вы действительно хотите удалить этот файл?',
+      okText: "Подтвердить",
+      onOk:()=> {
+        const { dispatch } = this.props;
+        dispatch({
+          type: "universal/deleteObject",
+          payload: {
+            "entity":"refundFile",
+            "alias":null,
+            "id": item.id
+          }
+        }).then(() => {
+          //this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+          this.loadMainGridData();
+        });
+      },
+      onCancel() {
+
+      },
+    });
+  }
+
+  uploadFile=(id, file)=>{
+    let formData = new FormData();
+    formData.append("content", file.file);
+    formData.append("entity", "Refund");
+    formData.append("path", "refundFiles");
+    formData.append("id", id);
+    request("/api/uicommand/uploadFile", {
+      method: "POST",
+      body: formData
+    }).then(() => {
+          this.loadMainGridData();
+    });
   }
 
   onShowSizeChange = (current, pageSize) => {
