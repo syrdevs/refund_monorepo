@@ -20,7 +20,6 @@ import {
   LocaleProvider,
   Divider
 } from "antd";
-import styles from "./index.css";
 import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
 import {faSyncAlt} from '@fortawesome/free-solid-svg-icons';
 import {faCreditCard, faColumns} from '@fortawesome/free-solid-svg-icons/index';
@@ -28,6 +27,7 @@ import {faCreditCard, faColumns} from '@fortawesome/free-solid-svg-icons/index';
 //import {formatMessage, FormattedMessage, getLocale} from 'umi/locale';
 import componentLocal from "../../locales/components/componentLocal";
 import formatMessage from "../../utils/formatMessage";
+import './index.css';
 
 import ru_RU from "antd/lib/locale-provider/ru_RU";
 

@@ -13,6 +13,7 @@ import {
   Upload,
   Form,
   Modal,
+  Radio,
   Input,
   DatePicker,
   LocaleProvider,
@@ -462,8 +463,8 @@ class MainView extends Component {
     this.setState({
       searchButton: false,
       isHidden: false,
-      searchercont: 8,
-      tablecont: 16,
+      searchercont: this.state.searchercont === 0 || this.state.searchercont === 7 ? 8 : this.state.searchercont,
+      tablecont: this.state.searchercont === 0 || this.state.searchercont === 7 ? 16 : this.state.tablecont,
       showpull: false
     });
   }
@@ -605,7 +606,7 @@ class MainView extends Component {
         type: "combobox"
       },
       {
-        name:"mt102Id",
+        name: "mt102Id",
         label: "ID платежа",
         type: "text"
       },
@@ -978,6 +979,7 @@ class MainView extends Component {
     const rpmuColumns = this.rpmuColumn();
     const GridFilterData = this.stateFilter();
 
+
     return (
       <div>
         {this.state.ImportXMLModal.visible &&
@@ -1128,7 +1130,7 @@ class MainView extends Component {
                     style={{
                       margin: "0px 5px 10px 0px",
                       borderRadius: "5px",
-                      display: this.state.searchercont !== 8 && !this.state.showpull ? "block" : "none"
+                      display: [8, 12, 16].indexOf(this.state.searchercont) === -1 && !this.state.showpull ? "block" : "none"
                     }}
                     type="inner"
                     title={formatMessage({ id: "system.filter" })}
@@ -1150,20 +1152,39 @@ class MainView extends Component {
                   </Card>
                 </Animated>
 
-                {(this.state.searchercont === 8 && !this.state.showpull) &&
+                {([8, 12, 16].indexOf(this.state.searchercont) !== -1 && !this.state.showpull) &&
                 <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
                   <Card
                     style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
-                    bodyStyle={{ padding: 0 }}
+                    bodyStyle={{ padding: 5 }}
                     type="inner"
                     title={formatMessage({ id: "menu.mainview.rpmuLocale" })}
-                    extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
-                      icon={faTimes}/></Icon>}
+                    extra={[<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
+                      icon={faTimes}/></Icon>]}
                   >
                     <LocaleProvider locale={componentLocal}>
                       <SmartGridView
                         name={"RefundsRPMUColumns"}
                         rowKey={"id"}
+                        showTotal
+                        addonButtons={[<Radio.Group
+                          size={"default"}
+                          style={{
+                            display: "block",
+                            float: "left",
+                            margin: "5px 2px 8px"
+                          }}
+                          value={this.state.searchercont}
+                          onChange={(e) => {
+                            this.setState({
+                              searchercont: parseInt(e.target.value),
+                              tablecont: 24 - parseInt(e.target.value)
+                            });
+                          }}>
+                          <Radio.Button value={8}>30%</Radio.Button>
+                          <Radio.Button value={12}>50%</Radio.Button>
+                          <Radio.Button value={16}>70%</Radio.Button>
+                        </Radio.Group>]}
                         scroll={{ x: this.state.xsize }}
                         actionColumns={[
                           {
@@ -1171,7 +1192,7 @@ class MainView extends Component {
                             key: "lastname",
                             order: 0,
                             isVisible: true,
-                            width: 100,
+                            width: 200,
                             render: (text, record) => (<div>
                                 {text.lastname + " " + text.firstname + " " + text.secondname}
                                 <br/>
