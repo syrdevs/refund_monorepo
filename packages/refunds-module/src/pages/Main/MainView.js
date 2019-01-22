@@ -215,7 +215,12 @@ class MainView extends Component {
         { "title": "Осталось дней", "dataIndex": "daysLeft" }, {
           "title": "Дата изменения статуса заявки",
           "dataIndex": "changeDate"
-        }, { "title": "Период", "dataIndex": "payPeriod" }
+        }, { "title": "Период", "dataIndex": "payPeriod" },
+        {
+          "title": "ID платежа",
+          "dataIndex": "paymentMt102Id",
+          "isVisible": true
+        }
         // {
         //   "title": "Веб-сервис (сообщение) ",
         //   "dataIndex": "wsStatusMessage"
@@ -502,6 +507,11 @@ class MainView extends Component {
         name: "ddenyReason",
         label: formatMessage({ id: "menu.filter.RefusalReason" }),
         type: "combobox"
+      },
+      {
+        name:"paymentMt102Id",
+        label: "ID платежа",
+        type: "text"
       },
       {
         name: "includedInPack",
