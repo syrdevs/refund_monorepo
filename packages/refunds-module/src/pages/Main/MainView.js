@@ -215,7 +215,12 @@ class MainView extends Component {
         { "title": "Осталось дней", "dataIndex": "daysLeft" }, {
           "title": "Дата изменения статуса заявки",
           "dataIndex": "changeDate"
-        }, { "title": "Период", "dataIndex": "payPeriod" }
+        }, { "title": "Период", "dataIndex": "payPeriod" },
+        {
+          "title": "ID платежа",
+          "dataIndex": "mt102Id",
+          "isVisible": true
+        }
         // {
         //   "title": "Веб-сервис (сообщение) ",
         //   "dataIndex": "wsStatusMessage"
@@ -473,12 +478,12 @@ class MainView extends Component {
         type: "listbetweenDate"
       },
       {
-        name: "refundEntryDate",
+        name: "_entryDate",
         label: formatMessage({ id: "menu.filter.RefundComeDate" }),
         type: "listbetweenDate"
       },
       {
-        name: "refundEntryDate",
+        name: "_refundEntryDate",
         label: formatMessage({ id: "menu.filter.RefundFundDate" }),
         type: "listbetweenDate"
       },
@@ -502,6 +507,11 @@ class MainView extends Component {
         name: "ddenyReason",
         label: formatMessage({ id: "menu.filter.RefusalReason" }),
         type: "combobox"
+      },
+      {
+        name:"mt102Id",
+        label: "ID платежа",
+        type: "text"
       },
       {
         name: "includedInPack",
