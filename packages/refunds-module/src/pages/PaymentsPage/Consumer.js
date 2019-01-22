@@ -214,7 +214,11 @@ class Consumer extends Component {
       .catch((r) => {
         // console.log(r)
         let msg = r.getResponseValue();
-        message.warning(msg.data.Message);
+        // message.warning(msg.data.Message);
+        Modal.error({
+          title: "Внимание",
+          content: msg.data.Message
+        });
       });
   };
 
@@ -315,11 +319,20 @@ class Consumer extends Component {
       body: formData,
       getResponse: (response) => {
         if (response.status === 400) {
-          message.warning(response.data.Message);
+          // message.warning(response.data.Message);
+
+          Modal.error({
+            title: "Внимание",
+            content: response.data.Message
+          });
         }
         if (response.status === 200) {
           console.log(response)
-          message.info("Загружено: " + response.data.loadNewCount + " из: " + response.data.allItemCount);
+          // message.info("Загружено: " + response.data.loadNewCount + " из: " + response.data.allItemCount);
+          Modal.info({
+            title: "Внимание",
+            content: "Загружено: " + response.data.loadNewCount + " из: " + response.data.allItemCount
+          });
         }
       }
     }).then(() => {

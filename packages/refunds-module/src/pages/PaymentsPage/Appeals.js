@@ -271,7 +271,10 @@ class Appeals extends Component {
       .catch((r) => {
         // console.log(r)
         let msg = r.getResponseValue();
-        message.warning(msg.data.Message);
+        Modal.error({
+          title: "Внимание",
+          content: msg.data.Message
+        });
       });
   };
 
