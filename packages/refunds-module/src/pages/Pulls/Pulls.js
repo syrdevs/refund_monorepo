@@ -168,6 +168,7 @@ class Pulls extends Component {
           title: "Файлы",
           order: 51,
           key: "files",
+          width: 250,
           className: "action_column",
           isVisible: true,
           onCell: record => {
@@ -308,16 +309,25 @@ class Pulls extends Component {
   }
 
   deleteFile=(record, item)=>{
-    const { dispatch } = this.props;
-    dispatch({
-      type: "universal/deleteObject",
-      payload: {
-        "entity":"refundFile",
-        "alias":null,
-        "id": item.id
-      }
-    }).then(() => {
-      this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+    Modal.confirm({
+      title: 'Вы действительно хотите удалить этот файл?',
+      okText: "Подтвердить",
+      onOk:()=> {
+        const { dispatch } = this.props;
+        dispatch({
+          type: "universal/deleteObject",
+          payload: {
+            "entity":"refundFile",
+            "alias":null,
+            "id": item.id
+          }
+        }).then(() => {
+          this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+        });
+      },
+      onCancel() {
+
+      },
     });
   }
 
@@ -334,7 +344,7 @@ class Pulls extends Component {
           this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
         });
   }
-  
+
   loadMainGridData = () => {
     /*const { dispatch } = this.props;
     dispatch({
@@ -589,8 +599,8 @@ class Pulls extends Component {
               >
                 Отклонить ( {this.state.selectedRowKeys.length} )
               </Button>
-              <ApproveModal disabled={true}/>
-              <SignModal disabled={true}/>
+              {/*<ApproveModal disabled={true}/>
+              <SignModal disabled={true}/>*/}
             </Card>
           </Row>
           <Row>
