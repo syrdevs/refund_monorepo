@@ -232,7 +232,7 @@ class Pulls extends Component {
       xsize: "auto",
       pagingConfig: {
         "start": 0,
-        "length": 10,
+        "length": 15,
         "entity": "refundItem",
         "alias": null,
         "filter": {
@@ -267,7 +267,7 @@ class Pulls extends Component {
       type: "universal2/getList",
       payload: {
         "start": 0,
-        "length": 10,
+        "length": 15,
         "entity": "refundPack",
         "alias": null,
         sort: [{ field: "number", desc: true }]

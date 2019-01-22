@@ -44,7 +44,8 @@ class JournalPage extends Component {
           }
         }
       ],
-      columns: [{
+      columns: [
+        {
         "title": "Дата и время",
         "dataIndex": "entryDate",
         "width": 200,

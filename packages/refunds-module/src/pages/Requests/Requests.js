@@ -77,7 +77,7 @@ class Requests extends Component {
       pagingConfig: {
         "entity": "application",
         "start": 0,
-        "length": 10,
+        "length": 15,
         "sort": [],
         "filter": {}
       }
@@ -116,7 +116,7 @@ class Requests extends Component {
       pagingConfig: {
         "entity": "application",
         "start": 0,
-        "length": 10,
+        "length": 15,
         "sort": [],
         "filter": {}
       }
@@ -134,7 +134,7 @@ class Requests extends Component {
       pagingConfig: {
         "entity": "application",
         "start": 0,
-        "length": 10,
+        "length": 15,
         "sort": [],
         "filter": { ...filters }
       }
