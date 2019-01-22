@@ -478,12 +478,12 @@ class MainView extends Component {
         type: "listbetweenDate"
       },
       {
-        name: "refundEntryDate",
+        name: "_entryDate",
         label: formatMessage({ id: "menu.filter.RefundComeDate" }),
         type: "listbetweenDate"
       },
       {
-        name: "refundEntryDate",
+        name: "_refundEntryDate",
         label: formatMessage({ id: "menu.filter.RefundFundDate" }),
         type: "listbetweenDate"
       },
