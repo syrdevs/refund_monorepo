@@ -47,19 +47,17 @@ class ModalChangeDate extends Component {
   };
 
   uploadFile = (data) => {
-
     const { dispatch, dataSource } = this.props;
-
-    //if (data.file.status === "done") {
+   // if (data.file.status === "done") {
     //data.file.status = 'uploading';
     dispatch({
       type: "universal/setfile",
       payload: {
-        file: data.file.originFileObj,
+        file: data.file,
         id: dataSource.id
       }
     }).then(() => this.getFileList());
-    //}
+   // }
 
     return false;
   };
@@ -139,6 +137,7 @@ class ModalChangeDate extends Component {
   };
 
   render() {
+    //
     let uploadProps = {
       fileList: (Array.isArray(this.props.universal.files) ? this.props.universal.files : []).map((file) => ({
         uid: file.id,
