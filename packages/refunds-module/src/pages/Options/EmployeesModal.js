@@ -82,27 +82,28 @@ class EmployeesModal extends Component {
           ref={node => {
             this.searchInput = node;
           }}
-          placeholder={`Search ${dataIndex}`}
+          //${dataIndex}
+          placeholder={`Поиск`}
           value={selectedKeys[0]}
           onChange={e => setSelectedKeys(e.target.value ? [e.target.value] : [])}
-          onPressEnter={() => this.handleSearch(selectedKeys, confirm)}
+          onPressEnter={() => this.handleSearch(selectedKeys,  dataIndex, confirm)}
           style={{ width: 188, marginBottom: 8, display: "block" }}
         />
         <Button
           type="primary"
-          onClick={() => this.handleSearch(selectedKeys, confirm)}
+          onClick={() => this.handleSearch(selectedKeys, dataIndex,  confirm)}
           icon="search"
           size="small"
           style={{ width: 90, marginRight: 8 }}
         >
-          Search
+          Поиск
         </Button>
         <Button
-          onClick={() => this.handleReset(clearFilters)}
+          onClick={() => this.handleReset(dataIndex, clearFilters, confirm)}
           size="small"
           style={{ width: 90 }}
         >
-          Reset
+          Очистить
         </Button>
       </div>
     ),
@@ -123,14 +124,51 @@ class EmployeesModal extends Component {
     )
   });
 
-  handleSearch = (selectedKeys, confirm) => {
-    confirm();
-    this.setState({ searchText: selectedKeys[0] });
+  handleSearch = (selectedKeys, dataIndex,  confirm) => {
+    console.log(selectedKeys[0]);
+    console.log(dataIndex);
+    this.setState({
+      values: {
+        ...this.state.values,
+        [dataIndex]: selectedKeys[0]
+      }
+    },()=>{
+
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal2/getList",
+        payload: {
+          ...this.state.config,
+          ...this.state.values
+        }
+      }).then(()=>{
+        confirm();
+      })
+    });
+    //
+
   };
 
-  handleReset = (clearFilters) => {
-    clearFilters();
-    this.setState({ searchText: "" });
+  handleReset = (dataIndex, clearFilters, confirm) => {
+    /*console.log(dataIndex);*/
+    this.setState({
+      values: {
+        ...this.state.values,
+        [dataIndex]: undefined
+      }
+    },()=>{
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal2/getList",
+        payload: {
+          ...this.state.config,
+          ...this.state.values
+        }
+      }).then(()=>{
+        clearFilters();
+        confirm();
+      })
+    });
   };
   onShowSizeChange = (current, pageSize) => {
     console.log(current)
