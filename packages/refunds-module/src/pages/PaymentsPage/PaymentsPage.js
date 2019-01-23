@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Card,
   Tabs,
@@ -17,33 +17,33 @@ import {
   Select,
   Checkbox,
   Spin,
-  Divider,
-} from 'antd';
-import formatMessage from '../../utils/formatMessage';
-import GridFilter from '../../components/GridFilter';
-import { faTimes } from '@fortawesome/free-solid-svg-icons/index';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import SmartGridView from '../../components/SmartGridView';
+  Divider
+} from "antd";
+import formatMessage from "../../utils/formatMessage";
+import GridFilter from "../../components/GridFilter";
+import { faTimes } from "@fortawesome/free-solid-svg-icons/index";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SmartGridView from "../../components/SmartGridView";
 
-import paymentsData from './paymentsData';
-import moment from 'moment/moment';
-import connect from '../../Redux';
-import { Animated } from 'react-animated-css';
-import Searcher from '../SearchPhysical/Searcher';
-import SearcherJur from '../SearchPhysical/SearcherJur';
-import saveAs from 'file-saver';
-import PaymentsMT100 from './PaymentsMT100';
-import PaymentsMT102 from './PaymentsMT102';
+import paymentsData from "./paymentsData";
+import moment from "moment/moment";
+import connect from "../../Redux";
+import { Animated } from "react-animated-css";
+import Searcher from "../SearchPhysical/Searcher";
+import SearcherJur from "../SearchPhysical/SearcherJur";
+import saveAs from "file-saver";
+import PaymentsMT100 from "./PaymentsMT100";
+import PaymentsMT102 from "./PaymentsMT102";
 import Consumer from "./Consumer";
 import Employees from "./Employees";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
 const TabPane = Tabs.TabPane;
-const dateFormat = 'YYYY/MM/DD';
+const dateFormat = "YYYY/MM/DD";
 const formItemLayout = {
   labelCol: { span: 4 },
-  wrapperCol: { span: 18 },
+  wrapperCol: { span: 18 }
 };
 
 const EditableContext = React.createContext();
@@ -55,10 +55,22 @@ class PaymentsPage extends Component {
     this.selectedRecord = {};
 
     this.state = {
+      eventManager: {
+        _events: {},
+        handleEvent: (evName, params) => {
+          if (!this.state.eventManager._events[evName]) return [];//throw new Error('eventName not registered');
+
+          return this.state.eventManager._events[evName](params);
+        },
+        subscribe: (evName, fn) => {
+          this.state.eventManager._events[evName] = fn;
+        }
+      },
+      mt102Filters: [],
       tabFilter: null,
       selectedRowKeys: [],
       searching: false,
-      activeKey: 'searcher',
+      activeKey: "searcher",
       testcolumns: [],
       testdata: [],
       dataSource: [],
@@ -68,69 +80,69 @@ class PaymentsPage extends Component {
       parameters: {
         start: 0,
         length: 10,
-        entity: 'mt100',
+        entity: "mt100",
         filter: {},
-        sort: [],
+        sort: []
       },
       //"knpList":["c7889895-0075-4bc2-89e8-939507dd4fc6"]
       filterForm: [],
       filterFormmt102: [],
       staticolumn: [
         {
-          'title': 'Референс',
-          'dataIndex': 'reference',
-          'isVisible': 'true',
+          "title": "Референс",
+          "dataIndex": "reference",
+          "isVisible": "true"
         }, {
-          'title': 'Дата платежа',
-          'dataIndex': 'paymentDate',
-          'isVisible': 'true',
+          "title": "Дата платежа",
+          "dataIndex": "paymentDate",
+          "isVisible": "true"
         }, {
-          'title': 'Сумма',
-          'dataIndex': 'totalAmount',
-          'isVisible': 'true',
+          "title": "Сумма",
+          "dataIndex": "totalAmount",
+          "isVisible": "true"
         }, {
-          'title': 'КНП',
-          'dataIndex': 'knp',
-          'isVisible': 'true',
+          "title": "КНП",
+          "dataIndex": "knp",
+          "isVisible": "true"
         }, {
-          'title': 'Отправитель (Наименование)',
-          'dataIndex': 'senderCompanyName',
-          'isVisible': 'true',
+          "title": "Отправитель (Наименование)",
+          "dataIndex": "senderCompanyName",
+          "isVisible": "true"
         }, {
-          'title': 'Отправитель (БИН)',
-          'dataIndex': 'senderBin',
+          "title": "Отправитель (БИН)",
+          "dataIndex": "senderBin"
         }, {
-          'title': 'Отправитель (БИК)',
-          'dataIndex': 'senderBankBik',
+          "title": "Отправитель (БИК)",
+          "dataIndex": "senderBankBik"
         }
         , {
-          'title': 'Получатель (Наименование)',
-          'dataIndex': 'recipientName',
+          "title": "Получатель (Наименование)",
+          "dataIndex": "recipientName"
         }
         , {
-          'title': 'Получатель (БИН)',
-          'dataIndex': 'recipientBin',
+          "title": "Получатель (БИН)",
+          "dataIndex": "recipientBin"
         }, {
-          'title': 'Получатель (БИК)',
-          'dataIndex': 'recipientBankBik',
+          "title": "Получатель (БИК)",
+          "dataIndex": "recipientBankBik"
         }, {
-          'title': 'Получатель (Счет)',
-          'dataIndex': 'recipientAccount',
+          "title": "Получатель (Счет)",
+          "dataIndex": "recipientAccount"
         }, {
-          'title': 'Дата поступления информации',
-          'dataIndex': 'createdOn',
+          "title": "Дата поступления информации",
+          "dataIndex": "createdOn"
         },
         {
-          'title': 'Статус загрузки',
-          'dataIndex': 'mt102LoadStatus.text',
+          "title": "Статус загрузки",
+          "dataIndex": "mt102LoadStatus.text"
         },
         {
-          'title': 'Статус загрузки (сообщение)',
-          'dataIndex': 'mt102LoadDescription',
+          "title": "Статус загрузки (сообщение)",
+          "dataIndex": "mt102LoadDescription"
         }, {
-          'title': 'Количество МТ102',
-          'dataIndex': 'mt102Count',
-        },
+          "title": "Количество МТ102",
+          "dataIndex": "mt102Count"
+        }
       ],
       staticmt100funcColuns: [
         /*{
@@ -167,71 +179,71 @@ class PaymentsPage extends Component {
       ],
       staticmt102columns: [
         {
-          'title': 'Референс',
-          'dataIndex': 'reference',
-          'isVisible': 'true',
+          "title": "Референс",
+          "dataIndex": "reference",
+          "isVisible": "true"
         }, {
-          'title': 'Дата платежа',
-          'dataIndex': 'paymentdate',
-          'isVisible': 'true',
+          "title": "Дата платежа",
+          "dataIndex": "paymentdate",
+          "isVisible": "true"
         }, {
-          'title': 'КНП',
-          'dataIndex': 'knp',
-          'isVisible': 'true',
+          "title": "КНП",
+          "dataIndex": "knp",
+          "isVisible": "true"
         }, {
-          'title': 'Сумма',
-          'dataIndex': 'paymentsum',
-          'isVisible': 'true',
+          "title": "Сумма",
+          "dataIndex": "paymentsum",
+          "isVisible": "true"
         }, {
-          'title': 'Фамилия',
-          'dataIndex': 'lastname',
-          'isVisible': 'true',
+          "title": "Фамилия",
+          "dataIndex": "lastname",
+          "isVisible": "true"
         }, {
-          'title': 'Имя',
-          'dataIndex': 'firstname',
-          'isVisible': 'true',
+          "title": "Имя",
+          "dataIndex": "firstname",
+          "isVisible": "true"
         }, {
-          'title': 'Отчество',
-          'dataIndex': 'secondname',
-          'isVisible': 'true',
+          "title": "Отчество",
+          "dataIndex": "secondname",
+          "isVisible": "true"
         }, {
-          'title': 'Район',
-          'dataIndex': 'raion',
-          'isVisible': 'true',
+          "title": "Район",
+          "dataIndex": "raion",
+          "isVisible": "true"
         }, {
-          'title': 'Регион',
-          'dataIndex': 'region',
-          'isVisible': 'true',
+          "title": "Регион",
+          "dataIndex": "region",
+          "isVisible": "true"
         }, {
-          'title': 'Дата рождения',
-          'dataIndex': 'birthdate',
-          'isVisible': 'true',
+          "title": "Дата рождения",
+          "dataIndex": "birthdate",
+          "isVisible": "true"
         }, {
-          'title': 'ИИН',
-          'dataIndex': 'iin',
-          'isVisible': 'true',
+          "title": "ИИН",
+          "dataIndex": "iin",
+          "isVisible": "true"
         }, {
-          'title': 'Отправитель (БИН)',
-          'dataIndex': 'senderBin',
-          'isVisible': 'true',
+          "title": "Отправитель (БИН)",
+          "dataIndex": "senderBin",
+          "isVisible": "true"
         }, {
-          'title': 'Отправитель (Наименование)',
-          'dataIndex': 'senderName',
-          'isVisible': 'true',
+          "title": "Отправитель (Наименование)",
+          "dataIndex": "senderName",
+          "isVisible": "true"
         }, {
-          'title': 'Период',
-          'dataIndex': 'paymentperiod',
-          'isVisible': 'true',
+          "title": "Период",
+          "dataIndex": "paymentperiod",
+          "isVisible": "true"
         }, {
-          'title': 'Сумма возвратов',
-          'dataIndex': 'refundTotalAmount',
-          'isVisible': 'true',
+          "title": "Сумма возвратов",
+          "dataIndex": "refundTotalAmount",
+          "isVisible": "true"
         }, {
-          'title': 'Дата поступления информации',
-          'dataIndex': 'createdon',
-        },
+          "title": "Дата поступления информации",
+          "dataIndex": "createdon"
+        }
 
-      ],
+      ]
 
     };
 
@@ -397,8 +409,8 @@ class PaymentsPage extends Component {
         length: 10,
         entity: this.state.parameters.entity,
         filter: {},
-        sort: [],
-      },
+        sort: []
+      }
     }, () => {
       this.loadGridData();
     });
@@ -410,8 +422,8 @@ class PaymentsPage extends Component {
       parameters: {
         ...this.state.parameters,
         filter: { ...filter },
-        sort: [],
-      },
+        sort: []
+      }
     }, () => {
       this.loadGridData();
     });
@@ -423,21 +435,21 @@ class PaymentsPage extends Component {
       parameters: {
         ...prevState.parameters,
         start: current,
-        length: pageSize,
-      },
+        length: pageSize
+      }
     }), () => dispatch({
-      type: 'universal/paymentsData',
+      type: "universal/paymentsData",
       payload: {
         ...this.state.parameters,
         start: current,
-        length: pageSize,
-      },
+        length: pageSize
+      }
     }));
   };
 
   filterPanelState = () => {
     this.setState(({ filterContainer }) => ({
-      filterContainer: filterContainer == 6 ? 0 : 6,
+      filterContainer: filterContainer == 6 ? 0 : 6
     }));
   };
 
@@ -445,14 +457,14 @@ class PaymentsPage extends Component {
     const { dispatch } = this.props;
     let sortField = this.state.sortedInfo;
     dispatch({
-      type: 'universal/paymentsData',
-      payload: this.state.parameters,
+      type: "universal/paymentsData",
+      payload: this.state.parameters
     });
   };
 
   tabchange = (e, tabFilter = {}) => {
     this.setState({
-      activeKey: e,
+      activeKey: e
     });
     //     //test commit
 
@@ -537,10 +549,10 @@ class PaymentsPage extends Component {
     let filename;
     let filenames;
     if (matches != null && matches[3]) {
-      filename = matches[3].replace(/['"]/g, '');
+      filename = matches[3].replace(/['"]/g, "");
       let match = regex.exec(filename);
       if (match != null && match[3]) {
-        filenames = match[3].replace(/['"]/g, '').replace('utf-8', '');
+        filenames = match[3].replace(/['"]/g, "").replace("utf-8", "");
       }
     }
     return decodeURI(filenames);
@@ -551,82 +563,96 @@ class PaymentsPage extends Component {
   render() {
 
     return (
-      <div>   <Card bodyStyle={{ padding: 5 }}>
+      <div><Card bodyStyle={{ padding: 5 }}>
         <Tabs
           activeKey={this.state.activeKey}
           onChange={this.tabchange}>
-          <TabPane tab={formatMessage({ id: 'menu.payments.searchbtn' })} key="searcher">
+          <TabPane tab={formatMessage({ id: "menu.payments.searchbtn" })} key="searcher">
             <Searcher
               searchbyiin={(iin) => {
                 this.setState({
                   sortedInfo: {},
                   parameters: {
                     ...this.state.parameters,
-                    'entity': 'mt102',
-                    'filter': { 'iin': iin },
-                    'sort': [],
-                  },
+                    "entity": "mt102",
+                    "filter": { "iin": iin },
+                    "sort": []
+                  }
                 }, () => {
                   this.loadGridData();
                   this.setState({
-                    activeKey: 'mt102',
+                    activeKey: "mt102"
                   });
                 });
               }}
-              persontitle={'report.param.personinform'}
-              item={'Physic'}
+              persontitle={"report.param.personinform"}
+              item={"Physic"}
             />
           </TabPane>
-          <TabPane tab={formatMessage({ id: 'menu.payments.searchbtnJur' })} key="searcherJur">
+          <TabPane tab={formatMessage({ id: "menu.payments.searchbtnJur" })} key="searcherJur">
             <SearcherJur
               searchbybin={(bin) => {
                 this.setState({
                   sortedInfo: {},
                   parameters: {
                     ...this.state.parameters,
-                    'entity': 'mt102',
-                    'filter': { 'senderBin': bin },
-                    'sort': [],
-                  },
+                    "entity": "mt102",
+                    "filter": { "senderBin": bin },
+                    "sort": []
+                  }
                 }, () => {
                   this.loadGridData();
                   this.setState({
-                    activeKey: 'mt102',
+                    activeKey: "mt102"
                   });
                 });
               }}
-              persontitle={'report.param.personinformJur'}
-              item={'Juridic'}
+              persontitle={"report.param.personinformJur"}
+              item={"Juridic"}
             />
           </TabPane>
-          <TabPane tab={formatMessage({ id: 'menu.payments.payment100' })} key="mt100">
+          <TabPane tab={formatMessage({ id: "menu.payments.payment100" })} key="mt100">
             <PaymentsMT100
-              onSelect={(recordId) => {
+              onSelect={(record) => {
+
                 this.setState({
-                  sortedInfo: {},
-                  parameters: {
-                    ...this.state.parameters,
-                    'entity': 'mt102',
-                    'filter': { 'mt100Id': recordId },
-                    'sort': [],
-                  },
+                  activeKey: "mt102"
                 }, () => {
-                  this.loadGridData();
-                  this.setState({
-                    activeKey: 'mt102',
-                  });
+                  this.state.eventManager.handleEvent("onSelectFilter", { reference: record.reference });
                 });
+
+
+                // this.setState({
+                //   mt102Filters: [{
+                //     reference: record.reference
+                //   }],
+                //   activeKey: "mt102"
+                // });
+                // this.setState({
+                //   sortedInfo: {},
+                //   parameters: {
+                //     ...this.state.parameters,
+                //     'entity': 'mt102',
+                //     'filter': { 'mt100Id': recordId },
+                //     'sort': [],
+                //   },
+                // }, () => {
+                //   this.loadGridData();
+                //   this.setState({
+                //     activeKey: 'mt102',
+                //   });
+                // });
               }}
             />
           </TabPane>
-          <TabPane tab={formatMessage({ id: 'menu.payments.payment102' })} key="mt102">
-            <PaymentsMT102/>
+          <TabPane tab={formatMessage({ id: "menu.payments.payment102" })} key="mt102">
+            <PaymentsMT102 eventManager={this.state.eventManager}/>
           </TabPane>
 
           {/*<TabPane tab={'Список плательщиков'} key="employees">*/}
-            {/*<Employees/>*/}
+          {/*<Employees/>*/}
           {/*</TabPane>*/}
-          <TabPane tab={'Сотрудники'} key="consumer">
+          <TabPane tab={"Сотрудники"} key="consumer">
             <Consumer/>
           </TabPane>
         </Tabs>
@@ -635,9 +661,10 @@ class PaymentsPage extends Component {
     );
   }
 }
+
 export default connect(({ universal, loading }) => {
   return {
     universal,
-    loadingData: loading.effects['universal/paymentsData'],
+    loadingData: loading.effects["universal/paymentsData"]
   };
-})(PaymentsPage)
+})(PaymentsPage);

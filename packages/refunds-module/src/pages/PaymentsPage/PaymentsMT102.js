@@ -120,6 +120,14 @@ class PaymentsMT102 extends Component {
         label: "Период",
         name: "paymentperiod",
         type: "monthPicker"
+      }, {
+        label: "Стронированный ",
+        name: "stornReason.code",
+        type: "checkbox"
+      }, {
+        label: "id",
+        name: "id",
+        type: "text"
       }
       /*{
         label: 'Дата платежа',
@@ -129,6 +137,10 @@ class PaymentsMT102 extends Component {
     ],
     filterContainer: 0,
     columns: [
+      {
+        "title": "id",
+        "dataIndex": "id"
+      },
       {
         "title": "Референс",
         "dataIndex": "reference",
@@ -192,6 +204,12 @@ class PaymentsMT102 extends Component {
       }, {
         "title": "Дата поступления информации",
         "dataIndex": "createdon"
+      }, {
+        "title": "Причина сторнирования",
+        "dataIndex": "stornReason.nameRu"
+      }, {
+        "title": "Дата сторнирования",
+        "name": "stornDate"
       }
 
     ]
@@ -201,8 +219,8 @@ class PaymentsMT102 extends Component {
     this.setState({
       sortedInfo: {},
       parameters: {
-        start: this.state.parameters.start,
-        length: this.state.parameters.length,
+        start: 0,
+        length: 15,
         entity: this.state.parameters.entity,
         filter: {},
         sort: []
@@ -216,11 +234,18 @@ class PaymentsMT102 extends Component {
     if (filter.knpList != null && filter.knpList.length === 0) {
       delete filter["knpList"];
     }
+
+    if (filter["stornReason.code"]) {
+      filter["stornReason.code"] = "1";
+    }
+
     this.setState({
       sortedInfo: {},
       parameters: {
         ...this.state.parameters,
-        filter: { ...filter },
+        start: 0,
+        length: 15,
+        filter: { ...this.state.parameters.filter, ...filter },
         sort: []
       }
     }, () => {
@@ -229,7 +254,8 @@ class PaymentsMT102 extends Component {
         type: "universal/paymentsData",
         payload: {
           ...this.state.parameters,
-          start: 0
+          start: 0,
+          length: 15
         }
       });
     });
@@ -262,9 +288,6 @@ class PaymentsMT102 extends Component {
   loadGridData = () => {
     const { dispatch } = this.props;
 
-    console.log(this.props);
-
-    console.log(this.props.state);
     dispatch({
       type: "universal/paymentsData",
       payload: this.state.parameters
@@ -362,8 +385,24 @@ class PaymentsMT102 extends Component {
   };
 
   componentDidMount() {
+
+    this.props.eventManager.subscribe("onSelectFilter", (params) => {
+      if (Object.keys(params).length > 0) {
+        this.applyFilter(params);
+
+        this.setState(({ filterContainer }) => ({
+          filterContainer: 6,
+          parameters: {
+            ...this.state.parameters,
+            filter: params
+          }
+        }));
+      }
+    });
+
     this.loadGridData();
   }
+
 
   render = () => {
 
@@ -389,6 +428,7 @@ class PaymentsMT102 extends Component {
             extra={<Icon style={{ "cursor": "pointer" }} onClick={this.filterPanelState}><FontAwesomeIcon
               icon={faTimes}/></Icon>}>
             <GridFilter
+              formFilter={this.state.parameters.filter}
               clearFilter={this.clearFilter}
               applyFilter={(filter) => this.applyFilter(filter)} key={"1"}
               filterForm={this.state.filterForm}

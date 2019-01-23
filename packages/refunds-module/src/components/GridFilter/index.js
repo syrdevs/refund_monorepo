@@ -236,20 +236,35 @@ class GridFilter extends Component {
 
     let filterData = {};
     Object.keys(fields).forEach((field) => {
-      if (formFilters[field] || formFilters[field] === false) {
+      if (formFilters[field] && formFilters[field] !== "null") {
 
         if (["multibox", "combobox"].indexOf(fields[field].type) !== -1) {
 
-          let properyName = fields[field].type === "multibox" ? field + "List" : field + "Id";
-          if (fields[field].filterName) {
-            properyName = fields[field].filterName;
-          }
-          let propertyValue = fields[field].type === "multibox" ?
-            formFilters[field].map((valueId) => ({
-              id: valueId
-            })) : fields[field].filterName ? formFilters[field] : { id: formFilters[field] };
+          if (fields[field].type === "multibox" && formFilters[field].length > 0) {
+            let properyName = fields[field].type === "multibox" ? field + "List" : field + "Id";
+            if (fields[field].filterName) {
+              properyName = fields[field].filterName;
+            }
+            let propertyValue = fields[field].type === "multibox" ?
+              formFilters[field].map((valueId) => ({
+                id: valueId
+              })) : fields[field].filterName ? formFilters[field] : { id: formFilters[field] };
 
-          filterData[properyName] = fields[field].disabled ? null : propertyValue;
+            filterData[properyName] = fields[field].disabled ? null : propertyValue;
+          }
+
+          if (fields[field].type === "combobox" && fields[field].length !== "null") {
+            let properyName = fields[field].type === "multibox" ? field + "List" : field + "Id";
+            if (fields[field].filterName) {
+              properyName = fields[field].filterName;
+            }
+            let propertyValue = fields[field].type === "multibox" ?
+              formFilters[field].map((valueId) => ({
+                id: valueId
+              })) : fields[field].filterName ? formFilters[field] : { id: formFilters[field] };
+
+            filterData[properyName] = fields[field].disabled ? null : propertyValue;
+          }
 
           return;
         }
@@ -642,17 +657,21 @@ class GridFilter extends Component {
           params.value = null;
         }
 
+        if (this.props.formFilter && this.props.formFilter.hasOwnProperty(filterItem.name)) {
+          params.value = this.props.formFilter[filterItem.name];
+        }
+
         if (filterItem.withMax) {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
-            <Input {...params} onKeyDown={this.onKeyPress} onChange={(e) => {
+            <Input onKeyDown={this.onKeyPress} onChange={(e) => {
               this.withmaxfieldOnChange(filterItem, e.target.value, filterItem.withMax);
-            }} value={formFilters[filterItem.name]} style={{ width: "100%" }}/></div>);
+            }} value={formFilters[filterItem.name]} style={{ width: "100%" }} {...params}/></div>);
         }
         else {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
             <Input {...params} onKeyDown={this.onKeyPress} onChange={(e) => {
               this.fieldOnChange(filterItem, e.target.value);
-            }} value={formFilters[filterItem.name]} style={{ width: "100%" }}/></div>);
+            }} value={formFilters[filterItem.name]} style={{ width: "100%" }} {...params}/></div>);
         }
       }
       case "multibox": {
@@ -731,11 +750,13 @@ class GridFilter extends Component {
 
       case "checkbox": {
 
+        let params = {};
+
         if (isClearFilter) {
-          params.isClearFilter = isClearFilter;
+          params.checked = false;
         }
 
-        return (<div key={_index} style={mBottom}><Checkbox onChange={(e) => {
+        return (<div key={_index} style={mBottom}><Checkbox {...params} onChange={(e) => {
           this.fieldOnChange(filterItem, e.target.checked);
         }}/> : {filterItem.label}</div>);
       }

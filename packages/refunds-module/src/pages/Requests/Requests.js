@@ -202,14 +202,26 @@ class Requests extends Component {
     const max = current * pageSize;
     const min = max - pageSize;
     const { dispatch } = this.props;
-    dispatch({
-      type: "universal2/getList",
-      payload: {
+
+    this.setState({
+      sortedInfo: {},
+      pagingConfig: {
         ...this.state.pagingConfig,
-        start: current,
-        length: pageSize
+        "start": current,
+        "length": pageSize
       }
+    }, () => {
+      dispatch({
+        type: "universal2/getList",
+        payload: {
+          ...this.state.pagingConfig,
+          start: current,
+          length: pageSize
+        }
+      });
     });
+
+
   };
 
   toggleSearcher = () => {
