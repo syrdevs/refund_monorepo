@@ -105,7 +105,7 @@ class Pulls extends Component {
             if (item.isAccepted === true) {
               return "Подтвержден";
             }
-            else if (item.isAccepted === true) {
+            else if (item.isAccepted === false) {
               return "Отклонен";
             }
             else {
@@ -458,6 +458,7 @@ class Pulls extends Component {
       }
     });
   };
+
   publish = () => {
     if (this.state.pagingConfig.filter["refundPack.id"] != null){
       const { dispatch } = this.props;
@@ -513,6 +514,7 @@ class Pulls extends Component {
         }
       }}/>,
       onOk: () => {
+        console.log(rejectText);
         this.setAcceptToRefund(false, rejectText);
       },
       onCancel: () => {
@@ -542,6 +544,7 @@ class Pulls extends Component {
       selectedRowKeys: selectedRowKeys
     });
   };
+
   checkStatuss = () =>{
       //console.log(this.props.universal2.references[this.state.pagingConfig.entity]);
       return false;
@@ -584,6 +587,9 @@ class Pulls extends Component {
           ...this.state.pagingConfig
         }
       }).then((response)=>{
+        this.setState({
+          selectedRowKeys:[]
+        })
       })
     });
   };
@@ -665,6 +671,7 @@ class Pulls extends Component {
                                     })
                                 }}
                                 clearPull={() => {
+
                                 }}
                     />
                   </Card>

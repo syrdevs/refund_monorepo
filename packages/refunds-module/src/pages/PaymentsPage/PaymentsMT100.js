@@ -120,8 +120,8 @@ class PaymentsMT100 extends Component {
         type: "listbetweenDateTime"
       },
       {
-        label: "БИН",
-        name: "bin",
+        label: "БИН отправителя",
+        name: "getPaymentMT102ByBin",
         type: "text"
       }, {
         label: "id",

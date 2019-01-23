@@ -53,7 +53,7 @@ class Appeals extends Component {
       start: 0,
       length: 15,
       entity: "personRequest",
-      filter: {},
+      filter: { "iin": this.props.onSearch },
       sort: []
     },
     filterForm: [
@@ -105,11 +105,7 @@ class Appeals extends Component {
     visibleModal: false,
     filterContainer: 0,
     columns: [
-      {
-        "title": "ИИН Заявителя",
-        "dataIndex": "iIN",
-        "isVisible": "true"
-      }, {
+    {
         "title": "Фамилия",
         "dataIndex": "person.lastName",
         "isVisible": "true"
