@@ -16,7 +16,7 @@ import {
   Tag,
   Tabs,
   Modal,
-  Collapse
+  Collapse, Divider
 } from "antd";
 import connect from "../../Redux";
 import style from "./Searcher.less";
@@ -24,6 +24,7 @@ import Employees from "../PaymentsPage/Employees";
 import Appeals from "../PaymentsPage/Appeals";
 import GridFilter from "../../components/GridFilter";
 import Medicine from "../PaymentsPage/Medicine";
+
 const dateFormat = "DD.MM.YYYY";
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -53,6 +54,7 @@ class Searcher extends Component {
         sort: []
       },
       visible: false,
+      visibleFilter: false,
       filterForm: [
 
         {
@@ -248,49 +250,33 @@ class Searcher extends Component {
       type: "universal2/getList",
       payload: this.state.parameters
     }).then((response) => {
-      if(response.size>1){
+      if (response.size > 1) {
         this.setState({
-          visible: true,
+          visible: true
         });
       }
-      if(response.size==1){
-        this.searchperson(response.content.iin)
+      if (response.size == 1) {
+        this.searchperson(response.content.iin);
       }
     });
   };
 
-  applyFilter = (filter) => {
-    if (filter.knpList != null && filter.knpList.length === 0) {
-      delete filter["knpList"];
-    }
-    this.setState({
-      sortedInfo: {},
-      parameters: {
-        ...this.state.parameters,
-        filter: { ...filter },
-        sort: []
-      }
-    }, () => {
+  applyFilter = () => {
+
 
       this.loadGridData();
 
 
-
-    });
   };
 
   clearFilter = (pageNumber) => {
     this.setState({
-      sortedInfo: {},
       parameters: {
-        start: this.state.parameters.start,
-        length: this.state.parameters.length,
-        entity: this.state.parameters.entity,
+        ...this.state.parameters,
         filter: {},
-        sort: []
       }
-    }, () => {
     });
+    console.log(this.state.parameters)
   };
 
   searchperson = (value) => {
@@ -391,8 +377,8 @@ class Searcher extends Component {
       });
     });
     this.setState({
-      visible: false,
-    })
+      visible: false
+    });
   };
 
   onPanelChange = (value, mode) => {
@@ -451,6 +437,44 @@ class Searcher extends Component {
     });
   };
 
+  fieldOnChange = (filterItem, value) => {
+
+if(filterItem==="iin"){
+  this.setState({
+    parameters: {
+      ...this.state.parameters,
+      filter: { ...this.state.parameters.filter ,"iin": value},
+    }
+  });
+}if(filterItem==="firstName"){
+      this.setState({
+        parameters: {
+          ...this.state.parameters,
+          filter: { ...this.state.parameters.filter ,"firstName": value},
+        }
+      });
+    }
+    if(filterItem==="lastName"){
+      this.setState({
+        parameters: {
+          ...this.state.parameters,
+          filter: { ...this.state.parameters.filter ,"lastName": value},
+        }
+      });
+    }
+    if(filterItem==="patronymic"){
+      this.setState({
+        parameters: {
+          ...this.state.parameters,
+          filter: { ...this.state.parameters.filter ,"patronymic": value},
+        }
+      });
+    }
+
+
+
+  };
+
   payesSearcher = (year) => {
     const { dispatch } = this.props;
     dispatch({
@@ -469,9 +493,9 @@ class Searcher extends Component {
 
   handleCancel = (e) => {
     this.setState({
-      visible: false,
+      visible: false
     });
-  }
+  };
 
 
   render() {
@@ -551,6 +575,8 @@ class Searcher extends Component {
       value: ""
     }
     ];
+
+
     /**/
     const dataRPM = [{
       key: 14,
@@ -586,13 +612,13 @@ class Searcher extends Component {
       value: personRPN.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu
     }
     ];
-
+    const mBottom = { marginBottom: "5px" };
     const columnsTable = [
       {
-      "title": "ИИН",
-      "dataIndex": "iin",
-      "isVisible": "true"
-    },
+        "title": "ИИН",
+        "dataIndex": "iin",
+        "isVisible": "true"
+      },
       {
         "title": "Фамилия",
         "dataIndex": "firstName",
@@ -607,13 +633,13 @@ class Searcher extends Component {
         "title": "Отчество",
         "dataIndex": "patronymic",
         "isVisible": "true"
-      },{
+      }, {
         "title": "Дата рождения",
         "dataIndex": "birthdate",
         "isVisible": "true"
-      },
+      }
 
-    ]
+    ];
 
     return (<div>
         <Modal
@@ -622,7 +648,10 @@ class Searcher extends Component {
           onCancel={this.handleCancel}
           width={750}
         >
-          <Table onRowClick={(selectedRows) => { this.searchperson(selectedRows.iin)}} columns={columnsTable} dataSource={this.props.universal2.references[this.state.parameters.entity]?this.props.universal2.references[this.state.parameters.entity].content?this.props.universal2.references[this.state.parameters.entity].content:[]:[]} />
+          <Table onRowClick={(selectedRows) => {
+            this.searchperson(selectedRows.iin);
+          }} columns={columnsTable}
+                 dataSource={this.props.universal2.references[this.state.parameters.entity] ? this.props.universal2.references[this.state.parameters.entity].content ? this.props.universal2.references[this.state.parameters.entity].content : [] : []}/>
 
         </Modal>
         <Spin tip="" spinning={this.state.loading && this.state.loading1 && this.state.loading2}>
@@ -630,37 +659,88 @@ class Searcher extends Component {
             <Row>
               <div style={CardHeight}>
 
-                <Collapse onChange={callback}>
-                  <Panel bodyStyle={{ padding: 25 }} header={formatMessage({ id: "report.param.searcher" })} key="1">
-                    <Col span={6} style={{margin:20}}>
-                      {/*<Search*/}
-                      {/*placeholder="Введите ИИН"*/}
-                      {/*enterButton={formatMessage({ id: "system.search" })}*/}
-                      {/*size="large"*/}
-                      {/*maxLength={12}*/}
-                      {/*style={{ width: 600 }}*/}
-                      {/*onSearch={value => this.searchperson(value)}*/}
 
-                      {/*/>*/}
-                      <GridFilter
-                        // clearFilter={this.clearFilter(pageNumber)}
-                        clearFilter={(pageNumber) => this.clearFilter(pageNumber)}
-                        applyFilter={(filter) => this.applyFilter(filter)} key={"1"}
-                        filterForm={this.state.filterForm}
-                        dateFormat={dateFormat}/>
-                      {this.state.person.iin && <Button
-                        style={{ marginLeft: "10px" }}
-                        size={"large"}
-                        onClick={() => {
-                          if (this.state.iin) {
-                            this.props.searchbyiin(this.state.iin);
-                          }
-                        }}
-                      >Просмотр платежей</Button>}
-                    </Col>
-                  </Panel>
-                </Collapse>
+                <Card
+                  style={{ marginBottom: "10px" }}
+                  type="inner"
+                  bodyStyle={{ padding: 25 }}
+                  title={formatMessage({ id: "report.param.searcher" })}
+                >
 
+                  <Col span={8}>
+
+
+                    <div style={mBottom}>ИИН:
+                      <Input style={{ width: "100%" }} maxLength={12} onChange={(e) => {
+                        this.fieldOnChange("iin",e.target.value);
+                      }} /></div>
+                    {this.state.visibleFilter &&
+                    <div style={mBottom}>Фамилия:
+                      <Input style={{ width: "100%" }}  onChange={(e) => {
+                        this.fieldOnChange("firstName",e.target.value);
+                      }}/></div>}
+                    {this.state.visibleFilter && <div style={mBottom}>Имя:
+                      <Input style={{ width: "100%" }} onChange={(e) => {
+                        this.fieldOnChange("lastName",e.target.value);
+                      }}/></div>}
+                    {this.state.visibleFilter && <div style={mBottom}>Отчество:
+                      <Input style={{ width: "100%" }} onChange={(e) => {
+                        this.fieldOnChange("patronymic",e.target.value);
+                      }}/></div>}
+                    {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
+                    <Form layout={"vertical"}>
+
+                      < Button style={{ margin: "10px 0 0 0px" }} type='primary'
+                               onClick={this.applyFilter}>
+                        {formatMessage({ id: "system.search" })}
+                      </Button>
+                      <Button style={{ margin: "10px 0 0 5px" }}
+                              onClick={this.clearFilter}>{formatMessage({ id: "system.clear" })}</Button>
+                      {!this.state.visibleFilter && < Button style={{ margin: "10px 0 0 5px" }}
+                               onClick={() => {
+                                 this.setState({
+                                   visibleFilter: true
+                                 });
+                               }}>
+                        {"Расширенный поиск"}
+                      </Button>}
+                      {this.state.visibleFilter &&  < Button style={{ margin: "10px 0 0 5px" }}
+                               onClick={() => {
+                                 this.setState({
+                                   visibleFilter: false
+                                 });
+                               }}>
+                        {"Свернуть"}
+                      </Button>}
+                    </Form>
+
+                    {/*<Search*/}
+                    {/*placeholder="Введите ИИН"*/}
+                    {/*enterButton={formatMessage({ id: "system.search" })}*/}
+                    {/*size="large"*/}
+                    {/*maxLength={12}*/}
+                    {/*style={{ width: 600 }}*/}
+                    {/*onSearch={value => this.searchperson(value)}*/}
+
+                    {/*/>*/}
+                    {/*<GridFilter*/}
+                    {/*// clearFilter={this.clearFilter(pageNumber)}*/}
+                    {/*clearFilter={(pageNumber) => this.clearFilter(pageNumber)}*/}
+                    {/*applyFilter={(filter) => this.applyFilter(filter)} key={"1"}*/}
+                    {/*filterForm={this.state.filterForm}*/}
+                    {/*dateFormat={dateFormat}/>*/}
+                    {this.state.person.iin && <Button
+                      style={{ marginLeft: "10px" }}
+                      size={"large"}
+                      onClick={() => {
+                        if (this.state.iin) {
+                          this.props.searchbyiin(this.state.iin);
+                        }
+                      }}
+                    >Просмотр платежей</Button>}
+                  </Col>
+
+                </Card>
 
               </div>
             </Row>
@@ -669,7 +749,7 @@ class Searcher extends Component {
             <Tabs
               defaultActiveKey="1"
               tabPosition={"left"}
-              style={{ height: "auto", marginTop:"20px" }}
+              style={{ height: "auto", marginTop: "20px" }}
             >
               <TabPane tab={formatMessage({ id: this.props.persontitle })}
                        key="1"
