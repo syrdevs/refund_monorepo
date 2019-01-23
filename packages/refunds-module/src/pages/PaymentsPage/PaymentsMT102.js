@@ -125,7 +125,7 @@ class PaymentsMT102 extends Component {
         name: "stornReason.code",
         type: "checkbox"
       }, {
-        label: "id",
+        label: "Id",
         name: "id",
         type: "text"
       }
@@ -138,7 +138,7 @@ class PaymentsMT102 extends Component {
     filterContainer: 0,
     columns: [
       {
-        "title": "id",
+        "title": "Id",
         "dataIndex": "id"
       },
       {
@@ -209,7 +209,7 @@ class PaymentsMT102 extends Component {
         "dataIndex": "stornReason.nameRu"
       }, {
         "title": "Дата сторнирования",
-        "name": "stornDate"
+        "dataIndex": "stornDate"
       }
 
     ]
