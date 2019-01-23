@@ -35,84 +35,143 @@ class Medicine extends Component {
       ],
       columns: [
         {
-          "title": "Дата и время",
-          "dataIndex": "entryDate",
+          "title": "Наименование СЗ",
+          "dataIndex": "name",
           "width": 200,
-          "isVisible": true
-        }, {
-          "title": "Номер заявки",
-          "dataIndex": "refundId.applicationId.appNumber",
-          "width": 200,
-          "isVisible": true
-        }, {
-          "title": "Референс ГК",
-          "dataIndex": "refundId.gcvpReference",
-          "width": 200,
-          "isVisible": true
-        }, {
-          "title": "Номер ПП ГК",
-          "dataIndex": "refundId.gcvpOrderNum",
-          "width": 200,
-          "isVisible": true
-        }, {
-          "title": "Дата ПП ГК",
-          "width": 200,
-          "dataIndex": "refundId.gcvpOrderDate",
           "isVisible": true
         },
         {
-          "title": "Действие",
+          "title": "БИН/ИИН СЗ",
+          "dataIndex": "iin",
           "width": 200,
-          "dataIndex": "dactionId.nameRu"
-        },
-        {
-          "title": "Действие(до)",
-          "width": 200,
-          "dataIndex": "prev_dactionId.nameRu"
-        },
-        {
-          "title": "Пользователь",
-          "width": 200,
-          "dataIndex": "userId.userName"
-        },
-        {
-          "title": "ID платежа",
-          "width": 200,
-          "dataIndex": "refundId.mt102Id",
           "isVisible": true
-        }
+        },
+        {
+          "title": "Регион СЗ",
+          "dataIndex": "region",
+          "width": 200,
+          "isVisible": true
+        },
+        {
+          "title": "Наименование медицинской услуги",
+          "dataIndex": "medname",
+          "width": 200,
+          "isVisible": true
+        },
+        {
+          "title": "Форма и вид медицинской помощи",
+          "width": 200,
+          "dataIndex": "formtype",
+          "isVisible": true
+        },
+        {
+          "title": "Стоимость медицинской услуги",
+          "width": 200,
+          "dataIndex": "summ",
+          "isVisible": true
+        },
+        {
+          "title": "Факт оплаты",
+          "width": 200,
+          "dataIndex": "payFact",
+        },
+        {
+          "title": "Дата начала лечения/оказания услуги",
+          "width": 200,
+          "dataIndex": "typeStartDate",
+        },
+        {
+          "title": "Дата окончания лечения/оказания услуги",
+          "width": 200,
+          "dataIndex": "typeEndDate",
+        },
+        {
+          "title": "Диагноз",
+          "width": 200,
+          "dataIndex": "diagnoz",
+        },
+        {
+          "title": "Результат обращения",
+          "width": 200,
+          "dataIndex": "askResult",
+        },
+        {
+          "title": "Исход заболевания",
+          "width": 200,
+          "dataIndex": "result",
+        },
+        {
+          "title": "Врач",
+          "width": 200,
+          "dataIndex": "medPerson",
+        },
       ],
       filterContainer: 0,
       searchButton: false,
       filterForm: [
         {
-          name: "entryDate",
-          label: "Дата и время",
-          type: "listbetweenDate"
-        }, {
-          name: "appNumber",
-          label: "Номер заявки",
+          name:"refundId.mt102Id",
+          label: "Наименование СЗ",
           type: "text"
-        }, {
-          name: "gcvpReference",
-          label: "Референс ГК",
+        },
+        {
+          name:"refundId.mt102Id",
+          label: "БИН/ИИН СЗ",
           type: "text"
-        }, {
-          name: "gcvpOrderNum",
-          label: "Номер ПП ГК",
-          type: "text"
-        }, {
-          name: "refundId.gcvpOrderDate",
-          label: "Дата ПП ГК",
-          type: "listbetweenDate"
-        }, {
+        },
+        {
+          label:"Регион СЗ",
           name: "dappRefundStatus",
-          label: "Действие",
           type: "multibox"
         },
         {
           name:"refundId.mt102Id",
-          label: "ID платежа",
+          label: "Наименование медицинской услуги;",
+          type: "text"
+        },
+        {
+          name:"refundId.mt102Id",
+          label: "Форма и вид медицинской помощи",
+          type: "text"
+        },
+        {
+          name:"refundId.mt102Id",
+          label: "Стоимость медицинской услуги",
+          type: "text"
+        },
+        {
+          label:"Факт оплаты",
+          name: "dappRefundStatus",
+          type: "multibox"
+        },
+        {
+          name: "refundId.gcvpOrderDate",
+          label: "Дата начала услуги",
+          type: "listbetweenDate"
+        },
+        {
+          name: "refundId.gcvpOrderDate",
+          label: "Дата окончание услуги",
+          type: "listbetweenDate"
+        },
+        {
+          label:"Диагноз",
+          name: "dappRefundStatus",
+          type: "multibox"
+        },
+        {
+          name:"refundId.mt102Id",
+          label: "Результат обращения",
+          type: "text"
+        },
+        {
+          name:"refundId.mt102Id",
+          label: "Исход заболевания",
+          type: "text"
+        },
+        {
+          name:"refundId.mt102Id",
+          label: "Врач",
           type: "text"
         },
       ],
