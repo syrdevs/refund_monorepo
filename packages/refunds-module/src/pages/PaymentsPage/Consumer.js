@@ -84,7 +84,15 @@ class Consumer extends Component {
         "title": "ИИН",
         "dataIndex": "iin",
         "isVisible": "true"
-      }
+      }, {
+        "title": "Пользователь",
+        "dataIndex": "users.userName",
+        "isVisible": "true"
+      }, {
+        "title": "Дата и время создания",
+        "dataIndex": "createDateTime",
+        "isVisible": "true"
+      },
     ]
   };
 

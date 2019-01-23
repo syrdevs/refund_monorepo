@@ -15,7 +15,8 @@ import {
   Form,
   Tag,
   Tabs,
-  Modal
+  Modal,
+  Collapse
 } from "antd";
 import connect from "../../Redux";
 import style from "./Searcher.less";
@@ -32,6 +33,12 @@ const formItemLayout = {
   labelCol: { md: 6, xs: 6, sm: 6 },
   wrapperCol: { md: 18, xs: 18, sm: 18 }
 };
+
+const Panel = Collapse.Panel;
+
+function callback(key) {
+  console.log(key);
+}
 
 
 class Searcher extends Component {
@@ -622,41 +629,39 @@ class Searcher extends Component {
           <Row style={{ marginBottom: "10px" }}>
             <Row>
               <div style={CardHeight}>
-                <Card
-                  style={{  marginBottom: "10px" }}
-                  type="inner"
-                  bodyStyle={{ padding: 25 }}
-                  title={formatMessage({ id: "report.param.searcher" })}
-                >
 
-                  <Col span={8}>
-                    {/*<Search*/}
-                    {/*placeholder="Введите ИИН"*/}
-                    {/*enterButton={formatMessage({ id: "system.search" })}*/}
-                    {/*size="large"*/}
-                    {/*maxLength={12}*/}
-                    {/*style={{ width: 600 }}*/}
-                    {/*onSearch={value => this.searchperson(value)}*/}
+                <Collapse onChange={callback}>
+                  <Panel bodyStyle={{ padding: 25 }} header={formatMessage({ id: "report.param.searcher" })} key="1">
+                    <Col span={6} style={{margin:20}}>
+                      {/*<Search*/}
+                      {/*placeholder="Введите ИИН"*/}
+                      {/*enterButton={formatMessage({ id: "system.search" })}*/}
+                      {/*size="large"*/}
+                      {/*maxLength={12}*/}
+                      {/*style={{ width: 600 }}*/}
+                      {/*onSearch={value => this.searchperson(value)}*/}
 
-                    {/*/>*/}
-                    <GridFilter
-                      // clearFilter={this.clearFilter(pageNumber)}
-                      clearFilter={(pageNumber) => this.clearFilter(pageNumber)}
-                      applyFilter={(filter) => this.applyFilter(filter)} key={"1"}
-                      filterForm={this.state.filterForm}
-                      dateFormat={dateFormat}/>
-                    {this.state.person.iin && <Button
-                      style={{ marginLeft: "10px" }}
-                      size={"large"}
-                      onClick={() => {
-                        if (this.state.iin) {
-                          this.props.searchbyiin(this.state.iin);
-                        }
-                      }}
-                    >Просмотр платежей</Button>}
-                  </Col>
+                      {/*/>*/}
+                      <GridFilter
+                        // clearFilter={this.clearFilter(pageNumber)}
+                        clearFilter={(pageNumber) => this.clearFilter(pageNumber)}
+                        applyFilter={(filter) => this.applyFilter(filter)} key={"1"}
+                        filterForm={this.state.filterForm}
+                        dateFormat={dateFormat}/>
+                      {this.state.person.iin && <Button
+                        style={{ marginLeft: "10px" }}
+                        size={"large"}
+                        onClick={() => {
+                          if (this.state.iin) {
+                            this.props.searchbyiin(this.state.iin);
+                          }
+                        }}
+                      >Просмотр платежей</Button>}
+                    </Col>
+                  </Panel>
+                </Collapse>
 
-                </Card>
+
               </div>
             </Row>
 
@@ -664,7 +669,7 @@ class Searcher extends Component {
             <Tabs
               defaultActiveKey="1"
               tabPosition={"left"}
-              style={{ height: "auto" }}
+              style={{ height: "auto", marginTop:"20px" }}
             >
               <TabPane tab={formatMessage({ id: this.props.persontitle })}
                        key="1"
@@ -743,7 +748,7 @@ class Searcher extends Component {
                 tab={formatMessage({ id: "menu.payments.medicalsearcher" })}
                 key="3"
               >
-                <div></div>
+                <Medicine/>
               </TabPane>
               <TabPane
                 tab={"Список плательщиков"}
@@ -783,12 +788,7 @@ class Searcher extends Component {
                 <Appeals
                   onSearch={this.state.iin}/>
               </TabPane>
-              <TabPane
-                tab={"Оказанные Медицинские Услуги"}
-                key="7"
-              >
-                <Medicine/>
-              </TabPane>
+
             </Tabs>
           </Row>
         </Spin>
