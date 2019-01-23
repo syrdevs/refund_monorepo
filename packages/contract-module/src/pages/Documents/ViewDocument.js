@@ -349,7 +349,7 @@ class ViewDocument extends Component {
                     № {this.state.data ? this.state.data.number : ""} от {this.state.data ? this.state.data.documentDate : ""}</div>}
                 >
                   {this.props.location.query.type === "act" && <ShowAct actid={this.props.location.query.id}/>}
-                  {this.props.location.query.type === "CONTRACT" &&
+                  {this.props.location.query.type === "contract" &&
                   <CounterAgentView contractId={this.props.location.query.id}/>}
                   {this.props.location.query.type === "payment" && <ShowPayment id={this.props.location.query.id}/>}
 

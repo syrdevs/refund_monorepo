@@ -66,7 +66,7 @@ class Consumer extends Component {
       }, {
         label: "Период",
         name: "createDateTime",
-        type: "listbetweenDateTime"
+        type: "listbetweenDate"
       }, {
         label: "Пользователь",
         name: "users.userName",
@@ -340,6 +340,36 @@ class Consumer extends Component {
     });
   };
 
+  uploadDelFile = (data) => {
+
+    let formData = new FormData();
+    formData.append("file", data.file);
+    request("/api/refund/deleteSpecialList", {
+      method: "POST",
+      body: formData,
+      getResponse: (response) => {
+        if (response.status === 400) {
+          // message.warning(response.data.Message);
+
+          Modal.error({
+            title: "Внимание",
+            content: response.data.Message
+          });
+        }
+        if (response.status === 200) {
+          console.log(response)
+          // message.info("Загружено: " + response.data.loadNewCount + " из: " + response.data.allItemCount);
+          Modal.info({
+            title: "Внимание",
+            content: "Удалено: " + response.data.deleteCount + " из: " + response.data.allItemCount
+          });
+        }
+      }
+    }).then(() => {
+      this.loadGridData();
+    });
+  };
+
   render = () => {
 
     let uploadProps = {
@@ -372,34 +402,48 @@ class Consumer extends Component {
           }
         });
 
-        // fetch("/api/refund/upload/application/download/" + file.uid,
-        //   {
-        //     headers: {
-        //       "Content-Type": "application/json; charset=utf-8",
-        //       Authorization: "Bearer " + authToken
-        //     },
-        //     method: "post"
-        //   })
-        //   .then(response => {
-        //     if (response.ok) {
-        //       return response.blob().then(blob => {
-        //         let disposition = response.headers.get("content-disposition");
-        //         return {
-        //           fileName: this.getFileNameByContentDisposition(disposition),
-        //           raw: blob
-        //         };
-        //       });
-        //     }
-        //   })
-        //   .then(data => {
-        //     if (data) {
-        //       saveAs(data.raw, data.fileName);
-        //     }
-        //   });
       },
       onChange: (file, fileList) => {
         if (file.status !== "removing") {
           this.uploadFile(file);
+        }
+      }
+    };
+
+    let uploadDelProps = {
+      fileList: this.props.universal.files.map((file) => ({
+        uid: file.id,
+        name: file.filename
+      })),
+      onRemove: (file) => {
+        if (this.props.universal.files.length === 1 && this.props.dataSource.value !== null) {
+          Modal.error({
+            title: "Внимание",
+            content: "Файл не может быть удален. Пожалуйста, удалите сначала дату"
+          });
+          return false;
+        } else {
+          this.removeFile(file);
+        }
+      },
+      beforeUpload: () => (false),
+      onPreview: (file) => {
+
+        //let authToken = localStorage.getItem("AUTH_TOKEN");
+
+
+        request("/api/refund/deleteSpecialList/", {
+          method: "POST",
+          getResponse: (response) => {
+            if (response.data && response.data.type)
+              saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+          }
+        });
+
+      },
+      onChange: (file, fileList) => {
+        if (file.status !== "removing") {
+          this.uploadDelFile(file);
         }
       }
     };
@@ -432,6 +476,17 @@ class Consumer extends Component {
       >
         <Button>
           <Icon type="upload"/> Загрузить
+        </Button>
+      </Upload>
+    ];
+    let deletButtons = [
+      <Upload
+        {...uploadDelProps}
+        showUploadList={false}
+        name="logo"
+      >
+        <Button>
+          <Icon type="upload"/> Загрузить на удаление
         </Button>
       </Upload>
     ];
@@ -573,7 +628,7 @@ class Consumer extends Component {
           }}
           actionExport={() => this.exportToExcel()}
           // extraButtons={extraButtons}
-          addonButtons={[addonButtons, delButtons, importButtons]}
+          addonButtons={[addonButtons, delButtons, importButtons,deletButtons]}
           onSelectRow={(record, index) => {
             console.log(record);
             this.setState({

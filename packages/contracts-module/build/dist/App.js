@@ -60,6 +60,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var shared_ui_1 = require("@vitacore/shared-ui");
 var react_1 = __importDefault(require("react"));
 var TestModule = Promise.resolve().then(function () { return require('@vitacore/test-module'); });
+var ContractModule = Promise.resolve().then(function () { return require('@vitacore/contract-module'); });
 var ZakupModule = __importStar(require("@vitacore/zakup-module"));
 var styled_components_1 = __importDefault(require("styled-components"));
 var RootContainer = styled_components_1.default.div(templateObject_1 || (templateObject_1 = __makeTemplateObject(["\n  display: flex;\n  flex-grow: 1;\n  background-color: #edf1f5;\n  min-width: 0;\n"], ["\n  display: flex;\n  flex-grow: 1;\n  background-color: #edf1f5;\n  min-width: 0;\n"])));
@@ -88,6 +89,7 @@ var updateLeftMenuHrefs = function (leftMenuItems, prefix) {
 var modules = [
     { module: ZakupModule, route: '/zakup', dynamic: false, resolved: true },
     { module: TestModule, route: '/two', dynamic: true, resolved: false },
+    { module: ContractModule, route: '/v2', dynamic: true, resolved: false }
 ];
 var ContractsModule = /** @class */ (function (_super) {
     __extends(ContractsModule, _super);
@@ -139,7 +141,7 @@ var ContractsModule = /** @class */ (function (_super) {
                 var mRoute = "" + _this.props.moduleName + M.route;
                 var routeGoesInside = location.startsWith(mRoute);
                 var RComponent = M.module.default;
-                return (react_1.default.createElement(RComponent, { key: mRoute, moduleRoute: _this.props.moduleName, appRoute: mRoute, handleNoMatch: routeGoesInside, history: _this.props.history, simpleAuthCheck: _this.props.simpleAuthCheck, promiseAuthCheck: _this.props.promiseAuthCheck, getAuthToken: _this.props.getAuthToken, requestStarted: _this.props.requestStarted, requestFinished: _this.props.requestFinished, getUserLanguage: _this.props.getUserLanguage, subscribeToUserLanguageChange: _this.props.subscribeToUserLanguageChange }));
+                return (react_1.default.createElement(RComponent, { key: mRoute, moduleRoute: _this.props.moduleName, appRoute: mRoute, handleNoMatch: routeGoesInside, history: _this.props.history, simpleAuthCheck: _this.props.simpleAuthCheck, promiseAuthCheck: _this.props.promiseAuthCheck, getAuthToken: _this.props.getAuthToken, getUserInfo: _this.props.getUserInfo, requestStarted: _this.props.requestStarted, requestFinished: _this.props.requestFinished, getUserLanguage: _this.props.getUserLanguage, subscribeToUserLanguageChange: _this.props.subscribeToUserLanguageChange }));
             }))));
     };
     return ContractsModule;
