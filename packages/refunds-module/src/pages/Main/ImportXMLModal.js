@@ -148,6 +148,15 @@ class ImportXMLModal extends Component {
       cancelRefundList: cancelRefundList,
       statementData: this.props.xmldata,
       errorData: errors
+    },()=>{
+      this.state.confirmRefundList.map((item)=>{
+        this.setState({
+          selectedRowKeys: [
+            ...this.state.selectedRowKeys,
+            item.id
+          ]
+        })
+      })
     })
   };
   setColor = (value) => {
@@ -163,6 +172,7 @@ class ImportXMLModal extends Component {
     }
   };
   checkSuccess = (selectedRowKeys) => {
+    console.log(selectedRowKeys);
     this.setState({
       selectedRowKeys: selectedRowKeys
     });

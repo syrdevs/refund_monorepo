@@ -57,6 +57,20 @@ class PullFilter extends Component {
       .then(()=>{
       })
   }
+  searchpullcard = (id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal2/getList",
+      payload: {
+        ...this.state.pullpagingConfig,
+        filter:{
+          number:id
+        }
+      }
+    })
+      .then(()=>{
+      })
+  }
 
   handleSubmit = (e) => {
 
@@ -111,7 +125,7 @@ class PullFilter extends Component {
         <Search
           enterButton
           size="large"
-          onSearch={value => this.props.clearPull}
+          onSearch={value => this.searchpullcard(value)}
           style={{width:'90%', marginBottom:'10px', marginTop:'10px'}}
         />
         <Card  bodyStyle={{ overflowY: "auto" , height:'700px', padding: '5px', marginBottom:'5px'}} style={{width:'96%', margin:'0 2% 0 2%'}}>

@@ -671,6 +671,7 @@ class Pulls extends Component {
                                     })
                                 }}
                                 clearPull={() => {
+
                                 }}
                     />
                   </Card>
