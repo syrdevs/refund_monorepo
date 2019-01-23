@@ -281,6 +281,11 @@ class MainView extends Component {
           "title": "ID платежа",
           "dataIndex": "mt102Id",
           "isVisible": true
+        },
+        {
+          "title": "Результат сверки с ГБДФЛ",
+          "dataIndex": "checkGBFLResult",
+          "isVisible": true
         }
         // {
         //   "title": "Веб-сервис (сообщение) ",
@@ -417,14 +422,27 @@ class MainView extends Component {
     const max = current * pageSize;
     const min = max - pageSize;
     const { dispatch } = this.props;
-    dispatch({
-      type: "universal2/getList",
-      payload: {
-        ...this.state.pagingConfig,
-        start: current,
-        length: pageSize
+
+
+    this.setState(prevState => ({
+        pagingConfig: {
+          ...prevState.pagingConfig,
+          start: current,
+          length: pageSize
+        }
+      }), () => {
+        dispatch({
+          type: "universal2/getList",
+          payload: {
+            ...this.state.pagingConfig,
+            start: current,
+            length: pageSize
+          }
+        });
       }
-    });
+    );
+
+
   };
   showModal = () => {
     this.setState({
@@ -982,6 +1000,8 @@ class MainView extends Component {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
     };
 
+
+    console.log(this.state.pagingConfig);
 
     const dateFormat = "DD.MM.YYYY";
     /*const { universal } = this.props;

@@ -123,12 +123,20 @@ class PaymentsMT100 extends Component {
         label: "БИН отправителя",
         name: "getPaymentMT102ByBin",
         type: "text"
+      }, {
+        label: "id",
+        name: "id",
+        type: "text"
       }
     ],
     sortedInfo: {},
     selectedRowKeys: [],
     filterContainer: 0,
     columns: [
+      {
+        "title": "id",
+        "dataIndex": "id"
+      },
       {
         "title": "Референс",
         "dataIndex": "reference",
@@ -193,8 +201,8 @@ class PaymentsMT100 extends Component {
     this.setState({
       sortedInfo: {},
       parameters: {
-        start: this.state.parameters.start,
-        length: this.state.parameters.length,
+        start: 0,
+        length: 15,
         entity: this.state.parameters.entity,
         filter: {},
         sort: []
@@ -212,6 +220,8 @@ class PaymentsMT100 extends Component {
       sortedInfo: {},
       parameters: {
         ...this.state.parameters,
+        start: 0,
+        length: 15,
         filter: { ...filter },
         sort: []
       }
@@ -222,7 +232,8 @@ class PaymentsMT100 extends Component {
         type: "universal/paymentsData",
         payload: {
           ...this.state.parameters,
-          start: 0
+          start: 0,
+          length: 15
         }
       });
 
@@ -366,7 +377,7 @@ class PaymentsMT100 extends Component {
       key={"mt100paymentBtn"}
       onClick={() => {
         if (this.state.selectedRecord !== null) {
-          this.props.onSelect(this.state.selectedRecord.id);
+          this.props.onSelect(this.state.selectedRecord);
         }
       }}>
       Платежи МТ102</Button>];
