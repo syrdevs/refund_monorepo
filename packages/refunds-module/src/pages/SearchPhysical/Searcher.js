@@ -782,7 +782,12 @@ class Searcher extends Component {
                 <Appeals
                   onSearch={this.state.iin}/>
               </TabPane>
-
+              <TabPane
+                tab={"Оказанные Медицинские Услуги"}
+                key="7"
+              >
+                
+              </TabPane>
             </Tabs>
           </Row>
         </Spin>
