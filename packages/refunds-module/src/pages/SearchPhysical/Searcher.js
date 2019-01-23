@@ -22,6 +22,7 @@ import style from "./Searcher.less";
 import Employees from "../PaymentsPage/Employees";
 import Appeals from "../PaymentsPage/Appeals";
 import GridFilter from "../../components/GridFilter";
+import Medicine from "../PaymentsPage/Medicine";
 const dateFormat = "DD.MM.YYYY";
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -786,7 +787,7 @@ class Searcher extends Component {
                 tab={"Оказанные Медицинские Услуги"}
                 key="7"
               >
-                
+                <Medicine/>
               </TabPane>
             </Tabs>
           </Row>
