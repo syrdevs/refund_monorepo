@@ -103,10 +103,9 @@ class ModalChangeDate extends Component {
       payload: {
         id: dataSource.id
       }
-    }).then(() => {
+    }).then((e) => {
       this.setState({ test: "test" });
-    });
-
+    })
   };
 
 
@@ -140,9 +139,8 @@ class ModalChangeDate extends Component {
   };
 
   render() {
-
     let uploadProps = {
-      fileList: this.props.universal.files.map((file) => ({
+      fileList: (Array.isArray(this.props.universal.files) ? this.props.universal.files : []).map((file) => ({
         uid: file.id,
         name: file.filename
       })),

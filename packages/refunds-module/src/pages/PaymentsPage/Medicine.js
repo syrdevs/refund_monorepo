@@ -256,7 +256,7 @@ class Medicine extends Component {
 
     const DataDiv = () => (
       <SmartGridView
-        name={"journalPageColumns"}
+        name={"MedicinePageColumns"}
         searchButton={this.state.searchButton}
         fixedBody={true}
         rowKey={"id"}
