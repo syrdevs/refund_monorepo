@@ -759,16 +759,7 @@ if(filterItem==="iin"){
                       </Button>}
 
                     </Form>
-                    {!this.state.person.iin &&
-                    < Button style={{ marginTop: "10px" }}
-                             onClick={() => {
-                               if (this.state.iin) {
-                                 this.props.searchbyiin(this.state.iin);
-                               }
-                             }}>
-                      Просмотр платежей
-                    </Button>
-                    }
+
 
                     {/*<Search*/}
                     {/*placeholder="Введите ИИН"*/}
@@ -787,6 +778,18 @@ if(filterItem==="iin"){
                     {/*dateFormat={dateFormat}/>*/}
 
                   </Col>
+                  <Col span={8}>
+                    {this.state.person.iin &&
+                    < Button style={{ marginTop: "21px",marginLeft: "-88px" }}
+                             onClick={() => {
+                               if (this.state.iin) {
+                                 this.props.searchbyiin(this.state.iin);
+                               }
+                             }}>
+                      Просмотр платежей
+                    </Button>
+                    }
+                  </Col>
 
                 </Card>
 
@@ -801,6 +804,7 @@ if(filterItem==="iin"){
             >
               <TabPane tab={formatMessage({ id: this.props.persontitle })}
                        key="1"
+                       disabled={!personRPN.iin}
               >
                 <Row gutter={12}>
                   <Col span={12}>
@@ -853,6 +857,7 @@ if(filterItem==="iin"){
               </TabPane>
               <TabPane tab={formatMessage({ id: "report.param.monthpay" })}
                        key="2"
+                       disabled={!personRPN.iin}
               >
                 <Row>
                   <Col span={24}>
@@ -875,6 +880,7 @@ if(filterItem==="iin"){
               <TabPane
                 tab={formatMessage({ id: "menu.payments.medicalsearcher" })}
                 key="3"
+                disabled={!personRPN.iin}
               >
                 <Medicine/>
               </TabPane>
@@ -889,6 +895,7 @@ if(filterItem==="iin"){
               </TabPane>
               <TabPane tab={"История о задолженности"}
                        key="5"
+                       disabled={!personRPN.iin}
               >
                 <Row>
                   <Col span={24}>
