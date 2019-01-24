@@ -780,7 +780,7 @@ if(filterItem==="iin"){
                   </Col>
                   <Col span={8}>
                     {this.state.person.iin &&
-                    < Button style={{ marginTop: "21px",marginLeft: "-88px" }}
+                    < Button style={{ marginTop: "21px",marginLeft: "-83px" }}
                              onClick={() => {
                                if (this.state.iin) {
                                  this.props.searchbyiin(this.state.iin);
@@ -904,12 +904,24 @@ if(filterItem==="iin"){
                       title={formatMessage({ id: "История о задолженности" })}
                       type="inner"
                     >
+
                       <Calendar
                         onPanelChange={this.onPanelChange}
                         mode='year'
                         className={style.customCalendar}
                         monthCellRender={this.monthCellRender2}
                         fullscreen
+                        defaultValue={moment("2018-02-27T10:00:00")}
+                        validRange={[moment("2018-02-27T10:00:00") ,moment("2018-02-27T10:00:00")]}
+                      />
+                      <Calendar
+                        onPanelChange={this.onPanelChange}
+                        mode='year'
+                        className={style.customCalendar}
+                        monthCellRender={this.monthCellRender2}
+                        fullscreen
+                        defaultValue={moment("2019-02-27T10:00:00")}
+                        validRange={[moment("2019-02-27T10:00:00") ,moment("2019-02-27T10:00:00")]}
                       />
                     </Card>
                   </Col>
