@@ -780,7 +780,7 @@ if(filterItem==="iin"){
                   </Col>
                   <Col span={8}>
                     {this.state.person.iin &&
-                    < Button style={{ marginTop: "21px",marginLeft: "-83px" }}
+                    < Button style={{ marginTop: "21px",marginLeft: "-94px" }}
                              onClick={() => {
                                if (this.state.iin) {
                                  this.props.searchbyiin(this.state.iin);
