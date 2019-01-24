@@ -569,8 +569,16 @@ class PaymentsPage extends Component {
           onChange={this.tabchange}>
           <TabPane tab={formatMessage({ id: "menu.payments.searchbtn" })} key="searcher">
             <Searcher
-              searchbyiin={(iin) => {
+              onSelect={(iin) => {
+                //console.log(iin);
                 this.setState({
+                  activeKey: "mt102"
+                }, () => {
+                  this.state.eventManager.handleEvent("onSelectFilter", { iin: iin });
+                });
+              }}
+              searchbyiin={(iin) => {
+                /*this.setState({
                   sortedInfo: {},
                   parameters: {
                     ...this.state.parameters,
@@ -583,7 +591,7 @@ class PaymentsPage extends Component {
                   this.setState({
                     activeKey: "mt102"
                   });
-                });
+                });*/
               }}
               persontitle={"report.param.personinform"}
               item={"Physic"}
@@ -620,32 +628,10 @@ class PaymentsPage extends Component {
                 }, () => {
                   this.state.eventManager.handleEvent("onSelectFilter", { reference: record.reference });
                 });
-
-
-                // this.setState({
-                //   mt102Filters: [{
-                //     reference: record.reference
-                //   }],
-                //   activeKey: "mt102"
-                // });
-                // this.setState({
-                //   sortedInfo: {},
-                //   parameters: {
-                //     ...this.state.parameters,
-                //     'entity': 'mt102',
-                //     'filter': { 'mt100Id': recordId },
-                //     'sort': [],
-                //   },
-                // }, () => {
-                //   this.loadGridData();
-                //   this.setState({
-                //     activeKey: 'mt102',
-                //   });
-                // });
               }}
             />
           </TabPane>
-          <TabPane tab={formatMessage({ id: "menu.payments.payment102" })} key="mt102">
+          <TabPane forceRender tab={formatMessage({ id: "menu.payments.payment102" })} key="mt102">
             <PaymentsMT102 eventManager={this.state.eventManager}/>
           </TabPane>
 

@@ -134,7 +134,6 @@ export default {
     },
     * paymentsData(payload, { call, put }) {
       const response = yield call(paymentsData, payload.payload);
-
       yield put({
         type: 'paymentsDataReducer',
         payload: {
@@ -755,7 +754,6 @@ export default {
       };
     },
     uploadFileReducer(state, { payload }) {
-      console.log(payload);
       return {
         ...state,
         uploadanswer: payload,

@@ -123,20 +123,21 @@ class PaymentsMT100 extends Component {
         label: "БИН отправителя",
         name: "getPaymentMT102ByBin",
         type: "text"
-      }, {
+      },
+     /* {
         label: "ID",
         name: "id",
         type: "text"
-      }
+      }*/
     ],
     sortedInfo: {},
     selectedRowKeys: [],
     filterContainer: 0,
     columns: [
-      {
+      /*{
         "title": "ID",
         "dataIndex": "id"
-      },
+      },*/
       {
         "title": "Референс",
         "dataIndex": "reference",

@@ -287,7 +287,6 @@ class PaymentsMT102 extends Component {
 
   loadGridData = () => {
     const { dispatch } = this.props;
-
     dispatch({
       type: "universal/paymentsData",
       payload: this.state.parameters
@@ -369,6 +368,7 @@ class PaymentsMT102 extends Component {
     //   });
 
   };
+
   getFileNameByContentDisposition = (contentDisposition) => {
     let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
     let matches = regex.exec(contentDisposition);
@@ -389,18 +389,22 @@ class PaymentsMT102 extends Component {
     this.props.eventManager.subscribe("onSelectFilter", (params) => {
       if (Object.keys(params).length > 0) {
         this.applyFilter(params);
-
         this.setState(({ filterContainer }) => ({
           filterContainer: 6,
           parameters: {
             ...this.state.parameters,
             filter: params
           }
-        }));
+        }),()=>{
+
+        });
+      }
+      else {
+
       }
     });
-
     this.loadGridData();
+
   }
 
 

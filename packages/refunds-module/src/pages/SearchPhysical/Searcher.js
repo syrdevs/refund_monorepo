@@ -67,11 +67,11 @@ class Searcher extends Component {
           withMax: 12
         }, {
           label: "Фамилия",
-          name: "firstName",
+          name: " lastName",
           type: "text"
         }, {
           label: "Имя",
-          name: "lastName",
+          name: "firstName",
           type: "text"
         }, {
           label: "Отчество",
@@ -252,6 +252,7 @@ class Searcher extends Component {
     if(this.state.parameters.filter.iin){
       this.searchperson(this.state.parameters.filter.iin)
     }else {
+      delete this.state.parameters.filter.iin;
       dispatch({
         type: "universal2/getList",
         payload: this.state.parameters
@@ -275,11 +276,7 @@ class Searcher extends Component {
   };
 
   applyFilter = () => {
-
-
       this.loadGridData();
-
-
   };
 
   clearFilter = (pageNumber) => {
@@ -651,12 +648,12 @@ if(filterItem==="iin"){
       },
       {
         "title": "Фамилия",
-        "dataIndex": "firstName",
+        "dataIndex": "lastName",
         "isVisible": "true"
       },
       {
         "title": "Имя",
-        "dataIndex": "lastName",
+        "dataIndex": "firstName",
         "isVisible": "true"
       },
       {
@@ -717,12 +714,12 @@ if(filterItem==="iin"){
                      </div>
                     {this.state.visibleFilter &&
                     <div style={mBottom}>Фамилия:
-                      <Input  style={{ width: "100%" }} value={this.state.parameters.filter.firstName?this.state.parameters.filter.firstName.toUpperCase():""}  onChange={(e) => {
-                        this.fieldOnChange("firstName",e.target.value);
+                      <Input  style={{ width: "100%" }} value={this.state.parameters.filter.lastName?this.state.parameters.filter.lastName.toUpperCase():""}  onChange={(e) => {
+                        this.fieldOnChange("lastName",e.target.value);
                       }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>Имя:
-                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.lastName?this.state.parameters.filter.lastName.toUpperCase():""} onChange={(e) => {
-                        this.fieldOnChange("lastName",e.target.value);
+                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.firstName?this.state.parameters.filter.firstName.toUpperCase():""} onChange={(e) => {
+                        this.fieldOnChange("firstName",e.target.value);
                       }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>Отчество:
                       <Input style={{ width: "100%" }} value={this.state.parameters.filter.patronymic?this.state.parameters.filter.patronymic.toUpperCase():""} onChange={(e) => {
@@ -783,7 +780,8 @@ if(filterItem==="iin"){
                     < Button style={{ marginTop: "21px",marginLeft: "-94px" }}
                              onClick={() => {
                                if (this.state.iin) {
-                                 this.props.searchbyiin(this.state.iin);
+                                 //this.props.searchbyiin(this.state.iin);
+                                 this.props.onSelect(this.state.iin);
                                }
                              }}>
                       Просмотр платежей
