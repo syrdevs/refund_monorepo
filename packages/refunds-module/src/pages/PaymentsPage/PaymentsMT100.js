@@ -17,7 +17,7 @@ import {
   Select,
   Checkbox,
   Spin,
-  Divider
+  Divider, Modal
 } from "antd";
 
 import formatMessage from "../../utils/formatMessage";
@@ -124,7 +124,7 @@ class PaymentsMT100 extends Component {
         name: "getPaymentMT102ByBin",
         type: "text"
       }, {
-        label: "Id",
+        label: "ID",
         name: "id",
         type: "text"
       }
@@ -134,7 +134,7 @@ class PaymentsMT100 extends Component {
     filterContainer: 0,
     columns: [
       {
-        "title": "Id",
+        "title": "ID",
         "dataIndex": "id"
       },
       {
@@ -197,7 +197,6 @@ class PaymentsMT100 extends Component {
   };
 
   clearFilter = (pageNumber) => {
-    console.log(this.state.parameters);
     this.setState({
       sortedInfo: {},
       parameters: {
@@ -279,8 +278,6 @@ class PaymentsMT100 extends Component {
   }
 
   exportToExcel = () => {
-    console.log(556);
-
     request("/api/refund/exportToExcel", {
       responseType: "blob",
       method: "post",
@@ -353,6 +350,7 @@ class PaymentsMT100 extends Component {
     //   });
 
   };
+
   getFileNameByContentDisposition = (contentDisposition) => {
     let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
     let matches = regex.exec(contentDisposition);
@@ -368,11 +366,42 @@ class PaymentsMT100 extends Component {
     return decodeURI(filenames);
   };
 
+  reloadMt100Packet = () =>{
+    Modal.confirm({
+      title: 'Вы действительно хотите запросить файлы МТ102?',
+      okText: 'Да',
+      cancelText: "Нет",
+      onOk:()=> {
+        const { dispatch } = this.props;
+        dispatch({
+          type: "universal/reloadMt100Packet",
+          payload: {
+            id: this.state.selectedRecord.id
+          }
+        })
+          .then(()=>{
+            this.setState({
+              selectedRecord: null
+            },()=>{
+              this.loadGridData();
+            });
+          })
+      },
+      onCancel:()=> {
+        Modal.error({
+          title: 'Ошибка при запросе файла MT102',
+        });
+      },
+    });
+
+  }
+
   render = () => {
 
     const paymentsData = this.props.universal.paymentsData[this.state.parameters.entity];
 
-    let addonButtons = [<Button
+    let addonButtons = [
+      <Button
       disabled={this.state.selectedRecord === null}
       key={"mt100paymentBtn"}
       onClick={() => {
@@ -380,7 +409,20 @@ class PaymentsMT100 extends Component {
           this.props.onSelect(this.state.selectedRecord);
         }
       }}>
-      Платежи МТ102</Button>];
+      Платежи МТ102</Button>,
+      <Button
+        disabled={(this.state.selectedRecord ? ((this.state.selectedRecord.mt102LoadStatus ? this.state.selectedRecord.mt102LoadStatus : {}).code === "3") : true)}
+        key={"mt100reloadBtn"}
+        onClick={() => {
+          if (this.state.selectedRecord !== null) {
+                this.reloadMt100Packet();
+           }
+           // console.log(this.state.selectedRecord)
+            //this.props.onSelect(this.state.selectedRecord);
+        }}>
+        Запросить МТ102</Button>,
+
+    ];
     let extraButtons = [<span key={"total-count"} style={{
       color: "#002140",
       fontSize: "12px",
@@ -478,7 +520,6 @@ class PaymentsMT100 extends Component {
           extraButtons={extraButtons}
           addonButtons={addonButtons}
           onSelectRow={(record, index) => {
-            console.log(record);
             this.setState({
               selectedRecord: record
             });

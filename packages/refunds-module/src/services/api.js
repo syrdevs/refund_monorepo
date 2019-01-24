@@ -477,5 +477,8 @@ export async function publishing(params) {
   return request("/api/contract/publishDocument?entity="+params.payload.entity+"&id="+params.payload.id);
 }
 
+export async function reloadMt100Packet(params) {
+  return request(`/api/rpmu/reloadMt100Packet?${stringify(params.payload)}`);
+}
 
 

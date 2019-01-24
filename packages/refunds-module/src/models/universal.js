@@ -32,7 +32,7 @@ import {
   getList,
   getCommands,
   createSubContract, setAccept,
-  createRefunkPack, getUsers, setRefundNeedAcceptUser, publishing
+  createRefunkPack, getUsers, setRefundNeedAcceptUser, publishing, reloadMt100Packet
 } from "../services/api";
 
 export default {
@@ -84,7 +84,8 @@ export default {
     uploadanswer: {},
     commandResult: [],
     users:{},
-    publishanswer: {}
+    publishanswer: {},
+    reloadMt100Packet: {}
   },
   effects: {
     * getCommandResult(payload, { call, put }) {
@@ -458,6 +459,15 @@ export default {
         payload: response || {},
       });
     },
+
+    * reloadMt100Packet(payload, { call, put }) {
+      const response = yield call(reloadMt100Packet, payload);
+
+      yield put({
+        type: 'reloadMt100PacketReducer',
+        payload: response || {},
+      });
+    },
   },
 
   reducers: {
@@ -472,6 +482,12 @@ export default {
       return {
         ...state,
         publishanswer: payload,
+      };
+    },
+    reloadMt100PacketReducer(state, { payload }) {
+      return {
+        ...state,
+        reloadMt100Packet: payload,
       };
     },
     deleteObjectReducer(state, { payload }) {

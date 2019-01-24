@@ -48,7 +48,9 @@ class SearcherJur extends Component {
 
   monthCellRender=(value)=>{
     let result=(<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>);
-    this.state.payes.forEach((item) => {
+    console.log(this.state.payes);
+    console.log("000----0000");
+    (Array.isArray(this.state.payes) ? this.state.payes : [] ).forEach((item) => {
       if(item.period===value.format('MMYYYY')) {
         result= (
           <div
