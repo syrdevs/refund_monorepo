@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import formatMessage from "../../utils/formatMessage";
+import componentLocal from "../../locales/components/componentLocal";
 
 import moment from "moment";
 import {
@@ -16,7 +17,7 @@ import {
   Tag,
   Tabs,
   Modal,
-  Collapse, Divider
+  Collapse, Divider, LocaleProvider
 } from "antd";
 import connect from "../../Redux";
 import style from "./Searcher.less";
@@ -51,6 +52,7 @@ class Searcher extends Component {
         length: 15,
         entity: "person",
         filter: {},
+        alias:"search",
         sort: []
       },
       visible: false,
@@ -276,7 +278,7 @@ class Searcher extends Component {
         filter: {},
       }
     });
-    console.log(this.state.parameters)
+
   };
 
   searchperson = (value) => {
@@ -467,6 +469,14 @@ if(filterItem==="iin"){
         parameters: {
           ...this.state.parameters,
           filter: { ...this.state.parameters.filter ,"patronymic": value},
+        }
+      });
+    }
+    if(filterItem==="birthdate"){
+      this.setState({
+        parameters: {
+          ...this.state.parameters,
+          filter: { ...this.state.parameters.filter ,"birthdate": value},
         }
       });
     }
@@ -671,22 +681,29 @@ if(filterItem==="iin"){
 
 
                     <div style={mBottom}>ИИН:
-                      <Input style={{ width: "100%" }} maxLength={12} onChange={(e) => {
-                        this.fieldOnChange("iin",e.target.value);
-                      }} /></div>
+                      <div style={{width:"100%"}}>
+                        <Input style={{ width: "80%" }} value={this.state.parameters.filter.iin} maxLength={12} onChange={(e) => {
+                          this.fieldOnChange("iin",e.target.value);
+                        }} />
+                      </div>
+                     </div>
                     {this.state.visibleFilter &&
                     <div style={mBottom}>Фамилия:
-                      <Input style={{ width: "100%" }}  onChange={(e) => {
+                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.firstName}  onChange={(e) => {
                         this.fieldOnChange("firstName",e.target.value);
                       }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>Имя:
-                      <Input style={{ width: "100%" }} onChange={(e) => {
+                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.lastName} onChange={(e) => {
                         this.fieldOnChange("lastName",e.target.value);
                       }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>Отчество:
-                      <Input style={{ width: "100%" }} onChange={(e) => {
+                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.patronymic} onChange={(e) => {
                         this.fieldOnChange("patronymic",e.target.value);
                       }}/></div>}
+                    {this.state.visibleFilter && <div style={mBottom}>День рождения:     <div style={{width:"100%"}}>
+                      <DatePicker  style={{ width: "80%" }}  format={"DD.MM.YYYY"} onChange={(moment,dateString) => {
+                        this.fieldOnChange("birthdate",dateString);
+                      }}/> </div></div>}
                     {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
                     <Form layout={"vertical"}>
 
