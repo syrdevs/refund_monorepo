@@ -248,19 +248,24 @@ class Searcher extends Component {
   loadGridData = () => {
     const { dispatch } = this.props;
     let sortField = this.state.sortedInfo;
-    dispatch({
-      type: "universal2/getList",
-      payload: this.state.parameters
-    }).then((response) => {
-      if (response.size > 1) {
-        this.setState({
-          visible: true
-        });
-      }
-      if (response.size == 1) {
-        this.searchperson(response.content.iin);
-      }
-    });
+    if(this.state.parameters.filter.iin){
+      this.searchperson(this.state.parameters.filter.iin)
+    }else {
+      dispatch({
+        type: "universal2/getList",
+        payload: this.state.parameters
+      }).then((response) => {
+        if (response.size > 1) {
+          this.setState({
+            visible: true
+          });
+        }
+        if (response.size == 1) {
+          this.searchperson(response.content.iin);
+        }
+      });
+    }
+
   };
 
   applyFilter = () => {
@@ -701,7 +706,7 @@ if(filterItem==="iin"){
                         this.fieldOnChange("patronymic",e.target.value);
                       }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>День рождения:     <div style={{width:"100%"}}>
-                      <DatePicker  style={{ width: "80%" }}  format={"DD.MM.YYYY"} onChange={(moment,dateString) => {
+                      <DatePicker  style={{ width: "40%" }}  format={"DD.MM.YYYY"} onChange={(moment,dateString) => {
                         this.fieldOnChange("birthdate",dateString);
                       }}/> </div></div>}
                     {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
