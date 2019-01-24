@@ -124,7 +124,7 @@ class PaymentsMT100 extends Component {
         name: "getPaymentMT102ByBin",
         type: "text"
       }, {
-        label: "Id",
+        label: "ID",
         name: "id",
         type: "text"
       }
@@ -134,7 +134,7 @@ class PaymentsMT100 extends Component {
     filterContainer: 0,
     columns: [
       {
-        "title": "Id",
+        "title": "ID",
         "dataIndex": "id"
       },
       {
