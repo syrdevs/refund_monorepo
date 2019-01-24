@@ -573,7 +573,7 @@ if(filterItem==="iin"){
       name: "ЛЬГОТНАЯ КАТЕГОРИЯ",
       value: personMED.pref_categories !== undefined ? personMED.pref_categories.map((category) =>
         <div>
-          <div style={{ width: "80%", wordWrap: "break-word" }} color="blue">{category.name.toUpperCase()}</div>
+          <div style={{ width: "80%", wordWrap: "break-word" }} color="blue">{category.name? category.name.toUpperCase():""}</div>
           <br></br>
         </div>) : ""
     }, {
@@ -734,6 +734,16 @@ if(filterItem==="iin"){
                                }}>
                         {"Свернуть"}
                       </Button>}
+                      {this.state.person.iin &&
+                      < Button style={{ margin: "10px 0 0 5px" }}
+                               onClick={() => {
+                                 if (this.state.iin) {
+                                   this.props.searchbyiin(this.state.iin);
+                                 }
+                               }}>
+                        Просмотр платежей
+                      </Button>
+                      }
                     </Form>
 
                     {/*<Search*/}
@@ -751,15 +761,7 @@ if(filterItem==="iin"){
                     {/*applyFilter={(filter) => this.applyFilter(filter)} key={"1"}*/}
                     {/*filterForm={this.state.filterForm}*/}
                     {/*dateFormat={dateFormat}/>*/}
-                    {this.state.person.iin && <Button
-                      style={{ marginLeft: "10px" }}
-                      size={"large"}
-                      onClick={() => {
-                        if (this.state.iin) {
-                          this.props.searchbyiin(this.state.iin);
-                        }
-                      }}
-                    >Просмотр платежей</Button>}
+
                   </Col>
 
                 </Card>
