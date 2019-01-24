@@ -129,7 +129,7 @@ class MainView extends Component {
           isVisible: true,
           width: 150,
           render: (item) => {
-            return item.personSurname + " " + item.personFirstname + " " + item.personPatronname;
+            return (item.personSurname ? item.personSurname : '') + " " + (item.personFirstname ? item.personFirstname : '') + " " + (item.personPatronname ? item.personPatronname : ' ' );
           }
         }, {
           "title": "Статус заявки на возврат",
@@ -190,13 +190,15 @@ class MainView extends Component {
             };
           },
           render: (record) => (
-            <div>
-              {record.refundFiles && record.refundFiles.map((item) => {
-                return <p>{item.filename} <a onClick={() => {
-                  this.deleteFile(record, item);
-                }}>удалить</a></p>;
-              })}
-            </div>
+              <div>
+                {record.refundFiles && record.refundFiles.map((item) => {
+                  return <p>{item.filename} <a onClick={() => {
+                    this.downloadFile(record, item);
+                  }}>cкачать</a> / <a onClick={() => {
+                    this.deleteFile(record, item);
+                  }}>удалить</a></p>;
+                })}
+              </div>
           )
         }
 
@@ -254,10 +256,13 @@ class MainView extends Component {
         }, {
           "title": "Дата платежного поручения",
           "dataIndex": "applicationId.payOrderDate"
-        }, { "title": "Сумма отчислений", "dataIndex": "payAmount" }, {
+        },
+        { "title": "Сумма отчислений", "dataIndex": "payAmount" },
+        /*{
           "title": "Дата последнего взноса",
           "dataIndex": "lastPayDate"
-        }, {
+        },*/
+        {
           "title": "Дата осуществления возврата",
           "dataIndex": "refundDate"
         }, {
@@ -379,7 +384,26 @@ class MainView extends Component {
       });*/
   }
 
-
+  downloadFile = async (record, item) => {
+      console.log(record)
+      console.log(item)
+    /*
+    request("/api/uicommand/downloadFile", {
+      method: "POST",
+      responseType: "blob",
+      body: {
+        "searched": true,
+        "data": {
+          ...this.state.filter.filter
+        }
+      },
+      getResponse: (response) => {
+        if (response.data && response.data.type)
+          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+      }
+    });
+    */
+  };
   deleteFile = (record, item) => {
     Modal.confirm({
       title: "Вы действительно хотите удалить этот файл?",

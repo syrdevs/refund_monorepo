@@ -57,7 +57,7 @@ class EmployeesModal extends Component {
     recordid: null,
     config:  {
       "start":0,
-      "length":10,
+      "length":8,
       "entity":"users",
       "alias":null
     }
@@ -260,8 +260,10 @@ class EmployeesModal extends Component {
                  pagination={false}
 
           />
-        <Pagination defaultCurrent={1} total={data.totalPages}
+        <Pagination defaultCurrent={1}
+                    total={data.totalElements}
                     style={{marginTop:'5px'}}
+                    pageSize={8}
                     onChange={(page, pageSize) => {
                       this.onShowSizeChange(page - 1, pageSize);
                     }}

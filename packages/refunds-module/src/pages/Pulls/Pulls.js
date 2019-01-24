@@ -121,7 +121,10 @@ class Pulls extends Component {
           isVisible: true,
           width: 150,
           render: (item) => {
-            return item.refund.personSurname + " " + item.refund.personFirstname + " " + item.refund.personPatronname;
+            //return item.refund.personSurname + " " + item.refund.personFirstname + " " + item.refund.personPatronname;
+            return (item.refund.personSurname ? item.refund.personSurname : '') + " "
+              + (item.refund.personFirstname ? item.refund.personFirstname : '') + " "
+              + (item.refund.personPatronname ? item.refund.personPatronname : ' ' );
           }
         }, {
           "title": "Статус заявки на возврат",
@@ -183,7 +186,9 @@ class Pulls extends Component {
           render: (record) => (
             <div>
               {record.refund.refundFiles && record.refund.refundFiles.map((item) => {
-                return <p >{item.filename}  <a onClick={()=>{
+                return <p >{item.filename} <a onClick={() => {
+                  this.downloadFile(record, item);
+                }}>cкачать</a> / <a onClick={()=>{
                   this.deleteFile(record, item);
                 }}>удалить</a></p>;
               })}
@@ -311,6 +316,10 @@ class Pulls extends Component {
     });
   }
 
+  downloadFile=(record, item)=>{
+    console.log(record)
+    console.log(item)
+  }
   deleteFile=(record, item)=>{
     Modal.confirm({
       title: 'Вы действительно хотите удалить этот файл?',
@@ -484,6 +493,29 @@ class Pulls extends Component {
     }
   }
 
+  cancelpull =()=> {
+    Modal.confirm({
+      title: 'Исключить из пула?',
+      okText: "Подтвердить",
+      cancelText: "Отмена",
+      onOk: () => {
+        const { dispatch } = this.props;
+        dispatch({
+          type: "universal/deleteObject",
+          payload: {
+            "entity": "refundItem",
+            "alias": null,
+            "id": this.state.selectedRowKeys
+          }
+        }).then(() => {
+          this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+        });
+      },
+      onCancel: () => {
+
+      },
+    });
+  }
   rejecting = () => {
 
     let rejectText = "";
@@ -648,6 +680,16 @@ class Pulls extends Component {
                 key={"publish"}
                   >
                 Опубликовать
+              </Button>
+              <Button
+                disabled={this.state.selectedRowKeys.length === 0}
+                onClick={() => {
+                  this.cancelpull();
+                }}
+                style={{ marginLeft: "5px" }}
+                key={"cancel"}
+              >
+                Исключить из пула ( {this.state.selectedRowKeys.length} )
               </Button>
             </Card>
           </Row>

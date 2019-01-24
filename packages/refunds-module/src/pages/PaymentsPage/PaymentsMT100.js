@@ -184,7 +184,7 @@ class PaymentsMT100 extends Component {
       },
       {
         "title": "Статус загрузки",
-        "dataIndex": "mt102LoadStatus.text"
+        "dataIndex": "mt102LoadStatus.nameRu"
       },
       {
         "title": "Статус загрузки (сообщение)",
