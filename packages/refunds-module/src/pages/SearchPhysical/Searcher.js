@@ -55,6 +55,7 @@ class Searcher extends Component {
         alias:"search",
         sort: []
       },
+      visibleModal:false,
       visible: false,
       visibleFilter: false,
       filterForm: [
@@ -263,6 +264,11 @@ class Searcher extends Component {
         if (response.size == 1) {
           this.searchperson(response.content.iin);
         }
+        if (response.size ==0) {
+          this.setState({
+            visibleModal: true
+          });
+        }
       });
     }
 
@@ -307,6 +313,9 @@ class Searcher extends Component {
             this.payesSearcher(moment(new Date()).year());
           });
         } else {
+          this.setState({
+            visibleModal: true
+          });
           this.setState({
             person: {
               "dSexId": {
@@ -512,6 +521,12 @@ if(filterItem==="iin"){
     });
   };
 
+  handleCancelModal = (e) => {
+    this.setState({
+      visibleModal: false
+    });
+  };
+
 
   render() {
     const CardHeight = { height: "auto", marginBottom: "10px" };
@@ -658,7 +673,15 @@ if(filterItem==="iin"){
 
     return (<div>
         <Modal
-          title="Basic Modal"
+          title=""
+          visible={this.state.visibleModal}
+          onCancel={this.handleCancelModal}
+          onOk={this.handleCancelModal}
+        >
+          <p>Информация о потребителе не найдена</p>
+        </Modal>
+        <Modal
+          title=""
           visible={this.state.visible}
           onCancel={this.handleCancel}
           width={750}
@@ -694,15 +717,15 @@ if(filterItem==="iin"){
                      </div>
                     {this.state.visibleFilter &&
                     <div style={mBottom}>Фамилия:
-                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.firstName}  onChange={(e) => {
+                      <Input  style={{ width: "100%" }} value={this.state.parameters.filter.firstName?this.state.parameters.filter.firstName.toUpperCase():""}  onChange={(e) => {
                         this.fieldOnChange("firstName",e.target.value);
                       }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>Имя:
-                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.lastName} onChange={(e) => {
+                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.lastName?this.state.parameters.filter.lastName.toUpperCase():""} onChange={(e) => {
                         this.fieldOnChange("lastName",e.target.value);
                       }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>Отчество:
-                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.patronymic} onChange={(e) => {
+                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.patronymic?this.state.parameters.filter.patronymic.toUpperCase():""} onChange={(e) => {
                         this.fieldOnChange("patronymic",e.target.value);
                       }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>День рождения:     <div style={{width:"100%"}}>
@@ -734,17 +757,18 @@ if(filterItem==="iin"){
                                }}>
                         {"Свернуть"}
                       </Button>}
-                      {this.state.person.iin &&
-                      < Button style={{ margin: "10px 0 0 5px" }}
-                               onClick={() => {
-                                 if (this.state.iin) {
-                                   this.props.searchbyiin(this.state.iin);
-                                 }
-                               }}>
-                        Просмотр платежей
-                      </Button>
-                      }
+
                     </Form>
+                    {!this.state.person.iin &&
+                    < Button style={{ marginTop: "10px" }}
+                             onClick={() => {
+                               if (this.state.iin) {
+                                 this.props.searchbyiin(this.state.iin);
+                               }
+                             }}>
+                      Просмотр платежей
+                    </Button>
+                    }
 
                     {/*<Search*/}
                     {/*placeholder="Введите ИИН"*/}
