@@ -367,7 +367,7 @@ class ViewDocument extends Component {
                 {/*</Card>*/}
               </div>
             </TabPane>
-            {this.props.location.query.type === "CONTRACT" && <TabPane tab="Ход исполнения" key="2">
+            {<TabPane tab="Ход исполнения" key="2">
               <div style={CardHeight}>
                 <Card
                   style={{ margin: "10px" }}
