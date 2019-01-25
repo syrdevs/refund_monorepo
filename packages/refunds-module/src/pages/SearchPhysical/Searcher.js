@@ -257,15 +257,15 @@ class Searcher extends Component {
         type: "universal2/getList",
         payload: this.state.parameters
       }).then((response) => {
-        if (response.size > 1) {
+        if (response.totalElements > 1) {
           this.setState({
             visible: true
           });
         }
-        if (response.size == 1) {
+        if (response.totalElements == 1) {
           this.searchperson(response.content.iin);
         }
-        if (response.size ==0) {
+        if (response.totalElements ==0) {
           this.setState({
             visibleModal: true
           });
