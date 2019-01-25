@@ -92,6 +92,14 @@ class Employees extends Component {
         "title": "Плательщик (Наименование/ФИО)",
         "dataIndex": "senderName",
         "isVisible": "true"
+      }, {
+        "title": "КНП",
+        "dataIndex": "knp",
+        "isVisible": "true"
+      }, {
+        "title": "Сумма",
+        "dataIndex": "paymentsum",
+        "isVisible": "true"
       }
     ]
   };
