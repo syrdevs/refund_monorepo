@@ -192,7 +192,7 @@ class Searcher extends Component {
         if (item.payPeriod === value.format("MMYYYY")) {
           result = (
             <div
-              style={{ backgroundColor: "red", height: "100%", width: "100%", padding: "10px" }}
+              style={{ backgroundColor: 'rgba(255, 71, 65, 0.2)', height: "100%", width: "100%", padding: "10px" }} //
             >
              {/* <p>Сумма: {item.totalAmount}</p>
               <p>Кол-во: {item.totalElements}</p>*/}
