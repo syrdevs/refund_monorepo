@@ -93,7 +93,7 @@ class App extends React.Component {
   render() {
     const location = this.props.location.pathname;
 
-    return (<Provider store={store}>
+    return (//<Provider store={store}>
         <RootContainer>
           {/*<LeftMenu leftMenuItems={leftMenuCollection} location={location}*/}
           {/*goToLink={this.props.history.push}/>*/}
@@ -105,7 +105,7 @@ class App extends React.Component {
             </Suspense>
           </Content>
         </RootContainer>
-      </Provider>
+      //</Provider>
     );
   }
 }

@@ -698,6 +698,9 @@ class GridFilter extends Component {
             onChange={(value) => {
               this.fieldOnChange(filterItem, value);
             }}
+            filterOption={(input, option) => {
+              return option.props.children.join("").toLowerCase().indexOf(input.toLowerCase()) >= 0;
+            }}
           >
             {refData.map((item) => {
               return <Select.Option key={item.id}>{item.code} - {item.nameRu}</Select.Option>;
