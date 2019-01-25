@@ -514,7 +514,7 @@ class Documents extends Component {
 
 
     return (<ContentLayout
-        contentName={"Корреспонденции"}
+        contentName={"Корреспонденция"}
         breadcrumbRoutes={[]}>
         <Card style={{ borderRadius: "5px", marginBottom: "10px" }} bodyStyle={{ padding: 0 }} bordered={true}>
           <Row>
