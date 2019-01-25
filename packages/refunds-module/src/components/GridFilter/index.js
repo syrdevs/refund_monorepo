@@ -357,6 +357,7 @@ class GridFilter extends Component {
   renderFilter = (filterItem, _index) => {
 
     const { dateFormat, references } = this.props;
+
     const { fields, formFilters, isClearFilter } = this.state;
     const mBottom = { marginBottom: "5px" };
 
@@ -682,6 +683,11 @@ class GridFilter extends Component {
           params.value = [];
         }
 
+        let refData = [];
+
+        if (references[filterItem.name] !== undefined && Array.isArray(references[filterItem.name])) {
+          refData = references[filterItem.name];
+        }
 
         return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Select
@@ -693,7 +699,7 @@ class GridFilter extends Component {
               this.fieldOnChange(filterItem, value);
             }}
           >
-            {references[filterItem.name] && references[filterItem.name].map((item) => {
+            {refData.map((item) => {
               return <Select.Option key={item.id}>{item.code} - {item.nameRu}</Select.Option>;
             })}
           </Select>
@@ -707,6 +713,11 @@ class GridFilter extends Component {
           params.value = [];
         }
 
+        let refData = [];
+
+        if (references[filterItem.name] !== undefined && Array.isArray(references[filterItem.name])) {
+          refData = references[filterItem.name];
+        }
 
         return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Select
@@ -726,7 +737,7 @@ class GridFilter extends Component {
             }}
           >
             <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
-            {references[filterItem.name] && references[filterItem.name].map((item) => {
+            {refData.map((item) => {
               return <Select.Option
                 key={item.id}>{filterItem.displayField ? item[filterItem.displayField] : item.nameRu}</Select.Option>;
             })}
