@@ -31,3 +31,39 @@
 .customCalendar .ant-fullcalendar-next-month-btn-day {
     display: none;
 }
+
+
+.historyCalendar .ant-fullcalendar-content .event_day {
+    background: #8fc5f1;
+    color: white;
+    display: block;
+}
+.historyCalendar .events {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.historyCalendar .events .ant-badge-status {
+    overflow: hidden;
+    white-space: normal;
+    width: 100%;
+    text-overflow: ellipsis;
+    font-size: 12px;
+}
+.historyCalendar .notes-month {
+    text-align: center;
+    font-size: 28px;
+}
+.historyCalendar .notes-month section {
+    font-size: 28px;
+}
+.historyCalendar .ant-fullcalendar-header {
+    display: none !important;
+}
+.historyCalendar .ant-select {
+    display: none !important;
+}
+.historyCalendar .ant-fullcalendar-next-month-btn-day {
+    display: none;
+}
+

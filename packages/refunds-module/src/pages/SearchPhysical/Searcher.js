@@ -21,6 +21,7 @@ import {
 } from "antd";
 import connect from "../../Redux";
 import style from "./Searcher.less";
+import historystyle from "./HistoryCalendar.css";
 import Employees from "../PaymentsPage/Employees";
 import Appeals from "../PaymentsPage/Appeals";
 import GridFilter from "../../components/GridFilter";
@@ -53,8 +54,9 @@ class Searcher extends Component {
         entity: "person",
         filter: {},
         alias:"search",
-        sort: []
+        sort: [],
       },
+      MonthHistory: [],
       visibleModal:false,
       visible: false,
       visibleFilter: false,
@@ -162,19 +164,6 @@ class Searcher extends Component {
 
 
   monthCellRender = (value) => {
-    /*let isPayed  = false;
-    this.state.payes.map((item) => {
-      if(item.period===value.format('MMYYYY')) {
-        isPayed=true
-      }
-    });
-    if(isPayed){
-      return (<div style={{backgroundColor: '#52c41a', opacity: '0.1',  height: '100%', width: '100%'}}></div>)
-    }
-    else {
-      return (<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>)
-    }
-*/
     let result = (<div style={{ backgroundColor: "red", opacity: "0.1", height: "100%", width: "100%" }}></div>);
     if (this.state.payes !== undefined && this.state.payes.length > 0) {
       this.state.payes.forEach((item) => {
@@ -197,32 +186,16 @@ class Searcher extends Component {
   };
 
   monthCellRender2 = (value) => {
-    /*let isPayed  = false;
-    this.state.payes.map((item) => {
-      if(item.period===value.format('MMYYYY')) {
-        isPayed=true
-      }
-    });
-    if(isPayed){
-      return (<div style={{backgroundColor: '#52c41a', opacity: '0.1',  height: '100%', width: '100%'}}></div>)
-    }
-    else {
-      return (<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>)
-    }
-*/
     let result = (<div style={{ backgroundColor: "green", opacity: "0.1", height: "100%", width: "100%" }}></div>);
-    if (this.state.payes !== undefined && this.state.payes.length > 0) {
-      this.state.payes.forEach((item) => {
-        if (item.period === value.format("MMYYYY")) {
+    if (this.state.MonthHistory !== undefined && this.state.MonthHistory.length > 0) {
+      this.state.MonthHistory.forEach((item) => {
+        if (item.payPeriod === value.format("MMYYYY")) {
           result = (
             <div
               style={{ backgroundColor: "red", height: "100%", width: "100%", padding: "10px" }}
-              onClick={() => {
-                this.ShowDetailofMonth(item.detailList, value);
-              }}
             >
-              <p>Сумма: {item.totalAmount}</p>
-              <p>Кол-во: {item.totalElements}</p>
+             {/* <p>Сумма: {item.totalAmount}</p>
+              <p>Кол-во: {item.totalElements}</p>*/}
             </div>
           );
         }
@@ -510,7 +483,33 @@ if(filterItem==="iin"){
         loading: false
       });
     });
+    this.history();
   };
+  history= () => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal2/getPayerList",
+      payload: {
+        "entity": "iinPayments",
+        "filter": {
+          "iin": this.state.iin,
+        },
+        "group": [
+          {
+            "field": "payPeriod"
+          },
+          {
+            "field": "isDebt"
+          }
+        ]
+      }
+    }).then((response) => {
+      console.log(response)
+      this.setState({
+        MonthHistory: response,
+      });
+    });
+  }
 
   handleCancel = (e) => {
     this.setState({
@@ -867,7 +866,7 @@ if(filterItem==="iin"){
                       <Calendar
                         onPanelChange={this.onPanelChange}
                         mode='year'
-                        className={style.customCalendar}
+                        className={historystyle.customCalendar}
                         monthCellRender={this.monthCellRender}
                         fullscreen
                       />
@@ -902,11 +901,10 @@ if(filterItem==="iin"){
                       title={formatMessage({ id: "История о задолженности" })}
                       type="inner"
                     >
-
                       <Calendar
                         onPanelChange={this.onPanelChange}
                         mode='year'
-                        className={style.customCalendar}
+                        className={historystyle}
                         monthCellRender={this.monthCellRender2}
                         fullscreen
                         defaultValue={moment("2018-02-27T10:00:00")}
@@ -915,7 +913,7 @@ if(filterItem==="iin"){
                       <Calendar
                         onPanelChange={this.onPanelChange}
                         mode='year'
-                        className={style.customCalendar}
+                        className={historystyle}
                         monthCellRender={this.monthCellRender2}
                         fullscreen
                         defaultValue={moment("2019-02-27T10:00:00")}

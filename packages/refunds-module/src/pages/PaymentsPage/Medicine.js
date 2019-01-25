@@ -122,7 +122,7 @@ class Medicine extends Component {
         {
           label:"Регион СЗ",
           name: "dappRefundStatus",
-          type: "multibox"
+          type: "text"
         },
         {
           name:"refundId.mt102Id",
@@ -142,7 +142,7 @@ class Medicine extends Component {
         {
           label:"Факт оплаты",
           name: "dappRefundStatus",
-          type: "multibox"
+          type: "text"
         },
         {
           name: "refundId.gcvpOrderDate",
@@ -157,7 +157,7 @@ class Medicine extends Component {
         {
           label:"Диагноз",
           name: "dappRefundStatus",
-          type: "multibox"
+          type: "text"
         },
         {
           name:"refundId.mt102Id",
