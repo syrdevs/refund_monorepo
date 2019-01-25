@@ -257,7 +257,7 @@ class MainView extends Component {
           "title": "Дата платежного поручения",
           "dataIndex": "applicationId.payOrderDate"
         },
-        { "title": "Сумма отчислений", "dataIndex": "payAmount" },
+        { "title": "Сумма отчислений/взносов", "dataIndex": "payAmount" },
         /*{
           "title": "Дата последнего взноса",
           "dataIndex": "lastPayDate"
