@@ -1,35 +1,48 @@
-import React, { Component } from "react";
+import React, { Component, lazy } from "react";
 import { Card, Row, Tabs, Steps, Menu, Icon, Col, Layout, Progress, Button, Dropdown, Spin, Badge, Modal } from "antd";
 import formatMessage from "../../utils/formatMessage";
 import { Animated } from "react-animated-css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTimes } from "@fortawesome/free-solid-svg-icons";
-import GridFilter from "../../components/GridFilter";
-import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
-import saveAs from "file-saver";
-import moment from "moment";
-//import router from "umi/router";
-//import styles from "../../components/SmartGridView/index.less";
 import SignModal from "../../components/SignModal";
-import ShowAct from "../Acts/ShowAct";
-import DogovorModal from "../CounterAgent/Modals/DogovorModal";
+// import ShowAct from "../Acts/ShowAct";
 import RejectModal from "./RejectModal";
-import CounterAgentView from "../CounterAgent/CounterAgentView";
 import { faEnvelope } from "@fortawesome/free-solid-svg-icons/faEnvelope";
 import { faCheck } from "@fortawesome/free-solid-svg-icons/faCheck";
-import ShowPayment from "../ContractRequests/ShowPayment";
+//
+import { CounterAgentView, ShowPayment, ShowAct } from "@vitacore/contract-module";
+import { ShowPull } from "@vitacore/refunds-module";
+// import CounterAgentView from "../CounterAgent/CounterAgentView";
+// import ShowPayment from "../ContractRequests/ShowPayment";
 import ContentLayout from "../../layouts/ContentLayout";
 import request from "../../utils/request";
+
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
 
+//const CounterAgentView = (<div>CounterAgent</div>);
+
+let modules = [{
+  module: null,
+  loaded: false
+}, {
+  module: null,
+  loaded: false
+}, {
+  module: null,
+  loaded: false
+}];
 
 class ViewDocument extends Component {
   constructor(props) {
     super(props);
     this.state = {
+
+      pages: null,
+
+      loadedIncludes: false,
+
       buttonShow: true,
       ShowSign: false,
       rejectModal: {
@@ -146,7 +159,7 @@ class ViewDocument extends Component {
     request("/api/contract/getDocumentRoutePath", {
       method: "POST",
       body: {
-        "entity": this.props.location.query.type ,
+        "entity": this.props.location.query.type,
         "id": this.props.location.query.id
       }
     }).then(data => {
@@ -192,22 +205,18 @@ class ViewDocument extends Component {
 
 
   render() {
+
     // console.log(this.props.location.state ? this.props.location.state.data : null);
     const smart_grid_controls_right = {
       display: "inline-block",
       float: "right"
     };
-    console.log(this.props.location.query);
-
 
     const CardHeight = { height: "auto", marginBottom: "10px" };
     return (<ContentLayout
       contentName={formatMessage({ id: "app.module.documents.title.view" })}
       breadcrumbRoutes={[{
-        path: "/",
-        breadcrumbName: "Главная"
-      }, {
-        path: "/contracts/v2/documents",
+        path: "/documents/main",
         breadcrumbName: "Корреспонденция"
       }, {
         path: "/",
@@ -304,6 +313,7 @@ class ViewDocument extends Component {
         <Row>
           <Tabs defaultActiveKey="1" onChange={this.callback}>
             <TabPane tab="Документ" key="1">
+              {this.state.pages}
               <div style={CardHeight}>
                 {/*<Card*/}
                 {/*style={{margin:'10px'}}*/}
@@ -352,7 +362,7 @@ class ViewDocument extends Component {
                   {this.props.location.query.type === "contract" &&
                   <CounterAgentView contractId={this.props.location.query.id}/>}
                   {this.props.location.query.type === "payment" && <ShowPayment id={this.props.location.query.id}/>}
-
+                  {this.props.location.query.type === "refundPack" && <ShowPull id={this.props.location.query.id}/>}
                 </Card>
                 {/*</Card>*/}
               </div>

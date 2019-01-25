@@ -20,14 +20,14 @@ import {
   LocaleProvider,
   Divider
 } from "antd";
-import styles from "./index.css";
-import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
-import {faSyncAlt} from '@fortawesome/free-solid-svg-icons';
-import {faCreditCard, faColumns} from '@fortawesome/free-solid-svg-icons/index';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCreditCard, faColumns } from "@fortawesome/free-solid-svg-icons/index";
 // import {Resizable} from 'react-resizable';
 //import {formatMessage, FormattedMessage, getLocale} from 'umi/locale';
 import componentLocal from "../../locales/components/componentLocal";
 import formatMessage from "../../utils/formatMessage";
+import "./index.css";
 
 import ru_RU from "antd/lib/locale-provider/ru_RU";
 
@@ -365,6 +365,17 @@ class SmartGridView extends Component {
       }}
     * */
 
+
+    let paginationProp = {};
+
+
+    // if (this.props.dataSource.page === 1) {
+    //   paginationProp.defaultCurrent = 1;
+    // } else {
+    //
+    // }
+    paginationProp.current = this.props.dataSource.page;
+
     return (<div>
       <SmartGridHeader {...this.props}
                        searchButton={this.props.searchButton}
@@ -393,12 +404,14 @@ class SmartGridView extends Component {
           onChange={(page, pageSize) => {
             this.props.onShowSizeChange(page - 1, pageSize);
           }}
-          defaultCurrent={this.props.dataSource.page}
+
           total={this.props.dataSource.total}
+          {...paginationProp}
         />
       </LocaleProvider>}
     </div>);
   }
 
 }
+
 export default SmartGridView;

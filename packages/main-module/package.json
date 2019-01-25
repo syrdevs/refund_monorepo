@@ -6,6 +6,7 @@
     "@vitacore/shared-ui": "^1.0.0",
     "@vitacore/contracts-module": "^1.0.0",
     "@vitacore/refunds-module": "^1.0.0",
+    "@vitacore/documents-module": "^1.0.0",
     "axios": "^0.18.0",
     "connected-react-router": "^5.0.1",
     "history": "^4.7.2",

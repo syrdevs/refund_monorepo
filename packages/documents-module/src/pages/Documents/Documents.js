@@ -425,7 +425,7 @@ class Documents extends Component {
         if (response.data && response.data.type)
           saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
       }
-    })
+    });
 
     // fetch("/api/refund/exportToExcel",
     //   {
@@ -514,14 +514,8 @@ class Documents extends Component {
 
 
     return (<ContentLayout
-        contentName={"Корреспонденция"}
-        breadcrumbRoutes={[{
-          path: "/",
-          breadcrumbName: "Главная"
-        }, {
-          path: "/contracts/v2/counteragent/main",
-          breadcrumbName: "Корреспонденция"
-        }]}>
+        contentName={"Корреспонденции"}
+        breadcrumbRoutes={[]}>
         <Card style={{ borderRadius: "5px", marginBottom: "10px" }} bodyStyle={{ padding: 0 }} bordered={true}>
           <Row>
             <Col sm={24}>
@@ -574,77 +568,76 @@ class Documents extends Component {
                       <Row>
 
                         <Col sm={24} md={this.state.tablecont}>
-                          <Spin tip={formatMessage({ id: "system.loading" })} spinning={this.props.loadingData}>
-                            <div className={documentStyle.documentTable}><SmartGridView
-                              name='DocumentPage'
-                              // searchButton={false}
-                              hideFilterBtn={true}
-                              fixedBody={true}
-                              rowKey={"id"}
-                              loading={this.props.loadingData}
-                              fixedHeader={true}
-                              rowSelection={true}
-                              actionColumns={this.state.fcolumn}
-                              columns={columns}
-                              sorted={true}
-                              sortedInfo={this.state.sortedInfo}
-                              showTotal={true}
-                              showExportBtn={true}
+                          {/*<Spin tip={formatMessage({ id: "system.loading" })} spinning={this.props.loadingData}>*/}
+                          <div className={documentStyle.documentTable}><SmartGridView
+                            name='DocumentPage'
+                            // searchButton={false}
+                            hideFilterBtn={true}
+                            fixedBody={true}
+                            rowKey={"id"}
+                            loading={this.props.loadingData}
+                            fixedHeader={true}
+                            rowSelection={true}
+                            actionColumns={this.state.fcolumn}
+                            columns={columns}
+                            sorted={true}
+                            sortedInfo={this.state.sortedInfo}
+                            showTotal={true}
+                            showExportBtn={true}
 
-                              dataSource={{
-                                total: correspondence ? correspondence.totalElements : 0,
-                                pageSize: this.state.pagingConfig.length,
-                                page: this.state.pagingConfig.start + 1,
-                                data: correspondence ? correspondence.content : null
-                              }}
-                              actionExport={() => this.exportToExcel()}
-                              onShowSizeChange={(pageNumber, pageSize) => {
-                                this.onShowSizeChange(pageNumber, pageSize);
-                              }}
+                            dataSource={{
+                              total: correspondence ? correspondence.totalElements : 0,
+                              pageSize: this.state.pagingConfig.length,
+                              page: this.state.pagingConfig.start + 1,
+                              data: correspondence ? correspondence.content : null
+                            }}
+                            actionExport={() => this.exportToExcel()}
+                            onShowSizeChange={(pageNumber, pageSize) => {
+                              this.onShowSizeChange(pageNumber, pageSize);
+                            }}
 
-                              onSort={(column) => {
+                            onSort={(column) => {
 
-                                if (Object.keys(column).length === 0) {
-                                  this.setState(prevState => ({
-                                    sortedInfo: {},
-                                    parameters: {
-                                      ...prevState.parameters,
-                                      sort: []
-                                    }
-                                  }), () => {
-                                    this.loadMainGridData();
-                                  });
-                                  return;
-                                }
-
+                              if (Object.keys(column).length === 0) {
                                 this.setState(prevState => ({
-                                  sortedInfo: column,
+                                  sortedInfo: {},
                                   parameters: {
                                     ...prevState.parameters,
-                                    sort: [{ field: column.field, "desc": column.order === "descend" }]
+                                    sort: []
                                   }
                                 }), () => {
-                                  this.loadDocument();
+                                  this.loadMainGridData();
                                 });
+                                return;
+                              }
 
-                              }}
-                              onSelectCell={(cellIndex, cell) => {
+                              this.setState(prevState => ({
+                                sortedInfo: column,
+                                parameters: {
+                                  ...prevState.parameters,
+                                  sort: [{ field: column.field, "desc": column.order === "descend" }]
+                                }
+                              }), () => {
+                                this.loadDocument();
+                              });
 
-                              }}
-                              onSelectRow={(record) => {
-                                this.props.history.push("/contracts/v2/documents/view?id=" + record.id + "&type=" + record.documentType.entName);
+                            }}
+                            onSelectCell={(cellIndex, cell) => {
 
-                              }}
-                              onFilter={(filters) => {
+                            }}
+                            onSelectRow={(record) => {
+                              this.props.history.push("/documents/view?id=" + record.id + "&type=" + record.documentType.entName);
+                            }}
+                            onFilter={(filters) => {
 
-                              }}
-                              onRefresh={() => {
-                                this.refreshTable();
-                              }}
+                            }}
+                            onRefresh={() => {
+                              this.refreshTable();
+                            }}
 
-                            /></div>
+                          /></div>
 
-                          </Spin>
+                          {/*</Spin>*/}
                         </Col>
                       </Row>
 

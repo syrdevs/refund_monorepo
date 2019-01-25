@@ -118,18 +118,18 @@ export default [
           }
         ]
       },
-      {
-        path: "/contracts/v2/documents",
-        exact: true,
-        icon: "database",
-        name: "documents",
-        component: "./Documents/Documents",
-        authority: ["ADMIN", "FSMS2"]
-      },
-      {
-        path: "/contracts/v2/documents/view",
-        component: "./Documents/ViewDocument"
-      },
+      // {
+      //   path: "/contracts/v2/documents",
+      //   exact: true,
+      //   icon: "database",
+      //   name: "documents",
+      //   component: "./Documents/Documents",
+      //   authority: ["ADMIN", "FSMS2"]
+      // },
+      // {
+      //   path: "/contracts/v2/documents/view",
+      //   component: "./Documents/ViewDocument"
+      // },
       {
         path: "/contracts/v2/bills",
         name: "bills",

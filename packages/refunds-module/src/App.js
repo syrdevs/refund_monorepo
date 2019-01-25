@@ -124,7 +124,7 @@ class App extends React.Component {
       }
     });
 
-    return (<Provider store={store}>
+    return (//<Provider store={store}>
       <RootContainer>
         <LeftMenu leftMenuItems={leftMenuCollection} location={location}
                   goToLink={this.props.history.push}/>
@@ -140,7 +140,8 @@ class App extends React.Component {
           </ContentLayout>
         </Content>
       </RootContainer>
-    </Provider>);
+    //</Provider>
+    );
   }
 }
 

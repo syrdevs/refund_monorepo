@@ -1,4 +1,4 @@
-import React, { Component, Provider } from "react";
+import React, { Component } from "react";
 import {
   Card,
   Button,
@@ -84,7 +84,6 @@ class CounterAgentView extends Component {
   };
 
   componentDidMount() {
-
     this.getContractData();
   };
 
@@ -128,33 +127,33 @@ class CounterAgentView extends Component {
         bordered={false}
         bodyStyle={{ padding: 0 }}>
         <Row style={{ marginTop: "5px" }}>
-            <Form layout="horizontal" hideRequiredMark>
-              <Tabs
-                tabBarStyle={{ textAlign: "left" }}
-                type={"card"}
-                className={"stepFormText"}
-                defaultActiveKey="main"
-                tabPosition={"left"}>
-                <TabPane tab="Титульная часть" key="main">
-                  <InfoPage
-                    formData={this.props.universal.getObjectData}
-                    formItemLayout={formItemLayout}/>
-                </TabPane>
-                <TabPane tab="Спецификация" key="specification">
-                  <SpecPage
-                    formData={this.props.universal.getObjectData}
-                  />
-                </TabPane>
-                <TabPane tab="Контрагенты" key="counteragents">
-                  <ContragentsPage
-                    gridData={this.props.universal.getObjectData}
-                  />
-                </TabPane>
-                <TabPane tab="Приложения" key="attachments">
-                  <AttachmentPage formData={this.props.universal.getObjectData}/>
-                </TabPane>
-              </Tabs>
-            </Form>
+          <Form layout="horizontal" hideRequiredMark>
+            <Tabs
+              tabBarStyle={{ textAlign: "left" }}
+              type={"card"}
+              className={"stepFormText"}
+              defaultActiveKey="main"
+              tabPosition={"left"}>
+              <TabPane tab="Титульная часть" key="main">
+                <InfoPage
+                  formData={this.props.universal.getObjectData}
+                  formItemLayout={formItemLayout}/>
+              </TabPane>
+              <TabPane tab="Спецификация" key="specification">
+                <SpecPage
+                  formData={this.props.universal.getObjectData}
+                />
+              </TabPane>
+              <TabPane tab="Контрагенты" key="counteragents">
+                <ContragentsPage
+                  gridData={this.props.universal.getObjectData}
+                />
+              </TabPane>
+              <TabPane tab="Приложения" key="attachments">
+                <AttachmentPage formData={this.props.universal.getObjectData}/>
+              </TabPane>
+            </Tabs>
+          </Form>
         </Row>
       </Card>
     </ContentLayout>);

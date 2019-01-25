@@ -1,6 +1,6 @@
 {
   "name": "@vitacore/refunds-module",
-  "main": "build/dist/App.js",
+  "main": "build/dist/index.js",
   "version": "1.0.0",
   "private": true,
   "dependencies": {

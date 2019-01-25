@@ -39,8 +39,8 @@ class ReportsGrid extends Component {
 
     _configTimer: {
 
-      second: 1000,
-      count: 5
+      second: 2000,
+      count: 100
     },
 
     tasks: [],
@@ -48,6 +48,12 @@ class ReportsGrid extends Component {
     dataSource: [],
 
     pagingConfig: {
+      "sort": [
+        {
+          "field": "entryDate",
+          "desc": true
+        }
+      ],
       "start": 0,
       "length": 15,
       "filter": {},
