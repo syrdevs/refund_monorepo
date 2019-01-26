@@ -74,6 +74,12 @@ class MainContainer extends React.Component {
               <p>Возвраты</p>
             </AppTile>
           </Col>
+          <Col span={4}>
+            <AppTile to="/documents">
+              <img src={fakeLogo} alt="Корреспонденция" />
+              <p>Корреспонденция</p>
+            </AppTile>
+          </Col>
         </Row>
       </AppTilesContainers>
     )

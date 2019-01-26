@@ -324,12 +324,12 @@ class ShowPull extends Component {
               <SmartGridView
                 name={"PullPage"}
                 scroll={{ x: this.state.xsize }}
-                selectedRowCheckBox={true}
+                //selectedRowCheckBox={true}
                 searchButton={this.state.searchButton}
-                selectedRowKeys={this.state.selectedRowKeys}
+                //selectedRowKeys={this.state.selectedRowKeys}
                 rowKey={"id"}
                 loading={this.props.loadingData}
-                rowSelection={true}
+                //rowSelection={true}
                 actionColumns={this.state.fcolumn}
                 columns={this.state.columns}
                 hideFilterBtn

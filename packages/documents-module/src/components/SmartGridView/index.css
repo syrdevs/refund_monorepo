@@ -1,0 +1,22 @@
+.headerButton .ant-btn {
+    margin: 5px 2px 8px;
+}
+
+.headerButton .total_label {
+    float: right;
+    color: #002140;
+    padding: 10px 5px;
+    font-size: 12px;
+    margin: 0 3px 0 0;
+}
+
+.headerButton .smart_grid_controls_right {
+    display: inline-block;
+    float: right;
+}
+
+.smart_grid_view_container {
+    font-size: 12px;
+}
+
+

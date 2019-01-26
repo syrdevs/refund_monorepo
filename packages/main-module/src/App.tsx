@@ -13,6 +13,7 @@ import { addUserLanguageChangeCb, getUserInfo, getUserLanguage, requestFinished,
 const ContractModule = lazy(() => import('@vitacore/contract-module'))
 const ContractsModule = lazy(() => import('@vitacore/contracts-module'))
 const RefundsModule = lazy(() => import('@vitacore/refunds-module'))
+const DocumentsModule = lazy(() => import('@vitacore/documents-module'))
 
 const RouteContentContainer = styled.div`
   display: flex;
@@ -84,6 +85,26 @@ class MainApp extends React.Component<Props> {
                       <RefundsModule
                         moduleName="/refunds"
                         defaultRoute="/refunds/main"
+                        simpleAuthCheck={isUserAuthenticatedSimple}
+                        promiseAuthCheck={isUserAuthenticated}
+                        getAuthToken={getAuthToken}
+                        requestStarted={requestStarted}
+                        requestFinished={requestFinished}
+                        getUserLanguage={getUserLanguage}
+                        subscribeToUserLanguageChange={addUserLanguageChangeCb}
+                        getUserInfo={getUserInfo}
+                        {...props}
+                      />
+                    )}
+                  />
+                  <PrivateRoute
+                    simpleAuthCheck={isUserAuthenticatedSimple}
+                    promiseAuthCheck={isUserAuthenticated}
+                    path="/documents"
+                    render={props => (
+                      <DocumentsModule
+                        moduleName="/documents"
+                        defaultRoute="/documents/main"
                         simpleAuthCheck={isUserAuthenticatedSimple}
                         promiseAuthCheck={isUserAuthenticated}
                         getAuthToken={getAuthToken}

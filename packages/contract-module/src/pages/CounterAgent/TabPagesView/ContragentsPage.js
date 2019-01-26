@@ -70,6 +70,8 @@ class ContragentsPage extends Component {
 
   componentDidMount = () => {
 
+    console.log("ContragentsPage");
+
     let getObjectData = this.props.gridData;
 
     if (getObjectData) {
