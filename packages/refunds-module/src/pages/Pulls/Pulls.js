@@ -38,11 +38,12 @@ import { Animated } from "react-animated-css";
 import PullFilter from "../Pulls/PullFilter";
 import ExecuteModal from "../Pulls/ExecuteModal";
 import ApproveModal from "../Pulls/ApproveModal";
-import SignModal from "../Pulls/SignModal";
+import SignModal from "../../components/SignModal";
 import saveAs from "file-saver";
 import request from "../../utils/request";
 import { setAcceptToRefund } from "../../services/api";
 import { faUpload } from '@fortawesome/free-solid-svg-icons/index';
+import Guid from "../../utils/Guid";
 
 const { TextArea } = Input;
 const FormItem = Form.Item;
@@ -98,7 +99,7 @@ class Pulls extends Component {
         {
           title: "Статус рассмотрения",
           order: 1,
-          key: "accept",
+          key: "viewstatus",
           isVisible: true,
           width: 150,
           render: (item) => {
@@ -147,8 +148,6 @@ class Pulls extends Component {
             return {
               onClick: () => {
                // this.uploadFile(record.refund.id);
-                //console.log("upload file");
-                //console.log(record.refund.id);
               }
             };
           },
@@ -302,7 +301,9 @@ class Pulls extends Component {
           "refundPack.id": null
         }
       },
-      ispublish: true
+      ispublish: true,
+      ShowSign: false,
+      buttonShow: false
     };
   }
 
@@ -316,10 +317,21 @@ class Pulls extends Component {
     });
   }
 
-  downloadFile=(record, item)=>{
-    console.log(record)
-    console.log(item)
-  }
+  downloadFile = async (record, item) => {
+    request("/api/uicommand/downloadFile", {
+      method: "POST",
+      responseType: "blob",
+      body: {
+        "entity":"refundFile",
+        "id":item.id
+      },
+      getResponse: (response) => {
+        if (response.data && response.data.type)
+          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+      }
+    });
+  };
+
   deleteFile=(record, item)=>{
     Modal.confirm({
       title: 'Вы действительно хотите удалить этот файл?',
@@ -516,6 +528,7 @@ class Pulls extends Component {
       },
     });
   }
+
   rejecting = () => {
 
     let rejectText = "";
@@ -546,7 +559,6 @@ class Pulls extends Component {
         }
       }}/>,
       onOk: () => {
-        console.log(rejectText);
         this.setAcceptToRefund(false, rejectText);
       },
       onCancel: () => {
@@ -578,7 +590,6 @@ class Pulls extends Component {
   };
 
   checkStatuss = () =>{
-      //console.log(this.props.universal2.references[this.state.pagingConfig.entity]);
       return false;
   }
 
@@ -635,6 +646,43 @@ class Pulls extends Component {
 
     return (
       <div>
+        {this.state.ShowSign &&
+        <SignModal
+          onCancel={() => {
+            this.setState({
+              ShowSign: false
+            });
+          }}
+          type={"refundPack"}
+          id={this.state.pagingConfig.filter["refundPack.id"]}
+          visible={this.state.ShowSign}
+          getKey={(e) => {
+            request("/api/contract/uploadSignedDocument", {
+              method: "POST",
+              body: {
+                "entity": "refundPack",
+                "alias": null,
+                "id": this.state.pagingConfig.filter["refundPack.id"],
+                "xml": e[0].xml
+              }
+            })
+              .then(data => {
+              this.setState({
+                ShowSign: false
+              }, () => {
+                // router.push('/documents');
+                Modal.info({
+                  content: "Документ подписан"
+                });
+              });
+            })
+              .catch(function(e) {
+                Modal.error({
+                  content: "Ошибка подписи документа"
+                });
+              });
+          }}
+        />}
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
             <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "5px" }}>
@@ -669,8 +717,6 @@ class Pulls extends Component {
               >
                 Отклонить ( {this.state.selectedRowKeys.length} )
               </Button>
-              {/*<ApproveModal disabled={true}/>
-              <SignModal disabled={true}/>*/}
               <Button
                 disabled={this.state.ispublish}
                 onClick={() => {
@@ -691,6 +737,20 @@ class Pulls extends Component {
               >
                 Исключить из пула ( {this.state.selectedRowKeys.length} )
               </Button>
+              <Button
+                disabled={this.state.pagingConfig.filter["refundPack.id"] === null}
+                onClick={() => {
+                  this.setState({
+                    ShowSign: true
+                  })
+                }}
+                style={{ marginLeft: "5px" }}
+                key={"sign"}
+              >
+                Подписать
+              </Button>
+              {/*<ApproveModal disabled={true}/>
+              <SignModal disabled={true}/>*/}
             </Card>
           </Row>
           <Row>

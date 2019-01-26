@@ -385,24 +385,18 @@ class MainView extends Component {
   }
 
   downloadFile = async (record, item) => {
-      console.log(record)
-      console.log(item)
-    /*
     request("/api/uicommand/downloadFile", {
       method: "POST",
       responseType: "blob",
       body: {
-        "searched": true,
-        "data": {
-          ...this.state.filter.filter
-        }
+        "entity":"refundFile",
+        "id":item.id
       },
       getResponse: (response) => {
         if (response.data && response.data.type)
           saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
       }
     });
-    */
   };
   deleteFile = (record, item) => {
     Modal.confirm({
