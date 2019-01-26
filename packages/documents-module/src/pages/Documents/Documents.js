@@ -255,6 +255,20 @@ class Documents extends Component {
 
   };
 
+  getDocumentOutList = (filterParams) => {
+
+    this.setState(prevState => ({
+      parameters: {
+        ...prevState.parameters,
+        filter: {
+          "documentOut": true,
+          ...filterParams
+        }
+      }
+    }), this.loadDocument);
+
+  };
+
   // componentWillUnmount() {
   //   const {dispatch} = this.props;
   //   dispatch({
@@ -545,6 +559,19 @@ class Documents extends Component {
                       }}><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Рассмотренные</span></Menu.Item>
                       <Menu.Item key="2" onClick={() => {
                         this.getDocumentList({ "documentNeedToSign": true });
+                      }}><span><Icon><FontAwesomeIcon
+                        icon={faClock}/></Icon>На рассмотрении</span></Menu.Item>
+                    </SubMenu>
+                    <SubMenu key="sub2" title={<span><Icon><FontAwesomeIcon
+                      icon={faEnvelope}/></Icon><span>Исходящие</span></span>}>
+                      <Menu.Item key="4" onClick={() => {
+                        this.getDocumentOutList();
+                      }}><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
+                      <Menu.Item key="5" onClick={() => {
+                        this.getDocumentOutList({ "documentSigned": true });
+                      }}><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Рассмотренные</span></Menu.Item>
+                      <Menu.Item key="6" onClick={() => {
+                        this.getDocumentOutList({ "documentNeedToSign": true });
                       }}><span><Icon><FontAwesomeIcon
                         icon={faClock}/></Icon>На рассмотрении</span></Menu.Item>
                     </SubMenu>
