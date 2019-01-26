@@ -79,7 +79,7 @@ class Documents extends Component {
       result: 0
     },
     collapsed: false,
-    openKeys: ["sub1"],
+    openKeys: ["sub1","sub2"],
     selectedRow: {},
     fcolumn:
       [
@@ -148,11 +148,11 @@ class Documents extends Component {
     ShowModal: false,
     parameters: {
       "start": 0,
-      "length": 20,
+      "length": 15,
       "entity": "correspondence",
       "alias": "routes",
       "filter": {
-        // "documentIn": true
+         "documentIn": true
       }
     },
     // searchButton: false,
@@ -160,7 +160,7 @@ class Documents extends Component {
     sortedInfo: {},
     pagingConfig: {
       "start": 0,
-      "length": 10,
+      "length": 15,
       "src": {
         "searched": false,
         "data": {}
@@ -338,7 +338,7 @@ class Documents extends Component {
     dispatch({
       type: "universal/paymentsData",
       payload: {
-        ...this.state.pagingConfig,
+        ...this.state.parameters,
         // table: 'getApplicationPage',
         start: current,
         length: pageSize
@@ -372,117 +372,36 @@ class Documents extends Component {
 
   exportToExcel = () => {
 
-    let authToken = localStorage.getItem("token");
-    let columns = [
-      {
-        "title": "Номер заявки",
-        "width": 100,
-        "isVisible": true,
-        "dataIndex": "appNumber"
-      },
-      {
-        "sorter": true,
-        "title": "Дата заявки",
-        "isVisible": true,
-        "dataIndex": "appDate"
-      },
-      {
-        "title": "Дата поступления заявления в Фонд",
-        "isVisible": true,
-        "dataIndex": "receiptAppdateToFsms"
-      },
-      {
-        "title": "Дата исполнения заявки",
-        "isVisible": true,
-        "dataIndex": "appEndDate"
-      },
-      {
-        "title": "Номер платежного поручения",
-        "isVisible": true,
-        "dataIndex": "payOrderNum"
-      },
-      {
-        "title": "Дата платежного поручения",
-        "isVisible": true,
-        "dataIndex": "payOrderDate"
-      },
-      {
-        "title": "Референс",
-        "isVisible": true,
-        "dataIndex": "reference"
-      },
-      {
-        "title": "КНП",
-        "isVisible": true,
-        "dataIndex": "dknpId.code"
-      },
-      {
-        "title": "Возвратов",
-        "isVisible": true,
-        "dataIndex": "refundCount"
-      }
-    ];
+    let authToken = localStorage.getItem("AUTH_TOKEN");
+    let columns = JSON.parse(localStorage.getItem("AppealPageColumns"));
 
-
-    request("/api/contract/rejectDocument", {
+    request("/api/refund/exportToExcel", {
       method: "POST",
+      responseType: "blob",
       body: {
-        "entityClass": "application",
-        "fileName": formatMessage({ id: "menu.refunds.requests" }),
-        "src": {
-          "searched": true,
-          "data": this.state.pagingConfig.src.data
-        },
-        "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
+        "entityClass": "correspondence",
+        "fileName": "Корреспонденция",
+        "filter": this.state.parameters.filter,
+        "columns": [
+        ].concat(columns.filter(column => column.isVisible))
       },
       getResponse: (response) => {
-        if (response.data && response.data.type)
-          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        }
       }
     });
 
-    // fetch("/api/refund/exportToExcel",
-    //   {
-    //     headers: {
-    //       "Content-Type": "application/json; charset=utf-8",
-    //       Authorization: "Bearer " + authToken
-    //     },
-    //     method: "post",
-    //     body: JSON.stringify({
-    //       "entityClass": "application",
-    //       "fileName": formatMessage({ id: "menu.refunds.requests" }),
-    //       "src": {
-    //         "searched": true,
-    //         "data": this.state.pagingConfig.src.data
-    //       },
-    //       "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
-    //     })
-    //   })
-    //   .then(response => {
-    //     if (response.ok) {
-    //       return response.blob().then(blob => {
-    //         let disposition = response.headers.get("content-disposition");
-    //         return {
-    //           fileName: this.getFileNameByContentDisposition(disposition),
-    //           raw: blob
-    //         };
-    //       });
-    //     }
-    //   })
-    //   .then(data => {
-    //     if (data) {
-    //       saveAs(data.raw, moment().format("DDMMYYYY") + data.fileName);
-    //     }
-    //   });
   };
 
 
   render() {
     let { correspondence } = this.props.universal.paymentsData;
-    if (correspondence) {
-      correspondence.content.push(this.state.addAct);
-      correspondence.content.push(this.state.addPayment);
-    }
+    // if (correspondence) {
+    //   correspondence.content.push(this.state.addAct);
+    //   correspondence.content.push(this.state.addPayment);
+    // }
 
 
     let columns = [
@@ -563,7 +482,7 @@ class Documents extends Component {
                         icon={faClock}/></Icon>На рассмотрении</span></Menu.Item>
                     </SubMenu>
                     <SubMenu key="sub2" title={<span><Icon><FontAwesomeIcon
-                      icon={faEnvelope}/></Icon><span>Исходящие</span></span>}>
+                      icon={faReply}/></Icon><span>Исходящие</span></span>}>
                       <Menu.Item key="4" onClick={() => {
                         this.getDocumentOutList();
                       }}><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
