@@ -36,6 +36,7 @@ import PaymentsMT100 from "./PaymentsMT100";
 import PaymentsMT102 from "./PaymentsMT102";
 import Consumer from "./Consumer";
 import Employees from "./Employees";
+import Debutors from "./Debutors";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -634,12 +635,14 @@ class PaymentsPage extends Component {
           <TabPane forceRender tab={formatMessage({ id: "menu.payments.payment102" })} key="mt102">
             <PaymentsMT102 eventManager={this.state.eventManager}/>
           </TabPane>
-
           {/*<TabPane tab={'Список плательщиков'} key="employees">*/}
           {/*<Employees/>*/}
           {/*</TabPane>*/}
           <TabPane tab={"Сотрудники"} key="consumer">
             <Consumer/>
+          </TabPane>
+          <TabPane tab={"Реестр должников"} key={"reestr_debits"}>
+            <Debutors/>
           </TabPane>
         </Tabs>
       </Card>

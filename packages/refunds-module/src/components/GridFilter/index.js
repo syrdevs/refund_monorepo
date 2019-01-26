@@ -30,6 +30,7 @@ import componentLocal from "../../locales/components/componentLocal";
 import { Animated } from "react-animated-css";
 import ButtonGroup from "./ButtonGroup";
 import ListBetweenDate from "./listbetweenDate";
+import ListBetWeenMonth from './betweenMonthPicker';
 
 const FormItem = Form.Item;
 const { RangePicker, MonthPicker } = DatePicker;
@@ -276,8 +277,14 @@ class GridFilter extends Component {
           return;
         }
         if (["betweenMonthPicker"].indexOf(fields[field].type) !== -1) {
-          filterData[field + "Start"] = fields[field].disabled ? null : formFilters[field][0];
-          filterData[field + "End"] = fields[field].disabled ? null : formFilters[field][1];
+          if (formFilters[field].isNullable) {
+            filterData[field] = null;
+          } else {
+            filterData[field] = {
+              "from": formFilters[field][0],
+              "to": formFilters[field][1]
+            };
+          }
           return;
         }
 
@@ -474,9 +481,13 @@ class GridFilter extends Component {
           ref: React.createRef(),
           /*     defaultValue: formFilters[filterItem.name] ? formFilters[filterItem.name] : [moment(new Date(), dateFormat), moment(new Date(), dateFormat)],*/
           format: dateFormat,
-          onChange: (moment, dateString) => {
-            this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString);
-          }
+          // onPanelChange: (value, mode) => {
+          //
+          //
+          // }
+          // onChange: (moment, dateString) => {
+          //   this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString);
+          // }
         };
 
         if (isClearFilter) {
@@ -489,38 +500,13 @@ class GridFilter extends Component {
         // let mode= ['month', 'month'];
         // let value = [];
 
-        return (<div key={_index} style={mBottom}>{filterItem.label}:
-
-          <Row>
-            <Col md={22}>
-              <LocaleProvider locale={componentLocal}>
-                <RangePicker   {...RangeDateProps}
-                               format={"MM.YYYY"}
-                               placeholder={[
-                                 formatMessage({ id: "datepicker.start.label" }),
-                                 formatMessage({ id: "datepicker.end.label" })
-                               ]}
-                  // value={value}
-                               mode={["month", "month"]}
-                               disabledDate={this.disabledDate}
-                               disabled={fields[filterItem.name].disabled}/>
-              </LocaleProvider>
-            </Col>
-            {filterItem.nullBtn &&
-            <Col md={2}>
-              <div style={{ margin: "5px" }}>
-                <Checkbox checked={fields[filterItem.name].disabled} onChange={(e) => {
-                  fields[filterItem.name].disabled = e.target.checked;
-                  this.setState({
-                    fields: fields,
-                    formFilters: formFilters
-                  });
-                }}/>
-              </div>
-            </Col>
-            }
-
-          </Row>
+        return (<div key={_index} style={mBottom}>{filterItem.label}: <ListBetWeenMonth
+          RangeDateProps={RangeDateProps}
+          filterItem={filterItem}
+          field={fields[filterItem.name]}
+          onChange={(value) => {
+            this.fieldOnChange(filterItem, value);
+          }}/>
         </div>);
       }
 
@@ -665,13 +651,14 @@ class GridFilter extends Component {
         if (filterItem.withMax) {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
             <Input onKeyDown={this.onKeyPress} onChange={(e) => {
-              this.withmaxfieldOnChange(filterItem, e.target.value, filterItem.withMax);
+
+              this.withmaxfieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value, filterItem.withMax);
             }} value={formFilters[filterItem.name]} style={{ width: "100%" }} {...params}/></div>);
         }
         else {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
             <Input {...params} onKeyDown={this.onKeyPress} onChange={(e) => {
-              this.fieldOnChange(filterItem, e.target.value);
+              this.fieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value);
             }} value={formFilters[filterItem.name]} style={{ width: "100%" }} {...params}/></div>);
         }
       }
