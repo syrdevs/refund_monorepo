@@ -67,8 +67,6 @@ class PullFilter extends Component {
       type: "universal2/getList",
       payload: this.state.pullpagingConfig
     })
-      .then(()=>{
-      })
   }
 
   searchpullcard = (id) => {
@@ -95,13 +93,15 @@ class PullFilter extends Component {
   }
 
   cardClick = (e, item) => {
-    if (e.target.className !== "dropmenu") {
-      document.getElementById("clickedcard") && document.getElementById("clickedcard").removeAttribute("id")
-      e.target.closest('.cardbtn').id = 'clickedcard';
-      this.props.loadPull(item.id);
-      console.log(item);
-      //
-      this.props.statuss(!item.documentStatuss)
+    console.log(e.target.tagName)
+    if (e.target.tagName !== 'svg')
+    {
+      if (e.target.className !== "dropmenu") {
+        document.getElementById("clickedcard") && document.getElementById("clickedcard").removeAttribute("id")
+        e.target.closest('.cardbtn').id = 'clickedcard';
+        this.props.loadPull(item.id);
+        this.props.statuss(!item.documentStatuss)
+      }
     }
   }
 
@@ -251,17 +251,15 @@ class PullFilter extends Component {
                 title={"Номер: "+item.number+""}
                 description={"Инициатор: "+item.users.userName}
               />
-              <div style={{float:'right', color:'rgba(0, 0, 0, 0.45)', marginTop:'5px'}}>
+              <div className={'dropmenu'} style={{float:'right', color:'rgba(0, 0, 0, 0.45)', marginTop:'5px'}}>
                 {item.documentDate}
-                <Dropdown  overlay={menu(item)}>
-                 <Icon style={{marginLeft:'5px'}} type="down" />
+                <Dropdown  overlay={menu(item)}  trigger={['click']}>
+                 <Icon className={'dropmenu'} style={{marginLeft:'5px'}} type="down" />
                 </Dropdown>
               </div>
             </Card>
           })
             }
-
-
         </Card>
         <Pagination simple onChange={(a)=>this.onShowSizeChange(a)} defaultCurrent={1} total={universal.table.content ? universal.table.content.length : 0} style={{margin:'10px'}} />
       </Row>
