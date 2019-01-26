@@ -100,7 +100,6 @@ class SignModal extends Component {
   }
 
   loadXml=()=>{
-    console.log('тесткойЫ');
    /* this.props.dispatch({
       type: 'universal/getXml',
       payload: {
@@ -114,10 +113,12 @@ class SignModal extends Component {
      console.log(this.props.universal.getXml)
     })*/
 
-    request("/api/contract/documentAsXml?entity=contract&id=25e78a7f-d4b0-4de4-a129-5b5954b35731").then(data => {
+    request("/api/contract/documentAsXml?entity="+this.props.type+"&id="+this.props.id).then(data => {
+      console.log(data);
       this.setState({
         xml: data
       })
+
     })
 
     // fetch('/api/contract/documentAsXml?entity=contract&id=25e78a7f-d4b0-4de4-a129-5b5954b35731', {
