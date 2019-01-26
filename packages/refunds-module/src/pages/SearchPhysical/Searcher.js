@@ -266,8 +266,15 @@ class Searcher extends Component {
           this.searchperson(response.content.iin);
         }
         if (response.totalElements ==0) {
-          this.setState({
-            visibleModal: true
+          Modal.info({
+            title: "",
+            content: (
+              <div>
+               "Информация о потребителе не найдена"
+              </div>
+            ),
+            onOk() {
+            }
           });
         }
       });
@@ -310,8 +317,15 @@ class Searcher extends Component {
             this.payesSearcher(moment(new Date()).year());
           });
         } else {
-          this.setState({
-            visibleModal: true
+          Modal.info({
+            title: "",
+            content: (
+              <div>
+                Информация о потребителе не найдена
+              </div>
+            ),
+            onOk() {
+            }
           });
           this.setState({
             person: {
@@ -672,7 +686,7 @@ if(filterItem==="iin"){
         <Modal
           title=""
           visible={this.state.visibleModal}
-          onCancel={this.handleCancelModal}
+          // onCancel={this.handleCancelModal}
           onOk={this.handleCancelModal}
         >
           <p>Информация о потребителе не найдена</p>
