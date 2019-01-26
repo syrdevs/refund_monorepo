@@ -100,40 +100,12 @@ class SignModal extends Component {
   }
 
   loadXml=()=>{
-   /* this.props.dispatch({
-      type: 'universal/getXml',
-      payload: {
-        "entity": "contract",
-        "id":  '25e78a7f-d4b0-4de4-a129-5b5954b35731'//this.props.location.query.id  // this.props.state.data.documentType.id
-      },
-    }).then(()=>{
-      this.setState({
-        xml: this.props.universal.getXml
-      });
-     console.log(this.props.universal.getXml)
-    })*/
-
     request("/api/contract/documentAsXml?entity="+this.props.type+"&id="+this.props.id).then(data => {
       console.log(data);
       this.setState({
         xml: data
       })
-
     })
-
-    // fetch('/api/contract/documentAsXml?entity=contract&id=25e78a7f-d4b0-4de4-a129-5b5954b35731', {
-    //   headers: {
-    //     Authorization: 'Bearer ' + localStorage.getItem('token'),
-    //   },
-    //   method: 'get',
-    // })
-    //   .then(response => response.text())
-    //   .then(data => {
-    //     this.setState({
-    //       xml: data
-    //     })
-    //   })
-
   };
 
 
@@ -482,7 +454,7 @@ class SignModal extends Component {
     document.getElementById("storageAlias").setAttribute("value","NONE");
     document.getElementById("storagePath").setAttribute("value","");
     document.getElementById("storagePassword").setAttribute("value","");
-   // document.getElementById("keyList").setAttribute("value","");
+    // document.getElementById("keyList").setAttribute("value","");
     this.setState({
       keylist: ""
     })
@@ -520,7 +492,7 @@ class SignModal extends Component {
               <Input id="storagePassword" type="password"/>
             </Form.Item>
           </Row>
-      </Card>
+        </Card>
       </Form>
     </Modal>);
   }

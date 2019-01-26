@@ -247,18 +247,21 @@ class ViewDocument extends Component {
           });
         }}
         visible={this.state.ShowSign}
+        type={this.props.location.query.type}
+        id={this.props.location.query.id}
         getKey={(e) => {
 
           request("/api/contract/uploadSignedDocument", {
             method: "POST",
             body: {
-              "entity": "contract",
+              "entity": this.props.location.query.type,
               "alias": null,
               "id": this.props.location.query.id,
               "xml": e[0].xml
             }
           }).then(data => {
             console.log(data);
+
             this.setState({
               ShowSign: false,
               buttonShow: false
@@ -275,38 +278,6 @@ class ViewDocument extends Component {
                 content: "some messages...some messages..."
               });
             });
-
-          // fetch("/api/contract/uploadSignedDocument", {
-          //   headers: {
-          //     "Content-Type": "application/json; charset=utf-8",
-          //     Authorization: "Bearer " + localStorage.getItem("token")
-          //   },
-          //   method: "post",
-          //   body: JSON.stringify({
-          //     "entity": "contract",
-          //     "alias": null,
-          //     "id": this.props.location.query.id,
-          //     "xml": e[0].xml
-          //   })
-          // })
-          //   .then(data => {
-          //     console.log(data);
-          //     this.setState({
-          //       ShowSign: false,
-          //       buttonShow: false
-          //     }, () => {
-          //       // router.push('/documents');
-          //       Modal.info({
-          //         content: "Документ подписан"
-          //       });
-          //       console.log(e);
-          //     });
-          //   })
-          //   .catch(function(e) {
-          //     Modal.error({
-          //       content: "some messages...some messages..."
-          //     });
-          //   });
         }}
       />}
       <Card style={{ borderRadius: "5px", marginBottom: "10px" }} bodyStyle={{ padding: 0 }} bordered={true}>

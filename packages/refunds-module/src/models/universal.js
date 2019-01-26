@@ -32,7 +32,7 @@ import {
   getList,
   getCommands,
   createSubContract, setAccept,
-  createRefunkPack, getUsers, setRefundNeedAcceptUser, publishing, reloadMt100Packet
+  createRefunkPack, getUsers, setRefundNeedAcceptUser, publishing, reloadMt100Packet, rejectDocument
 } from "../services/api";
 
 export default {
@@ -85,7 +85,8 @@ export default {
     commandResult: [],
     users:{},
     publishanswer: {},
-    reloadMt100Packet: {}
+    reloadMt100Packet: {},
+    rejectDocument: {}
   },
   effects: {
     * getCommandResult(payload, { call, put }) {
@@ -450,6 +451,13 @@ export default {
         payload: response,
       });
     },
+    * rejectDocument(payload, { call, put }) {
+      const response = yield call(rejectDocument, payload);
+      yield put({
+        type: 'rejectDocumentReducer',
+        payload: response,
+      });
+    },
     * publishing(payload, { call, put }) {
       const response = yield call(publishing, payload);
 
@@ -493,6 +501,12 @@ export default {
       return {
         ...state,
         deletedObject: payload,
+      };
+    },
+    rejectDocumentReducer(state, { payload }) {
+      return {
+        ...state,
+        rejectDocument: payload,
       };
     },
     createActForContractReducer(state, { payload }) {

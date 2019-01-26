@@ -7,7 +7,7 @@ const ruTranslation = {
         reestr: 'Реестр возвратов',
         payments: 'Платежи',
         options: 'Настройки',
-        pulls: 'Распределение пулов',
+        pulls: 'Управление пулами',
         journal: 'Журнал',
         calendar: 'Календарь',
         template: 'Шаблоны',
@@ -27,7 +27,7 @@ const ruTranslation = {
         _: 'Настройки',
       },
       pulls: {
-        _: 'Распределение пулов',
+        _: 'Управление пулами',
       },
       journal: {
         _: 'Журнал',
