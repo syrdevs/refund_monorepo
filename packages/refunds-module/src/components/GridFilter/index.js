@@ -30,7 +30,7 @@ import componentLocal from "../../locales/components/componentLocal";
 import { Animated } from "react-animated-css";
 import ButtonGroup from "./ButtonGroup";
 import ListBetweenDate from "./listbetweenDate";
-import ListBetWeenMonth from './betweenMonthPicker';
+import ListBetWeenMonth from "./betweenMonthPicker";
 
 const FormItem = Form.Item;
 const { RangePicker, MonthPicker } = DatePicker;
@@ -322,6 +322,18 @@ class GridFilter extends Component {
           return;
         }//
 
+        if (fields[field].type === "ButtonGroup" && formFilters[field].value !== null) {
+          filterData[field] = formFilters[field].value;
+
+          return;
+        }
+
+        if (fields[field].type === "checkbox") {
+          filterData[field] = formFilters[field].value;
+
+          return;
+        }
+
         if (fields[field].filterName) {
           filterData[fields[field].filterName] = fields[field].disabled ? null : formFilters[field];
         } else {
@@ -381,7 +393,7 @@ class GridFilter extends Component {
         return (<div key={_index} style={mBottom}>
           {filterItem.label}:
           <ButtonGroup  {...filterItem} {...params} key={_index + "_BtnGroup"} onChange={(e) => {
-            this.fieldOnChange(filterItem, e);
+            this.fieldOnChange(filterItem, { value: e });
           }}/>
         </div>);
       }
@@ -480,7 +492,7 @@ class GridFilter extends Component {
         let RangeDateProps = {
           ref: React.createRef(),
           /*     defaultValue: formFilters[filterItem.name] ? formFilters[filterItem.name] : [moment(new Date(), dateFormat), moment(new Date(), dateFormat)],*/
-          format: dateFormat,
+          format: dateFormat
           // onPanelChange: (value, mode) => {
           //
           //
@@ -758,7 +770,7 @@ class GridFilter extends Component {
         }
 
         return (<div key={_index} style={mBottom}><Checkbox {...params} onChange={(e) => {
-          this.fieldOnChange(filterItem, e.target.checked);
+          this.fieldOnChange(filterItem, { value: e.target.checked });
         }}/> : {filterItem.label}</div>);
       }
 
