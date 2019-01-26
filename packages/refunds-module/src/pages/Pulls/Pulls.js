@@ -62,6 +62,7 @@ const RejectModalContent = (prop) => {
   </div>);
 };
 
+
 class Pulls extends Component {
   constructor(props) {
     super(props);
@@ -772,9 +773,7 @@ class Pulls extends Component {
                                       ispublish: !bol
                                     })
                                 }}
-                                clearPull={() => {
-
-                                }}
+                                clearPull={() => {}}
                     />
                   </Card>
                 </Animated>

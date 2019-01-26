@@ -466,6 +466,13 @@ export async function deleteObject(params) {
     body: params.payload,
   });
 }
+export async function rejectDocument(params) {
+  return request('/api/contract/rejectDocument', {
+    method: 'POST',
+    body: params.payload,
+  });
+}
+
 
 export async function getCommands(params) {
   return request(`/api/uicommand/getCommands?${stringify(params.payload)}`);
