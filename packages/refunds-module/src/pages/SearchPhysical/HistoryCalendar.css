@@ -25,9 +25,9 @@
 .ant-fullcalendar-next-month-btn-day {
     display: none;
 }
-.ant-fullcalendar-year-select {
-    display: none !important;
-}
+/*.ant-fullcalendar-year-select {*/
+    /*display: none !important;*/
+/*}*/
  .ant-fullcalendar-header {
      margin-top: 10px;
      padding: 11px 16px 11px 0;
