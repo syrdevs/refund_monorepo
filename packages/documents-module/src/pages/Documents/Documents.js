@@ -148,7 +148,7 @@ class Documents extends Component {
     ShowModal: false,
     parameters: {
       "start": 0,
-      "length": 20,
+      "length": 15,
       "entity": "correspondence",
       "alias": "routes",
       "filter": {
@@ -160,7 +160,7 @@ class Documents extends Component {
     sortedInfo: {},
     pagingConfig: {
       "start": 0,
-      "length": 10,
+      "length": 15,
       "src": {
         "searched": false,
         "data": {}
@@ -338,7 +338,7 @@ class Documents extends Component {
     dispatch({
       type: "universal/paymentsData",
       payload: {
-        ...this.state.pagingConfig,
+        ...this.state.parameters,
         // table: 'getApplicationPage',
         start: current,
         length: pageSize
@@ -479,10 +479,10 @@ class Documents extends Component {
 
   render() {
     let { correspondence } = this.props.universal.paymentsData;
-    if (correspondence) {
-      correspondence.content.push(this.state.addAct);
-      correspondence.content.push(this.state.addPayment);
-    }
+    // if (correspondence) {
+    //   correspondence.content.push(this.state.addAct);
+    //   correspondence.content.push(this.state.addPayment);
+    // }
 
 
     let columns = [
