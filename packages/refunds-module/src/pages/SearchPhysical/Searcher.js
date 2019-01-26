@@ -53,11 +53,11 @@ class Searcher extends Component {
         length: 15,
         entity: "person",
         filter: {},
-        alias:"search",
-        sort: [],
+        alias: "search",
+        sort: []
       },
       MonthHistory: [],
-      visibleModal:false,
+      visibleModal: false,
       visible: false,
       visibleFilter: false,
       filterForm: [
@@ -192,9 +192,9 @@ class Searcher extends Component {
         if (item.payPeriod === value.format("MMYYYY")) {
           result = (
             <div
-              style={{ backgroundColor: 'rgba(255, 71, 65, 0.2)', height: "100%", width: "100%", padding: "10px" }} //
+              style={{ backgroundColor: "rgba(255, 71, 65, 0.2)", height: "100%", width: "100%", padding: "10px" }} //
             >
-             {/* <p>Сумма: {item.totalAmount}</p>
+              {/* <p>Сумма: {item.totalAmount}</p>
               <p>Кол-во: {item.totalElements}</p>*/}
             </div>
           );
@@ -221,19 +221,23 @@ class Searcher extends Component {
 
   loadGridData = () => {
     const { dispatch } = this.props;
-    let sortField = this.state.sortedInfo;
-    if(this.state.parameters.filter.iin){
-      this.searchperson(this.state.parameters.filter.iin)
-    }else {
+    if (this.state.parameters.filter.iin) {
+      this.searchperson(this.state.parameters.filter.iin);
+    } else {
+
       delete this.state.parameters.filter.iin;
-      if(this.state.parameters.filter.firstName){
-        this.state.parameters.filter.firstName=this.state.parameters.filter.firstName.toUpperCase()
+      if (this.state.parameters.filter.firstName) {
+
+        this.state.parameters.filter.firstName = this.state.parameters.filter.firstName.toUpperCase();
       }
-      if(this.state.parameters.filter.lastName){
-        this.state.parameters.filter.lastName=this.state.parameters.filter.lastName.toUpperCase()
+      if (this.state.parameters.filter.lastName) {
+
+        this.state.parameters.filter.lastName = this.state.parameters.filter.lastName.toUpperCase();
       }
-      if(this.state.parameters.filter.patronymic){
-        this.state.parameters.filter.patronymic=this.state.parameters.filter.patronymic.toUpperCase()
+
+      if (this.state.parameters.filter.patronymic) {
+
+        this.state.parameters.filter.patronymic = this.state.parameters.filter.patronymic.toUpperCase();
       }
       dispatch({
         type: "universal2/getList",
@@ -247,12 +251,12 @@ class Searcher extends Component {
         if (response.totalElements == 1) {
           this.searchperson(response.content.iin);
         }
-        if (response.totalElements ==0) {
+        if (response.totalElements == 0) {
           Modal.info({
             title: "",
             content: (
               <div>
-               "Информация о потребителе не найдена"
+                "Информация о потребителе не найдена"
               </div>
             ),
             onOk() {
@@ -265,14 +269,14 @@ class Searcher extends Component {
   };
 
   applyFilter = () => {
-      this.loadGridData();
+    this.loadGridData();
   };
 
   clearFilter = (pageNumber) => {
     this.setState({
       parameters: {
         ...this.state.parameters,
-        filter: {},
+        filter: {}
       }
     });
 
@@ -448,46 +452,86 @@ class Searcher extends Component {
 
   fieldOnChange = (filterItem, value) => {
 
-if(filterItem==="iin"){
-  this.setState({
-    parameters: {
-      ...this.state.parameters,
-      filter: { ...this.state.parameters.filter ,"iin": value},
-    }
-  });
-}if(filterItem==="firstName"){
+    if (filterItem === "iin") {
       this.setState({
         parameters: {
           ...this.state.parameters,
-          filter: { ...this.state.parameters.filter ,"firstName": value},
+          filter: { ...this.state.parameters.filter, "iin": value }
         }
       });
     }
-    if(filterItem==="lastName"){
-      this.setState({
-        parameters: {
-          ...this.state.parameters,
-          filter: { ...this.state.parameters.filter ,"lastName": value},
-        }
-      });
-    }
-    if(filterItem==="patronymic"){
-      this.setState({
-        parameters: {
-          ...this.state.parameters,
-          filter: { ...this.state.parameters.filter ,"patronymic": value},
-        }
-      });
-    }
-    if(filterItem==="birthdate"){
-      this.setState({
-        parameters: {
-          ...this.state.parameters,
-          filter: { ...this.state.parameters.filter ,"birthdate": value},
-        }
-      });
-    }
+    if (filterItem === "firstName") {
+      if (value === "") {
+        this.setState({
+          parameters: {
+            ...this.state.parameters,
+            filter: { ...this.state.parameters.filter, "firstName": undefined }
+          }
+        });
+      }else{
+        this.setState({
+          parameters: {
+            ...this.state.parameters,
+            filter: { ...this.state.parameters.filter, "firstName": value }
+          }
+        });
+      }
 
+
+      //
+
+
+    }
+    if (filterItem === "lastName") {
+      if (value === "") {
+        this.setState({
+          parameters: {
+            ...this.state.parameters,
+            filter: { ...this.state.parameters.filter, "lastName": undefined }
+          }
+        });
+      }else{
+        this.setState({
+          parameters: {
+            ...this.state.parameters,
+            filter: { ...this.state.parameters.filter, "lastName": value }
+          }
+        });
+      }
+
+    }
+    if (filterItem === "patronymic") {
+      if (value === "") {
+        this.setState({
+          parameters: {
+            ...this.state.parameters,
+            filter: { ...this.state.parameters.filter, "patronymic": undefined }
+          }
+        });
+      }else{
+      this.setState({
+        parameters: {
+          ...this.state.parameters,
+          filter: { ...this.state.parameters.filter, "patronymic": value }
+        }
+      });
+    }}
+    if (filterItem === "birthdate") {
+      if (value === "") {
+        this.setState({
+          parameters: {
+            ...this.state.parameters,
+            filter: { ...this.state.parameters.filter, "birthdate": undefined }
+          }
+        });
+      }else{
+      this.setState({
+        parameters: {
+          ...this.state.parameters,
+          filter: { ...this.state.parameters.filter, "birthdate": value }
+        }
+      });
+    }}
 
 
   };
@@ -508,14 +552,14 @@ if(filterItem==="iin"){
     });
     this.history();
   };
-  history= () => {
+  history = () => {
     const { dispatch } = this.props;
     dispatch({
       type: "universal2/getPayerList",
       payload: {
         "entity": "iinPayments",
         "filter": {
-          "iin": this.state.iin,
+          "iin": this.state.iin
         },
         "group": [
           {
@@ -527,12 +571,12 @@ if(filterItem==="iin"){
         ]
       }
     }).then((response) => {
-      console.log(response)
+      console.log(response);
       this.setState({
-        MonthHistory: response,
+        MonthHistory: response
       });
     });
-  }
+  };
 
   handleCancel = (e) => {
     this.setState({
@@ -607,7 +651,8 @@ if(filterItem==="iin"){
       name: "ЛЬГОТНАЯ КАТЕГОРИЯ",
       value: personMED.pref_categories !== undefined ? personMED.pref_categories.map((category) =>
         <div>
-          <div style={{ width: "80%", wordWrap: "break-word" }} color="blue">{category.name? category.name.toUpperCase():""}</div>
+          <div style={{ width: "80%", wordWrap: "break-word" }}
+               color="blue">{category.name ? category.name.toUpperCase() : ""}</div>
           <br></br>
         </div>) : ""
     }, {
@@ -728,29 +773,36 @@ if(filterItem==="iin"){
 
 
                     <div style={mBottom}>ИИН:
-                      <div style={{width:"100%"}}>
-                        <Input style={{ width: "80%" }} value={this.state.parameters.filter.iin} maxLength={12} onChange={(e) => {
-                          this.fieldOnChange("iin",e.target.value);
-                        }} />
+                      <div style={{ width: "100%" }}>
+                        <Input style={{ width: "80%" }} value={this.state.parameters.filter.iin} maxLength={12}
+                               onChange={(e) => {
+                                 this.fieldOnChange("iin", e.target.value);
+                               }}/>
                       </div>
-                     </div>
+                    </div>
                     {this.state.visibleFilter &&
                     <div style={mBottom}>Фамилия:
-                      <Input  style={{ width: "100%" }} value={this.state.parameters.filter.lastName?this.state.parameters.filter.lastName.toUpperCase():""}  onChange={(e) => {
-                        this.fieldOnChange("lastName",e.target.value);
-                      }}/></div>}
+                      <Input style={{ width: "100%" }}
+                             value={this.state.parameters.filter.lastName ? this.state.parameters.filter.lastName.toUpperCase() : ""}
+                             onChange={(e) => {
+                               this.fieldOnChange("lastName", e.target.value);
+                             }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>Имя:
-                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.firstName?this.state.parameters.filter.firstName.toUpperCase():""} onChange={(e) => {
-                        this.fieldOnChange("firstName",e.target.value);
-                      }}/></div>}
+                      <Input style={{ width: "100%" }}
+                             value={this.state.parameters.filter.firstName ? this.state.parameters.filter.firstName.toUpperCase() : ""}
+                             onChange={(e) => {
+                               this.fieldOnChange("firstName", e.target.value);
+                             }}/></div>}
                     {this.state.visibleFilter && <div style={mBottom}>Отчество:
-                      <Input style={{ width: "100%" }} value={this.state.parameters.filter.patronymic?this.state.parameters.filter.patronymic.toUpperCase():""} onChange={(e) => {
-                        this.fieldOnChange("patronymic",e.target.value);
-                      }}/></div>}
-                    {this.state.visibleFilter && <div style={mBottom}>День рождения:     <div style={{width:"100%"}}>
-                      <DatePicker  style={{ width: "40%" }}  format={"DD.MM.YYYY"} onChange={(moment,dateString) => {
-                        this.fieldOnChange("birthdate",dateString);
-                      }}/> </div></div>}
+                      <Input style={{ width: "100%" }}
+                             value={this.state.parameters.filter.patronymic ? this.state.parameters.filter.patronymic.toUpperCase() : ""}
+                             onChange={(e) => {
+                               this.fieldOnChange("patronymic", e.target.value);
+                             }}/></div>}
+                    {this.state.visibleFilter && <div style={mBottom}>День рождения: <div style={{ width: "100%" }}>
+                      <DatePicker style={{ width: "40%" }} format={"DD.MM.YYYY"} onChange={(moment, dateString) => {
+                        this.fieldOnChange("birthdate", dateString);
+                      }}/></div></div>}
                     {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
                     <Form layout={"vertical"}>
 
@@ -761,19 +813,19 @@ if(filterItem==="iin"){
                       <Button style={{ margin: "10px 0 0 5px" }}
                               onClick={this.clearFilter}>{formatMessage({ id: "system.clear" })}</Button>
                       {!this.state.visibleFilter && < Button style={{ margin: "10px 0 0 5px" }}
-                               onClick={() => {
-                                 this.setState({
-                                   visibleFilter: true
-                                 });
-                               }}>
+                                                             onClick={() => {
+                                                               this.setState({
+                                                                 visibleFilter: true
+                                                               });
+                                                             }}>
                         {"Расширенный поиск"}
                       </Button>}
-                      {this.state.visibleFilter &&  < Button style={{ margin: "10px 0 0 5px" }}
-                               onClick={() => {
-                                 this.setState({
-                                   visibleFilter: false
-                                 });
-                               }}>
+                      {this.state.visibleFilter && < Button style={{ margin: "10px 0 0 5px" }}
+                                                            onClick={() => {
+                                                              this.setState({
+                                                                visibleFilter: false
+                                                              });
+                                                            }}>
                         {"Свернуть"}
                       </Button>}
 
@@ -799,7 +851,7 @@ if(filterItem==="iin"){
                   </Col>
                   <Col span={8}>
                     {this.state.person.iin &&
-                    < Button style={{ marginTop: "21px",marginLeft: "-94px" }}
+                    < Button style={{ marginTop: "21px", marginLeft: "-94px" }}
                              onClick={() => {
                                if (this.state.iin) {
                                  //this.props.searchbyiin(this.state.iin);
@@ -931,7 +983,7 @@ if(filterItem==="iin"){
                         monthCellRender={this.monthCellRender2}
                         fullscreen
                         defaultValue={moment("2018-02-27T10:00:00")}
-                        validRange={[moment("2018-02-27T10:00:00") ,moment("2018-02-27T10:00:00")]}
+                        validRange={[moment("2018-02-27T10:00:00"), moment("2018-02-27T10:00:00")]}
                       />
                       <Calendar
                         onPanelChange={this.onPanelChange}
@@ -940,7 +992,7 @@ if(filterItem==="iin"){
                         monthCellRender={this.monthCellRender2}
                         fullscreen
                         defaultValue={moment("2019-02-27T10:00:00")}
-                        validRange={[moment("2019-02-27T10:00:00") ,moment("2019-02-27T10:00:00")]}
+                        validRange={[moment("2019-02-27T10:00:00"), moment("2019-02-27T10:00:00")]}
                       />
                     </Card>
                   </Col>

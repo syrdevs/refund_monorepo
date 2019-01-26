@@ -116,8 +116,8 @@ class PaymentsMT100 extends Component {
       // },
       {
         label: "Дата поступления информации",
-        name: "createdOn",
-        type: "listbetweenDateTime"
+        name: "_createdOn",
+        type: "listbetweenDate"
       },
       {
         label: "БИН отправителя",
@@ -186,10 +186,6 @@ class PaymentsMT100 extends Component {
       {
         "title": "Статус загрузки",
         "dataIndex": "mt102LoadStatus.nameRu"
-      },
-      {
-        "title": "Статус загрузки (сообщение)",
-        "dataIndex": "mt102LoadDescription"
       }, {
         "title": "Количество МТ102",
         "dataIndex": "mt102Count"
