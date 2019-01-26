@@ -226,6 +226,15 @@ class Searcher extends Component {
       this.searchperson(this.state.parameters.filter.iin)
     }else {
       delete this.state.parameters.filter.iin;
+      if(this.state.parameters.filter.firstName){
+        this.state.parameters.filter.firstName=this.state.parameters.filter.firstName.toUpperCase()
+      }
+      if(this.state.parameters.filter.lastName){
+        this.state.parameters.filter.lastName=this.state.parameters.filter.lastName.toUpperCase()
+      }
+      if(this.state.parameters.filter.patronymic){
+        this.state.parameters.filter.patronymic=this.state.parameters.filter.patronymic.toUpperCase()
+      }
       dispatch({
         type: "universal2/getList",
         payload: this.state.parameters
