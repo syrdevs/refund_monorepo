@@ -142,7 +142,7 @@ class MainView extends Component {
             status={this.setBadgeStatus(value.isRefundConfirm)}/></span> {value.dappRefundStatusId ? value.dappRefundStatusId.nameRu : null}
           </a>
         },
-        {
+       /* {
           title: "Загрузить",
           order: 50,
           key: "upload",
@@ -200,9 +200,7 @@ class MainView extends Component {
                 })}
               </div>
           )
-        }
-
-
+        }*/
       ],
       columns: [
         {
@@ -1124,10 +1122,7 @@ class MainView extends Component {
                 }}>
                   {formatMessage({ id: "menu.mainview.mt102Btn" })}
                 </Menu.Item>
-
-                <Menu.Item disabled={hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="5" onClick={() => {
-                }}>
-
+                <Menu.Item disabled={hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="5" onClick={() => {}}>
                   <Upload
                     showUploadList={false}
                     openFileDialogOnClick={true}
@@ -1164,7 +1159,8 @@ class MainView extends Component {
                 }}>
                   {formatMessage({ id: "menu.mainview.refundreceiver" })}
                 </Menu.Item>
-              </Menu>}>
+              </Menu>
+              }>
                 <Button disabled={hasRole(["FSMS2", "ADMIN"])}
                         key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
                   type="down"/></Button>

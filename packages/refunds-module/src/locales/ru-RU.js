@@ -87,7 +87,7 @@ export default {
   "menu.rpmu": "Регистр потребителей",
   "menu.refunds.requests": "Заявки",
   "menu.refunds.options": "Настройки",
-  "menu.refunds.pool": "Распределение пулов",
+  "menu.refunds.pool": "Управление пулами",
   "menu.contract.counteragent": "Контрагенты",
   "menu.contract.counteragent.register": "Зарегистрировать договор",
   "menu.contract.counteragent.contractView": "Договор",
