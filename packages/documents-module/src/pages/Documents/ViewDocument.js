@@ -1,5 +1,21 @@
 import React, { Component, lazy } from "react";
-import { Card, Row, Tabs, Steps, Menu, Icon, Col, Layout, Progress, Button, Dropdown, Spin, Badge, Modal } from "antd";
+import {
+  Card,
+  Row,
+  Tabs,
+  Steps,
+  Menu,
+  Icon,
+  Col,
+  Layout,
+  Progress,
+  Button,
+  Dropdown,
+  Spin,
+  Badge,
+  Modal,
+  Table
+} from "antd";
 import formatMessage from "../../utils/formatMessage";
 import { Animated } from "react-animated-css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -17,6 +33,8 @@ import { ShowPull } from "@vitacore/refunds-module";
 import ContentLayout from "../../layouts/ContentLayout";
 import request from "../../utils/request";
 import DropDownAction from "../../components/DropDownAction";
+
+import './ViewDocument.css';
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
@@ -38,6 +56,16 @@ class ViewDocument extends Component {
   constructor(props) {
     super(props);
     this.state = {
+
+      columns: [{
+        title: "name",
+        dataIndex: "name"
+      }, {
+        title: "value",
+        dataIndex: "value"
+      }],
+
+      dataSource: [],
 
       pages: null,
 
@@ -198,12 +226,31 @@ class ViewDocument extends Component {
 
   };
 
+  addDataSource = (data) => {
+    this.setState({ dataSource: data });
+  };
 
   callback = (key) => {
   };
 
 
   render() {
+
+
+    /*
+    *   <p style={{ marginTop: "10px" }}><h3>{this.state.data ? this.state.data.descr : ""}</h3></p>
+                  <p>Опубликовал: {this.state.data ? this.state.data.initiatorUser ? this.state.data.initiatorUser.userName : "" : ""}</p>
+                  <p>Тип
+                    документа: {this.state.data ? this.state.data.documentType ? this.state.data.documentType.entDesc : "" : ""}</p>
+                  <p>{this.state.data ? this.state.data.statusDate ? this.state.data.status.statusDate : "" : ""}</p>
+                  <p>Дата публикации: {this.state.data && this.state.data.entryDateTime ? this.state.data.entryDateTime : ""}</p>
+                  <p>Статус документа: {this.state.data && this.state.data.documentSigned ? "Подписан" : "Ожидает подписания"}</p>
+                  {(this.state.data && this.state.data.documentSigned) &&
+                  <p>Дата подписания: {this.state.data.signDateTime}</p>}
+                  <p>Статус: {this.state.data && this.state.data.status ? this.state.data.status.statusName : ""}</p>
+    *
+    * */
+
 
     // console.log(this.props.location.state ? this.props.location.state.data : null);
     const smart_grid_controls_right = {
@@ -325,20 +372,50 @@ class ViewDocument extends Component {
                   bodyStyle={{ padding: 25 }}
                   title={<div>Информация о документе</div>}
                 >
+                  <Row>
+                    <Col md={24}>
+                      <Table
+                        rowKey={"key"}
+                        className={"view_document_table"}
+                        columns={this.state.columns}
+                        dataSource={[
+                          {
+                            key: 1,
+                            name: "ОПУБЛИКОВАЛ",
+                            value: this.state.data ? this.state.data.initiatorUser ? this.state.data.initiatorUser.userName : "" : ""
+                          },
+                          {
+                            key: 2,
+                            name: "ТИП ДОКУМЕНТА",
+                            value: this.state.data ? this.state.data.documentType ? this.state.data.documentType.entDesc : "" : ""
+                          },
+                          {
+                            key: 3,
+                            name: "ДАТА ПУБЛИКАЦИИ",
+                            value: this.state.data && this.state.data.entryDateTime ? this.state.data.entryDateTime : ""
+                          },
+                          {
+                            key: 4,
+                            name: "СТАТУС ДОКУМЕНТА",
+                            value: this.state.data && this.state.data.documentSigned ? "Подписан" : "Ожидает подписания"
+                          },
+                          {
+                            key: 5,
+                            name: "ДАТА ПОДПИСАНИЯ",
+                            value: this.state.data && this.state.data.signDateTime ? this.state.data.signDateTime : ""
+                          }, {
+                            key: 6,
+                            name: "СТАТУС",
+                            value: this.state.data && this.state.data.status && this.state.data.status.statusName ? this.state.data.status.statusName : ""
+                          }
+                        ]}
+                        pagination={false}
+                        showHeader={false}
+                        size={"default"}
+                      />
+                    </Col>
+                  </Row>
 
-
-                  <p style={{ marginTop: "10px" }}><h3>{this.state.data ? this.state.data.descr : ""}</h3></p>
-                  <p>Опубликовал: {this.state.data ? this.state.data.initiatorUser ? this.state.data.initiatorUser.userName : "" : ""}</p>
-                  <p>Тип
-                    документа: {this.state.data ? this.state.data.documentType ? this.state.data.documentType.entDesc : "" : ""}</p>
-                  <p>{this.state.data ? this.state.data.statusDate ? this.state.data.status.statusDate : "" : ""}</p>
-                  <p>Дата
-                    публикации: {this.state.data && this.state.data.entryDateTime ? this.state.data.entryDateTime : ""}</p>
-                  <p>Статус
-                    документа: {this.state.data && this.state.data.documentSigned ? "Подписан" : "Ожидает подписания"}</p>
-                  {(this.state.data && this.state.data.documentSigned) &&
-                  <p>Дата подписания: {this.state.data.signDateTime}</p>}
-                  <p>Статус: {this.state.data && this.state.data.status ? this.state.data.status.statusName : ""}</p>
                   {/*if (documentSigned) {*/}
                   {/*Дата подписания: signDateTime*/}
                 </Card>

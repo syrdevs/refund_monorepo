@@ -1,0 +1,11 @@
+.view_document_table .ant-table-body {
+    min-height: auto !important;
+}
+
+.view_document_table .ant-table-body .ant-table-row:last-child td {
+    border-bottom: none;
+}
+
+.view_document_table .ant-table-body .ant-table-row td:first-child {
+    width: 20%;
+}
