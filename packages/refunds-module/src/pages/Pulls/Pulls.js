@@ -650,19 +650,8 @@ class Pulls extends Component {
   };
 
   loadfromfilter = (item)=> {
-    //console.log(item);
-    //disBtn:  (item.currentStatus ? item.currentStatus.result : 1) === 0,*/
-      this.setState({
-        disBtn:  item,
-      }, () => {
-        console.log(this.state.disBtn);
-        console.log((false && (this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0));
-        console.log((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0);
-       // console.log(this.state.selectedRowKeys.length === 0);
-      })
-
-
     this.setState({
+      disBtn:  item,
       pagingConfig: {
         ...this.state.pagingConfig,
         "filter": {
