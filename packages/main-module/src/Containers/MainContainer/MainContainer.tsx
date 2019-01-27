@@ -59,7 +59,7 @@ class MainContainer extends React.Component {
           <Col span={4}>
             <AppTile to="/contracts">
               <img src={fakeLogo} alt="Zakup application logo" />
-              <p>Договора</p>
+              <p>Ведение и учёт договоров</p>
             </AppTile>
           </Col>
           <Col span={4}>
@@ -71,7 +71,7 @@ class MainContainer extends React.Component {
           <Col span={4}>
             <AppTile to="/refunds">
               <img src={fakeLogo} alt="Возвраты" />
-              <p>Возвраты</p>
+              <p>Учёт потребителей и плательщиков</p>
             </AppTile>
           </Col>
           <Col span={4}>
