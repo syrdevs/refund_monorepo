@@ -2,3 +2,5 @@
 .cardbtn:active{ border:2px solid #1890FF; }
 .cardbtn:hover{ border:2px solid #1890FF; }
 #clickedcard{ border:2px solid #1890FF !important; }
+
+.cardbtn.active{ border:2px solid #1890FF !important; }

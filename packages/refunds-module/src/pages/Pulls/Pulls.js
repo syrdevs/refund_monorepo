@@ -42,7 +42,7 @@ import SignModal from "../../components/SignModal";
 import saveAs from "file-saver";
 import request from "../../utils/request";
 import { setAcceptToRefund } from "../../services/api";
-import { faUpload } from '@fortawesome/free-solid-svg-icons/index';
+import { faUpload } from "@fortawesome/free-solid-svg-icons/index";
 import Guid from "../../utils/Guid";
 
 const { TextArea } = Input;
@@ -124,9 +124,9 @@ class Pulls extends Component {
           width: 150,
           render: (item) => {
             //return item.refund.personSurname + " " + item.refund.personFirstname + " " + item.refund.personPatronname;
-            return (item.refund.personSurname ? item.refund.personSurname : '') + " "
-              + (item.refund.personFirstname ? item.refund.personFirstname : '') + " "
-              + (item.refund.personPatronname ? item.refund.personPatronname : ' ' );
+            return (item.refund.personSurname ? item.refund.personSurname : "") + " "
+              + (item.refund.personFirstname ? item.refund.personFirstname : "") + " "
+              + (item.refund.personPatronname ? item.refund.personPatronname : " ");
           }
         }, {
           "title": "Статус заявки на возврат",
@@ -148,7 +148,7 @@ class Pulls extends Component {
           onCell: record => {
             return {
               onClick: () => {
-               // this.uploadFile(record.refund.id);
+                // this.uploadFile(record.refund.id);
               }
             };
           },
@@ -156,9 +156,13 @@ class Pulls extends Component {
             <Upload
               showUploadList={false}
               openFileDialogOnClick={true}
-              onRemove={() => {}}
-              onPreview={() => {}}
-              beforeUpload={(file) => { return false;}}
+              onRemove={() => {
+              }}
+              onPreview={() => {
+              }}
+              beforeUpload={(file) => {
+                return false;
+              }}
               onChange={(file) => {
                 if (file.status !== "removing") {
                   this.uploadFile(record.refund.id, file);
@@ -186,16 +190,16 @@ class Pulls extends Component {
           render: (record) => (
             <div>
               {record.refund.refundFiles && record.refund.refundFiles.map((item) => {
-                return <p >{item.filename} <a onClick={() => {
+                return <p>{item.filename} <a onClick={() => {
                   this.downloadFile(record, item);
-                }}>cкачать</a> / <a onClick={()=>{
+                }}>cкачать</a> / <a onClick={() => {
                   this.deleteFile(record, item);
                 }}>удалить</a></p>;
               })}
             </div>
           )
-        },
-        ],
+        }
+      ],
       columns: [
         {
           "title": "Номер заявки",
@@ -323,8 +327,8 @@ class Pulls extends Component {
       method: "POST",
       responseType: "blob",
       body: {
-        "entity":"refundFile",
-        "id":item.id
+        "entity": "refundFile",
+        "id": item.id
       },
       getResponse: (response) => {
         if (response.data && response.data.type)
@@ -333,17 +337,17 @@ class Pulls extends Component {
     });
   };
 
-  deleteFile=(record, item)=>{
+  deleteFile = (record, item) => {
     Modal.confirm({
-      title: 'Вы действительно хотите удалить этот файл?',
+      title: "Вы действительно хотите удалить этот файл?",
       okText: "Подтвердить",
-      onOk:()=> {
+      onOk: () => {
         const { dispatch } = this.props;
         dispatch({
           type: "universal/deleteObject",
           payload: {
-            "entity":"refundFile",
-            "alias":null,
+            "entity": "refundFile",
+            "alias": null,
             "id": item.id
           }
         }).then(() => {
@@ -352,23 +356,23 @@ class Pulls extends Component {
       },
       onCancel() {
 
-      },
+      }
     });
-  }
+  };
 
-  uploadFile=(id, file)=>{
-        let formData = new FormData();
-        formData.append("content", file.file);
-        formData.append("entity", "Refund");
-        formData.append("path", "refundFiles");
-        formData.append("id", id);
-        request("/api/uicommand/uploadFile", {
-          method: "POST",
-          body: formData
-        }).then(() => {
-          this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
-        });
-  }
+  uploadFile = (id, file) => {
+    let formData = new FormData();
+    formData.append("content", file.file);
+    formData.append("entity", "Refund");
+    formData.append("path", "refundFiles");
+    formData.append("id", id);
+    request("/api/uicommand/uploadFile", {
+      method: "POST",
+      body: formData
+    }).then(() => {
+      this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+    });
+  };
 
   loadMainGridData = () => {
     /*const { dispatch } = this.props;
@@ -394,6 +398,7 @@ class Pulls extends Component {
       if (this.props.universal2.references["refundPack"].content) {
         if (this.props.universal2.references["refundPack"].content.length > 0) {
           this.loadPull(this.props.universal2.references["refundPack"].content[0].id);
+          this.togglePulls();
         }
       }
     });
@@ -482,33 +487,33 @@ class Pulls extends Component {
   };
 
   publish = () => {
-    if (this.state.pagingConfig.filter["refundPack.id"] != null){
+    if (this.state.pagingConfig.filter["refundPack.id"] != null) {
       const { dispatch } = this.props;
       dispatch({
         type: "universal/publishing",
         payload: {
           "entity": "refundPack",
-          "id": (this.state.pagingConfig.filter["refundPack.id"]),
+          "id": (this.state.pagingConfig.filter["refundPack.id"])
         }
-      }).then((response)=>{
+      }).then((response) => {
         Modal.success({
-          content: 'Документ успешно опубликован',
+          content: "Документ успешно опубликован"
         });
         this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
       })
-        .catch((res)=>{
+        .catch((res) => {
           Modal.error({
-            title: 'Ошибка',
-            content: res.getResponseValue().data.Message,
+            title: "Ошибка",
+            content: res.getResponseValue().data.Message
           });
           this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
-        })
+        });
     }
-  }
+  };
 
-  cancelpull =()=> {
+  cancelpull = () => {
     Modal.confirm({
-      title: 'Исключить из пула?',
+      title: "Исключить из пула?",
       okText: "Подтвердить",
       cancelText: "Отмена",
       onOk: () => {
@@ -526,9 +531,9 @@ class Pulls extends Component {
       },
       onCancel: () => {
 
-      },
+      }
     });
-  }
+  };
 
   rejecting = () => {
 
@@ -590,9 +595,9 @@ class Pulls extends Component {
     });
   };
 
-  checkStatuss = () =>{
-      return false;
-  }
+  checkStatuss = () => {
+    return false;
+  };
 
   onSetUser = (id) => {
     const { dispatch } = this.props;
@@ -630,11 +635,47 @@ class Pulls extends Component {
         payload: {
           ...this.state.pagingConfig
         }
-      }).then((response)=>{
+      }).then((response) => {
         this.setState({
-          selectedRowKeys:[]
-        })
-      })
+          selectedRowKeys: []
+        });
+      });
+    });
+  };
+
+  exportToExcel = () => {
+
+    const PullPageColumns = localStorage.getItem("PullPage") ? JSON.parse(localStorage.getItem("PullPage")) : [];
+    const columns = PullPageColumns.map((column) => {
+      if (column.isVisible && column.isVisible !== "false") {
+        return column;
+      }
+      if (column.isVisible === true) {
+        return column;
+      }
+      if (column.isVisible === "true") {
+        return column;
+      }
+    }).filter(c => c);
+
+    request("/api/refund/exportToExcel", {
+      responseType: "blob",
+      method: "post",
+      body: {
+        "entityClass": this.state.pagingConfig.entity,
+        "fileName": "Пулы",
+        "src": {
+          "searched": true,
+          "data": this.state.pagingConfig.filter
+        },
+        "columns": columns
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        }
+      }
     });
   };
 
@@ -668,15 +709,15 @@ class Pulls extends Component {
               }
             })
               .then(data => {
-              this.setState({
-                ShowSign: false
-              }, () => {
-                // router.push('/documents');
-                Modal.info({
-                  content: "Документ подписан"
+                this.setState({
+                  ShowSign: false
+                }, () => {
+                  // router.push('/documents');
+                  Modal.info({
+                    content: "Документ подписан"
+                  });
                 });
-              });
-            })
+              })
               .catch(function(e) {
                 Modal.error({
                   content: "Ошибка подписи документа"
@@ -725,7 +766,7 @@ class Pulls extends Component {
                 }}
                 style={{ marginLeft: "5px" }}
                 key={"publish"}
-                  >
+              >
                 Опубликовать
               </Button>
               <Button
@@ -743,7 +784,7 @@ class Pulls extends Component {
                 onClick={() => {
                   this.setState({
                     ShowSign: true
-                  })
+                  });
                 }}
                 style={{ marginLeft: "5px" }}
                 key={"sign"}
@@ -768,12 +809,13 @@ class Pulls extends Component {
                       icon={faTimes}/></Icon>}
                   >
                     <PullFilter loadPull={(id) => this.loadPull(id)}
-                                statuss={(bol)=>{
-                                    this.setState({
-                                      ispublish: !bol
-                                    })
+                                statuss={(bol) => {
+                                  this.setState({
+                                    ispublish: !bol
+                                  });
                                 }}
-                                clearPull={() => {}}
+                                clearPull={() => {
+                                }}
                     />
                   </Card>
                 </Animated>
@@ -796,7 +838,8 @@ class Pulls extends Component {
                 hideRefreshBtn
                 sortedInfo={this.state.sortedInfo}
                 showTotal={true}
-                showExportBtn={false}
+                showExportBtn={true}
+                actionExport={this.exportToExcel}
                 dataSource={{
                   total: universal.table.totalElements,
                   pageSize: this.state.pagingConfig.length,
