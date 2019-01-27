@@ -48,8 +48,6 @@ class SearcherJur extends Component {
 
   monthCellRender = (value) => {
     let result = (<div style={{ backgroundColor: "red", opacity: "0.1", height: "100%", width: "100%" }}></div>);
-    console.log(this.state.payes);
-    console.log("000----0000");
     (Array.isArray(this.state.payes) ? this.state.payes : []).forEach((item) => {
       if (item.period === value.format("MMYYYY")) {
         result = (
@@ -113,31 +111,38 @@ class SearcherJur extends Component {
           bin: this.state.bin
         }
       }).then(() => {
-        if (JSON.stringify(this.props.universal.searcherjur) !== "{}" && this.props.universal.searcherjur) {
-          this.setState({
-            jur: this.props.universal.searcherjur
-          }, () => {
-            if (this.state.yearDo === null) {
-              this.payesSearcher(moment(new Date()).year());
-            } else {
-              this.payesSearcher(this.state.yearDo);
-            }
+          if (JSON.stringify(this.props.universal.searcherjur) !== "{}" && this.props.universal.searcherjur) {
 
-          });
-        }
-        else {
-          this.setState({
-            jur: {
-              "senderName": "",
-              "senderBin": "",
-              "senderBankBik": "",
-              "paymentCount": null,
-              "paymentSum": null
-            },
-            loading: false,
-            payes: []
-          });
-        }
+            this.setState({
+              jur: this.props.universal.searcherjur
+            }, () => {
+              if (this.state.yearDo === null) {
+                this.payesSearcher(moment(new Date()).year());
+              } else {
+                this.payesSearcher(this.state.yearDo);
+              }
+
+            });
+          }
+          else {
+            this.setState({
+              jur: {
+                "senderName": "",
+                "senderBin": "",
+                "senderBankBik": "",
+                "paymentCount": null,
+                "paymentSum": null
+              },
+              loading: false,
+              payes: []
+            },()=>{
+              Modal.error({
+                title: formatMessage({ id: "system.error" }),
+                content: "Информация о плательщике не найдено!"
+              });
+            });
+          }
+
       });
     });
   };

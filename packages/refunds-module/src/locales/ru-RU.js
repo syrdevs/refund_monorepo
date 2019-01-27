@@ -113,7 +113,7 @@ export default {
   "menu.mainview.approveBtn": "Одобрить",
   "menu.mainview.cancelBtn": "Отклонить",
   "menu.mainview.saveBtn": "Сохранить",
-  "menu.mainview.performBtn": "Выпонить",
+  "menu.mainview.performBtn": "Выполнить",
   "menu.mainview.pullbtn": "Создать пул",
   "menu.mainview.verifyRPMUBtn": "Сверить с платежами",
   "menu.mainview.setDateBtn": "Установить дату осуществления возврата",

@@ -289,7 +289,13 @@ class MainView extends Component {
           "title": "Результат сверки с ГБДФЛ",
           "dataIndex": "checkGBFLResult",
           "isVisible": true
+        },
+        {
+          "title": "Номер пула",
+          "dataIndex": "PackNumber",
+          "isVisible": true
         }
+        //
         // {
         //   "title": "Веб-сервис (сообщение) ",
         //   "dataIndex": "wsStatusMessage"
@@ -825,6 +831,7 @@ class MainView extends Component {
     }
     return false;
   };
+
   checkStatus = (selectedRowKeys) => {
     this.setState({
       btnhide: false
@@ -848,6 +855,7 @@ class MainView extends Component {
       selectedRowKeys: selectedRowKeys
     });
   };
+
   refundsReceiver = () => {
     confirm({
       title: "Подтверждение",
@@ -878,9 +886,11 @@ class MainView extends Component {
       }
     });
   };
+
   btnIsDisabled = (isRole, args) => {
     return !isRole ? args.filter((eq) => (eq)).length > 0 : true;
   };
+
   loadRpmuData = (recordId) => {
 
     const { dispatch } = this.props;
@@ -898,6 +908,7 @@ class MainView extends Component {
       this.toggleItems(recordId);
     });
   };
+
   exportToExcel = () => {
 
     let authToken = localStorage.getItem("AUTH_TOKEN");
@@ -977,6 +988,7 @@ class MainView extends Component {
     //   });
 
   };
+
   getFileNameByContentDisposition = (contentDisposition) => {
     let regex = /filename[^;=\n]*=(UTF-8(['"]*))?(.*)/;
     let matches = regex.exec(contentDisposition);
