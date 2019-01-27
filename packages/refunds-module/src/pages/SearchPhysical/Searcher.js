@@ -641,6 +641,14 @@ class Searcher extends Component {
       key: 8,
       name: "ГРАЖДАНСТВО",
       value: person.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu
+    }, {
+      key: 9,
+      name: "РЕГИОН (ОБЛАСТЬ)",
+      value: ""
+    }, {
+      key: 10,
+      name: "ТЕЛЕФОН",
+      value: ""
     }
     ];
 
