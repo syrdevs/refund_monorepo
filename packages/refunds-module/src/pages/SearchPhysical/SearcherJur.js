@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
-import formatMessage from '../../utils/formatMessage';
-import style from './Searcher.less';
-import moment from 'moment';
+import React, { Component } from "react";
+import formatMessage from "../../utils/formatMessage";
+import style from "./Searcher.less";
+import moment from "moment";
 import {
   Card,
   Table,
@@ -15,15 +15,15 @@ import {
   Form,
   Tag,
   Modal
-} from 'antd';
-import connect from '../../Redux';
+} from "antd";
+import connect from "../../Redux";
 
 const FormItem = Form.Item;
 const Search = Input.Search;
 
 const formItemLayout = {
   labelCol: { md: 6, xs: 6, sm: 6 },
-  wrapperCol: { md: 18, xs: 18, sm: 18},
+  wrapperCol: { md: 18, xs: 18, sm: 18 }
 };
 
 
@@ -39,28 +39,30 @@ class SearcherJur extends Component {
         "paymentCount": null,
         "paymentSum": null
       },
-      loading:false,
-      payes:[],
-      yearDo:null,
+      loading: false,
+      payes: [],
+      yearDo: null
     };
   }
 
 
-  monthCellRender=(value)=>{
-    let result=(<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>);
+  monthCellRender = (value) => {
+    let result = (<div style={{ backgroundColor: "red", opacity: "0.1", height: "100%", width: "100%" }}></div>);
     console.log(this.state.payes);
     console.log("000----0000");
-    (Array.isArray(this.state.payes) ? this.state.payes : [] ).forEach((item) => {
-      if(item.period===value.format('MMYYYY')) {
-        result= (
+    (Array.isArray(this.state.payes) ? this.state.payes : []).forEach((item) => {
+      if (item.period === value.format("MMYYYY")) {
+        result = (
           <div
-            style={{backgroundColor: '#EEF9E9', height: '100%', width: '100%', padding: '10px'}}
-            onClick={()=>{this.ShowDetailofMonth(item.detailList, value)}}
-            >
+            style={{ backgroundColor: "#EEF9E9", height: "100%", width: "100%", padding: "10px" }}
+            onClick={() => {
+              this.ShowDetailofMonth(item.detailList, value);
+            }}
+          >
             <p>Сумма: {item.totalAmount}</p>
             <p>Кол-во: {item.totalElements}</p>
           </div>
-        )
+        );
       }
     });
     return result;
@@ -80,48 +82,48 @@ class SearcherJur extends Component {
       return (<div style={{backgroundColor:'red', opacity: '0.1', height: '100%', width: '100%'}}></div>)
     }*/
 
-  }
+  };
 
 
-  ShowDetailofMonth=(value, date)=>{
-    if(value.length) {
+  ShowDetailofMonth = (value, date) => {
+    if (value.length) {
       Modal.info({
-        title: 'Платежи в разрезе КНП за '+date.format('MMMM'),
+        title: "Платежи в разрезе КНП за " + date.format("MMMM"),
         content: (
           <div>
-            {value.map(item=>(<p>{item.knp}. Сумма: {item.amount}, кол-во: {item.count}</p>))}
+            {value.map(item => (<p>{item.knp}. Сумма: {item.amount}, кол-во: {item.count}</p>))}
           </div>
         ),
         onOk() {
-        },
+        }
       });
     }
-  }
+  };
 
 
-  searchperson=(value)=>{
+  searchperson = (value) => {
     const { dispatch } = this.props;
     this.setState({
       loading: true,
       bin: value
-    },()=>{
+    }, () => {
       dispatch({
-        type: 'universal/SearcherJur',
+        type: "universal/SearcherJur",
         payload: {
-          bin: this.state.bin,
-        },
+          bin: this.state.bin
+        }
       }).then(() => {
-        if (JSON.stringify(this.props.universal.searcherjur)!=="{}" && this.props.universal.searcherjur) {
+        if (JSON.stringify(this.props.universal.searcherjur) !== "{}" && this.props.universal.searcherjur) {
           this.setState({
-            jur: this.props.universal.searcherjur,
+            jur: this.props.universal.searcherjur
           }, () => {
-            if(this.state.yearDo===null){
+            if (this.state.yearDo === null) {
               this.payesSearcher(moment(new Date()).year());
-            }else{
-              this.payesSearcher(this.state.yearDo)
+            } else {
+              this.payesSearcher(this.state.yearDo);
             }
 
-          })
+          });
         }
         else {
           this.setState({
@@ -133,66 +135,66 @@ class SearcherJur extends Component {
               "paymentSum": null
             },
             loading: false,
-            payes:[]
-          })
+            payes: []
+          });
         }
       });
-    })
-  }
-
-  onPanelChange=(value, mode)=>{
-    this.payesSearcher(value.year());
-    this.state.yearDo=value.year();
+    });
   };
 
-  payesSearcher=(year)=>{
+  onPanelChange = (value, mode) => {
+    this.payesSearcher(value.year());
+    this.state.yearDo = value.year();
+  };
+
+  payesSearcher = (year) => {
     const { dispatch } = this.props;
     dispatch({
-      type: 'universal/SearcherJurCalendar',
+      type: "universal/SearcherJurCalendar",
       payload: {
         bin: this.state.bin,
         year: year
-      },
-    }).then(()=>{
-      if(this.props.universal.searcherjurcalendar!==undefined){
+      }
+    }).then(() => {
+      if (this.props.universal.searcherjurcalendar !== undefined) {
         this.setState({
           payes: this.props.universal.searcherjurcalendar,
           loading: false
-        })
+        });
       }
       else {
         this.setState({
           payes: [],
           loading: false
-        })
+        });
       }
 
-    })
-  }
+    });
+  };
 
 
   render() {
-    const CardHeight={height:'auto', marginBottom:'10px'};
-    const {jur} = this.state;
+    const CardHeight = { height: "auto", marginBottom: "10px" };
+    const { jur } = this.state;
 
 
     const columns = [{
-      title: 'Наименование',
-      dataIndex: 'name',
-      render: (text) => <div style={{color: 'black'}}>{text}</div>,
-      width: 100,
+      title: "Наименование",
+      dataIndex: "name",
+      render: (text) => <div style={{ color: "black" }}>{text}</div>,
+      width: 100
 
     }, {
-      title: 'Значения',
-      dataIndex: 'value',
-      key: 'value',
-      width: 150,
+      title: "Значения",
+      dataIndex: "value",
+      key: "value",
+      width: 150
     }];
-    const Jurdata  = [
+    const Jurdata = [
       {
-        key:0,
-        name: 'НАИМЕНОВАНИЕ',
-        value: jur.senderName,
+        key: 0,
+        name: "НАИМЕНОВАНИЕ",
+        value: jur.senderName
       },
       /*{
         key:1,
@@ -200,55 +202,63 @@ class SearcherJur extends Component {
         value: jur.senderBin,
       },*/
       {
-        key:1,
-        name: 'РЕГИОН',
-        value: jur.region,
+        key: 1,
+        name: "РЕГИОН",
+        value: jur.region
       },
       {
-        key:2,
-        name: 'РАЙОН',
-        value: jur.senderBankBik,
+        key: 2,
+        name: "РАЙОН",
+        value: jur.senderBankBik
       },
       {
-        key:4,
-        name: 'КОЛИЧЕСТВО ПЛАТЕЖЕЙ',
-        value: jur.paymentCount,
+        key: 4,
+        name: "КОЛИЧЕСТВО ПЛАТЕЖЕЙ",
+        value: jur.paymentCount
       },
       {
-        key:5,
-        name: 'СУММА ПЛАТЕЖЕЙ',
-        value: jur.paymentSum,
+        key: 5,
+        name: "СУММА ПЛАТЕЖЕЙ",
+        value: jur.paymentSum
+      }, {
+        key: 6,
+        name: "КОЛИЧЕСТВО ПОТРЕБИТЕЛЕЙ",
+        value: jur.personCount
+      }, {
+        key: 7,
+        name: "КОЛИЧЕСТВО ВОЗВРАТОВ",
+        value: jur.refundCount
       }
     ];
 
     return (<div>
-        <Spin tip="" spinning={this.state.loading}>
-          <Row style={{ marginBottom:'10px' }}>
+        {/*<Spin tip="" spinning={this.state.loading}>*/}
+          <Row style={{ marginBottom: "10px" }}>
             <Col span={10}>
               <div style={CardHeight}>
                 <Card
-                  style={{height:'140px', marginBottom:'10px'}}
+                  style={{ height: "140px", marginBottom: "10px" }}
                   type="inner"
                   bodyStyle={{ padding: 25 }}
-                  title={formatMessage({ id: 'report.param.searcher' })}
+                  title={formatMessage({ id: "report.param.searcher" })}
                 >
-                  <div style={{display:'block'}}>
-                    <div style={{float:'left', width:this.state.jur.senderBin?'70%':'100%'}}>
+                  <div style={{ display: "block" }}>
+                    <div style={{ float: "left", width: this.state.jur.senderBin ? "70%" : "100%" }}>
                       <Search
                         placeholder="Введите БИН/ИИН"
-                        enterButton={formatMessage({ id: 'system.search' })}
+                        enterButton={formatMessage({ id: "system.search" })}
                         size="large"
                         maxLength={12}
                         onSearch={value => this.searchperson(value)}
                       />
                     </div>
-                    {this.state.jur.senderBin &&<div
-                      style={{float:'left', width:'30%', paddingLeft:'10px'}}>
+                    {this.state.jur.senderBin && <div
+                      style={{ float: "left", width: "30%", paddingLeft: "10px" }}>
                       <Button
-                        size={'large'}
-                        onClick={()=>{
-                          if (this.state.bin){
-                            this.props.searchbybin(this.state.bin)
+                        size={"large"}
+                        onClick={() => {
+                          if (this.state.bin) {
+                            this.props.searchbybin(this.state.bin);
                           }
                         }}
                       >Просмотр платежей</Button>
@@ -257,28 +267,28 @@ class SearcherJur extends Component {
                   </div>
                 </Card>
                 <Card
-                  bodyStyle={{height:'auto'}}
+                  bodyStyle={{ height: "auto" }}
                   title={formatMessage({ id: this.props.persontitle })}
                   type="inner"
                 >
                   <Table
                     columns={columns}
                     dataSource={Jurdata}
-                    style={{height:'auto'}}
-                    pagination={{ pageSize: 50, position: 'none' }}
+                    style={{ height: "auto" }}
+                    pagination={{ pageSize: 50, position: "none" }}
                     showHeader={false}
-                    size={'default'}
+                    size={"default"}
                   />
                 </Card>
               </div>
             </Col>
             <Col span={14}>
               <Card
-                style={{height:'600', marginLeft:'10px'}}
-                title={formatMessage({ id: 'report.param.monthpay' })}
+                style={{ height: "600", marginLeft: "10px" }}
+                title={formatMessage({ id: "report.param.monthpay" })}
                 type="inner"
               >
-                <div style={{height: '500px'}}>
+                <div style={{ height: "500px" }}>
                   <Calendar
                     onPanelChange={this.onPanelChange}
                     mode='year'
@@ -287,20 +297,21 @@ class SearcherJur extends Component {
                     fullscreen
                   />
                 </div>
-                <div style={{height:'50px', marginLeft:'10px'}}>
+                <div style={{ height: "50px", marginLeft: "10px" }}>
                 </div>
               </Card>
             </Col>
           </Row>
-        </Spin>
+        {/*</Spin>*/}
       </div>
     );
   }
 }
+
 export default connect(({ universal, loading }) => {
   return {
     universal,
-    loadingData: loading.effects['universal/SearcherJur'],
+    loadingData: loading.effects["universal/SearcherJur"]
   };
 })(SearcherJur);
 
@@ -437,6 +448,7 @@ export default connect(({ universal, loading }) => {
                       </div>
                     </div>
                   </div>
-                </div>*/}
+                </div>*/
+}
 
 

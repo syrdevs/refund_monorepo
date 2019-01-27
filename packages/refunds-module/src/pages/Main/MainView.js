@@ -220,7 +220,7 @@ class MainView extends Component {
           "isVisible": true,
           "dataIndex": "receiptAppdateToFsms"
         }, {
-          "title": "Дата поступление заявки на возврат",
+          "title": "Дата поступления заявки на возврат",
           "isVisible": true,
           "dataIndex": "entryDate"
         }, {

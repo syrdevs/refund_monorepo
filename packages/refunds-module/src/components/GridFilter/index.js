@@ -656,14 +656,13 @@ class GridFilter extends Component {
           params.value = null;
         }
 
-        if (this.props.formFilter && this.props.formFilter.hasOwnProperty(filterItem.name)) {
-          params.value = this.props.formFilter[filterItem.name];
-        }
+        // if (this.props.formFilter && this.props.formFilter.hasOwnProperty(filterItem.name)) {
+        //   params.value = this.props.formFilter[filterItem.name];
+        // }
 
         if (filterItem.withMax) {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
             <Input onKeyDown={this.onKeyPress} onChange={(e) => {
-
               this.withmaxfieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value, filterItem.withMax);
             }} value={formFilters[filterItem.name]} style={{ width: "100%" }} {...params}/></div>);
         }

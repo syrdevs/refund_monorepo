@@ -94,7 +94,7 @@ class Debutors extends Component {
       }
     }, {
       label: "Дата рождения",
-      filterName:"birthdate",
+      filterName: "birthdate",
       type: "date"
     }];
   };
@@ -193,9 +193,9 @@ class Debutors extends Component {
     this.setState({
       sortedInfo: {},
       pagingConfig: {
+        ...this.state.pagingConfig,
         start: 0,
         length: 15,
-        entity: this.state.pagingConfig.entity,
         filter: {},
         sort: []
       }

@@ -7,6 +7,7 @@ import {
   Col,
   Spin,
   Dropdown,
+  Modal,
   Menu
 } from "antd";
 import connect from "../../Redux";
@@ -292,22 +293,18 @@ class Requests extends Component {
       },
       {
         "title": "Дата платежного поручения",
-        "isVisible": true,
         "dataIndex": "payOrderDate"
       },
       {
         "title": "Референс",
-        "isVisible": true,
         "dataIndex": "reference"
       },
       {
         "title": "КНП",
-        "isVisible": true,
         "dataIndex": "dknpId.code"
       },
       {
         "title": "Возвратов",
-        "isVisible": true,
         "dataIndex": "refundCount"
       }
     ];
@@ -318,16 +315,23 @@ class Requests extends Component {
       body: {
         "entityClass": "application",
         "fileName": formatMessage({ id: "menu.refunds.requests" }),
-        "src": {
-          "searched": true,
-          "data": this.state.pagingConfig.src.data
-        },
+        filter: this.state.pagingConfig.filter,
+        // "src": {
+        //   "searched": true,
+        //   "data": this.state.pagingConfig.src.data
+        // },
         "columns": columns.filter(column => column.isVisible).map(x => ({ dataIndex: x.dataIndex, title: x.title }))
       },
       getResponse: (response) => {
         if (response.status === 200) {
           if (response.data && response.data.type)
             saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        } else if (response.status === 400) {
+          console.log(response);
+          // Modal.error({
+          //   title: "Ошибка",
+          //   content: response.data
+          // });
         }
       }
     });

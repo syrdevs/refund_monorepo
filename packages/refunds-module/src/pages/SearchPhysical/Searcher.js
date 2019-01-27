@@ -468,7 +468,7 @@ class Searcher extends Component {
             filter: { ...this.state.parameters.filter, "firstName": undefined }
           }
         });
-      }else{
+      } else {
         this.setState({
           parameters: {
             ...this.state.parameters,
@@ -490,7 +490,7 @@ class Searcher extends Component {
             filter: { ...this.state.parameters.filter, "lastName": undefined }
           }
         });
-      }else{
+      } else {
         this.setState({
           parameters: {
             ...this.state.parameters,
@@ -508,14 +508,15 @@ class Searcher extends Component {
             filter: { ...this.state.parameters.filter, "patronymic": undefined }
           }
         });
-      }else{
-      this.setState({
-        parameters: {
-          ...this.state.parameters,
-          filter: { ...this.state.parameters.filter, "patronymic": value }
-        }
-      });
-    }}
+      } else {
+        this.setState({
+          parameters: {
+            ...this.state.parameters,
+            filter: { ...this.state.parameters.filter, "patronymic": value }
+          }
+        });
+      }
+    }
     if (filterItem === "birthdate") {
       if (value === "") {
         this.setState({
@@ -524,14 +525,15 @@ class Searcher extends Component {
             filter: { ...this.state.parameters.filter, "birthdate": undefined }
           }
         });
-      }else{
-      this.setState({
-        parameters: {
-          ...this.state.parameters,
-          filter: { ...this.state.parameters.filter, "birthdate": value }
-        }
-      });
-    }}
+      } else {
+        this.setState({
+          parameters: {
+            ...this.state.parameters,
+            filter: { ...this.state.parameters.filter, "birthdate": value }
+          }
+        });
+      }
+    }
 
 
   };
@@ -666,9 +668,12 @@ class Searcher extends Component {
     }, {
       key: 13,
       name: "Категория потребителя".toUpperCase(),
-      value: ""
-    }
-    ];
+      value: personMED.categories ? personMED.categories.toUpperCase() : ""
+    }, {
+      key: 14,
+      name: "ПАКЕТ СТРАХОВАНИЯ",
+      value: personMED.insurancePackage && personMED.insurancePackage.nameRu ? personMED.insurancePackage.nameRu.toUpperCase() : ""
+    }];
 
 
     /**/
@@ -756,260 +761,262 @@ class Searcher extends Component {
                  dataSource={this.props.universal2.references[this.state.parameters.entity] ? this.props.universal2.references[this.state.parameters.entity].content ? this.props.universal2.references[this.state.parameters.entity].content : [] : []}/>
 
         </Modal>
-        <Spin tip="" spinning={this.state.loading && this.state.loading1 && this.state.loading2}>
-          <Row style={{ marginBottom: "10px" }}>
-            <Row>
-              <div style={CardHeight}>
+        {/*<Spin tip="" spinning={this.state.loading && this.state.loading1 && this.state.loading2}>*/}
+        <Row style={{ marginBottom: "10px" }}>
+          <Row>
+            <div style={CardHeight}>
 
 
-                <Card
-                  style={{ marginBottom: "10px" }}
-                  type="inner"
-                  bodyStyle={{ padding: 25 }}
-                  title={formatMessage({ id: "report.param.searcher" })}
-                >
+              <Card
+                style={{ marginBottom: "10px" }}
+                type="inner"
+                bodyStyle={{ padding: 25 }}
+                title={formatMessage({ id: "report.param.searcher" })}
+              >
 
-                  <Col span={8}>
-
-
-                    <div style={mBottom}>ИИН:
-                      <div style={{ width: "100%" }}>
-                        <Input style={{ width: "80%" }} value={this.state.parameters.filter.iin} maxLength={12}
-                               onChange={(e) => {
-                                 this.fieldOnChange("iin", e.target.value);
-                               }}/>
-                      </div>
+                <Col span={12}>
+                  <div style={mBottom}>ИИН:
+                    <div style={{ width: "100%" }}>
+                      <Row>
+                        <Col span={12}>
+                          <Input style={{ width: "100%" }} value={this.state.parameters.filter.iin} maxLength={12}
+                                 onChange={(e) => {
+                                   this.fieldOnChange("iin", e.target.value);
+                                 }}/>
+                        </Col>
+                        <Col span={8}>
+                          {this.state.person.iin &&
+                          <Button
+                            style={{ marginLeft: "5px" }}
+                            onClick={() => {
+                              if (this.state.iin) {
+                                //this.props.searchbyiin(this.state.iin);
+                                this.props.onSelect(this.state.iin);
+                              }
+                            }}>
+                            Просмотр платежей
+                          </Button>
+                          }
+                        </Col>
+                      </Row>
                     </div>
-                    {this.state.visibleFilter &&
-                    <div style={mBottom}>Фамилия:
-                      <Input style={{ width: "100%" }}
-                             value={this.state.parameters.filter.lastName ? this.state.parameters.filter.lastName.toUpperCase() : ""}
-                             onChange={(e) => {
-                               this.fieldOnChange("lastName", e.target.value);
-                             }}/></div>}
-                    {this.state.visibleFilter && <div style={mBottom}>Имя:
-                      <Input style={{ width: "100%" }}
-                             value={this.state.parameters.filter.firstName ? this.state.parameters.filter.firstName.toUpperCase() : ""}
-                             onChange={(e) => {
-                               this.fieldOnChange("firstName", e.target.value);
-                             }}/></div>}
-                    {this.state.visibleFilter && <div style={mBottom}>Отчество:
-                      <Input style={{ width: "100%" }}
-                             value={this.state.parameters.filter.patronymic ? this.state.parameters.filter.patronymic.toUpperCase() : ""}
-                             onChange={(e) => {
-                               this.fieldOnChange("patronymic", e.target.value);
-                             }}/></div>}
-                    {this.state.visibleFilter && <div style={mBottom}>День рождения: <div style={{ width: "100%" }}>
-                      <DatePicker style={{ width: "40%" }} format={"DD.MM.YYYY"} onChange={(moment, dateString) => {
-                        this.fieldOnChange("birthdate", dateString);
-                      }}/></div></div>}
-                    {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
-                    <Form layout={"vertical"}>
+                  </div>
+                  {this.state.visibleFilter &&
+                  <div style={mBottom}>Фамилия:
+                    <Input style={{ width: "100%" }}
+                           value={this.state.parameters.filter.lastName ? this.state.parameters.filter.lastName.toUpperCase() : ""}
+                           onChange={(e) => {
+                             this.fieldOnChange("lastName", e.target.value);
+                           }}/></div>}
+                  {this.state.visibleFilter && <div style={mBottom}>Имя:
+                    <Input style={{ width: "100%" }}
+                           value={this.state.parameters.filter.firstName ? this.state.parameters.filter.firstName.toUpperCase() : ""}
+                           onChange={(e) => {
+                             this.fieldOnChange("firstName", e.target.value);
+                           }}/></div>}
+                  {this.state.visibleFilter && <div style={mBottom}>Отчество:
+                    <Input style={{ width: "100%" }}
+                           value={this.state.parameters.filter.patronymic ? this.state.parameters.filter.patronymic.toUpperCase() : ""}
+                           onChange={(e) => {
+                             this.fieldOnChange("patronymic", e.target.value);
+                           }}/></div>}
+                  {this.state.visibleFilter && <div style={mBottom}>День рождения: <div style={{ width: "100%" }}>
+                    <DatePicker style={{ width: "40%" }} format={"DD.MM.YYYY"} onChange={(moment, dateString) => {
+                      this.fieldOnChange("birthdate", dateString);
+                    }}/></div></div>}
+                  {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
+                  <Form layout={"vertical"}>
 
-                      < Button style={{ margin: "10px 0 0 0px" }} type='primary'
-                               onClick={this.applyFilter}>
-                        {formatMessage({ id: "system.search" })}
-                      </Button>
-                      <Button style={{ margin: "10px 0 0 5px" }}
-                              onClick={this.clearFilter}>{formatMessage({ id: "system.clear" })}</Button>
-                      {!this.state.visibleFilter && < Button style={{ margin: "10px 0 0 5px" }}
-                                                             onClick={() => {
-                                                               this.setState({
-                                                                 visibleFilter: true
-                                                               });
-                                                             }}>
-                        {"Расширенный поиск"}
-                      </Button>}
-                      {this.state.visibleFilter && < Button style={{ margin: "10px 0 0 5px" }}
-                                                            onClick={() => {
-                                                              this.setState({
-                                                                visibleFilter: false
-                                                              });
-                                                            }}>
-                        {"Свернуть"}
-                      </Button>}
-
-                    </Form>
-
-
-                    {/*<Search*/}
-                    {/*placeholder="Введите ИИН"*/}
-                    {/*enterButton={formatMessage({ id: "system.search" })}*/}
-                    {/*size="large"*/}
-                    {/*maxLength={12}*/}
-                    {/*style={{ width: 600 }}*/}
-                    {/*onSearch={value => this.searchperson(value)}*/}
-
-                    {/*/>*/}
-                    {/*<GridFilter*/}
-                    {/*// clearFilter={this.clearFilter(pageNumber)}*/}
-                    {/*clearFilter={(pageNumber) => this.clearFilter(pageNumber)}*/}
-                    {/*applyFilter={(filter) => this.applyFilter(filter)} key={"1"}*/}
-                    {/*filterForm={this.state.filterForm}*/}
-                    {/*dateFormat={dateFormat}/>*/}
-
-                  </Col>
-                  <Col span={8}>
-                    {this.state.person.iin &&
-                    < Button style={{ marginTop: "21px", marginLeft: "-94px" }}
-                             onClick={() => {
-                               if (this.state.iin) {
-                                 //this.props.searchbyiin(this.state.iin);
-                                 this.props.onSelect(this.state.iin);
-                               }
-                             }}>
-                      Просмотр платежей
+                    < Button style={{ margin: "10px 0 0 0px" }} type='primary'
+                             onClick={this.applyFilter}>
+                      {formatMessage({ id: "system.search" })}
                     </Button>
-                    }
-                  </Col>
+                    <Button style={{ margin: "10px 0 0 5px" }}
+                            onClick={this.clearFilter}>{formatMessage({ id: "system.clear" })}</Button>
+                    {!this.state.visibleFilter && < Button style={{ margin: "10px 0 0 5px" }}
+                                                           onClick={() => {
+                                                             this.setState({
+                                                               visibleFilter: true
+                                                             });
+                                                           }}>
+                      {"Расширенный поиск"}
+                    </Button>}
+                    {this.state.visibleFilter && < Button style={{ margin: "10px 0 0 5px" }}
+                                                          onClick={() => {
+                                                            this.setState({
+                                                              visibleFilter: false
+                                                            });
+                                                          }}>
+                      {"Свернуть"}
+                    </Button>}
 
-                </Card>
-
-              </div>
-            </Row>
+                  </Form>
 
 
-            <Tabs
-              defaultActiveKey="1"
-              tabPosition={"left"}
-              style={{ height: "auto", marginTop: "20px" }}
-            >
-              <TabPane tab={formatMessage({ id: this.props.persontitle })}
-                       key="1"
-                       disabled={!personRPN.iin}
-              >
-                <Row gutter={12}>
-                  <Col span={12}>
-                    <Card
-                      bodyStyle={{ height: "auto" }}
-                      title={formatMessage({ id: "menu.payments.searcherRPM" })}
-                      type="inner"
-                    >
-                      <Table
-                        columns={columns}
-                        dataSource={data}
-                        pagination={{ pageSize: 50, position: "none" }}
-                        showHeader={false}
-                        size={"default"}
-                      />
-                    </Card>
-                  </Col>
-                  <Col span={12}>
-                    <Card
-                      bodyStyle={{ height: "auto" }}
-                      title={formatMessage({ id: "menu.payments.searcherGBDFL" })}
-                      type="inner"
-                    >
-                      <Table
-                        columns={columns}
-                        dataSource={dataRPM}
-                        pagination={{ pageSize: 50, position: "none" }}
-                        showHeader={false}
-                        size={"default"}
-                      />
-                    </Card>
-                  </Col>
-                  <Col span={24}>
-                    <Card
-                      style={{ marginTop: "10px" }}
-                      bodyStyle={{ height: "auto" }}
-                      type="inner"
-                    >
-                      <Table
-                        columns={columns}
-                        dataSource={secondData}
-                        className={"customanttable"}
-                        pagination={{ pageSize: 50, position: "none" }}
-                        showHeader={false}
-                        size={"default"}
-                      />
-                    </Card>
-                  </Col>
-                </Row>
-              </TabPane>
-              <TabPane tab={formatMessage({ id: "report.param.monthpay" })}
-                       key="2"
-                       disabled={!personRPN.iin}
-              >
-                <Row>
-                  <Col span={24}>
-                    <Card
-                      style={{ height: "600", marginTop: "10px" }}
-                      title={formatMessage({ id: "report.param.monthpay" })}
-                      type="inner"
-                    >
-                      <Calendar
-                        onPanelChange={this.onPanelChange}
-                        mode='year'
-                        className={historystyle.customCalendar}
-                        monthCellRender={this.monthCellRender}
-                        fullscreen
-                      />
-                    </Card>
-                  </Col>
-                </Row>
-              </TabPane>
-              <TabPane
-                tab={formatMessage({ id: "menu.payments.medicalsearcher" })}
-                key="3"
-                disabled={!personRPN.iin}
-              >
-                <Medicine/>
-              </TabPane>
-              <TabPane
-                tab={"Список плательщиков"}
-                key="4"
-                disabled={!personRPN.iin}
-              >
-                <Employees
-                  onSearch={this.state.iin}
-                />
-              </TabPane>
-              <TabPane tab={"История о задолженности"}
-                       key="5"
-                       disabled={!personRPN.iin}
-              >
-                <Row>
-                  <Col span={24}>
-                    <Card
-                      style={{ height: "600", marginTop: "10px" }}
-                      title={formatMessage({ id: "История о задолженности" })}
-                      type="inner"
-                    >
-                      <Calendar
-                        onPanelChange={this.onPanelChange}
-                        mode='year'
-                        className={historystyle}
-                        monthCellRender={this.monthCellRender2}
-                        fullscreen
-                        defaultValue={moment("2018-02-27T10:00:00")}
-                        validRange={[moment("2018-02-27T10:00:00"), moment("2018-02-27T10:00:00")]}
-                      />
-                      <Calendar
-                        onPanelChange={this.onPanelChange}
-                        mode='year'
-                        className={historystyle}
-                        monthCellRender={this.monthCellRender2}
-                        fullscreen
-                        defaultValue={moment("2019-02-27T10:00:00")}
-                        validRange={[moment("2019-02-27T10:00:00"), moment("2019-02-27T10:00:00")]}
-                      />
-                    </Card>
-                  </Col>
-                </Row>
-              </TabPane>
-              <TabPane
-                tab={"Обращения"}
-                key="6"
-                disabled={!personRPN.iin}
-              >
-                <Appeals
-                  onSearch={this.state.iin}/>
-              </TabPane>
+                  {/*<Search*/}
+                  {/*placeholder="Введите ИИН"*/}
+                  {/*enterButton={formatMessage({ id: "system.search" })}*/}
+                  {/*size="large"*/}
+                  {/*maxLength={12}*/}
+                  {/*style={{ width: 600 }}*/}
+                  {/*onSearch={value => this.searchperson(value)}*/}
 
-            </Tabs>
+                  {/*/>*/}
+                  {/*<GridFilter*/}
+                  {/*// clearFilter={this.clearFilter(pageNumber)}*/}
+                  {/*clearFilter={(pageNumber) => this.clearFilter(pageNumber)}*/}
+                  {/*applyFilter={(filter) => this.applyFilter(filter)} key={"1"}*/}
+                  {/*filterForm={this.state.filterForm}*/}
+                  {/*dateFormat={dateFormat}/>*/}
+
+                </Col>
+
+              </Card>
+
+            </div>
           </Row>
-        </Spin>
+
+
+          <Tabs
+            defaultActiveKey="1"
+            tabPosition={"left"}
+            style={{ height: "auto", marginTop: "20px" }}
+          >
+            <TabPane tab={formatMessage({ id: this.props.persontitle })}
+                     key="1"
+                     disabled={!personRPN.iin}
+            >
+              <Row gutter={12}>
+                <Col span={12}>
+                  <Card
+                    bodyStyle={{ height: "auto" }}
+                    title={formatMessage({ id: "menu.payments.searcherRPM" })}
+                    type="inner"
+                  >
+                    <Table
+                      columns={columns}
+                      dataSource={data}
+                      pagination={{ pageSize: 50, position: "none" }}
+                      showHeader={false}
+                      size={"default"}
+                    />
+                  </Card>
+                </Col>
+                <Col span={12}>
+                  <Card
+                    bodyStyle={{ height: "auto" }}
+                    title={formatMessage({ id: "menu.payments.searcherGBDFL" })}
+                    type="inner"
+                  >
+                    <Table
+                      columns={columns}
+                      dataSource={dataRPM}
+                      pagination={{ pageSize: 50, position: "none" }}
+                      showHeader={false}
+                      size={"default"}
+                    />
+                  </Card>
+                </Col>
+                <Col span={24}>
+                  <Card
+                    style={{ marginTop: "10px" }}
+                    bodyStyle={{ height: "auto" }}
+                    type="inner"
+                  >
+                    <Table
+                      columns={columns}
+                      dataSource={secondData}
+                      className={"customanttable"}
+                      pagination={{ pageSize: 50, position: "none" }}
+                      showHeader={false}
+                      size={"default"}
+                    />
+                  </Card>
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane tab={formatMessage({ id: "report.param.monthpay" })}
+                     key="2"
+                     disabled={!personRPN.iin}
+            >
+              <Row>
+                <Col span={24}>
+                  <Card
+                    style={{ height: "600", marginTop: "10px" }}
+                    title={formatMessage({ id: "report.param.monthpay" })}
+                    type="inner"
+                  >
+                    <Calendar
+                      onPanelChange={this.onPanelChange}
+                      mode='year'
+                      className={historystyle.customCalendar}
+                      monthCellRender={this.monthCellRender}
+                      fullscreen
+                    />
+                  </Card>
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane
+              tab={formatMessage({ id: "menu.payments.medicalsearcher" })}
+              key="3"
+              disabled={!personRPN.iin}
+            >
+              <Medicine/>
+            </TabPane>
+            <TabPane
+              tab={"Список плательщиков"}
+              key="4"
+              disabled={!personRPN.iin}
+            >
+              <Employees
+                onSearch={this.state.iin}
+              />
+            </TabPane>
+            <TabPane tab={"История о задолженности"}
+                     key="5"
+                     disabled={!personRPN.iin}
+            >
+              <Row>
+                <Col span={24}>
+                  <Card
+                    style={{ height: "600", marginTop: "10px" }}
+                    title={formatMessage({ id: "История о задолженности" })}
+                    type="inner"
+                  >
+                    <Calendar
+                      onPanelChange={this.onPanelChange}
+                      mode='year'
+                      className={historystyle}
+                      monthCellRender={this.monthCellRender2}
+                      fullscreen
+                      defaultValue={moment("2018-02-27T10:00:00")}
+                      validRange={[moment("2018-02-27T10:00:00"), moment("2018-02-27T10:00:00")]}
+                    />
+                    <Calendar
+                      onPanelChange={this.onPanelChange}
+                      mode='year'
+                      className={historystyle}
+                      monthCellRender={this.monthCellRender2}
+                      fullscreen
+                      defaultValue={moment("2019-02-27T10:00:00")}
+                      validRange={[moment("2019-02-27T10:00:00"), moment("2019-02-27T10:00:00")]}
+                    />
+                  </Card>
+                </Col>
+              </Row>
+            </TabPane>
+            <TabPane
+              tab={"Обращения"}
+              key="6"
+              disabled={!personRPN.iin}
+            >
+              <Appeals
+                onSearch={this.state.iin}/>
+            </TabPane>
+
+          </Tabs>
+        </Row>
       </div>
     );
   }
