@@ -101,7 +101,7 @@ class PaymentsMT102 extends Component {
         type: "betweenDate"
       },
       {
-        label: "Отправитель (БИН)",
+        label: "Плательщик (БИН/ИИН)",
         name: "senderBin",
         type: "text",
         withMax: 12
@@ -191,7 +191,7 @@ class PaymentsMT102 extends Component {
         "dataIndex": "iin",
         "isVisible": "true"
       }, {
-        "title": "Отправитель (БИН/ИИН)",
+        "title": "Плательщик (БИН/ИИН)",
         "dataIndex": "senderBin",
         "isVisible": "true"
       }, {
