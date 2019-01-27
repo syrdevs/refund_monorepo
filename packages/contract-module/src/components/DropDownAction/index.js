@@ -21,7 +21,7 @@ import {
 import connect from "../../Redux";
 import moment from "moment/moment";
 import saveAs from "file-saver";
-import request from '../../utils/request';
+import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 
 class DropDownAction extends Component {
@@ -130,7 +130,7 @@ class DropDownAction extends Component {
 
     return (<Dropdown
       trigger={["click"]}
-      disabled={this.props.disabled}
+      disabled={this.props.disabled || menuData.length === 0}
       overlay={menu}>
       <Button
         loading={this.state.loading} style={{ marginLeft: 5 }}>
