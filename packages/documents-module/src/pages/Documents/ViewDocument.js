@@ -260,26 +260,27 @@ class ViewDocument extends Component {
               "alias": null,
               "id": this.props.location.query.id,
               "xml": e[0].xml
+            },
+            getResponse: (data)=>{
+              if (data.status>=400) {
+                Modal.error({
+                  content: data.data.Message
+                });
+              }
+              else {
+                this.setState({
+                  ShowSign: false,
+                  buttonShow: false
+                }, () => {
+                  // router.push('/documents');
+                  Modal.info({
+                    content: "Документ подписан"
+                  });
+                });
+              }
             }
-          }).then(data => {
-            console.log(data);
-
-            this.setState({
-              ShowSign: false,
-              buttonShow: false
-            }, () => {
-              // router.push('/documents');
-              Modal.info({
-                content: "Документ подписан"
-              });
-              console.log(e);
-            });
-          })
-            .catch(function(e) {
-              Modal.error({
-                content: "some messages...some messages..."
-              });
-            });
+          }).then(data => {})
+            .catch((e)=> {});
         }}
       />}
       <Card style={{ borderRadius: "5px", marginBottom: "10px" }} bodyStyle={{ padding: 0 }} bordered={true}>
