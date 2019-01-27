@@ -72,7 +72,6 @@ class ViewDocument extends Component {
   componentDidMount() {
 
     const { dispatch } = this.props;
-    console.log(this.props.location.query.id);
     this.loadDataById(this.props.location.query.id);
     this.loadDocRoutePath();
   }
@@ -274,8 +273,10 @@ class ViewDocument extends Component {
                 }, () => {
                   // router.push('/documents');
                   Modal.info({
-                    content: "Документ подписан"
+                    content: "Документ подписан",
                   });
+                  this.loadDataById(this.props.location.query.id);
+                  this.loadDocRoutePath();
                 });
               }
             }
