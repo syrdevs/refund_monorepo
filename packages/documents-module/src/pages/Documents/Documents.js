@@ -373,16 +373,20 @@ class Documents extends Component {
   exportToExcel = () => {
 
     let authToken = localStorage.getItem("AUTH_TOKEN");
-    let columns = JSON.parse(localStorage.getItem("AppealPageColumns"));
+    let columns = JSON.parse(localStorage.getItem("DocumentPage"));
 
     request("/api/refund/exportToExcel", {
       method: "POST",
       responseType: "blob",
       body: {
+        
         "entityClass": "correspondence",
         "fileName": "Корреспонденция",
         "filter": this.state.parameters.filter,
-        "columns": [
+        "columns": [ {"title": "Статус",
+      isVisible: true,
+      "dataIndex": "status.statusName",
+     }
         ].concat(columns.filter(column => column.isVisible))
       },
       getResponse: (response) => {
