@@ -211,8 +211,6 @@ class ViewDocument extends Component {
       float: "right"
     };
 
-    console.log(this.state);
-
     const CardHeight = { height: "auto", marginBottom: "10px" };
     return (<ContentLayout
       contentName={formatMessage({ id: "app.module.documents.title.view" })}
@@ -260,8 +258,8 @@ class ViewDocument extends Component {
               "id": this.props.location.query.id,
               "xml": e[0].xml
             },
-            getResponse: (data)=>{
-              if (data.status>=400) {
+            getResponse: (data) => {
+              if (data.status >= 400) {
                 Modal.error({
                   content: data.data.Message
                 });
@@ -273,15 +271,17 @@ class ViewDocument extends Component {
                 }, () => {
                   // router.push('/documents');
                   Modal.info({
-                    content: "Документ подписан",
+                    content: "Документ подписан"
                   });
                   this.loadDataById(this.props.location.query.id);
                   this.loadDocRoutePath();
                 });
               }
             }
-          }).then(data => {})
-            .catch((e)=> {});
+          }).then(data => {
+          })
+            .catch((e) => {
+            });
         }}
       />}
       <Card style={{ borderRadius: "5px", marginBottom: "10px" }} bodyStyle={{ padding: 0 }} bordered={true}>
@@ -332,8 +332,15 @@ class ViewDocument extends Component {
                   <p>Тип
                     документа: {this.state.data ? this.state.data.documentType ? this.state.data.documentType.entDesc : "" : ""}</p>
                   <p>{this.state.data ? this.state.data.statusDate ? this.state.data.status.statusDate : "" : ""}</p>
-                  <br/>
-
+                  <p>Дата
+                    публикации: {this.state.data && this.state.data.entryDateTime ? this.state.data.entryDateTime : ""}</p>
+                  <p>Статус
+                    документа: {this.state.data && this.state.data.documentSigned ? "Подписан" : "Ожидает подписания"}</p>
+                  {(this.state.data && this.state.data.documentSigned) &&
+                  <p>Дата подписания: {this.state.data.signDateTime}</p>}
+                  <p>Статус: {this.state.data && this.state.data.status ? this.state.data.status.statusName : ""}</p>
+                  {/*if (documentSigned) {*/}
+                  {/*Дата подписания: signDateTime*/}
                 </Card>
                 <Card
                   style={{ margin: "10px" }}
@@ -361,10 +368,12 @@ class ViewDocument extends Component {
                 >
                   {/*current={this.state.dataRoutePath}*/}
                   <Steps direction="vertical">
-                    {this.state.dataRoutePath.map((item, index) => <Step key={item.stepName} title={item.stepName}
-                                                                         description={this.stepDescr(item.stepStatus, index)}
-                                                                         status="finish"
-                                                                         icon={this.getIconStep(item.stepStatus, index)}/>)}
+                    {this.state.dataRoutePath.length && this.state.dataRoutePath.map((item, index) => <Step
+                      key={item.stepName}
+                      title={item.stepName}
+                      description={this.stepDescr(item.stepStatus, index)}
+                      status="finish"
+                      icon={this.getIconStep(item.stepStatus, index)}/>)}
                   </Steps>
                   {/*<Steps direction="vertical">
                     <p>Сегодня</p>
