@@ -128,7 +128,12 @@ class PaymentsMT102 extends Component {
         label: "ID",
         name: "id",
         type: "text"
+      }, {
+        label: "Возвращенные ",
+        name: "isRefunded",
+        type: "checkbox"
       }
+      //
       /*{
         label: 'Дата платежа',
         name: 'createdon',
@@ -237,6 +242,9 @@ class PaymentsMT102 extends Component {
 
     if (filter["stornReason.code"]) {
       filter["stornReason.code"] = "1";
+    }
+    if (filter["isRefunded"]===false) {
+      delete filter["isRefunded"];
     }
 
     this.setState({
@@ -455,12 +463,12 @@ class PaymentsMT102 extends Component {
           loading={this.props.loadingData}
           fixedHeader={true}
           rowSelection={true}
-          // rowClassName={(record) => {
-          //   if (record.isRefunded) {
-          //     return 'redRow';
-          //   }
-          // }
-          // }
+           rowClassName={(record) => {
+             if (record.isRefunded) {
+               return 'redRow';
+             }
+           }
+           }
           columns={this.state.columns}
           onColumnsChange={(isChanged, dataIndex) => {
             console.log(dataIndex);
