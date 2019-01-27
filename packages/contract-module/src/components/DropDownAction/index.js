@@ -128,9 +128,12 @@ class DropDownAction extends Component {
       </Menu>
     );
 
+
+    if (menuData.length === 0) return null;
+
     return (<Dropdown
       trigger={["click"]}
-      disabled={this.props.disabled || menuData.length === 0}
+      disabled={this.props.disabled}
       overlay={menu}>
       <Button
         loading={this.state.loading} style={{ marginLeft: 5 }}>
