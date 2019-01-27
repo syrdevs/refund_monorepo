@@ -16,7 +16,7 @@ import { ShowPull } from "@vitacore/refunds-module";
 // import ShowPayment from "../ContractRequests/ShowPayment";
 import ContentLayout from "../../layouts/ContentLayout";
 import request from "../../utils/request";
-
+import DropDownAction from "../../components/DropDownAction";
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
@@ -212,6 +212,8 @@ class ViewDocument extends Component {
       float: "right"
     };
 
+    console.log(this.state);
+
     const CardHeight = { height: "auto", marginBottom: "10px" };
     return (<ContentLayout
       contentName={formatMessage({ id: "app.module.documents.title.view" })}
@@ -319,8 +321,16 @@ class ViewDocument extends Component {
                   <p>Тип
                     документа: {this.state.data ? this.state.data.documentType ? this.state.data.documentType.entDesc : "" : ""}</p>
                   <p>{this.state.data ? this.state.data.statusDate ? this.state.data.status.statusDate : "" : ""}</p>
-
-
+                  <br/>
+                  {this.state.data.documentType &&
+                  <DropDownAction
+                    key={"dropdown_btn"}
+                    disabled={false}
+                    contractId={this.props.location.query && this.props.location.query.id ? this.props.location.query.id : null}
+                    entity={this.state.data.documentType ? this.state.data.documentType.entName : null}
+                    type={2}
+                  />
+                  }
                 </Card>
                 <Card
                   style={{ margin: "10px" }}
