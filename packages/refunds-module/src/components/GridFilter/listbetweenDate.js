@@ -30,11 +30,14 @@ class ListBetweenDate extends React.Component {
 
   render() {
 
-    const { value } = this.props;
+   // const { value } = this.props;
+    const { value } = this.props.RangeDateProps;
 
     if (value === null)
       this.setState({
-        calendarValue: null
+        calendarValue: null,
+        checkboxCheck: false,
+        disableCalendar: false
       });
 
     return (<Row>

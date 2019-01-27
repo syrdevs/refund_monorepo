@@ -513,7 +513,6 @@ class MainView extends Component {
   }
 
   createPull = () => {
-    console.log("creating");
     const { dispatch } = this.props;
     dispatch({
       type: "universal/createPack",
@@ -1027,10 +1026,6 @@ class MainView extends Component {
     const universal = {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
     };
-
-
-    console.log(this.state.pagingConfig);
-
     const dateFormat = "DD.MM.YYYY";
     /*const { universal } = this.props;
     console.log(universal);*/
@@ -1048,7 +1043,7 @@ class MainView extends Component {
           fcolumn={this.state.fcolumn}
           loadingData={this.props.loadingData}
           xmldata={this.state.ImportXMLModal.data}
-          onSelectedRows={(selectedRecords) => console.log(selectedRecords)}
+          onSelectedRows={(selectedRecords) => {}}
         />}
 
         {this.state.ModalChangeDateRefund && <ModalChangeDateRefund
@@ -1201,7 +1196,6 @@ class MainView extends Component {
                         this.clearFilter();
                       }}
                       applyFilter={(filters) => {
-                        console.log(JSON.stringify(filters));
                         this.setFilter(filters);
                       }}
                       filterForm={GridFilterData}
