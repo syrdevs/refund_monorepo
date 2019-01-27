@@ -21,7 +21,7 @@ import {
 import connect from "../../Redux";
 import moment from "moment/moment";
 import saveAs from "file-saver";
-import request from '../../utils/request';
+import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 
 class DropDownAction extends Component {
@@ -127,6 +127,9 @@ class DropDownAction extends Component {
           </Menu.Item>)}
       </Menu>
     );
+
+
+    if (menuData.length === 0) return null;
 
     return (<Dropdown
       trigger={["click"]}

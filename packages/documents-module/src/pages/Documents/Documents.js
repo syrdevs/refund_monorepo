@@ -153,11 +153,19 @@ class Documents extends Component {
       "alias": "routes",
       "filter": {
          "documentIn": true
-      }
+      },
+      "sort": [
+        {
+          "field": "entryDateTime",
+          "desc": true
+        }
+      ]
     },
     // searchButton: false,
     serverFileList: [],
-    sortedInfo: {},
+    sortedInfo: {
+
+    },
     pagingConfig: {
       "start": 0,
       "length": 15,
@@ -537,8 +545,8 @@ class Documents extends Component {
 
                             dataSource={{
                               total: correspondence ? correspondence.totalElements : 0,
-                              pageSize: this.state.pagingConfig.length,
-                              page: this.state.pagingConfig.start + 1,
+                              pageSize: this.state.parameters.length,
+                              page: this.state.parameters.start + 1,
                               data: correspondence ? correspondence.content : null
                             }}
                             actionExport={() => this.exportToExcel()}
@@ -556,7 +564,7 @@ class Documents extends Component {
                                     sort: []
                                   }
                                 }), () => {
-                                  this.loadMainGridData();
+                                  this.loadDocument();
                                 });
                                 return;
                               }

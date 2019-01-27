@@ -304,10 +304,19 @@ class ViewDocument extends Component {
                 </Button>}
                 {this.state.buttonShow &&
                 <Button type="danger" disabled={this.state.data ? this.state.data.documentSigned === true : false}
-                        style={{ marginLeft: "10px" }} onClick={() => {
+                        style={{ marginLeft: "5px" }} onClick={() => {
                   this.viewRejectModal();
                 }}>Отклонить
                 </Button>
+                }
+                {this.state.data.documentType &&
+                <DropDownAction
+                  key={"dropdown_btn"}
+                  disabled={false}
+                  contractId={this.props.location.query && this.props.location.query.id ? this.props.location.query.id : null}
+                  entity={this.state.data.documentType ? this.state.data.documentType.entName : null}
+                  type={2}
+                />
                 }
 
                 <Card
@@ -324,15 +333,7 @@ class ViewDocument extends Component {
                     документа: {this.state.data ? this.state.data.documentType ? this.state.data.documentType.entDesc : "" : ""}</p>
                   <p>{this.state.data ? this.state.data.statusDate ? this.state.data.status.statusDate : "" : ""}</p>
                   <br/>
-                  {this.state.data.documentType &&
-                  <DropDownAction
-                    key={"dropdown_btn"}
-                    disabled={false}
-                    contractId={this.props.location.query && this.props.location.query.id ? this.props.location.query.id : null}
-                    entity={this.state.data.documentType ? this.state.data.documentType.entName : null}
-                    type={2}
-                  />
-                  }
+
                 </Card>
                 <Card
                   style={{ margin: "10px" }}
