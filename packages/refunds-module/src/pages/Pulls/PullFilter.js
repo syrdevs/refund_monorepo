@@ -26,10 +26,8 @@ const RejectModalContent = (prop) => {
 
 class PullFilter extends Component {
   state = {
-
     //first card clicked state
     selectedCardIndex: 0,
-
     ImportModalGrid: {
       visible: true
     },
@@ -42,9 +40,7 @@ class PullFilter extends Component {
     }
   };
 
-  componentWillUnmount = () => {
-
-  };
+  componentWillUnmount = () => {};
 
   componentDidMount = () => {
 
@@ -115,7 +111,7 @@ class PullFilter extends Component {
     //   }
     // }
 
-    this.props.loadPull(item.id);
+    this.props.loadPull(item);
     this.props.statuss(!item.documentStatuss);
   };
 

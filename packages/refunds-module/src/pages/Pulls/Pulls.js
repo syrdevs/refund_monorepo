@@ -310,6 +310,7 @@ class Pulls extends Component {
       ShowSign: false,
       buttonShow: false,
       employvisible: false,
+      disBtn: false
     };
   }
 
@@ -384,7 +385,6 @@ class Pulls extends Component {
   };
 
   componentDidMount() {
-    this.loadMainGridData();
     const { dispatch } = this.props;
     dispatch({
       type: "universal2/getList",
@@ -395,11 +395,16 @@ class Pulls extends Component {
         "alias": null,
         sort: [{ field: "number", desc: true }]
       }
-    }).then((response) => {
+    })
+      .then((response) => {
       if (this.props.universal2.references["refundPack"].content) {
         if (this.props.universal2.references["refundPack"].content.length > 0) {
-          this.loadPull(this.props.universal2.references["refundPack"].content[0].id);
-          this.togglePulls();
+          this.setState({
+            ispublish: this.props.universal2.references["refundPack"].content[0].documentStatuss
+          }, ()=>{
+            this.loadfromfilter(this.props.universal2.references["refundPack"].content[0]);
+            this.togglePulls();
+          });
         }
       }
     });
@@ -621,7 +626,7 @@ class Pulls extends Component {
 
   };
 
-  loadPull = (id) => {
+  loadPull = (id, item) => {
     this.setState({
       pagingConfig: {
         ...this.state.pagingConfig,
@@ -643,6 +648,31 @@ class Pulls extends Component {
       });
     });
   };
+
+  loadfromfilter = (item)=> {
+    this.setState({
+      disBtn:  item,
+      pagingConfig: {
+        ...this.state.pagingConfig,
+        "filter": {
+          "refundPack.id": item.id
+        }
+      }
+    }, () => {
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal2/getList",
+        payload: {
+          ...this.state.pagingConfig
+        }
+      }).then((response) => {
+        this.setState({
+          selectedRowKeys: []
+        });
+      });
+    });
+
+  }
 
   exportToExcel = () => {
 
@@ -739,7 +769,7 @@ class Pulls extends Component {
           <Row>
             <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "5px" }}>
               <Button
-                disabled={this.state.ispublish}
+                disabled={(this.state.ispublish ||    ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) !== 0)  )}
                 onClick={() => {
                   this.publish();
                 }}
@@ -749,7 +779,7 @@ class Pulls extends Component {
                 Опубликовать
               </Button>
               <Button
-                disabled={this.state.pagingConfig.filter["refundPack.id"] === null}
+                disabled={(this.state.pagingConfig.filter["refundPack.id"] === null || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) !== 0))}
                 onClick={() => {
                   this.setState({
                     ShowSign: true
@@ -777,7 +807,7 @@ class Pulls extends Component {
                     extra={<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
                       icon={faTimes}/></Icon>}
                   >
-                    <PullFilter loadPull={(id) => this.loadPull(id)}
+                    <PullFilter loadPull={(id) => this.loadfromfilter(id)}
                                 statuss={(bol) => {
                                   this.setState({
                                     ispublish: !bol
@@ -820,7 +850,7 @@ class Pulls extends Component {
                     onClick={() => {
                       this.togglePulls();
                     }}
-                    disabled={false}
+
                     key={"pulls"}
                   >
                     {formatMessage({ id: "menu.mainview.pulls" })}
@@ -828,14 +858,14 @@ class Pulls extends Component {
                   <Button onClick={() => {
                     this.confirming();
                   }}
-                  disabled={this.state.selectedRowKeys.length === 0}
+                  disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) !== 0))}
                   style={{ marginLeft: "5px" }}
                   key={"confirm"}
                   >
                   Подтвердить ( {this.state.selectedRowKeys.length} )
                   </Button>,
                   <Button
-                  disabled={this.state.selectedRowKeys.length === 0}
+                  disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) !== 0))}
                   onClick={() => {
                   this.rejecting();
                 }}
@@ -850,7 +880,7 @@ class Pulls extends Component {
                     overlay={
                       <Menu>
                          <Menu.Item
-                          disabled={this.state.selectedRowKeys.length === 0}
+                          disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) !== 0))}
                           count={this.state.selectedRowKeys.length}
                           onClick={() => {
                             this.setState({
@@ -861,7 +891,7 @@ class Pulls extends Component {
                         >  Назначить исполнителя ( {this.state.selectedRowKeys.length} )
                         </Menu.Item>
                         <Menu.Item
-                          disabled={this.state.selectedRowKeys.length === 0}
+                          disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) !== 0))}
                           key="2"
                           onClick={() => {
                             this.cancelpull();
@@ -871,6 +901,7 @@ class Pulls extends Component {
                       </Menu>
                     }>
                     <Button
+                      disabled={((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) !== 0)}
                       key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
                       type="down"/></Button>
                   </Dropdown>
