@@ -243,7 +243,7 @@ class PaymentsMT102 extends Component {
     if (filter["stornReason.code"]) {
       filter["stornReason.code"] = "1";
     }
-    if (filter["isRefunded"]===false) {
+    if (filter["isRefunded"] === false) {
       delete filter["isRefunded"];
     }
 
@@ -253,7 +253,7 @@ class PaymentsMT102 extends Component {
         ...this.state.parameters,
         start: 0,
         length: 15,
-        filter: { ...this.state.parameters.filter, ...filter },
+        filter: { ...filter },
         sort: []
       }
     }, () => {
@@ -401,9 +401,9 @@ class PaymentsMT102 extends Component {
           filterContainer: 6,
           parameters: {
             ...this.state.parameters,
-            filter: params
+            filter: { ...this.state.parameters.filter, params }
           }
-        }),()=>{
+        }), () => {
 
         });
       }
@@ -463,12 +463,12 @@ class PaymentsMT102 extends Component {
           loading={this.props.loadingData}
           fixedHeader={true}
           rowSelection={true}
-           rowClassName={(record) => {
-             if (record.isRefunded) {
-               return 'redRow';
-             }
-           }
-           }
+          rowClassName={(record) => {
+            if (record.isRefunded) {
+              return "redRow";
+            }
+          }
+          }
           columns={this.state.columns}
           onColumnsChange={(isChanged, dataIndex) => {
             console.log(dataIndex);

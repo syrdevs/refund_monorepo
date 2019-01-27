@@ -665,7 +665,7 @@ class GridFilter extends Component {
             <Input onKeyDown={this.onKeyPress} onChange={(e) => {
               if (this.props.formFilter && this.props.formFilter[filterItem.name])
                 this.props.formFilter[filterItem.name] = filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value;
-          
+
               if (this.props.formFilter && e.target.value.length === 0) {
                 delete this.props.formFilter[filterItem.name];
               }
@@ -705,8 +705,8 @@ class GridFilter extends Component {
             mode="multiple"
             style={{ width: "100%" }}
             placeholder=""
-            onChange={(value) => {
-              this.fieldOnChange(filterItem, value);
+            onChange={(values) => {
+              this.fieldOnChange(filterItem, values.length === 0 ? null : values);
             }}
             filterOption={(input, option) => {
               return option.props.children.join("").toLowerCase().indexOf(input.toLowerCase()) >= 0;
