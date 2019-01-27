@@ -65,7 +65,7 @@ class Consumer extends Component {
         withMax: 12
       }, {
         label: "Период",
-        name: "createDateTime",
+        name: "_createDateTime",
         type: "listbetweenDate"
       }, {
         label: "Пользователь",
@@ -233,7 +233,7 @@ class Consumer extends Component {
   exportToExcel = () => {
 
     let authToken = localStorage.getItem("AUTH_TOKEN");
-    let columns = JSON.parse(localStorage.getItem("AppealPageColumns"));
+    let columns = JSON.parse(localStorage.getItem("consumerPageColumns"));
 
     request("/api/refund/exportToExcel", {
       method: "POST",
@@ -243,12 +243,7 @@ class Consumer extends Component {
         "fileName": "Сотрудники",
         "filter": this.state.parameters.filter,
         "columns": [
-          {
-            "title": "ИИН",
-            "dataIndex": "iin",
-            "isVisible": "true"
-          }
-        ]
+        ].concat(columns.filter(column => column.isVisible))
       },
       getResponse: (response) => {
         if (response.status === 200) {
@@ -572,7 +567,7 @@ class Consumer extends Component {
       <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
 
         <SmartGridView
-          // name={'paymentspagemt100columns'}
+          name={'consumerPageColumns'}
           // scroll={{ x: "auto" }}
           fixedBody={true}
           actionColumns={[]}
