@@ -395,7 +395,8 @@ class Pulls extends Component {
         "alias": null,
         sort: [{ field: "number", desc: true }]
       }
-    }).then((response) => {
+    })
+      .then((response) => {
       if (this.props.universal2.references["refundPack"].content) {
         if (this.props.universal2.references["refundPack"].content.length > 0) {
           this.setState({
@@ -649,7 +650,6 @@ class Pulls extends Component {
   };
 
   loadfromfilter = (item)=> {
-    console.log(item)
     //console.log(item);
     //disBtn:  (item.currentStatus ? item.currentStatus.result : 1) === 0,*/
       this.setState({
