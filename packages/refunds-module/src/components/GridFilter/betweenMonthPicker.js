@@ -5,7 +5,6 @@ import {
 import componentLocal from "../../locales/components/componentLocal";
 import formatMessage from "../../utils/formatMessage";
 import moment from "moment/moment";
-import CustomMonthPicker from "./ButtonCustom";
 
 const { RangePicker, MonthPicker } = DatePicker;
 const dateFormat = "MM.YYYY";

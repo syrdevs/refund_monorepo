@@ -76,19 +76,19 @@ class PullFilter extends Component {
   };
 
   searchpullcard = (id) => {
-
+    let filter = {};
     this.setState({
       selectedCardIndex: null
     });
-
+    if (id !== "") {
+      filter.number = id
+    }
     const { dispatch } = this.props;
     dispatch({
       type: "universal2/getList",
       payload: {
         ...this.state.pullpagingConfig,
-        filter: {
-          number: id
-        }
+        filter: filter
       }
     })
       .then(() => {
@@ -130,7 +130,6 @@ class PullFilter extends Component {
       this.props.clearPull;
     });
   };
-
 
   deleteObject = (item) => {
     Modal.confirm({

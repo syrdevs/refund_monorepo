@@ -44,6 +44,7 @@ import request from "../../utils/request";
 import { setAcceptToRefund } from "../../services/api";
 import { faUpload } from "@fortawesome/free-solid-svg-icons/index";
 import Guid from "../../utils/Guid";
+import EmployeesModal from "../Options/EmployeesModal";
 
 const { TextArea } = Input;
 const FormItem = Form.Item;
@@ -68,7 +69,6 @@ class Pulls extends Component {
     super(props);
 
     this.state = {
-
       ImportXMLModal: {
         visible: false,
         data: []
@@ -104,7 +104,7 @@ class Pulls extends Component {
           isVisible: true,
           width: 150,
           render: (item) => {
-            if (item.isAccepted === true) {
+            /*if (item.isAccepted === true) {
               return "Подтвержден";
             }
             else if (item.isAccepted === false) {
@@ -112,8 +112,8 @@ class Pulls extends Component {
             }
             else {
               return " ";
-            }
-
+            }*/
+            return item.acceptedStatusText
           }
         },
         {
@@ -308,7 +308,8 @@ class Pulls extends Component {
       },
       ispublish: true,
       ShowSign: false,
-      buttonShow: false
+      buttonShow: false,
+      employvisible: false,
     };
   }
 
@@ -678,6 +679,11 @@ class Pulls extends Component {
       }
     });
   };
+  hideemployes = () => {
+    this.setState({
+      employvisible: false,
+    });
+  }
 
   render() {
     const universal = {
@@ -688,6 +694,10 @@ class Pulls extends Component {
 
     return (
       <div>
+        {this.state.employvisible && <EmployeesModal
+          onChecked={(id)=> this.onSetUser(id)}
+          onCancel={this.hideemployes} keys={this.state.selectedRowKeys}/>}
+
         {this.state.ShowSign &&
         <SignModal
           onCancel={() => {
@@ -729,37 +739,6 @@ class Pulls extends Component {
           <Row>
             <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "5px" }}>
               <Button
-                onClick={() => {
-                  this.togglePulls();
-                }}
-                disabled={false}
-                key={"pulls"}
-              >
-                {formatMessage({ id: "menu.mainview.pulls" })}
-              </Button>
-              <ExecuteModal disabled={this.state.selectedRowKeys.length === 0} count={this.state.selectedRowKeys.length}
-                            onChecked={(id) => this.onSetUser(id)}
-                            selectedRows={this.state.selectedRowKeys}/>
-              <Button onClick={() => {
-                this.confirming();
-              }}
-                      disabled={this.state.selectedRowKeys.length === 0}
-                      style={{ marginLeft: "5px" }}
-                      key={"confirm"}
-              >
-                Подтвердить ( {this.state.selectedRowKeys.length} )
-              </Button>
-              <Button
-                disabled={this.state.selectedRowKeys.length === 0}
-                onClick={() => {
-                  this.rejecting();
-                }}
-                style={{ marginLeft: "5px" }}
-                key={"reject"}
-              >
-                Отклонить ( {this.state.selectedRowKeys.length} )
-              </Button>
-              <Button
                 disabled={this.state.ispublish}
                 onClick={() => {
                   this.publish();
@@ -768,16 +747,6 @@ class Pulls extends Component {
                 key={"publish"}
               >
                 Опубликовать
-              </Button>
-              <Button
-                disabled={this.state.selectedRowKeys.length === 0}
-                onClick={() => {
-                  this.cancelpull();
-                }}
-                style={{ marginLeft: "5px" }}
-                key={"cancel"}
-              >
-                Исключить из пула ( {this.state.selectedRowKeys.length} )
               </Button>
               <Button
                 disabled={this.state.pagingConfig.filter["refundPack.id"] === null}
@@ -789,7 +758,7 @@ class Pulls extends Component {
                 style={{ marginLeft: "5px" }}
                 key={"sign"}
               >
-                Подписать
+                Подписать и отправить
               </Button>
               {/*<ApproveModal disabled={true}/>
               <SignModal disabled={true}/>*/}
@@ -846,7 +815,66 @@ class Pulls extends Component {
                   page: this.state.pagingConfig.start + 1,
                   data: universal.table.content
                 }}
-                addonButtons={[]}
+                addonButtons={[
+                  <Button
+                    onClick={() => {
+                      this.togglePulls();
+                    }}
+                    disabled={false}
+                    key={"pulls"}
+                  >
+                    {formatMessage({ id: "menu.mainview.pulls" })}
+                  </Button>,
+                  <Button onClick={() => {
+                    this.confirming();
+                  }}
+                  disabled={this.state.selectedRowKeys.length === 0}
+                  style={{ marginLeft: "5px" }}
+                  key={"confirm"}
+                  >
+                  Подтвердить ( {this.state.selectedRowKeys.length} )
+                  </Button>,
+                  <Button
+                  disabled={this.state.selectedRowKeys.length === 0}
+                  onClick={() => {
+                  this.rejecting();
+                }}
+                  style={{ marginLeft: "5px" }}
+                  key={"reject"}
+                  >
+                  Отклонить ( {this.state.selectedRowKeys.length} )
+                  </Button>,
+                  <Dropdown
+                    key={"dropdown"}
+                    trigger={["click"]}
+                    overlay={
+                      <Menu>
+                         <Menu.Item
+                          disabled={this.state.selectedRowKeys.length === 0}
+                          count={this.state.selectedRowKeys.length}
+                          onClick={() => {
+                            this.setState({
+                              employvisible: true,
+                            });
+                          }}
+                          key="1"
+                        >  Назначить исполнителя ( {this.state.selectedRowKeys.length} )
+                        </Menu.Item>
+                        <Menu.Item
+                          disabled={this.state.selectedRowKeys.length === 0}
+                          key="2"
+                          onClick={() => {
+                            this.cancelpull();
+                          }}
+                        > Исключить из пула ( {this.state.selectedRowKeys.length} )
+                        </Menu.Item>
+                      </Menu>
+                    }>
+                    <Button
+                      key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
+                      type="down"/></Button>
+                  </Dropdown>
+                ]}
                 onShowSizeChange={(pageNumber, pageSize) => {
                   this.onShowSizeChange(pageNumber, pageSize);
                 }}
