@@ -665,13 +665,14 @@ class GridFilter extends Component {
         if (filterItem.withMax) {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
             <Input onKeyDown={this.onKeyPress} onChange={(e) => {
-              this.withmaxfieldOnChange(filterItem, e.target.value, filterItem.withMax);
+
+              this.withmaxfieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value, filterItem.withMax);
             }} value={formFilters[filterItem.name]} style={{ width: "100%" }} {...params}/></div>);
         }
         else {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
             <Input {...params} onKeyDown={this.onKeyPress} onChange={(e) => {
-              this.fieldOnChange(filterItem, e.target.value);
+              this.fieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value);
             }} value={formFilters[filterItem.name]} style={{ width: "100%" }} {...params}/></div>);
         }
       }
