@@ -278,10 +278,6 @@ class Pulls extends Component {
         {
           "title": "Номер пула",
           "dataIndex": "refundPack.number"
-        },
-        {
-          "title": " Статус заявки на возврат",
-          "dataIndex": "refundStatus.nameRu"
         }
       ],
       isHidden: true,

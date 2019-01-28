@@ -60,7 +60,7 @@ class ShowPull extends Component {
             return item.needAcceptedUser ? (item.needAcceptedUser.userName ? item.needAcceptedUser.userName : "") : "";
           }
         },
-        /* {
+         {
            title: "Статус рассмотрения",
            order: 1,
            key: "accept",
@@ -80,7 +80,7 @@ class ShowPull extends Component {
            }
          },
          {
-           title: formatMessage({ id: "menu.mainview.fio" }),
+           title: "ФИО",
            order: 3,
            key: "fio",
            isVisible: true,
@@ -103,7 +103,7 @@ class ShowPull extends Component {
              status={this.setBadgeStatus(value.refund.isRefundConfirm)}/></span> {value.refund.dappRefundStatusId ? value.refund.dappRefundStatusId.nameRu : null}
            </a>
          },
-         {
+        /* {
            title: "Файлы",
            order: 51,
            key: "files",
@@ -216,10 +216,6 @@ class ShowPull extends Component {
         {
           "title": "Номер пула",
           "dataIndex": "refundPack.number"
-        },
-        {
-          "title": " Статус заявки на возврат",
-          "dataIndex": "refundStatus.nameRu"
         }
       ],
       isHidden: true,
