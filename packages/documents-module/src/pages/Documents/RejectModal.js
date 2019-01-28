@@ -51,7 +51,13 @@ class RejectModal extends Component {
             title: "Информация",
             content: "Документ отклонен"
           });
-        });
+        })
+        .catch((e)=>{
+          Modal.error({
+            title: "Ошибка",
+            content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+          });
+        })
 
         // fetch('/api/contract/rejectDocument', {
         //   headers: {
@@ -83,7 +89,7 @@ class RejectModal extends Component {
       <Form layout="horizontal" hideRequiredMark>
         {/*<Card style={{borderRadius: '5px', marginBottom: '10px'}} bodyStyle={{padding: 0}} bordered={true}>*/}
         {/*<Row>*/}
-        <Form.Item {...formItemLayout} label="Причина откланения:">
+        <Form.Item {...formItemLayout} label="Причина отклонения:">
           <Input id="storagePassword" onChange={(e) => {
             this.setState({
               val: e.target.value

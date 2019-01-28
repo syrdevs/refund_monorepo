@@ -344,13 +344,13 @@ class ViewDocument extends Component {
                 {/*// title={<div>Информация о документе</div>}*/}
                 {/*>*/}
                 {this.state.buttonShow &&
-                <Button type="primary" disabled={this.state.data ? this.state.data.documentSigned === true : false}
+                <Button type="primary" disabled={this.state.data ? this.state.data.documentNeedToSign === false : false}
                         style={{ marginLeft: "10px" }} onClick={() => {
                   this.viewKeyModal();
                 }}>Подписать
                 </Button>}
                 {this.state.buttonShow &&
-                <Button type="danger" disabled={this.state.data ? this.state.data.documentSigned === true : false}
+                <Button type="danger" disabled={this.state.data ? this.state.data.documentNeedToSign === false : false}
                         style={{ marginLeft: "5px" }} onClick={() => {
                   this.viewRejectModal();
                 }}>Отклонить
