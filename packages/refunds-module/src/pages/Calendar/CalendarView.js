@@ -278,14 +278,14 @@ class CalendarView extends Component {
 
 
       <Card bordered={false}>
-        <Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>
+        {/*<Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>*/}
           <div>
             <MonthPicker format={"MM.YYYY"} value={currentDate} onChange={this.onChangeDatePicker.bind(this)} placeholder={formatMessage({ id: 'label.select' })}/>
 
             <Calendar value={currentDate} defaultValue={currentDate} className={'customCalendar'} onSelect={this.onSelectDate.bind(this)}
                       dateCellRender={this.dateCellRender.bind(this)}/>
           </div>
-        </Spin>
+        {/*</Spin>*/}
       </Card>
     </div>);
   };
