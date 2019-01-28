@@ -632,15 +632,15 @@ class Searcher extends Component {
     }, {
       key: 6,
       name: "ПОЛ",
-      value: person.dSexId ? (person.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : person.dSexId.nameRu) : ""
+      value: person.dSexId ? (person.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : " ") : ""
     }, {
       key: 7,
       name: "НАЦИОНАЛЬНОСТЬ",
-      value: person.nationality ? (person.nationality.nameRu ? person.nationality.nameRu.toUpperCase() : person.nationality.nameRu) : ""
+      value: person.nationality ? (person.nationality.nameRu ? person.nationality.nameRu.toUpperCase() : " ") : ""
     }, {
       key: 8,
       name: "ГРАЖДАНСТВО",
-      value: person.citizenship ? (person.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu) : ""
+      value: person.citizenship ? (person.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : " ") : ""
     }, {
       key: 9,
       name: "РЕГИОН (ОБЛАСТЬ)",
@@ -708,15 +708,15 @@ class Searcher extends Component {
     }, {
       key: 19,
       name: "ПОЛ",
-      value: personRPN.dSexId ? (personRPN.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : person.dSexId.nameRu) : ""
+      value: personRPN.dSexId ? (personRPN.dSexId.nameRu ? person.dSexId.nameRu.toUpperCase() : " ") : ""
     }, {
       key: 20,
       name: "НАЦИОНАЛЬНОСТЬ",
-      value: personRPN.nationality ? (personRPN.nationality.nameRu ? person.nationality.nameRu.toUpperCase() : person.nationality.nameRu) : ""
+      value: personRPN.nationality ? (personRPN.nationality.nameRu ? person.nationality.nameRu.toUpperCase() : " ") : ""
     }, {
       key: 21,
       name: "ГРАЖДАНСТВО",
-      value: personRPN.citizenship ? (personRPN.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : person.citizenship.nameRu) : ""
+      value: personRPN.citizenship ? (personRPN.citizenship.nameRu ? person.citizenship.nameRu.toUpperCase() : "") : ""
     }
     ];
     const mBottom = { marginBottom: "5px" };
