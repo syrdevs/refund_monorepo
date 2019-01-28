@@ -628,7 +628,7 @@ class MainView extends Component {
         type: "listbetweenDate"
       },
       {
-        name: "_refundEntryDate",
+        name: "receiptAppdateToFsms",
         label: formatMessage({ id: "menu.filter.RefundFundDate" }),
         type: "listbetweenDate",
         nullBtn: true

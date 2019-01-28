@@ -269,6 +269,7 @@ class ViewDocument extends Component {
         breadcrumbName: formatMessage({ id: "app.module.documents.title.view" })
       }]}>
       {this.state.rejectModal.visible && <RejectModal
+        rejecttype={this.props.location.query.type}
         rejectid={this.props.location.query.id}
         hide={() => {
           this.setState({

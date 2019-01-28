@@ -41,22 +41,31 @@ class RejectModal extends Component {
         request("/api/contract/rejectDocument", {
           method: "POST",
           body: {
-            "entity": "contract",
+            "entity": this.props.rejecttype,
             "id": this.props.rejectid,
-            "comment": "Документ не верен!"
+            "comment": this.state.val
+          },
+          getResponse: (data) => {
+            if (data.status >= 400) {
+              this.props.onCancel();
+              Modal.error({
+                content: data.data.Message
+              });
+            }
+            else {
+              this.props.onCancel();
+              Modal.info({
+                title: "Информация",
+                content: "Документ отклонен"
+              });
+            }
           }
-        }).then(data => {
-          this.props.onCancel();
-          Modal.info({
-            title: "Информация",
-            content: "Документ отклонен"
-          });
+        })
+          .then(data => {
+
         })
         .catch((e)=>{
-          Modal.error({
-            title: "Ошибка",
-            content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
-          });
+
         })
 
         // fetch('/api/contract/rejectDocument', {

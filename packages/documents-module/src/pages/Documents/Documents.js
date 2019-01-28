@@ -451,7 +451,7 @@ class Documents extends Component {
         "dataIndex": "status.statusDate"
       },
       {
-        "title": "Загаловок",
+        "title": "Заголовок",
         "isVisible": true,
         "dataIndex": "descr"
       }
