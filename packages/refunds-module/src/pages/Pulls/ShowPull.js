@@ -50,7 +50,7 @@ class ShowPull extends Component {
       formValues: {},
       stepFormValues: {},
       fcolumn: [
-       /* {
+        {
           title: "Исполнитель",
           order: 0,
           key: "accept",
@@ -60,73 +60,73 @@ class ShowPull extends Component {
             return item.needAcceptedUser ? (item.needAcceptedUser.userName ? item.needAcceptedUser.userName : "") : "";
           }
         },
-        {
-          title: "Статус рассмотрения",
-          order: 1,
-          key: "accept",
-          isVisible: true,
-          width: 150,
-          render: (item) => {
-            if (item.isAccepted === true) {
-              return "Подтвержден";
-            }
-            else if (item.isAccepted === false) {
-              return "Отклонен";
-            }
-            else {
-              return " ";
-            }
+        /* {
+           title: "Статус рассмотрения",
+           order: 1,
+           key: "accept",
+           isVisible: true,
+           width: 150,
+           render: (item) => {
+             if (item.isAccepted === true) {
+               return "Подтвержден";
+             }
+             else if (item.isAccepted === false) {
+               return "Отклонен";
+             }
+             else {
+               return " ";
+             }
 
-          }
-        },
-        {
-          title: formatMessage({ id: "menu.mainview.fio" }),
-          order: 3,
-          key: "fio",
-          isVisible: true,
-          width: 150,
-          render: (item) => {
-            //return item.refund.personSurname + " " + item.refund.personFirstname + " " + item.refund.personPatronname;
-            return (item.refund.personSurname ? item.refund.personSurname : '') + " "
-              + (item.refund.personFirstname ? item.refund.personFirstname : '') + " "
-              + (item.refund.personPatronname ? item.refund.personPatronname : ' ' );
-          }
-        },
-        {
-          "title": "Статус заявки на возврат",
-          isVisible: true,
-          "dataIndex": "dappRefundStatusId.nameRu ",
-          order: 7,
-          render: (record, value) => <a
-            style={{ color: this.setColor(value.refund.isRefundConfirm) }}//value.isRefundConfirm ? 'green' : 'red' }}
-            href="#"> <span><Badge
-            status={this.setBadgeStatus(value.refund.isRefundConfirm)}/></span> {value.refund.dappRefundStatusId ? value.refund.dappRefundStatusId.nameRu : null}
-          </a>
-        },
-        {
-          title: "Файлы",
-          order: 51,
-          key: "files",
-          width: 250,
-          className: "action_column",
-          isVisible: true,
-          onCell: record => {
-            return {
-              onClick: () => {
+           }
+         },
+         {
+           title: formatMessage({ id: "menu.mainview.fio" }),
+           order: 3,
+           key: "fio",
+           isVisible: true,
+           width: 150,
+           render: (item) => {
+             //return item.refund.personSurname + " " + item.refund.personFirstname + " " + item.refund.personPatronname;
+             return (item.refund.personSurname ? item.refund.personSurname : '') + " "
+               + (item.refund.personFirstname ? item.refund.personFirstname : '') + " "
+               + (item.refund.personPatronname ? item.refund.personPatronname : ' ' );
+           }
+         },
+         {
+           "title": "Статус заявки на возврат",
+           isVisible: true,
+           "dataIndex": "dappRefundStatusId.nameRu ",
+           order: 7,
+           render: (record, value) => <a
+             style={{ color: this.setColor(value.refund.isRefundConfirm) }}//value.isRefundConfirm ? 'green' : 'red' }}
+             href="#"> <span><Badge
+             status={this.setBadgeStatus(value.refund.isRefundConfirm)}/></span> {value.refund.dappRefundStatusId ? value.refund.dappRefundStatusId.nameRu : null}
+           </a>
+         },
+         {
+           title: "Файлы",
+           order: 51,
+           key: "files",
+           width: 250,
+           className: "action_column",
+           isVisible: true,
+           onCell: record => {
+             return {
+               onClick: () => {
 
-              }
-            };
-          },
-          render: (record) => (
-            <div>
-              {record.refund.refundFiles && record.refund.refundFiles.map((item) => {
-                return <p >{item.filename} <a onClick={() => {
-                  this.downloadFile(record, item);
-                }}>cкачать</a></p>;
-              })}
-            </div>
-          )
-        },*/
+               }
+             };
+           },
+           render: (record) => (
+             <div>
+               {record.refund.refundFiles && record.refund.refundFiles.map((item) => {
+                 return <p >{item.filename} <a onClick={() => {
+                   this.downloadFile(record, item);
+                 }}>cкачать</a></p>;
+               })}
+             </div>
+           )
+         },*/
       ],
       columns: [
         {
@@ -214,19 +214,11 @@ class ShowPull extends Component {
           "dataIndex": "refund.payPeriod"
         },
         {
-          "title": "Веб-сервис (сообщение) ",
-          "dataIndex": "refund.wsStatusMessage"
+          "title": "Номер пула",
+          "dataIndex": "refundPack.number"
         },
         {
-          "title": "needAcceptedUser",
-          "dataIndex": "needAcceptedUser.userName"
-        },
-        {
-          "title": "refundPack",
-          "dataIndex": "refundPack.id"
-        },
-        {
-          "title": "refundStatus",
+          "title": " Статус заявки на возврат",
           "dataIndex": "refundStatus.nameRu"
         }
       ],

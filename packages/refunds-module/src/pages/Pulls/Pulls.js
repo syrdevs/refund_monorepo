@@ -276,19 +276,11 @@ class Pulls extends Component {
           "dataIndex": "refund.payPeriod"
         },
         {
-          "title": "Веб-сервис (сообщение) ",
-          "dataIndex": "refund.wsStatusMessage"
+          "title": "Номер пула",
+          "dataIndex": "refundPack.number"
         },
         {
-          "title": "needAcceptedUser",
-          "dataIndex": "needAcceptedUser.userName"
-        },
-        {
-          "title": "refundPack",
-          "dataIndex": "refundPack.id"
-        },
-        {
-          "title": "refundStatus",
+          "title": " Статус заявки на возврат",
           "dataIndex": "refundStatus.nameRu"
         }
       ],
