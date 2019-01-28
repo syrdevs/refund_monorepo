@@ -24,19 +24,19 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"]
       },
       {
-        path: '/refunds/rpmu',
-        icon: 'database',
-        name: 'rpmu',
+        path: "/refunds/rpmu",
+        icon: "database",
+        name: "rpmu",
         routes: [
-          { path: '/refunds/rpmu', redirect: '/refunds/rpmu/payments' },
+          { path: "/refunds/rpmu", redirect: "/refunds/rpmu/payments" },
           {
-            path: '/refunds/rpmu/payments',
-            icon: 'database',
-            name: 'payments',
-            component: './PaymentsPage/PaymentsPage',
-            authority: ['ADMIN']
+            path: "/refunds/rpmu/payments",
+            icon: "database",
+            name: "payments",
+            component: "./PaymentsPage/PaymentsPage",
+            authority: ["ADMIN"]
           }
-        ],
+        ]
       },
       {
         path: "/refunds",
@@ -59,41 +59,49 @@ export default [
             authority: ["ADMIN", "FSMS1", "FSMS2"]
           },
           {
+            path: "/refunds/pool",
+            icon: "database",
+            name: "pulls",
+            component: "./Pulls/Pulls",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
             path: "/refunds/calendar",
             icon: "faListAlt",
             name: "calendar",
             component: "./Calendar/CalendarView",
             authority: ["ADMIN", "FSMS1", "FSMS2"]
-          },
-          {
-            path: "/refunds/template",
-            icon: "faListAlt",
-            name: "template",
-            component: "./Templates/Template",
-            authority: ["ADMIN", "FSMS1", "FSMS2"]
-          },
-          {
-            path: "/refunds/static",
-            icon: "faListAlt",
-            name: "staticview",
-            component: "./StaticticsView/StaticticsView",
-            authority: ["ADMIN", "FSMS1", "FSMS2"]
           }
+          // {
+          //   path: "/refunds/template",
+          //   icon: "faListAlt",
+          //   name: "template",
+          //   component: "./Templates/Template",
+          //   authority: ["ADMIN", "FSMS1", "FSMS2"]
+          // },
+          // {
+          //   path: "/refunds/static",
+          //   icon: "faListAlt",
+          //   name: "staticview",
+          //   component: "./StaticticsView/StaticticsView",
+          //   authority: ["ADMIN", "FSMS1", "FSMS2"]
+          // }
         ]
       },
+      // {
+      //   path: "/refunds/options",
+      //   icon: "database",
+      //   name: "options",
+      //   component: "./Options/Options",
+      //   authority: ["ADMIN", "FSMS1", "FSMS2"]
+      // },
       {
-        path: "/refunds/options",
+        path: "/refunds/documents",
         icon: "database",
-        name: "options",
-        component: "./Options/Options",
-        authority: ["ADMIN", "FSMS1", "FSMS2"]
-      },
-      {
-        path: "/refunds/pool",
-        icon: "database",
-        name: "pulls",
-        component: "./Pulls/Pulls",
-        authority: ["ADMIN", "FSMS1", "FSMS2"]
+        name: "documents",
+        routes: [
+          { path: "/refunds/documents", redirect: "/documents/main" }
+        ]
       },
       {
         path: "/refunds/journal",
@@ -103,12 +111,12 @@ export default [
         authority: ["ADMIN", "FSMS1", "FSMS2"]
       },
       {
-        path: '/refunds/reports',
-        icon: 'database',
-        name: 'reports',
-        component: './ReportsPage/ReportsPage',
-        authority: ['ADMIN', 'FSMS2']
-      },
+        path: "/refunds/reports",
+        icon: "database",
+        name: "reports",
+        component: "./ReportsPage/ReportsPage",
+        authority: ["ADMIN", "FSMS2"]
+      }
     ]
   }
 ];
