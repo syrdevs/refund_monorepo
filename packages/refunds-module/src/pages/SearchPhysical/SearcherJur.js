@@ -252,25 +252,25 @@ class SearcherJur extends Component {
                   title={formatMessage({ id: "report.param.searcher" })}
                 >
                   <div style={{ display: "block" }}>
-                    <div style={{ float: "left", width: this.state.jur.senderBin ? "70%" : "100%" }}>
+                    <div style={{ float: "left", width: this.state.jur.senderBin ? "60%" : "100%" }}>
                       <Search
                         placeholder="Введите БИН/ИИН"
                         enterButton={formatMessage({ id: "system.search" })}
-                        size="large"
+                        //size="large"
                         maxLength={12}
                         onSearch={value => this.searchperson(value)}
                       />
                     </div>
                     {this.state.jur.senderBin && <div
-                      style={{ float: "left", width: "30%", paddingLeft: "10px" }}>
-                      <Button
-                        size={"large"}
-                        onClick={() => {
-                          if (this.state.bin) {
-                            this.props.searchbybin(this.state.bin);
-                          }
-                        }}
-                      >Просмотр платежей</Button>
+                    style={{ float: "left", width: "40%", paddingLeft: "10px" }}>
+                    <Button
+                    //size={"large"}
+                    onClick={() => {
+                    if (this.state.bin) {
+                    this.props.searchbybin(this.state.bin);
+                    }
+                    }}
+                    >Просмотр платежей</Button>
                     </div>}
 
                   </div>

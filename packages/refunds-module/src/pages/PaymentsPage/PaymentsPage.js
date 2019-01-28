@@ -601,19 +601,24 @@ class PaymentsPage extends Component {
           <TabPane tab={formatMessage({ id: "menu.payments.searchbtnJur" })} key="searcherJur">
             <SearcherJur
               searchbybin={(bin) => {
+                // this.setState({
+                //   sortedInfo: {},
+                //   parameters: {
+                //     ...this.state.parameters,
+                //     "entity": "mt102",
+                //     "filter": { "senderBin": bin },
+                //     "sort": []
+                //   }
+                // }, () => {
+                //   this.loadGridData();
+                //   this.setState({
+                //     activeKey: "mt102"
+                //   });
+                // });
                 this.setState({
-                  sortedInfo: {},
-                  parameters: {
-                    ...this.state.parameters,
-                    "entity": "mt102",
-                    "filter": { "senderBin": bin },
-                    "sort": []
-                  }
+                  activeKey: "mt102"
                 }, () => {
-                  this.loadGridData();
-                  this.setState({
-                    activeKey: "mt102"
-                  });
+                  this.state.eventManager.handleEvent("onSelectFilter", { senderBin: bin });
                 });
               }}
               persontitle={"report.param.personinformJur"}
