@@ -486,7 +486,7 @@ class Documents extends Component {
                         this.getDocumentList();
                       }}><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
                       <Menu.Item key="1" onClick={() => {
-                        this.getDocumentList({ "documentSigned": true });
+                        this.getDocumentList({ "documentNeedToSign": false });
                       }}><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Рассмотренные</span></Menu.Item>
                       <Menu.Item key="2" onClick={() => {
                         this.getDocumentList({ "documentNeedToSign": true });
@@ -499,7 +499,7 @@ class Documents extends Component {
                         this.getDocumentOutList();
                       }}><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
                       <Menu.Item key="5" onClick={() => {
-                        this.getDocumentOutList({ "documentSigned": true });
+                        this.getDocumentOutList({ "documentNeedToSign": false });
                       }}><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Рассмотренные</span></Menu.Item>
                       <Menu.Item key="6" onClick={() => {
                         this.getDocumentOutList({ "documentNeedToSign": true });
