@@ -186,7 +186,7 @@ class Searcher extends Component {
   };
 
   monthCellRender2 = (value) => {
-    let result = (<div style={{ backgroundColor: "#999999", opacity: "0.1", height: "100%", width: "100%" }}></div>);
+    let result = (<div style={{ backgroundColor: "green", opacity: "0.1", height: "100%", width: "100%" }}></div>);
     if (this.state.MonthHistory !== undefined && this.state.MonthHistory.length > 0) {
       this.state.MonthHistory.forEach((item) => {
         if (item.isDebt && item.payPeriod === value.format("MMYYYY")) {

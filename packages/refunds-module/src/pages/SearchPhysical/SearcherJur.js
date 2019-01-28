@@ -214,7 +214,7 @@ class SearcherJur extends Component {
       {
         key: 2,
         name: "РАЙОН",
-        value: jur.senderBankBik
+        value: jur.raion
       },
       {
         key: 4,
@@ -233,6 +233,10 @@ class SearcherJur extends Component {
         key: 7,
         name: "КОЛИЧЕСТВО ВОЗВРАТОВ",
         value: jur.refundCount
+      }, {
+        key: 8,
+        name: "СУММА ВОЗВРАТОВ",
+        value: jur.refundSum
       }
     ];
 

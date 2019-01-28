@@ -638,7 +638,7 @@ class PaymentsPage extends Component {
           {/*<TabPane tab={'Список плательщиков'} key="employees">*/}
           {/*<Employees/>*/}
           {/*</TabPane>*/}
-          <TabPane tab={"Сотрудники"} key="consumer">
+          <TabPane tab={"Сотрудники специальных органов"} key="consumer">
             <Consumer/>
           </TabPane>
           <TabPane tab={"Реестр должников"} key={"reestr_debits"}>

@@ -396,15 +396,16 @@ class PaymentsMT102 extends Component {
 
     this.props.eventManager.subscribe("onSelectFilter", (params) => {
       if (Object.keys(params).length > 0) {
-        this.applyFilter(params);
+
         this.setState(({ filterContainer }) => ({
           filterContainer: 6,
           parameters: {
             ...this.state.parameters,
-            filter: { ...this.state.parameters.filter, params }
+            //filter: { ...this.state.parameters.filter, params }
+            filter: params
           }
         }), () => {
-
+          this.applyFilter(params);
         });
       }
       else {
