@@ -5,8 +5,8 @@ import {
 import componentLocal from "../../locales/components/componentLocal";
 import formatMessage from "../../utils/formatMessage";
 import moment from "moment/moment";
+import RangePicker from "./MonthPickerCustom";
 
-const { RangePicker, MonthPicker } = DatePicker;
 const dateFormat = "MM.YYYY";
 
 
@@ -21,7 +21,7 @@ class BetweenMonthPicker extends React.Component {
       checkboxCheck: false,
       disableCalendar: false,
       calendarValue: null,
-      calendarMomentValue: null
+      calendarMomentValue: []
     };
   }
 
@@ -39,7 +39,7 @@ class BetweenMonthPicker extends React.Component {
 
     if (value === null)
       this.setState({
-        calendarMomentValue: [null, null],
+        calendarMomentValue: [],
         calendarValue: null
       });
 

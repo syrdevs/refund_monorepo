@@ -490,7 +490,7 @@ class GridFilter extends Component {
       case "betweenMonthPicker": {
 
         let RangeDateProps = {
-          ref: React.createRef(),
+          //ref: React.createRef(),
           /*     defaultValue: formFilters[filterItem.name] ? formFilters[filterItem.name] : [moment(new Date(), dateFormat), moment(new Date(), dateFormat)],*/
           format: dateFormat
           // onPanelChange: (value, mode) => {

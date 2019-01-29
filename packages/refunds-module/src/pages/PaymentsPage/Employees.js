@@ -19,6 +19,7 @@ import {
   Spin,
   Divider, Modal, LocaleProvider
 } from "antd";
+
 const { MonthPicker, WeekPicker } = DatePicker;
 import formatMessage from "../../utils/formatMessage";
 import GridFilter from "../../components/GridFilter";
@@ -32,6 +33,8 @@ import "./Payments.css";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 import saveAs from "file-saver";
+import ListBetWeenMonth from "../../components/GridFilter/betweenMonthPicker";
+
 
 const FormItem = Form.Item;
 const TabPane = Tabs.TabPane;
@@ -285,27 +288,50 @@ class Employees extends Component {
               {/*},*/}
               {/*}));*/}
               {/*}}/>*/}
-              <MonthPicker
-                format={"MM.YYYY"}
-                onChange={(moment, dateString) => {
-                  this.setState({
-                    parameters: {
-                      ...this.state.parameters,
-                      filter: { ...this.state.parameters.filter ,paymentperiod: dateString.toString().length <= 1 ? null : dateString.replace(".", "")},
-                    }
-                  });
-                  // this.setState((parameters) => ({
-                  //   filter: {
-                  //     ...parameters.filter,
-                  //     paymentperiod: dateString.toString().length <= 1 ? null : dateString.replace(".", "")
-                  //   }
-                  // }));
-                }}
-              />
-              <Button style={{ margin: "10px" }} onClick={() => {
+              {/*<MonthPicker/>*/}
+              {/*// format={"MM.YYYY"}*/}
+              {/*// onChange={(moment, dateString) => {*/}
+              {/*// this.setState({*/}
+              {/*// parameters: {*/}
+              {/*// ...this.state.parameters,*/}
+              {/*// filter: { ...this.state.parameters.filter ,paymentperiod: dateString.toString().length <= 1 ? null : dateString.replace(".", "")},*/}
+              {/*// }*/}
+              {/*// });*/}
+              {/*// this.setState((parameters) => ({*/}
+              {/*//   filter: {*/}
+              {/*//     ...parameters.filter,*/}
+              {/*//     paymentperiod: dateString.toString().length <= 1 ? null : dateString.replace(".", "")*/}
+              {/*//   }*/}
+              {/*// }));*/}
+              {/*}}*/}
+              {/*/>*/}
+              <div style={{ float: "left", padding: "5px" }}>
+                <ListBetWeenMonth
+                  RangeDateProps={{
+                    format: "MM.YYYY"
+                  }}
+                  filterItem={{}}
+                  field={{}}
+                  onChange={(value) => {
+                    this.setState({
+                      parameters: {
+                        ...this.state.parameters,
+                        filter: {
+                          ...this.state.parameters.filter,
+                          paymentperiod: {
+                            from: "01." + value[0],
+                            to: "01." + value[1]
+                          }
+                        }
+                      }
+                    });
+                  }}/>
+              </div>
+              <Button style={{ margin: "5px", marginLeft: "-20px" }} onClick={() => {
                 this.loadGridData();
               }
               }>{formatMessage({ id: "button.apply" })}</Button>
+
             </Card>
           </Col>
         </Row>
