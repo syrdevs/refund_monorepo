@@ -17,6 +17,11 @@ export default [
     authority: ["ADMIN", "FSMS1", "FSMS2"],
     routes: [
       {
+        path:"/refunds/refunds",
+        redirect:"/refunds/home",
+        hideChildrenInMenu:true
+      },
+      {
         path: "/refunds/home",
         icon: "database",
         name: "home",

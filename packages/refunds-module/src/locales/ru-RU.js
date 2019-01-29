@@ -80,7 +80,7 @@ export default {
   "label.select": "Выберите",
   "label.type": "Тип",
   "menu.refunds.home": "Главная",
-  "menu.refunds": "Возвраты",
+  "menu.refunds": "Учёт потребителей и плательщиков",
   "menu.rpmu": "Потребители и плательщики",
   "menu.refunds.requests": "Заявки",
   "menu.refunds.options": "Настройки",

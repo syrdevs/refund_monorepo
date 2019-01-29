@@ -58,6 +58,10 @@ class MainView extends Component {
 
     this.state = {
 
+      statusModalProps: {
+        okBtnDisabled: true
+      },
+
       ImportXMLModal: {
         visible: false,
         data: []
@@ -129,7 +133,7 @@ class MainView extends Component {
           isVisible: true,
           width: 150,
           render: (item) => {
-            return (item.personSurname ? item.personSurname : '') + " " + (item.personFirstname ? item.personFirstname : '') + " " + (item.personPatronname ? item.personPatronname : ' ' );
+            return (item.personSurname ? item.personSurname : "") + " " + (item.personFirstname ? item.personFirstname : "") + " " + (item.personPatronname ? item.personPatronname : " ");
           }
         }, {
           "title": "Статус заявки на возврат",
@@ -141,66 +145,66 @@ class MainView extends Component {
             href="#"> <span><Badge
             status={this.setBadgeStatus(value.isRefundConfirm)}/></span> {value.dappRefundStatusId ? value.dappRefundStatusId.nameRu : null}
           </a>
-        },
-       /* {
-          title: "Загрузить",
-          order: 50,
-          key: "upload",
-          className: "action_column",
-          isVisible: true,
-          onCell: record => {
-            return {
-              onClick: () => {
+        }
+        /* {
+           title: "Загрузить",
+           order: 50,
+           key: "upload",
+           className: "action_column",
+           isVisible: true,
+           onCell: record => {
+             return {
+               onClick: () => {
 
-              }
-            };
-          },
-          render: (record) => (
-            <Upload
-              showUploadList={false}
-              openFileDialogOnClick={true}
-              onRemove={() => {
-              }}
-              onPreview={() => {
-              }}
-              beforeUpload={(file) => {
-                return false;
-              }}
-              onChange={(file) => {
-                if (file.status !== "removing") {
-                  this.uploadFile(record.id, file);
-                }
-              }}>
-              <Icon><FontAwesomeIcon icon={faFileUpload}/></Icon>
-            </Upload>
-          )
-        },
-        {
-          title: "Файлы",
-          order: 51,
-          key: "files",
-          width: 250,
-          className: "action_column",
-          isVisible: true,
-          onCell: record => {
-            return {
-              onClick: () => {
+               }
+             };
+           },
+           render: (record) => (
+             <Upload
+               showUploadList={false}
+               openFileDialogOnClick={true}
+               onRemove={() => {
+               }}
+               onPreview={() => {
+               }}
+               beforeUpload={(file) => {
+                 return false;
+               }}
+               onChange={(file) => {
+                 if (file.status !== "removing") {
+                   this.uploadFile(record.id, file);
+                 }
+               }}>
+               <Icon><FontAwesomeIcon icon={faFileUpload}/></Icon>
+             </Upload>
+           )
+         },
+         {
+           title: "Файлы",
+           order: 51,
+           key: "files",
+           width: 250,
+           className: "action_column",
+           isVisible: true,
+           onCell: record => {
+             return {
+               onClick: () => {
 
-              }
-            };
-          },
-          render: (record) => (
-              <div>
-                {record.refundFiles && record.refundFiles.map((item) => {
-                  return <p>{item.filename} <a onClick={() => {
-                    this.downloadFile(record, item);
-                  }}>cкачать</a> / <a onClick={() => {
-                    this.deleteFile(record, item);
-                  }}>удалить</a></p>;
-                })}
-              </div>
-          )
-        }*/
+               }
+             };
+           },
+           render: (record) => (
+               <div>
+                 {record.refundFiles && record.refundFiles.map((item) => {
+                   return <p>{item.filename} <a onClick={() => {
+                     this.downloadFile(record, item);
+                   }}>cкачать</a> / <a onClick={() => {
+                     this.deleteFile(record, item);
+                   }}>удалить</a></p>;
+                 })}
+               </div>
+           )
+         }*/
       ],
       columns: [
         {
@@ -393,8 +397,8 @@ class MainView extends Component {
       method: "POST",
       responseType: "blob",
       body: {
-        "entity":"refundFile",
-        "id":item.id
+        "entity": "refundFile",
+        "id": item.id
       },
       getResponse: (response) => {
         if (response.data && response.data.type)
@@ -714,6 +718,8 @@ class MainView extends Component {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
 
+    let confirmModal = null;
+
     let content;
     let statusId = false;
 
@@ -726,50 +732,70 @@ class MainView extends Component {
       dispatch({
         type: "references/load",
         code: "ddenyReason"
-      }).then(() => {
-        content = (<div style={{ marginTop: 10 }}><span>{formatMessage({ id: "menu.filter.RefusalReason" })}:</span>
-          <Select
-            style={{ width: "100%" }}
-            placeholder=""
-            onChange={(value) => {
-              statusId = value;
-            }}
-          >
-            <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
-            {this.props.references["ddenyReason"] && this.props.references["ddenyReason"].map((item) => {
-              return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-            })}
-          </Select></div>);
+      })
+        .catch((e) => {
+          Modal.error({
+            content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+          });
+        })
+        .then(() => {
 
-        confirm({
-          title: "Подтверждение",
-          content: content,
-          okText: "Да",
-          cancelText: "Нет",
-          onOk: () => {
-            dispatch({
-              type: "universal/changeRefundStatus",
-              payload: {
-                "status": statusCode,
-                "denyReasonId": statusId ? { id: statusId } : null,
-                "refundList": selectedRowKeys.map((valueId) => ({ id: valueId }))
-              }
-            }).then(() => {
+
+          content = (<div style={{ marginTop: 10 }}><span>{formatMessage({ id: "menu.filter.RefusalReason" })}:</span>
+            <Select
+              style={{ width: "100%" }}
+              placeholder=""
+              onChange={(value) => {
+                statusId = value;
+                confirmModal.update({
+                  okButtonProps: {
+                    disabled: false
+                  }
+                });
+              }}
+            >
+              <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
+              {this.props.references["ddenyReason"] && this.props.references["ddenyReason"].map((item) => {
+                return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+              })}
+            </Select></div>);
+
+        confirmModal = Modal.confirm({
+            title: "Подтверждение",
+            content: content,
+            okText: "Да",
+            cancelText: "Нет",
+            okButtonProps: {
+              disabled: true
+            },
+            onOk: () => {
+              dispatch({
+                type: "universal/changeRefundStatus",
+                payload: {
+                  "status": statusCode,
+                  "denyReasonId": statusId ? { id: statusId } : null,
+                  "refundList": selectedRowKeys.map((valueId) => ({ id: valueId }))
+                }
+              }).then(() => {
+                this.setState({
+                  selectedRowKeys: []
+                }, () => {
+                  this.loadMainGridData();
+                });
+              }).catch((e) => {
+                Modal.error({
+                  content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+                });
+              });
+            },
+            onCancel: () => {
               this.setState({
                 selectedRowKeys: []
-              }, () => {
-                this.loadMainGridData();
               });
-            });
-          },
-          onCancel: () => {
-            this.setState({
-              selectedRowKeys: []
-            });
-          }
-        });
+            }
+          });
 
-      });
+        });
 
     } else {
       content = "Вы действительно хотите " + statusText.toLowerCase() + " возврат? ";
@@ -786,11 +812,18 @@ class MainView extends Component {
               "denyReasonId": null,
               "refundList": selectedRowKeys.map((valueId) => ({ id: valueId }))
             }
-          }).then(() => {
-            this.setState({
-              selectedRowKeys: []
-            }, () => {
-              this.loadMainGridData();
+          })
+
+            .then(() => {
+
+              this.setState({
+                selectedRowKeys: []
+              }, () => {
+                this.loadMainGridData();
+              });
+            }).catch((e) => {
+            Modal.error({
+              content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
             });
           });
         },
@@ -811,6 +844,10 @@ class MainView extends Component {
         payload: {
           "refundList": this.state.selectedRowKeys.map((valueId) => ({ id: valueId }))
         }
+      }).catch((e) => {
+        Modal.error({
+          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+        });
       }).then(() => {
         this.loadMainGridData();
       });
@@ -878,6 +915,10 @@ class MainView extends Component {
               }
             ]
           }
+        }).catch((e) => {
+          Modal.error({
+            content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+          });
         }).then(() => this.loadMainGridData());
       },
       onCancel: () => {
@@ -903,6 +944,10 @@ class MainView extends Component {
           "id": recordId.id
         }
       }
+    }).catch((e) => {
+      Modal.error({
+        content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+      });
     }).then(() => {
       this.toggleItems(recordId);
     });
@@ -1043,7 +1088,8 @@ class MainView extends Component {
           fcolumn={this.state.fcolumn}
           loadingData={this.props.loadingData}
           xmldata={this.state.ImportXMLModal.data}
-          onSelectedRows={(selectedRecords) => {}}
+          onSelectedRows={(selectedRecords) => {
+          }}
         />}
 
         {this.state.ModalChangeDateRefund && <ModalChangeDateRefund
@@ -1129,7 +1175,8 @@ class MainView extends Component {
                 }}>
                   {formatMessage({ id: "menu.mainview.mt102Btn" })}
                 </Menu.Item>
-                <Menu.Item disabled={hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="5" onClick={() => {}}>
+                <Menu.Item disabled={hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="5" onClick={() => {
+                }}>
                   <Upload
                     showUploadList={false}
                     openFileDialogOnClick={true}
