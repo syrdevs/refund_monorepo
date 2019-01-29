@@ -40,7 +40,8 @@ class PullFilter extends Component {
     }
   };
 
-  componentWillUnmount = () => {};
+  componentWillUnmount = () => {
+  };
 
   componentDidMount = () => {
 
@@ -77,7 +78,7 @@ class PullFilter extends Component {
       selectedCardIndex: null
     });
     if (id !== "") {
-      filter.number = id
+      filter.number = id;
     }
     const { dispatch } = this.props;
     dispatch({
@@ -263,10 +264,21 @@ class PullFilter extends Component {
                   selectedCardIndex: idx
                 }, () => this.cardClick(e, item))}
               >
-                <Meta
-                  title={"Номер: " + item.number + ""}
-                  description={"Инициатор: " + item.users.userName}
-                />
+                {/*<Meta*/}
+                {/*title={"Номер: " + item.number + ""}*/}
+                {/*description={*/}
+                {/*"Инициатор: " + item.users.userName +*/}
+                {/*"Количество не отработанных:" + item.rawRecordsCount + "" +*/}
+                {/*"Количество отказанных:" + item.unconfirmedRecordsCount}*/}
+                {/*/>*/}
+                <b>{"Номер: " + item.number }</b>
+                <br/>
+                {"Инициатор: " + item.users.userName}
+                <br/>
+                {"Количество не отработанных: " + item.rawRecordsCount}
+                <br/>
+                {"Количество отказанных: " + item.unconfirmedRecordsCount}
+
                 <div className={"dropmenu"} style={{ float: "right", color: "rgba(0, 0, 0, 0.45)", marginTop: "5px" }}>
                   {item.documentDate}
                   <Dropdown onClick={(e) => {
