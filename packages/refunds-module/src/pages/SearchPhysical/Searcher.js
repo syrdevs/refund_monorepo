@@ -48,9 +48,10 @@ class Searcher extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isClearFilter: false,
       parameters: {
         start: 0,
-        length: 15,
+        length: 1000,
         entity: "person",
         filter: {},
         alias: "search",
@@ -162,6 +163,17 @@ class Searcher extends Component {
     };
   }
 
+  componentDidUpdate() {
+
+    const { isClearFilter } = this.state;
+
+    if (isClearFilter) {
+      this.setState({
+        isClearFilter: false
+      });
+    }
+  }
+
 
   monthCellRender = (value) => {
     let result = (<div style={{ backgroundColor: "red", opacity: "0.1", height: "100%", width: "100%" }}></div>);
@@ -248,10 +260,10 @@ class Searcher extends Component {
             visible: true
           });
         }
-        if (response.totalElements == 1) {
-          this.searchperson(response.content.iin);
+        if (response.totalElements === 1) {
+          this.searchperson(response.content[0].iin);
         }
-        if (response.totalElements == 0) {
+        if (response.totalElements === 0) {
           Modal.info({
             title: "",
             content: (
@@ -273,6 +285,9 @@ class Searcher extends Component {
   };
 
   clearFilter = (pageNumber) => {
+    this.setState({
+      isClearFilter: true
+    });
     this.setState({
       parameters: {
         ...this.state.parameters,
@@ -307,7 +322,7 @@ class Searcher extends Component {
             title: "",
             content: (
               <div>
-                Информация о потребителе не найдена
+                Информация о потребителе не найдена2
               </div>
             ),
             onOk() {
@@ -594,6 +609,7 @@ class Searcher extends Component {
 
 
   render() {
+    const {  isClearFilter } = this.state;
     const CardHeight = { height: "auto", marginBottom: "10px" };
     const { person, personRPN, personMED } = this.state;
     const columns = [{
@@ -647,6 +663,10 @@ class Searcher extends Component {
       value: ""
     }, {
       key: 10,
+      name: "МЕСТО ЖИТЕЛЬСТВО",
+      value: ""
+    }, {
+      key: 11,
       name: "ТЕЛЕФОН",
       value: ""
     }
@@ -748,15 +768,27 @@ class Searcher extends Component {
 
     ];
 
+    let params = {
+      style: {
+        width: "40%"
+      },
+      format: dateFormat,
+      onChange: (moment, dateString) => {
+        this.fieldOnChange("birthdate", dateString);
+      }
+    };
+    if (isClearFilter) {
+      params.value = null;
+    }
     return (<div>
-        <Modal
-          title=""
-          visible={this.state.visibleModal}
-          // onCancel={this.handleCancelModal}
-          onOk={this.handleCancelModal}
-        >
-          <p>Информация о потребителе не найдена</p>
-        </Modal>
+        {/*<Modal*/}
+          {/*title=""*/}
+          {/*visible={this.state.visibleModal}*/}
+          {/*// onCancel={this.handleCancelModal}*/}
+          {/*onOk={this.handleCancelModal}*/}
+        {/*>*/}
+          {/*<p>Информация о потребителе не найдена</p>*/}
+        {/*</Modal>*/}
         <Modal
           title=""
           visible={this.state.visible}
@@ -829,9 +861,8 @@ class Searcher extends Component {
                              this.fieldOnChange("patronymic", e.target.value);
                            }}/></div>}
                   {this.state.visibleFilter && <div style={mBottom}>День рождения: <div style={{ width: "100%" }}>
-                    <DatePicker style={{ width: "40%" }} format={"DD.MM.YYYY"} onChange={(moment, dateString) => {
-                      this.fieldOnChange("birthdate", dateString);
-                    }}/></div></div>}
+                    <DatePicker  {...params}
+                                 format={"DD.MM.YYYY"}/></div></div>}
                   {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
                   <Form layout={"vertical"}>
 
@@ -981,7 +1012,7 @@ class Searcher extends Component {
                 onSearch={this.state.iin}
               />
             </TabPane>
-            <TabPane tab={"История о задолженности"}
+            <TabPane tab={"Информация о задолженности"}
                      key="5"
                      disabled={!personRPN.iin}
             >
@@ -989,7 +1020,7 @@ class Searcher extends Component {
                 <Col span={24}>
                   <Card
                     style={{ height: "600", marginTop: "10px" }}
-                    title={formatMessage({ id: "История о задолженности" })}
+                    title={formatMessage({ id: "Информация о задолженности" })}
                     type="inner"
                   >
                     <Calendar

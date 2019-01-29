@@ -456,7 +456,7 @@ class PaymentsMT100 extends Component {
           fixedBody={true}
           actionColumns={[]}
           showTotal={true}
-          selectedRowCheckBox={true}
+          // selectedRowCheckBox={true}
           searchButton={false}
           selectedRowKeys={this.state.selectedRowKeys}
           rowKey={"id"}

@@ -121,7 +121,7 @@ class PaymentsMT102 extends Component {
         name: "paymentperiod",
         type: "monthPicker"
       }, {
-        label: "Стронированный ",
+        label: "Ошибочные ",
         name: "stornReason.code",
         type: "checkbox"
       }, {
@@ -467,6 +467,9 @@ class PaymentsMT102 extends Component {
           rowClassName={(record) => {
             if (record.isRefunded) {
               return "redRow";
+            }
+            if(record.stornDate){
+              return "grayRow";
             }
           }
           }

@@ -302,14 +302,14 @@ class ViewDocument extends Component {
         type={this.props.location.query.type}
         id={this.props.location.query.id}
         getKey={(e) => {
-
+                  console.log(e)
           request("/api/contract/uploadSignedDocument", {
             method: "POST",
             body: {
               "entity": this.props.location.query.type,
               "alias": null,
               "id": this.props.location.query.id,
-              "xml": e[0].xml
+              "xml": e[0].signXML
             },
             getResponse: (data) => {
               if (data.status >= 400) {

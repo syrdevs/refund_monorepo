@@ -395,7 +395,7 @@ class SignModal extends Component {
     console.log(e);
     let storageAlias = e;
 
-    let storagePath =  document.getElementById("storagePath").value;
+    let storagePath =  window.localStorage.getItem('storagePath');
     console.log(storagePath);
     // $('#storagePath').val();
     if (storageAlias !== 'NONE') {
@@ -411,6 +411,7 @@ class SignModal extends Component {
       storagePath = rw.getResult();
       if (storagePath !== undefined && storagePath !== null && storagePath !== '') {
         document.getElementById("storagePath").setAttribute("value",storagePath);
+        window.localStorage.setItem('storagePath',storagePath);
         // document.getElementById("btnGetKeyList").setAttribute("disabled",false);
 
       } else {
