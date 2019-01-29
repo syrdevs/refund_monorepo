@@ -47,13 +47,13 @@ class RejectModal extends Component {
           },
           getResponse: (data) => {
             if (data.status >= 400) {
-              this.props.onCancel();
+              //this.props.onCancel();
               Modal.error({
                 content: data.data.Message
               });
             }
             else {
-              this.props.onCancel();
+              this.props.onOk();
               Modal.info({
                 title: "Информация",
                 content: "Документ отклонен"

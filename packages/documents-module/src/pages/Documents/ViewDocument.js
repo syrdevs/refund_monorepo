@@ -34,7 +34,7 @@ import ContentLayout from "../../layouts/ContentLayout";
 import request from "../../utils/request";
 import DropDownAction from "../../components/DropDownAction";
 
-import './ViewDocument.css';
+import "./ViewDocument.css";
 
 const Step = Steps.Step;
 const TabPane = Tabs.TabPane;
@@ -277,7 +277,12 @@ class ViewDocument extends Component {
           });
         }}
         onOk={() => {
-
+          this.setState({
+            rejectModal: { visible: false }
+          }, () => {
+            this.loadDataById(this.props.location.query.id);
+            this.loadDocRoutePath();
+          });
         }}
         onCancel={() => {
           this.setState({
