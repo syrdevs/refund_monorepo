@@ -731,13 +731,33 @@ class Pulls extends Component {
   };
 
 
+  /*isRole=(arr)=> {
+    arr.forEach((item)=>{
+      JSON.parse(localStorage.getItem("roles")).forEach((role)=>{
+        if (role==item){
+          return true;
+        }
+      })
+    })
+    return false;
+  }*/
+
 
   isSignButtonDisable=()=>{
+    //userState.roles = JSON.parse(localStorage.getItem("roles"));
+    //console.log(this.isRole(["ADMIN", "DK1", "DK2"]));
+    //console.log(JSON.parse(localStorage.getItem("roles")));
+
+
+
+
     var result = false;
 
-    if (!hasRole(["ADMIN", "DK1", "DK2"])) {
+    /*if (!hasRole(["ADMIN", "DK1", "DK2"])) {
       result = true;
-    }
+    }*/
+
+
 
     if (this.state.selectedRowKeys.length === 0) {
       result = true;
@@ -821,7 +841,8 @@ class Pulls extends Component {
           <Row>
             <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "5px" }}>
               <Button
-                disabled={hasRole(["ADMIN", "DPN1"]) || (this.state.ispublish || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
+                /*hasRole(["ADMIN", "DPN1"]) || */
+                disabled={(this.state.ispublish || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
                 onClick={() => {
                   this.publish();
                 }}
