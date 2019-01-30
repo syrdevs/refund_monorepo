@@ -730,9 +730,12 @@ class Pulls extends Component {
   };
 
 
-   isSignButtonDisable=()=>{
+  isSignButtonDisable=()=>{
     var result = false;
-
+    console.log(this.state.selectedRowKeys.length);
+    console.log(this.state.disBtn.rawRecordsCount);
+    console.log(this.state.disBtn.unconfirmedRecordsCount);
+    console.log(this.state.disBtn.currentStatus);
     if (this.state.selectedRowKeys.length === 0) {
       result = true;
     }
@@ -748,11 +751,9 @@ class Pulls extends Component {
     return result;
   }
 
+
+
   render() {
-
-
-
-
 
     const universal = {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
@@ -761,7 +762,6 @@ class Pulls extends Component {
     const dateFormat = "DD.MM.YYYY";
 
     let SignBtnGroupsIsDisabled = this.isSignButtonDisable();//this.btnIsDisabled([this.state.selectedRowKeys.length === 0, (this.state.disBtn.rawRecordsCount === 0 && this.state.disBtn.unconfirmedRecordsCount === 0), (this.state.disBtn.rawRecordsCount !== 0 && this.state.disBtn.unconfirmedRecordsCount > 0), (this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0]);
-    console.log(SignBtnGroupsIsDisabled)
     return (
       <div>
         {this.state.employvisible && <EmployeesModal
