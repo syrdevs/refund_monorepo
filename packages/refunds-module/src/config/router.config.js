@@ -44,6 +44,43 @@ export default [
         ]
       },
       {
+        path: "/refunds/refund",
+        icon: "database",
+        name: "refund",
+        routes: [
+          { path: "/refunds/refund", redirect: "/refunds/refund/reestr" },
+          {
+            path: "/refunds/refund/requests",
+            name: "requests",
+            icon: "faListAlt",
+            component: "./Requests/Requests",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
+            path: "/refunds/refund/reestr",
+            icon: "faListAlt",
+            name: "reestr",
+            component: "./Main/MainView",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
+            path: "/refunds/refund/pool",
+            icon: "database",
+            name: "pulls",
+            component: "./Pulls/Pulls",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          },
+          {
+            path: "/refunds/refund/calendar",
+            icon: "faListAlt",
+            name: "calendar",
+            component: "./Calendar/CalendarView",
+            authority: ["ADMIN", "FSMS1", "FSMS2"]
+          }
+        ]
+      },
+
+      /*{
         path: "/refunds",
         icon: "database",
         name: "refunds",
@@ -92,7 +129,7 @@ export default [
           //   authority: ["ADMIN", "FSMS1", "FSMS2"]
           // }
         ]
-      },
+      },*/
       // {
       //   path: "/refunds/options",
       //   icon: "database",
