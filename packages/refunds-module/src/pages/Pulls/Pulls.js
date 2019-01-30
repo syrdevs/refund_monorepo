@@ -46,6 +46,7 @@ import { faUpload } from "@fortawesome/free-solid-svg-icons/index";
 import Guid from "../../utils/Guid";
 import EmployeesModal from "../Options/EmployeesModal";
 
+
 const { TextArea } = Input;
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
@@ -88,20 +89,11 @@ class Pulls extends Component {
       stepFormValues: {},
       fcolumn: [
         {
-          title: "Исполнитель",
-          order: 0,
-          key: "accept",
-          isVisible: true,
-          width: 250,
-          render: (item) => {
-            return item.needAcceptedUser ? (item.needAcceptedUser.userName ? item.needAcceptedUser.userName : "") : "";
-          }
-        },
-        {
           title: "Статус рассмотрения",
           order: 1,
           key: "viewstatus",
           isVisible: true,
+          sorted: false,
           width: 150,
           render: (item) => {
             /*if (item.isAccepted === true) {
@@ -113,13 +105,14 @@ class Pulls extends Component {
             else {
               return " ";
             }*/
-            return item.acceptedStatusText
+            return item.acceptedStatusText;
           }
         },
         {
           title: formatMessage({ id: "menu.mainview.fio" }),
           order: 3,
           key: "fio",
+          sorted: false,
           isVisible: true,
           width: 150,
           render: (item) => {
@@ -131,6 +124,7 @@ class Pulls extends Component {
         }, {
           "title": "Статус заявки на возврат",
           isVisible: true,
+          sorted: false,
           "dataIndex": "dappRefundStatusId.nameRu ",
           order: 7,
           render: (record, value) => <a
@@ -141,6 +135,7 @@ class Pulls extends Component {
         },
         {
           title: "Загрузить",
+          sorted: false,
           order: 50,
           key: "upload",
           className: "action_column",
@@ -175,6 +170,7 @@ class Pulls extends Component {
         },
         {
           title: "Файлы",
+          sorted: false,
           order: 51,
           key: "files",
           width: 250,
@@ -365,14 +361,30 @@ class Pulls extends Component {
   };
 
   loadMainGridData = () => {
-    /*const { dispatch } = this.props;
+    const { dispatch } = this.props;
     dispatch({
       type: "universal2/getList",
       payload: this.state.pagingConfig
-    });*/
+    }).then(() => {
+      this.loadfromfilter(this.props.universal2.references["refundPack"].content[0]);
+    });
   };
 
   componentDidMount() {
+    if (!hasRole(["ADMIN", "DK1", "DK2"])) {
+      this.state.fcolumn.push({
+        title: "Исполнитель",
+        order: 0,
+        sorted: false,
+        key: "accept",
+        isVisible: true,
+        width: 250,
+        render: (item) => {
+          return item.needAcceptedUser ? (item.needAcceptedUser.userName ? item.needAcceptedUser.userName : "") : "";
+        }
+      });
+    }
+
     const { dispatch } = this.props;
     dispatch({
       type: "universal2/getList",
@@ -385,17 +397,17 @@ class Pulls extends Component {
       }
     })
       .then((response) => {
-      if (this.props.universal2.references["refundPack"].content) {
-        if (this.props.universal2.references["refundPack"].content.length > 0) {
-          this.setState({
-            ispublish: this.props.universal2.references["refundPack"].content[0].documentStatuss
-          }, ()=>{
-            this.loadfromfilter(this.props.universal2.references["refundPack"].content[0]);
-            this.togglePulls();
-          });
+        if (this.props.universal2.references["refundPack"].content) {
+          if (this.props.universal2.references["refundPack"].content.length > 0) {
+            this.setState({
+              ispublish: this.props.universal2.references["refundPack"].content[0].documentStatuss
+            }, () => {
+              this.loadfromfilter(this.props.universal2.references["refundPack"].content[0]);
+              this.togglePulls();
+            });
+          }
         }
-      }
-    });
+      });
   }
 
   componentDidUpdate() {
@@ -519,6 +531,11 @@ class Pulls extends Component {
             "alias": null,
             "id": this.state.selectedRowKeys
           }
+        }).catch((e) => {
+          Modal.error({
+            title: formatMessage({ id: "system.error" }),
+            content: e.getResponseValue().data.Message
+          });
         }).then(() => {
           this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
         });
@@ -629,6 +646,11 @@ class Pulls extends Component {
         payload: {
           ...this.state.pagingConfig
         }
+      }).catch((e) => {
+        Modal.error({
+          title: formatMessage({ id: "system.error" }),
+          content: e.getResponseValue().data.Message
+        });
       }).then((response) => {
         this.setState({
           selectedRowKeys: []
@@ -637,9 +659,9 @@ class Pulls extends Component {
     });
   };
 
-  loadfromfilter = (item)=> {
+  loadfromfilter = (item) => {
     this.setState({
-      disBtn:  item,
+      disBtn: item,
       pagingConfig: {
         ...this.state.pagingConfig,
         "filter": {
@@ -660,7 +682,7 @@ class Pulls extends Component {
       });
     });
 
-  }
+  };
 
   exportToExcel = () => {
 
@@ -699,9 +721,13 @@ class Pulls extends Component {
   };
   hideemployes = () => {
     this.setState({
-      employvisible: false,
+      employvisible: false
     });
-  }
+  };
+
+  btnIsDisabled = (args) => {
+    return args.filter((eq) => (eq)).length > 0;
+  };
 
   render() {
     const universal = {
@@ -710,10 +736,12 @@ class Pulls extends Component {
 
     const dateFormat = "DD.MM.YYYY";
 
+    let SignBtnGroupsIsDisabled = this.btnIsDisabled([this.state.selectedRowKeys.length === 0, (this.state.disBtn.rawRecordsCount !== 0 && this.state.disBtn.unconfirmedRecordsCount !== 0), (this.state.disBtn.rawRecordsCount !== 0 && this.state.disBtn.unconfirmedRecordsCount > 0), (this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0]);
+
     return (
       <div>
         {this.state.employvisible && <EmployeesModal
-          onChecked={(id)=> this.onSetUser(id)}
+          onChecked={(id) => this.onSetUser(id)}
           onCancel={this.hideemployes} keys={this.state.selectedRowKeys}/>}
 
         {this.state.ShowSign &&
@@ -734,22 +762,31 @@ class Pulls extends Component {
                 "alias": null,
                 "id": this.state.pagingConfig.filter["refundPack.id"],
                 "xml": e[0].xml
+              },
+              getResponse: (response) => {
+                if (response.status >= 400) {
+                  Modal.error({
+                    content: "Ошибка подписи документа"
+                  });
+                } else if (response.status === 200) {
+                  this.setState({
+                    ShowSign: false
+                  }, () => {
+                    // router.push('/documents');
+                    Modal.info({
+                      content: "Документ подписан"
+                    });
+                  });
+                }
               }
             })
               .then(data => {
-                this.setState({
-                  ShowSign: false
-                }, () => {
-                  // router.push('/documents');
-                  Modal.info({
-                    content: "Документ подписан"
-                  });
-                });
+
               })
               .catch(function(e) {
-                Modal.error({
-                  content: "Ошибка подписи документа"
-                });
+                // Modal.error({
+                //   content: "Ошибка подписи документа"
+                // });
               });
           }}
         />}
@@ -757,7 +794,7 @@ class Pulls extends Component {
           <Row>
             <Card bodyStyle={{ padding: 5 }} style={{ marginTop: "5px" }}>
               <Button
-                disabled={(this.state.ispublish ||    ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)  )}
+                disabled={hasRole(["ADMIN", "DPN1"]) || (this.state.ispublish || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
                 onClick={() => {
                   this.publish();
                 }}
@@ -766,18 +803,18 @@ class Pulls extends Component {
               >
                 Опубликовать
               </Button>
-              <Button
-                disabled={(this.state.pagingConfig.filter["refundPack.id"] === null || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
-                onClick={() => {
-                  this.setState({
-                    ShowSign: true
-                  });
-                }}
-                style={{ marginLeft: "5px" }}
-                key={"sign"}
-              >
-                Подписать и отправить
-              </Button>
+              {/*<Button*/}
+              {/*disabled={(this.state.pagingConfig.filter["refundPack.id"] === null || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}*/}
+              {/*onClick={() => {*/}
+              {/*this.setState({*/}
+              {/*ShowSign: true*/}
+              {/*});*/}
+              {/*}}*/}
+              {/*style={{ marginLeft: "5px" }}*/}
+              {/*key={"sign"}*/}
+              {/*>*/}
+              {/*Подписать и отправить*/}
+              {/*</Button>*/}
               {/*<ApproveModal disabled={true}/>
               <SignModal disabled={true}/>*/}
             </Card>
@@ -824,6 +861,7 @@ class Pulls extends Component {
                 hideFilterBtn
                 hideRefreshBtn
                 sortedInfo={this.state.sortedInfo}
+                sorted={true}
                 showTotal={true}
                 showExportBtn={true}
                 actionExport={this.exportToExcel}
@@ -846,40 +884,43 @@ class Pulls extends Component {
                   <Button onClick={() => {
                     this.confirming();
                   }}
-                  disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
-                  style={{ marginLeft: "5px" }}
-                  key={"confirm"}
-                  >
-                  Подтвердить ( {this.state.selectedRowKeys.length} )
+                    //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)}
+                          disabled={hasRole(["ADMIN", "DK1", "DK2"]) || SignBtnGroupsIsDisabled}
+                          style={{ marginLeft: "5px" }}
+                          key={"confirm"}>
+                    Подтвердить ( {this.state.selectedRowKeys.length} )
                   </Button>,
                   <Button
-                  disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
-                  onClick={() => {
-                  this.rejecting();
-                }}
-                  style={{ marginLeft: "5px" }}
-                  key={"reject"}
+                    //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
+                    disabled={hasRole(["ADMIN", "DK1", "DK2"]) || SignBtnGroupsIsDisabled}
+                    onClick={() => {
+                      this.rejecting();
+                    }}
+                    style={{ marginLeft: "5px" }}
+                    key={"reject"}
                   >
-                  Отклонить ( {this.state.selectedRowKeys.length} )
+                    Отклонить ( {this.state.selectedRowKeys.length} )
                   </Button>,
                   <Dropdown
                     key={"dropdown"}
                     trigger={["click"]}
                     overlay={
                       <Menu>
-                         <Menu.Item
-                          disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
+                        <Menu.Item
+                          //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
+                          disabled={hasRole(["ADMIN", "DK2"]) || SignBtnGroupsIsDisabled}
                           count={this.state.selectedRowKeys.length}
                           onClick={() => {
                             this.setState({
-                              employvisible: true,
+                              employvisible: true
                             });
                           }}
                           key="1"
-                        >  Назначить исполнителя ( {this.state.selectedRowKeys.length} )
+                        > Назначить исполнителя ( {this.state.selectedRowKeys.length} )
                         </Menu.Item>
                         <Menu.Item
-                          disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
+                          disabled={SignBtnGroupsIsDisabled}
+                          //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
                           key="2"
                           onClick={() => {
                             this.cancelpull();
@@ -889,7 +930,7 @@ class Pulls extends Component {
                       </Menu>
                     }>
                     <Button
-                      disabled={((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)}
+                      //disabled={((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)}
                       key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
                       type="down"/></Button>
                   </Dropdown>
@@ -897,7 +938,32 @@ class Pulls extends Component {
                 onShowSizeChange={(pageNumber, pageSize) => {
                   this.onShowSizeChange(pageNumber, pageSize);
                 }}
+                onSort={(column) => {
 
+                  if (Object.keys(column).length === 0) {
+                    this.setState(prevState => ({
+                      sortedInfo: {},
+                      pagingConfig: {
+                        ...prevState.pagingConfig,
+                        sort: []
+                      }
+                    }), () => {
+                      this.loadMainGridData();
+                    });
+                    return;
+                  }
+
+                  this.setState(prevState => ({
+                    sortedInfo: column,
+                    pagingConfig: {
+                      ...prevState.pagingConfig,
+                      sort: [{ field: column.field, "desc": column.order === "descend" }]
+                    }
+                  }), () => {
+                    this.loadMainGridData();
+                  });
+
+                }}
                 onSelectCell={(cellIndex, cell) => {
 
                 }}
