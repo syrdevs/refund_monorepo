@@ -233,7 +233,7 @@ class PaymentsMT102 extends Component {
       order: 6,
       "isVisible": "true",
       render: (value) => {
-        if (value.refundTotalAmount) {
+        if (value ? value.refundTotalAmount : false) {
           return numberWithSpaces(value.refundTotalAmount);
         }
         return "";
