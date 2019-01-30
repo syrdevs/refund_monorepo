@@ -133,15 +133,23 @@ class ShowPull extends Component {
           "title": "Номер заявки",
           "isVisible": true,
           "dataIndex": "refund.applicationId.appNumber"
-        }, {
+        },
+        {
+          "title": "Причина отклонения",
+          "isVisible": true,
+          "dataIndex": "refund.rejectText"
+        },
+        {
           "title": "Дата заявления плательщика",
           "isVisible": true,
           "dataIndex": "refund.appPayerDate"
-        }, {
+        },
+        {
           "title": "Дата заявки",
           "isVisible": true,
           "dataIndex": "refund.applicationId.appDate"
-        }, {
+        },
+        {
           "title": "Дата поступления заявления в Фонд",
           "isVisible": true,
           "dataIndex": "refund.receiptAppdateToFsms"

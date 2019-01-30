@@ -53,6 +53,7 @@ const { RangePicker } = DatePicker;
 
 
 class MainView extends Component {
+
   constructor(props) {
     super(props);
 
@@ -406,6 +407,7 @@ class MainView extends Component {
       }
     });
   };
+
   deleteFile = (record, item) => {
     Modal.confirm({
       title: "Вы действительно хотите удалить этот файл?",
@@ -470,11 +472,13 @@ class MainView extends Component {
 
 
   };
+
   showModal = () => {
     this.setState({
       ShowModal: true
     });
   };
+
   setColor = (value) => {
     return "#000000a6";
   };
@@ -494,7 +498,6 @@ class MainView extends Component {
       ShowGraph: true
     });
   };
-
 
   toggleSearcher() {
     this.setState({
@@ -676,6 +679,21 @@ class MainView extends Component {
           value: false
         }, {
           label: "Включен",
+          value: true
+        }]
+      },
+      {
+        name: "includedInPack",
+        label: "Статус рассмотрения",
+        type: "ButtonGroup",
+        buttons: [{
+          label: "Все",
+          value: null
+        }, {
+          label: "Подтвержден",
+          value: false
+        }, {
+          label: "Не подтвержден",
           value: true
         }]
       }

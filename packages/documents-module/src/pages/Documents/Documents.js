@@ -499,10 +499,10 @@ class Documents extends Component {
                         this.getDocumentOutList();
                       }}><span><Icon><FontAwesomeIcon icon={faFolder}/></Icon>Все</span></Menu.Item>
                       <Menu.Item key="5" onClick={() => {
-                        this.getDocumentOutList({ "documentNeedToSign": false });
+                        this.getDocumentOutList({ "documentSigned": true });
                       }}><span><Icon><FontAwesomeIcon icon={faCheckSquare}/></Icon>Рассмотренные</span></Menu.Item>
                       <Menu.Item key="6" onClick={() => {
-                        this.getDocumentOutList({ "documentNeedToSign": true });
+                        this.getDocumentOutList({ "documentSigned": false });
                       }}><span><Icon><FontAwesomeIcon
                         icon={faClock}/></Icon>На рассмотрении</span></Menu.Item>
                     </SubMenu>

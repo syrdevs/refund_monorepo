@@ -121,7 +121,8 @@ class Pulls extends Component {
               + (item.refund.personFirstname ? item.refund.personFirstname : "") + " "
               + (item.refund.personPatronname ? item.refund.personPatronname : " ");
           }
-        }, {
+        },
+        {
           "title": "Статус заявки на возврат",
           isVisible: true,
           sorted: false,
@@ -201,11 +202,18 @@ class Pulls extends Component {
           "title": "Номер заявки",
           "isVisible": true,
           "dataIndex": "refund.applicationId.appNumber"
-        }, {
+        },
+        {
+          "title": "Причина отклонения",
+          "isVisible": true,
+          "dataIndex": "refund.rejectText"
+        },
+        {
           "title": "Дата заявления плательщика",
           "isVisible": true,
           "dataIndex": "refund.appPayerDate"
-        }, {
+        },
+        {
           "title": "Дата заявки",
           "isVisible": true,
           "dataIndex": "refund.applicationId.appDate"
@@ -731,18 +739,6 @@ class Pulls extends Component {
   };
 
 
-  /*isRole=(arr)=> {
-    arr.forEach((item)=>{
-      JSON.parse(localStorage.getItem("roles")).forEach((role)=>{
-        if (role==item){
-          return true;
-        }
-      })
-    })
-    return false;
-  }*/
-
-
   isSignButtonDisable=()=>{
     //userState.roles = JSON.parse(localStorage.getItem("roles"));
     //console.log(this.isRole(["ADMIN", "DK1", "DK2"]));
@@ -820,9 +816,7 @@ class Pulls extends Component {
                     ShowSign: false
                   }, () => {
                     // router.push('/documents');
-                    Modal.info({
-                      content: "Документ подписан"
-                    });
+                    Modal.info({content: "Документ подписан"});
                   });
                 }
               }
@@ -932,7 +926,7 @@ class Pulls extends Component {
                   <Button onClick={() => {
                     this.confirming();
                   }}
-                    //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)}
+                        //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)}
                           disabled={hasRole(["ADMIN", "DK1", "DK2"]) || SignBtnGroupsIsDisabled}
                           style={{ marginLeft: "5px" }}
                           key={"confirm"}>
