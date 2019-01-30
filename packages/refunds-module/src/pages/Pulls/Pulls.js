@@ -379,7 +379,7 @@ class Pulls extends Component {
   };
 
   componentDidMount() {
-    if (!hasRole(["ADMIN", "DK1", "DK2"])) {
+    if (hasRole(["ADMIN", "DK1", "DK2"])) {
       this.state.fcolumn.push({
         title: "Исполнитель",
         order: 0,
