@@ -734,16 +734,14 @@ class Pulls extends Component {
   };
 
   btnIsDisabled = (args) => {
-    return args.filter((eq) =>( (eq)===false)).length > 0;
+    return args.filter((eq) => ((eq) === false)).length > 0;
   };
 
 
-  isSignButtonDisable=()=>{
+  isSignButtonDisable = () => {
     //userState.roles = JSON.parse(localStorage.getItem("roles"));
     //console.log(this.isRole(["ADMIN", "DK1", "DK2"]));
     //console.log(JSON.parse(localStorage.getItem("roles")));
-
-
 
 
     var result = false;
@@ -752,7 +750,9 @@ class Pulls extends Component {
       result = true;
     }*/
 
-
+    if (!hasRole(["ADMIN", "DK1", "DK2"])) {
+      result = true;
+    }
 
     if (this.state.selectedRowKeys.length === 0) {
       result = true;
@@ -767,16 +767,44 @@ class Pulls extends Component {
     }
 
     return result;
-  }
+  };
 
+  isCanSignButtonDisable = () => {
+    var result = false;
+
+    /*if (!hasRole(["ADMIN", "DK1", "DK2"])) {
+      result = true;
+    }*/
+
+    if (!hasRole(["ADMIN", "DK1", "DK2"])) {
+      result = true;
+    }
+
+    if (this.state.selectedRowKeys.length === 0) {
+      result = true;
+    }
+
+    if (this.state.disBtn.currentStatus && this.state.disBtn.currentStatus.result === 0) {
+      result = true;
+    }
+
+
+    if (!(this.state.disBtn.rawRecordsCount === 0 && this.state.disBtn.unconfirmedRecordsCount !== 0)) {
+      result = true;
+    }
+
+    return result;
+  };
 
 
   render() {
 
-    console.log(this.state.disBtn.rawRecordsCount);
-    console.log(this.state.disBtn.unconfirmedRecordsCount);
-    console.log(this.state.disBtn.currentStatus);
-    console.log(hasRole(["ADMIN", "DK1", "DK2"]));
+    console.log("this.state.disBtn.rawRecordsCount = " + this.state.disBtn.rawRecordsCount);
+    console.log("this.state.disBtn.unconfirmedRecordsCount =" + this.state.disBtn.unconfirmedRecordsCount);
+    if (this.state.disBtn.currentStatus) {
+      console.log("this.state.disBtn.currentStatus = " + this.state.disBtn.currentStatus.result);
+    }
+    console.log("role = " + hasRole(["ADMIN", "DK1", "DK2"]));
 
     const universal = {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
@@ -820,7 +848,7 @@ class Pulls extends Component {
                     ShowSign: false
                   }, () => {
                     // router.push('/documents');
-                    Modal.info({content: "Документ подписан"});
+                    Modal.info({ content: "Документ подписан" });
                   });
                 }
               }
@@ -930,15 +958,15 @@ class Pulls extends Component {
                   <Button onClick={() => {
                     this.confirming();
                   }}
-                        //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)}
-                          disabled={hasRole(["ADMIN", "DK1", "DK2"]) || SignBtnGroupsIsDisabled}
+                    //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)}
+                          disabled={SignBtnGroupsIsDisabled}
                           style={{ marginLeft: "5px" }}
                           key={"confirm"}>
                     Подтвердить ( {this.state.selectedRowKeys.length} )
                   </Button>,
                   <Button
                     //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
-                    disabled={hasRole(["ADMIN", "DK1", "DK2"]) || SignBtnGroupsIsDisabled}
+                    disabled={this.isCanSignButtonDisable()}
                     onClick={() => {
                       this.rejecting();
                     }}
@@ -954,7 +982,7 @@ class Pulls extends Component {
                       <Menu>
                         <Menu.Item
                           //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
-                          disabled={hasRole(["ADMIN", "DK2"]) || SignBtnGroupsIsDisabled}
+                          disabled={!hasRole(["ADMIN", "DK2"])}
                           count={this.state.selectedRowKeys.length}
                           onClick={() => {
                             this.setState({
