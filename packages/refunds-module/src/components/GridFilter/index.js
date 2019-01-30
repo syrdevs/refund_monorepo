@@ -329,8 +329,9 @@ class GridFilter extends Component {
         }
 
         if (fields[field].type === "checkbox") {
-          filterData[field] = formFilters[field].value;
-
+          if (formFilters[field].value) {
+            filterData[field] = formFilters[field].value;
+          }
           return;
         }
 
