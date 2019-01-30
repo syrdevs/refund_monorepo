@@ -59,6 +59,10 @@
     background-color: #FFD7EB;
 }
 
+.grayRow {
+    background-color: darkgrey;
+}
+
 .ant-table-tbody .ant-table-row td {
     word-break: normal;
     min-width: 120px;

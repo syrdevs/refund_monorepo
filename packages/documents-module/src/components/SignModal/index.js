@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
-import { Modal, Input, Form, Icon, Button, Row, Select, Card } from 'antd';
-import formatMessage from '../../utils/formatMessage';
+import React, { Component } from "react";
+import { Modal, Input, Form, Icon, Button, Row, Select, Card } from "antd";
+import formatMessage from "../../utils/formatMessage";
 import connect from "../../Redux";
-import request from '../../utils/request';
+import request from "../../utils/request";
 
 const formItemLayout = {
   labelCol: {
-    span: 10,
+    span: 10
   },
   wrapperCol: {
-    span: 14,
-  },
+    span: 14
+  }
 };
-
-
 
 
 class SignModal extends Component {
@@ -22,17 +20,17 @@ class SignModal extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      rw:null,
-      xml:null,
+      rw: null,
+      xml: null,
       arrsignXML: [],
       infosignXML: {
-        storageAlias: '',
-        storagePath: '',
-        alias: '',
-        storagePassword: ''
+        storageAlias: "",
+        storagePath: "",
+        alias: "",
+        storagePassword: ""
       },
       callback: null,
-      heartbeat_msg: '--heartbeat--',
+      heartbeat_msg: "--heartbeat--",
       keytype: "SIGN",
       missed_heartbeats_limit_max: 50,
       missed_heartbeats_limit_min: 3,
@@ -41,53 +39,53 @@ class SignModal extends Component {
       missed_heartbeats: 0,
       webSocket: null,
       pagingConfig: {
-        'start': 0,
-        'length': 10,
-        'src': {
-          'searched': false,
-          'data': {},
+        "start": 0,
+        "length": 10,
+        "src": {
+          "searched": false,
+          "data": {}
         },
-        'sort': [],
+        "sort": []
       },
       columns: [
         {
-          dataIndex: '102',
-          title: 'МТ 102',
+          dataIndex: "102",
+          title: "МТ 102",
           width: 50,
           onCell: record => {
             return {
               onClick: () => {
                 console.log(record);
-              },
+              }
             };
           },
           render: () => (
-            <Button key={'102'}>
+            <Button key={"102"}>
               <Icon type="database" theme="outlined"/>
             </Button>
-          ),
+          )
         }, {
-          dataIndex: 'xml',
-          title: 'XML',
+          dataIndex: "xml",
+          title: "XML",
           width: 50,
           onCell: record => {
             return {
               onClick: () => {
                 console.log(record);
-              },
+              }
             };
           },
           render: () => (
-            <Button key={'xml'}>
+            <Button key={"xml"}>
               <Icon type="database" theme="outlined"/>
             </Button>
-          ),
+          )
         }],
       showModal: true,
       keyList: ""
 
 
-    }
+    };
   }
 
 
@@ -99,27 +97,27 @@ class SignModal extends Component {
 
   }
 
-  loadXml=()=>{
-   /* this.props.dispatch({
-      type: 'universal/getXml',
-      payload: {
-        "entity": "contract",
-        "id":  '25e78a7f-d4b0-4de4-a129-5b5954b35731'//this.props.location.query.id  // this.props.state.data.documentType.id
-      },
-    }).then(()=>{
-      this.setState({
-        xml: this.props.universal.getXml
-      });
-     console.log(this.props.universal.getXml)
-    })*/
+  loadXml = () => {
+    /* this.props.dispatch({
+       type: 'universal/getXml',
+       payload: {
+         "entity": "contract",
+         "id":  '25e78a7f-d4b0-4de4-a129-5b5954b35731'//this.props.location.query.id  // this.props.state.data.documentType.id
+       },
+     }).then(()=>{
+       this.setState({
+         xml: this.props.universal.getXml
+       });
+      console.log(this.props.universal.getXml)
+     })*/
 
-    request("/api/contract/documentAsXml?entity="+this.props.type+"&id="+this.props.id).then(data => {
+    request("/api/contract/documentAsXml?entity=" + this.props.type + "&id=" + this.props.id).then(data => {
       console.log(data);
       this.setState({
-        xml: data
-      })
+        xml:  data
+      });
 
-    })
+    });
 
     // fetch('/api/contract/documentAsXml?entity=contract&id=25e78a7f-d4b0-4de4-a129-5b5954b35731', {
     //   headers: {
@@ -151,7 +149,7 @@ class SignModal extends Component {
 
   startLayer = () => {
     console.log("test");
-    this.state.webSocket = new WebSocket('wss://127.0.0.1:13579/');
+    this.state.webSocket = new WebSocket("wss://127.0.0.1:13579/");
 
 
     this.state.webSocket.onopen = (event) => {
@@ -164,9 +162,9 @@ class SignModal extends Component {
 
     this.state.webSocket.onclose = (event) => {
       if (event.wasClean) {
-        console.log('connection has been closed');
+        console.log("connection has been closed");
       } else {
-        console.log('Connection error');
+        console.log("Connection error");
         var self = this;
         this.openDialog();
       }
@@ -181,25 +179,25 @@ class SignModal extends Component {
       let result = JSON.parse(event.data);
 
       this.state.rw = {
-        result: result['result'],
-        secondResult: result['secondResult'],
-        errorCode: result['errorCode'],
-        getResult: function () {
+        result: result["result"],
+        secondResult: result["secondResult"],
+        errorCode: result["errorCode"],
+        getResult: function() {
           return this.result;
         },
-        getSecondResult: function () {
+        getSecondResult: function() {
           return this.secondResult;
         },
-        getErrorCode: function () {
+        getErrorCode: function() {
           return this.errorCode;
         }
       };
-      if (this.state.callback==='fNCAsetStoragePathBack') this.fNCAsetStoragePathBack(this.state.rw);
-      if (this.state.callback==='fNCAgetKeyListBack') this.fNCAgetKeyListBack(this.state.rw);
+      if (this.state.callback === "fNCAsetStoragePathBack") this.fNCAsetStoragePathBack(this.state.rw);
+      if (this.state.callback === "fNCAgetKeyListBack") this.fNCAgetKeyListBack(this.state.rw);
       // if (this.state.callback==='fNCAgetKeyInfoBack') this.fNCAgetKeyInfoBack(this.state.rw);
       // if (this.state.callback==='getNotBeforeBack') this.getNotBeforeBack(this.state.rw);
-      if (this.state.callback==='getNotAfterBack') this.getNotAfterBack(this.state.rw);
-      if (this.state.callback==='fNCAsignXmlBack') this.fNCAsignXmlBack(this.state.rw);
+      if (this.state.callback === "getNotAfterBack") this.getNotAfterBack(this.state.rw);
+      if (this.state.callback === "fNCAsignXmlBack") this.fNCAsignXmlBack(this.state.rw);
       this.setMissedHeartbeatsLimitToMin();
     };
   };
@@ -210,13 +208,13 @@ class SignModal extends Component {
       //location.reload();
       this.setState({
         showModal: false
-      })
+      });
     }
   };
 
 
   stopLayer = () => {
-    console.log('stopLayer');
+    console.log("stopLayer");
     clearInterval(this.state.heartbeat_interval);
     //this.state.heartbeat_interval = null;
     this.setState({
@@ -226,9 +224,9 @@ class SignModal extends Component {
     //this.state.webSocket = null;
     this.setState({
       webSocket: null
-    },()=>{
+    }, () => {
       this.props.onCancel();
-    })
+    });
   };
 
   pingLayer = () => {
@@ -242,7 +240,7 @@ class SignModal extends Component {
       clearInterval(this.state.heartbeat_interval);
       this.setState({
         heartbeat_interval: null
-      })
+      });
       //this.state.heartbeat_interval = null;
       console.warn("Closing connection. Reason: " + e.message);
       this.state.webSocket.close();
@@ -307,6 +305,7 @@ class SignModal extends Component {
       "method": "signXml",
       "args": [storageName, storagePath, alias, password, xmlToSign]
     };
+    console.log(vsignXml);
     this.state.callback = callBack;
     this.setMissedHeartbeatsLimitToMax();
     this.state.webSocket.send(JSON.stringify(vsignXml));
@@ -337,7 +336,7 @@ class SignModal extends Component {
           this.state.infosignXML.storagePath = storagePath;
           this.state.infosignXML.alias = alias;
           this.state.infosignXML.storagePassword = storagePassword;
-          this.state.arrsignXML.push({signed: false, xml: this.state.xml, signXML: ''});
+          this.state.arrsignXML.push({ signed: false, xml: this.state.xml, signXML: "" },{ signed: false, xml: this.state.xml, signXML: "" });
           this.fNCAsignXmlRec();
         } else {
           alert("Вы не выбрали ключ!");
@@ -351,28 +350,33 @@ class SignModal extends Component {
   };
 
   fNCAsignXmlRec = () => {
-    let foundsignXML = this.state.arrsignXML.find(function (item) {
-      return (!item.signed && item.xml !== '');
+    let foundsignXML = this.state.arrsignXML.find(function(item) {
+      return (!item.signed && item.xml !== "");
     });
+
     if (foundsignXML !== undefined) {
       let data = foundsignXML.xml;
       this.signXml(this.state.infosignXML.storageAlias, this.state.infosignXML.storagePath, this.state.infosignXML.alias, this.state.infosignXML.storagePassword, data, "fNCAsignXmlBack");
     } else {
-      this.state.infosignXML = {storageAlias: '', storagePath: '', alias: '', storagePassword: ''};
-      this.stopLayer();
-      this.setState({
-        showModal: false
-      })
-      console.log(this.state.arrsignXML);
-      this.props.getKey(this.state.arrsignXML);
+      this.state.infosignXML = { storageAlias: "", storagePath: "", alias: "", storagePassword: "" };
+
+        console.log(this.state.arrsignXML);
+        this.stopLayer();
+        this.setState({
+          showModal: false
+        });
+        this.props.getKey(this.state.arrsignXML);
+
+
     }
   };
 
   fNCAsignXmlBack = (result) => {
-    if (result['errorCode'] === "NONE") {
-      let signedXML = result['result'];
-      let foundsignXML = this.state.arrsignXML.find(function (item) {
-        return (!item.signed && item.xml !== '');
+    console.log(result);
+    if (result["errorCode"] === "NONE") {
+      let signedXML = result["result"];
+      let foundsignXML = this.state.arrsignXML.find(function(item) {
+        return (!item.signed && item.xml !== "");
       });
       if (foundsignXML !== undefined) {
         foundsignXML.signXML = signedXML;
@@ -380,13 +384,13 @@ class SignModal extends Component {
       }
       this.fNCAsignXmlRec();
     } else {
-      if (result['errorCode'] === "WRONG_PASSWORD" && result['result'] > -1) {
-        alert("Неправильный пароль! Количество оставшихся попыток: " + result['result']);
+      if (result["errorCode"] === "WRONG_PASSWORD" && result["result"] > -1) {
+        alert("Неправильный пароль! Количество оставшихся попыток: " + result["result"]);
 
-      } else if (result['errorCode'] === "WRONG_PASSWORD") {
+      } else if (result["errorCode"] === "WRONG_PASSWORD") {
         alert("Неправильный пароль!");
       } else {
-        alert(result['errorCode']);
+        alert(result["errorCode"]);
       }
     }
   };
@@ -395,23 +399,23 @@ class SignModal extends Component {
     console.log(e);
     let storageAlias = e;
 
-    let storagePath =  window.localStorage.getItem('storagePath');
+    let storagePath = window.localStorage.getItem("storagePath");
     console.log(storagePath);
     // $('#storagePath').val();
-    if (storageAlias !== 'NONE') {
-      this.browseKeyStore(storageAlias, 'P12', storagePath, 'fNCAsetStoragePathBack');
+    if (storageAlias !== "NONE") {
+      this.browseKeyStore(storageAlias, "P12", storagePath, "fNCAsetStoragePathBack");
     } else {
       this.fNCArefreshVals();
     }
   };
 
-  fNCAsetStoragePathBack =(rw)=>  {
+  fNCAsetStoragePathBack = (rw) => {
     let storagePath = document.getElementById("storagePath").value;
-    if (this.state.rw.getErrorCode() === 'NONE') {
+    if (this.state.rw.getErrorCode() === "NONE") {
       storagePath = rw.getResult();
-      if (storagePath !== undefined && storagePath !== null && storagePath !== '') {
-        document.getElementById("storagePath").setAttribute("value",storagePath);
-        window.localStorage.setItem('storagePath',storagePath);
+      if (storagePath !== undefined && storagePath !== null && storagePath !== "") {
+        document.getElementById("storagePath").setAttribute("value", storagePath);
+        window.localStorage.setItem("storagePath", storagePath);
         // document.getElementById("btnGetKeyList").setAttribute("disabled",false);
 
       } else {
@@ -427,31 +431,31 @@ class SignModal extends Component {
     let storagePath = document.getElementById("storagePath").value;
     let storagePassword = document.getElementById("storagePassword").value;
     let keyType = this.state.keytype;
-    if (storagePath !== null && storagePath !== '' && storageAlias !== null && storageAlias !== '') {
-      if (storagePassword !== null && storagePassword !== '') {
-        this.getKeys(storageAlias, storagePath, storagePassword, keyType, 'fNCAgetKeyListBack');
+    if (storagePath !== null && storagePath !== "" && storageAlias !== null && storageAlias !== "") {
+      if (storagePassword !== null && storagePassword !== "") {
+        this.getKeys(storageAlias, storagePath, storagePassword, keyType, "fNCAgetKeyListBack");
       } else {
-        alert('Введите пароль к хранилищу');
+        alert("Введите пароль к хранилищу");
       }
     } else {
-      alert('Не выбран хранилище!');
+      alert("Не выбран хранилище!");
     }
   };
 
   fNCAgetKeyListBack = (result) => {
     // $('#keyList').html('');
-    if (result['errorCode'] === 'NONE') {
-      let list = result['result'];
-      let slotListArr = list.split('\n');
+    if (result["errorCode"] === "NONE") {
+      let list = result["result"];
+      let slotListArr = list.split("\n");
       for (let i = 0; i < slotListArr.length; i++) {
-        if (slotListArr[i] === null || slotListArr[i] === '') {
+        if (slotListArr[i] === null || slotListArr[i] === "") {
           continue;
         }
         let str = slotListArr[i];
-        let alias = str.split('|')[3];
+        let alias = str.split("|")[3];
         this.setState({
           keylist: alias
-        })
+        });
         //document.getElementById("keyList").setAttribute("value",alias);
 
 
@@ -467,26 +471,26 @@ class SignModal extends Component {
       // $('#messagetext').text('Выберите ключ!');
       // this.fNCAgetKeyInfo();
     } else {
-      if (result['errorCode'] === 'WRONG_PASSWORD' && result['result'] > -1) {
-        alert('Неправильный пароль! Количество оставшихся попыток: ' + result['result']);
-      } else if (result['errorCode'] === 'WRONG_PASSWORD') {
-        alert('Неправильный пароль!');
-      } else if (result['errorCode'] === 'EMPTY_KEY_LIST') {
-        alert('Хранилище не содержить ключей для подписи!');
+      if (result["errorCode"] === "WRONG_PASSWORD" && result["result"] > -1) {
+        alert("Неправильный пароль! Количество оставшихся попыток: " + result["result"]);
+      } else if (result["errorCode"] === "WRONG_PASSWORD") {
+        alert("Неправильный пароль!");
+      } else if (result["errorCode"] === "EMPTY_KEY_LIST") {
+        alert("Хранилище не содержить ключей для подписи!");
       } else {
-        alert(result['errorCode']);
+        alert(result["errorCode"]);
       }
     }
   };
 
-  fNCArefreshVals=()=>{
-    document.getElementById("storageAlias").setAttribute("value","NONE");
-    document.getElementById("storagePath").setAttribute("value","");
-    document.getElementById("storagePassword").setAttribute("value","");
-   // document.getElementById("keyList").setAttribute("value","");
+  fNCArefreshVals = () => {
+    document.getElementById("storageAlias").setAttribute("value", "NONE");
+    document.getElementById("storagePath").setAttribute("value", "");
+    document.getElementById("storagePassword").setAttribute("value", "");
+    // document.getElementById("keyList").setAttribute("value","");
     this.setState({
       keylist: ""
-    })
+    });
   };
 
 
@@ -496,15 +500,15 @@ class SignModal extends Component {
     return (<Modal
       title="Подписать документ"
       visible={this.props.visible}
-      onOk={ ()=> {
-        this.fNCAgetKeyList()
+      onOk={() => {
+        this.fNCAgetKeyList();
       }}
-      onCancel={()=> {
+      onCancel={() => {
         this.stopLayer();
       }}
     >
       <Form layout="horizontal" hideRequiredMark>
-        <Card style={{borderRadius: '5px', marginBottom: '10px'}} bodyStyle={{padding: 0}} bordered={true}>
+        <Card style={{ borderRadius: "5px", marginBottom: "10px" }} bodyStyle={{ padding: 0 }} bordered={true}>
           <Row>
             <Form.Item {...formItemLayout} label="Тип хранилища ключа:">
               <Select id="storageAlias" onChange={(e) => this.fNCAsetStoragePath(e)}>
@@ -521,12 +525,12 @@ class SignModal extends Component {
               <Input id="storagePassword" type="password"/>
             </Form.Item>
           </Row>
-      </Card>
+        </Card>
       </Form>
     </Modal>);
   }
 }
 
 export default connect(({ universal }) => ({
-  universal,
-}))(SignModal)
+  universal
+}))(SignModal);
