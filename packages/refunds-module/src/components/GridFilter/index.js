@@ -659,14 +659,14 @@ class GridFilter extends Component {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
             <Input onKeyDown={this.onKeyPress}
                    onChange={(e) => {
-                        if (this.props.formFilter && this.props.formFilter[filterItem.name])
-                          this.props.formFilter[filterItem.name] = filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value;
+                     if (this.props.formFilter && this.props.formFilter[filterItem.name])
+                       this.props.formFilter[filterItem.name] = filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value;
 
-                        if (this.props.formFilter && e.target.value.length === 0) {
-                          delete this.props.formFilter[filterItem.name];
-                        }
-                        this.withmaxfieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value, filterItem.withMax);
-                      }}
+                     if (this.props.formFilter && e.target.value.length === 0) {
+                       delete this.props.formFilter[filterItem.name];
+                     }
+                     this.withmaxfieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value, filterItem.withMax);
+                   }}
                    value={formFilters[filterItem.name]}
                    style={{ width: "100%" }} {...params}/></div>);
         }
@@ -704,8 +704,8 @@ class GridFilter extends Component {
             style={{ width: "100%" }}
             placeholder=""
             onChange={(values) => {
-              if (values.length===0) {
-                delete this.props.formFilter[filterItem.name+ "List"];
+              if (values.length === 0 && this.props.formFilter && this.props.formFilter[filterItem.name + "List"]) {
+                delete this.props.formFilter[filterItem.name + "List"];
               }
               this.fieldOnChange(filterItem, values.length === 0 ? null : values);
             }}

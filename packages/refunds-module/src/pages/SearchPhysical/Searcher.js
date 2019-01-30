@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import formatMessage from "../../utils/formatMessage";
 import componentLocal from "../../locales/components/componentLocal";
-
+import "./HistoryCalendar.css";
 import moment from "moment";
 import {
   Card,
@@ -954,6 +954,7 @@ class Searcher extends Component {
                     type="inner"
                   >
                     <Table
+                      className={"view_document_table"}
                       columns={columns}
                       dataSource={data}
                       pagination={{ pageSize: 50, position: "none" }}
@@ -969,6 +970,7 @@ class Searcher extends Component {
                     type="inner"
                   >
                     <Table
+                      className={"view_document_table"}
                       columns={columns}
                       dataSource={dataRPM}
                       pagination={{ pageSize: 50, position: "none" }}
@@ -986,7 +988,7 @@ class Searcher extends Component {
                     <Table
                       columns={columns}
                       dataSource={secondData}
-                      className={"customanttable"}
+                      className={"view_document_table"}
                       pagination={{ pageSize: 50, position: "none" }}
                       showHeader={false}
                       size={"default"}
