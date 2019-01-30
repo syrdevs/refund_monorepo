@@ -32,7 +32,7 @@ import "./Payments.css";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 import saveAs from "file-saver";
-
+import numberWithSpaces from "../../utils/numberFormat";
 
 const FormItem = Form.Item;
 const { RangePicker } = DatePicker;
@@ -54,6 +54,18 @@ class PaymentsMT100 extends Component {
       filter: {},
       sort: []
     },
+    actionColumns: [{
+      "title": "Сумма",
+      "dataIndex": "totalAmount",
+      "isVisible": "true",
+      render: (value) => {
+        if (value) {
+          return numberWithSpaces(value);
+        }
+
+        return "";
+      }
+    }],
     filterForm: [
       {
         name: "reference",
@@ -123,12 +135,12 @@ class PaymentsMT100 extends Component {
         label: "БИН отправителя",
         name: "getPaymentMT102ByBin",
         type: "text"
-      },
-     /* {
-        label: "ID",
-        name: "id",
-        type: "text"
-      }*/
+      }
+      /* {
+         label: "ID",
+         name: "id",
+         type: "text"
+       }*/
     ],
     sortedInfo: {},
     selectedRowKeys: [],
@@ -145,10 +157,6 @@ class PaymentsMT100 extends Component {
       }, {
         "title": "Дата платежа",
         "dataIndex": "paymentDate",
-        "isVisible": "true"
-      }, {
-        "title": "Сумма",
-        "dataIndex": "totalAmount",
         "isVisible": "true"
       }, {
         "title": "КНП",
@@ -363,12 +371,12 @@ class PaymentsMT100 extends Component {
     return decodeURI(filenames);
   };
 
-  reloadMt100Packet = () =>{
+  reloadMt100Packet = () => {
     Modal.confirm({
-      title: 'Вы действительно хотите запросить файлы МТ102?',
-      okText: 'Да',
+      title: "Вы действительно хотите запросить файлы МТ102?",
+      okText: "Да",
       cancelText: "Нет",
-      onOk:()=> {
+      onOk: () => {
         const { dispatch } = this.props;
         dispatch({
           type: "universal/reloadMt100Packet",
@@ -376,22 +384,22 @@ class PaymentsMT100 extends Component {
             id: this.state.selectedRecord.id
           }
         })
-          .then(()=>{
+          .then(() => {
             this.setState({
               selectedRecord: null
-            },()=>{
+            }, () => {
               this.loadGridData();
             });
-          })
+          });
       },
-      onCancel:()=> {
+      onCancel: () => {
         Modal.error({
-          title: 'Ошибка при запросе файла MT102',
+          title: "Ошибка при запросе файла MT102"
         });
-      },
+      }
     });
 
-  }
+  };
 
   render = () => {
 
@@ -399,25 +407,25 @@ class PaymentsMT100 extends Component {
 
     let addonButtons = [
       <Button
-      disabled={this.state.selectedRecord === null}
-      key={"mt100paymentBtn"}
-      onClick={() => {
-        if (this.state.selectedRecord !== null) {
-          this.props.onSelect(this.state.selectedRecord);
-        }
-      }}>
-      Платежи МТ102</Button>,
+        disabled={this.state.selectedRecord === null}
+        key={"mt100paymentBtn"}
+        onClick={() => {
+          if (this.state.selectedRecord !== null) {
+            this.props.onSelect(this.state.selectedRecord);
+          }
+        }}>
+        Платежи МТ102</Button>,
       <Button
         disabled={(this.state.selectedRecord ? ((this.state.selectedRecord.mt102LoadStatus ? this.state.selectedRecord.mt102LoadStatus : {}).code === "3") : true)}
         key={"mt100reloadBtn"}
         onClick={() => {
           if (this.state.selectedRecord !== null) {
-                this.reloadMt100Packet();
-           }
-           // console.log(this.state.selectedRecord)
-            //this.props.onSelect(this.state.selectedRecord);
+            this.reloadMt100Packet();
+          }
+          // console.log(this.state.selectedRecord)
+          //this.props.onSelect(this.state.selectedRecord);
         }}>
-        Запросить МТ102</Button>,
+        Запросить МТ102</Button>
 
     ];
     let extraButtons = [<span key={"total-count"} style={{
@@ -454,7 +462,7 @@ class PaymentsMT100 extends Component {
           name={"paymentspagemt100columns"}
           scroll={{ x: "auto" }}
           fixedBody={true}
-          actionColumns={[]}
+          actionColumns={this.state.actionColumns}
           showTotal={true}
           // selectedRowCheckBox={true}
           searchButton={false}

@@ -31,6 +31,7 @@ import moment from "moment/moment";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 import saveAs from "file-saver";
+import numberWithSpaces from "../../utils/numberFormat";
 
 
 const FormItem = Form.Item;
@@ -203,10 +204,6 @@ class PaymentsMT102 extends Component {
         "dataIndex": "paymentperiod",
         "isVisible": "true"
       }, {
-        "title": "Сумма возвратов",
-        "dataIndex": "refundTotalAmount",
-        "isVisible": "true"
-      }, {
         "title": "Дата поступления информации",
         "dataIndex": "createdon"
       }, {
@@ -218,7 +215,30 @@ class PaymentsMT102 extends Component {
       }
 
     ],
-    gridFilterkey: 1
+    actionColumns: [{
+      "title": "Сумма",
+      order: 5,
+      "dataIndex": "paymentsum",
+      "isVisible": "true",
+      render: (value) => {
+        if (value) {
+          return numberWithSpaces(value);
+        }
+
+        return "";
+      }
+    }, {
+      "title": "Сумма возвратов",
+      "dataIndex": "refundTotalAmount",
+      order: 6,
+      "isVisible": "true",
+      render: (value) => {
+        if (value.refundTotalAmount) {
+          return numberWithSpaces(value.refundTotalAmount);
+        }
+        return "";
+      }
+    }]
   };
 
   clearFilter = () => {
@@ -236,45 +256,7 @@ class PaymentsMT102 extends Component {
     });
   };
 
-  applyFilter2 = (filter) => {
-
-    if (filter.knpList != null && filter.knpList.length === 0) {
-      delete filter["knpList"];
-    }
-
-    if (filter["stornReason.code"]) {
-      filter["stornReason.code"] = "1";
-    }
-    /* if (filter["isRefunded"] === false) {
-       delete filter["isRefunded"];
-     }*/
-
-
-    this.setState({
-      sortedInfo: {},
-      parameters: {
-        ...this.state.parameters,
-        start: 0,
-        length: 15,
-        filter: { ...filter, ...this.state.parameters.filter },
-        sort: []
-      }
-    }, () => {
-      const { dispatch } = this.props;
-      dispatch({
-        type: "universal/paymentsData",
-        payload: {
-          ...this.state.parameters,
-          start: 0,
-          length: 15
-        }
-      });
-    });
-  };
-
-
   applyFilter = (filter) => {
-
     if (filter.knpList != null && filter.knpList.length === 0) {
       delete filter["knpList"];
     }
@@ -282,10 +264,9 @@ class PaymentsMT102 extends Component {
     if (filter["stornReason.code"]) {
       filter["stornReason.code"] = "1";
     }
-   /* if (filter["isRefunded"] === false) {
+    if (filter["isRefunded"] === false) {
       delete filter["isRefunded"];
-    }*/
-
+    }
 
     this.setState({
       sortedInfo: {},
@@ -293,7 +274,7 @@ class PaymentsMT102 extends Component {
         ...this.state.parameters,
         start: 0,
         length: 15,
-        filter: { ...filter, ...this.state.parameters.filter },
+        filter: { ...filter },
         sort: []
       }
     }, () => {
@@ -370,7 +351,7 @@ class PaymentsMT102 extends Component {
     //   {
     //     headers: {
     //       "Content-Type": "application/json; charset=utf-8",
-    //       Authorization: "Bearer " + authToken
+    //       Authorization: "Bearer " + authTokeСумма возвратовn
     //     },
     //     method: "post",
     //     body: JSON.stringify({
@@ -436,15 +417,16 @@ class PaymentsMT102 extends Component {
 
     this.props.eventManager.subscribe("onSelectFilter", (params) => {
       if (Object.keys(params).length > 0) {
+
         this.setState(({ filterContainer }) => ({
-          gridFilterkey: this.state.gridFilterkey+1,
           filterContainer: 6,
           parameters: {
             ...this.state.parameters,
+            //filter: { ...this.state.parameters.filter, params }
             filter: params
           }
         }), () => {
-          this.applyFilter2(params);
+          this.applyFilter(params);
         });
       }
       else {
@@ -480,10 +462,9 @@ class PaymentsMT102 extends Component {
             extra={<Icon style={{ "cursor": "pointer" }} onClick={this.filterPanelState}><FontAwesomeIcon
               icon={faTimes}/></Icon>}>
             <GridFilter
-              key={this.state.gridFilterkey}
               formFilter={this.state.parameters.filter}
               clearFilter={this.clearFilter}
-              applyFilter={(filter) => this.applyFilter(filter)}
+              applyFilter={(filter) => this.applyFilter(filter)} key={"1"}
               filterForm={this.state.filterForm}
               dateFormat={dateFormat}/>
           </Card>
@@ -495,7 +476,7 @@ class PaymentsMT102 extends Component {
           name={"paymentspagemt102columns"}
           scroll={{ x: "auto" }}
           fixedBody={true}
-          actionColumns={[]}
+          actionColumns={this.state.actionColumns}
           showTotal={true}
           // selectedRowCheckBox={true}
           searchButton={false}
@@ -508,7 +489,7 @@ class PaymentsMT102 extends Component {
             if (record.isRefunded) {
               return "redRow";
             }
-            if(record.stornDate){
+            if (record.stornDate) {
               return "grayRow";
             }
           }

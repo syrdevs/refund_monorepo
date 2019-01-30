@@ -111,7 +111,7 @@ class ViewDocument extends Component {
 
   componentDidMount() {
 
-    this.getRefundPack();
+    //this.getRefundPack();
 
     const { dispatch } = this.props;
     this.loadDataById(this.props.location.query.id);
@@ -256,23 +256,23 @@ class ViewDocument extends Component {
 
 
     ///pack
-    if (refundPack) {
-
-
-      if (isSign) {
-        if (refundPack.rawRecordsCount !== 0 || refundPack.unconfirmedRecordsCount !== 0) {
-          result = true;
-        }
-      } else {
-        if (!(refundPack.rawRecordsCount === 0 && refundPack.unconfirmedRecordsCount !== 0)) {
-          result = true;
-        }
-      }
-
-      if (refundPack.currentStatus && refundPack.currentStatus.result === 0) {
-        result = true;
-      }
-    }
+    // if (refundPack) {
+    //
+    //
+    //   if (isSign) {
+    //     if (refundPack.rawRecordsCount !== 0 || refundPack.unconfirmedRecordsCount !== 0) {
+    //       result = true;
+    //     }
+    //   } else {
+    //     if (!(refundPack.rawRecordsCount === 0 && refundPack.unconfirmedRecordsCount !== 0)) {
+    //       result = true;
+    //     }
+    //   }
+    //
+    //   if (refundPack.currentStatus && refundPack.currentStatus.result === 0) {
+    //     result = true;
+    //   }
+    // }
 
 
     if (this.state.data) {

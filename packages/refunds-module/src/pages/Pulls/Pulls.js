@@ -189,12 +189,23 @@ class Pulls extends Component {
               {record.refund.refundFiles && record.refund.refundFiles.map((item) => {
                 return <p>{item.filename} <a onClick={() => {
                   this.downloadFile(record, item);
-                }}>cкачать</a> / <a onClick={() => {
+                }}>cкачать</a> / {hasRole(["ADMIN", "DPN1"]) && <a onClick={() => {
                   this.deleteFile(record, item);
-                }}>удалить</a></p>;
+                }}>удалить</a>}</p>;
               })}
             </div>
           )
+        }, {
+          "title": "Сумма возврата",
+          "isVisible": true,
+          "dataIndex": "refund.refundPayAmount",
+          order: 7,
+          render: (value) => {
+            if (value.refund && value.refund.refundTotalAmount) {
+              return numberWithSpaces(value.refund.refundTotalAmount);
+            }
+            return "";
+          }
         }
       ],
       columns: [
@@ -230,12 +241,7 @@ class Pulls extends Component {
           "isVisible": true,
           "dataIndex": "refund.appEndDate"
         },
-        {
-          "title": "Сумма возврата",
-          "isVisible": true,
-          "dataIndex": "refund.refundPayAmount"
 
-        },
         {
           "title": "Референс ГК",
           "isVisible": true,
@@ -993,7 +999,7 @@ class Pulls extends Component {
                         > Назначить исполнителя ( {this.state.selectedRowKeys.length} )
                         </Menu.Item>
                         <Menu.Item
-                          disabled={!hasRole(["ADMIN", "DK1", "DK2"])}
+                          disabled={!hasRole(["ADMIN", "DPN1"])}
                           //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
                           key="2"
                           onClick={() => {

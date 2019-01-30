@@ -46,23 +46,13 @@ import SignModal from "../Pulls/SignModal";
 import saveAs from "file-saver";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
+import numberWithSpaces from "../../utils/numberFormat";
+
 
 const FormItem = Form.Item;
 const confirm = Modal.confirm;
 const { RangePicker } = DatePicker;
 
-
-function numberWithSpaces(x) {
-  var parts = x.toString().split(".");
-  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
-  var spaceNumber = parts.join(".");
-  var index = spaceNumber.indexOf('.');
-  if (index >= 0) {
-    return spaceNumber;
-  } else {
-    return spaceNumber + ".00";
-  }
-}
 
 class MainView extends Component {
 
@@ -166,6 +156,18 @@ class MainView extends Component {
           render: (value) => {
             if (value.refundPayAmount) {
               return numberWithSpaces(value.refundPayAmount);
+            }
+
+            return "";
+          }
+        },
+        {
+          "title": "Сумма отчислений/взносов",
+          "dataIndex": "payAmount",
+          order: 7,
+          render: (value) => {
+            if (value) {
+              return numberWithSpaces(value);
             }
 
             return "";
@@ -278,7 +280,7 @@ class MainView extends Component {
           "title": "Дата платежного поручения",
           "dataIndex": "applicationId.payOrderDate"
         },
-        { "title": "Сумма отчислений/взносов", "dataIndex": "payAmount" },
+
         /*{
           "title": "Дата последнего взноса",
           "dataIndex": "lastPayDate"
@@ -315,7 +317,7 @@ class MainView extends Component {
         },
         {
           "title": "Номер пула",
-          "dataIndex": "PackNumber",
+          "dataIndex": "refundItem.refundPack.number ",
           "isVisible": true
         }
         //
@@ -897,7 +899,7 @@ class MainView extends Component {
     if (this.state.selectedRowKeys.length > 0) {
       let nullableDateRecords = this.state.selectedRowKeys
         .map((selectKey) => universal.table.content.find(item => item.id === selectKey))
-        .filter((itemRecord) => itemRecord.applicationId.receiptAppdateToFsms === null);
+        .filter((itemRecord) => itemRecord && itemRecord.applicationId && itemRecord.applicationId.receiptAppdateToFsms && itemRecord.applicationId.receiptAppdateToFsms === null);
 
       return nullableDateRecords.length > 0;
     }
