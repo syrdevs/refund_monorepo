@@ -52,6 +52,12 @@ const confirm = Modal.confirm;
 const { RangePicker } = DatePicker;
 
 
+function numberWithSpaces(x) {
+  var parts = x.toString().split(".");
+  parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+  return parts.join(".");
+}
+
 class MainView extends Component {
 
   constructor(props) {
@@ -146,6 +152,18 @@ class MainView extends Component {
             href="#"> <span><Badge
             status={this.setBadgeStatus(value.isRefundConfirm)}/></span> {value.dappRefundStatusId ? value.dappRefundStatusId.nameRu : null}
           </a>
+        }, {
+          "title": "Сумма возврата",
+          "isVisible": true,
+          order: 6,
+          "dataIndex": "refundPayAmount",
+          render: (value) => {
+            if (value.refundPayAmount) {
+              return numberWithSpaces(value.refundPayAmount);
+            }
+
+            return "";
+          }
         }
         /* {
            title: "Загрузить",
@@ -232,12 +250,6 @@ class MainView extends Component {
           "title": "Дата исполнения заявки",
           "isVisible": true,
           "dataIndex": "appEndDate"
-        },
-        {
-          "title": "Сумма возврата",
-          "isVisible": true,
-          "dataIndex": "refundPayAmount"
-
         },
         {
           "title": "Референс ГК",
@@ -778,7 +790,7 @@ class MainView extends Component {
               })}
             </Select></div>);
 
-        confirmModal = Modal.confirm({
+          confirmModal = Modal.confirm({
             title: "Подтверждение",
             content: content,
             okText: "Да",

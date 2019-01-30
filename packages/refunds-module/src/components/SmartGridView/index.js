@@ -74,12 +74,15 @@ const SmartColumnsSelect = props => {
     </Menu>
   );
 
-  return (<Dropdown trigger={["click"]} onVisibleChange={(visible) => {
-    props.dropDownAction(visible);
-  }} visible={props.dropDownVisible} overlay={menu} placement="bottomRight">
-    <Button style={{ float: "right" }}><Icon><FontAwesomeIcon icon={faColumns}/></Icon>
-    </Button>
-  </Dropdown>);
+  return (
+    <Dropdown overlayStyle={{ overflowY: "scroll", border: "1px solid #cdcdcd", maxHeight: "400px" }}
+              trigger={["click"]}
+              onVisibleChange={(visible) => {
+                props.dropDownAction(visible);
+              }} visible={props.dropDownVisible} overlay={menu} placement="bottomRight">
+      <Button style={{ float: "right" }}><Icon><FontAwesomeIcon icon={faColumns}/></Icon>
+      </Button>
+    </Dropdown>);
 };
 
 const SmartGridHeader = props => {
