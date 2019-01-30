@@ -726,17 +726,41 @@ class Pulls extends Component {
   };
 
   btnIsDisabled = (args) => {
-    return args.filter((eq) => (eq)).length > 0;
+    return args.filter((eq) =>( (eq)===false)).length > 0;
   };
 
+
+   isSignButtonDisable=()=>{
+    var result = true;
+
+    if (this.state.selectedRowKeys.length === 0) {
+      result = false;
+    }
+
+    if (this.state.disBtn.rawRecordsCount !== 0 || this.state.disBtn.unconfirmedRecordsCount !== 0) {
+      result = false;
+    }
+
+    if (this.state.disBtn.currentStatus && this.state.disBtn.currentStatus.result === 0) {
+      result = false;
+    }
+
+    return result;
+  }
+
   render() {
+
+
+
+
+
     const universal = {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}
     };
 
     const dateFormat = "DD.MM.YYYY";
 
-    let SignBtnGroupsIsDisabled = this.btnIsDisabled([this.state.selectedRowKeys.length === 0, (this.state.disBtn.rawRecordsCount === 0 && this.state.disBtn.unconfirmedRecordsCount === 0), (this.state.disBtn.rawRecordsCount !== 0 && this.state.disBtn.unconfirmedRecordsCount > 0), (this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0]);
+    let SignBtnGroupsIsDisabled = this.isSignButtonDisable;//this.btnIsDisabled([this.state.selectedRowKeys.length === 0, (this.state.disBtn.rawRecordsCount === 0 && this.state.disBtn.unconfirmedRecordsCount === 0), (this.state.disBtn.rawRecordsCount !== 0 && this.state.disBtn.unconfirmedRecordsCount > 0), (this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0]);
 
     return (
       <div>
