@@ -736,7 +736,7 @@ class Pulls extends Component {
 
     const dateFormat = "DD.MM.YYYY";
 
-    let SignBtnGroupsIsDisabled = this.btnIsDisabled([this.state.selectedRowKeys.length === 0, (this.state.disBtn.rawRecordsCount === 0 && this.state.disBtn.unconfirmedRecordsCount !== 0), (this.state.disBtn.rawRecordsCount !== 0 && this.state.disBtn.unconfirmedRecordsCount > 0), (this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0]);
+    let SignBtnGroupsIsDisabled = this.btnIsDisabled([this.state.selectedRowKeys.length === 0, (this.state.disBtn.rawRecordsCount === 0 && this.state.disBtn.unconfirmedRecordsCount === 0), (this.state.disBtn.rawRecordsCount !== 0 && this.state.disBtn.unconfirmedRecordsCount > 0), (this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0]);
 
     return (
       <div>
