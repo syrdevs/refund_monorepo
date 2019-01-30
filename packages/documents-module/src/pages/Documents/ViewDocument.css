@@ -1,5 +1,5 @@
 .view_document_table .ant-table-body {
-    min-height: auto !important;
+    min-height: 48px;
 }
 
 .view_document_table .ant-table-body .ant-table-row:last-child td {
@@ -9,7 +9,7 @@
 .view_document_table .ant-table-body .ant-table-row td:first-child {
     width: 20%;
     padding: 0;
-    height: 48px;
+    min-height: 48px;
 }
 
 /*.view_document_table .ant-table-body .ant-table-row td {*/

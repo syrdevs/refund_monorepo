@@ -33,4 +33,16 @@
      padding: 11px 16px 11px 0;
      text-align: right;
  }
+ .view_document_table .ant-table-body {
+     min-height: 48px;
+ }
 
+ .view_document_table .ant-table-body .ant-table-row:last-child td {
+     border-bottom: none;
+ }
+
+ .view_document_table .ant-table-body .ant-table-row td:first-child {
+
+     padding: 2px 2px;
+     min-height: 48px;
+ }
