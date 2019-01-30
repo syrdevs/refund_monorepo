@@ -135,7 +135,6 @@ class GridFilter extends Component {
 
     const { dispatch } = this.props;
     const { isClearFilter, fields } = this.state;
-
     if (Object.keys(fields).length === 0) {
 
       let _fields = {};
@@ -161,16 +160,13 @@ class GridFilter extends Component {
   }
 
   componentDidUpdate() {
-
     const { dispatch, clearFilterAction } = this.props;
     const { isClearFilter, fields } = this.state;
-
     if (isClearFilter) {
       this.setState({
         isClearFilter: false
       });
     }
-
     if (Object.keys(fields).length === 0) {
 
       let _fields = {};
@@ -193,7 +189,6 @@ class GridFilter extends Component {
         fields: _fields
       });
     }
-
     if (this.props.miniForm) {
       this.applyFilters(true);
 
@@ -201,7 +196,6 @@ class GridFilter extends Component {
         this.clearFilters();
       }
     }
-
 
   }
 
@@ -663,15 +657,18 @@ class GridFilter extends Component {
 
         if (filterItem.withMax) {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
-            <Input onKeyDown={this.onKeyPress} onChange={(e) => {
-              if (this.props.formFilter && this.props.formFilter[filterItem.name])
-                this.props.formFilter[filterItem.name] = filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value;
+            <Input onKeyDown={this.onKeyPress}
+                   onChange={(e) => {
+                        if (this.props.formFilter && this.props.formFilter[filterItem.name])
+                          this.props.formFilter[filterItem.name] = filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value;
 
-              if (this.props.formFilter && e.target.value.length === 0) {
-                delete this.props.formFilter[filterItem.name];
-              }
-              this.withmaxfieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value, filterItem.withMax);
-            }} value={formFilters[filterItem.name]} style={{ width: "100%" }} {...params}/></div>);
+                        if (this.props.formFilter && e.target.value.length === 0) {
+                          delete this.props.formFilter[filterItem.name];
+                        }
+                        this.withmaxfieldOnChange(filterItem, filterItem.params && filterItem.params.upperCase ? e.target.value.toUpperCase() : e.target.value, filterItem.withMax);
+                      }}
+                   value={formFilters[filterItem.name]}
+                   style={{ width: "100%" }} {...params}/></div>);
         }
         else {
           return (<div key={_index} style={mBottom}>{filterItem.label}:
@@ -707,6 +704,9 @@ class GridFilter extends Component {
             style={{ width: "100%" }}
             placeholder=""
             onChange={(values) => {
+              if (values.length===0) {
+                delete this.props.formFilter[filterItem.name+ "List"];
+              }
               this.fieldOnChange(filterItem, values.length === 0 ? null : values);
             }}
             filterOption={(input, option) => {
