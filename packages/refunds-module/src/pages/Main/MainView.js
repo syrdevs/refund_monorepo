@@ -319,6 +319,14 @@ class MainView extends Component {
           "title": "Номер пула",
           "dataIndex": "refundItem.refundPack.number ",
           "isVisible": true
+        },
+        {
+          "title": "Статус рассмотрения",
+          "dataIndex": "refundItem.acceptedStatusText"
+        },
+        {
+          "title": "Причина отклонения",
+          "dataIndex": "refundItem.rejectText"
         }
         //
         // {
