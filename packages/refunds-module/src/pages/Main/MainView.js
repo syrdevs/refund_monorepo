@@ -683,7 +683,7 @@ class MainView extends Component {
         }]
       },
       {
-        name: "includedInPack",
+        name: "refundItem.isAccepted",
         label: "Статус рассмотрения",
         type: "ButtonGroup",
         buttons: [{
@@ -691,10 +691,10 @@ class MainView extends Component {
           value: null
         }, {
           label: "Подтвержден",
-          value: false
+          value: true
         }, {
           label: "Не подтвержден",
-          value: true
+          value: false
         }]
       }
     ];
