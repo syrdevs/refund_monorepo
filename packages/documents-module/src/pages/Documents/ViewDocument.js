@@ -59,13 +59,6 @@ class ViewDocument extends Component {
 
       refundPackData: {},
 
-      columns: [{
-        title: "name",
-        dataIndex: "name"
-      }, {
-        title: "value",
-        dataIndex: "value"
-      }],
 
       dataSource: [],
 
@@ -266,7 +259,7 @@ class ViewDocument extends Component {
     if (refundPack) {
 
 
-      if(isSign) {
+      if (isSign) {
         if (refundPack.rawRecordsCount !== 0 || refundPack.unconfirmedRecordsCount !== 0) {
           result = true;
         }
@@ -317,7 +310,6 @@ class ViewDocument extends Component {
     }
 
 
-
     //!(this.state.data ? this.state.data.documentNeedToSign && this.state.data.canSign : false)
 
     // if (this.state.disBtn.currentStatus && this.state.disBtn.currentStatus.result === 0) {
@@ -332,6 +324,16 @@ class ViewDocument extends Component {
 
   render() {
 
+    const columns = [{
+      title: "name",
+      dataIndex: "name",
+      width: 100,
+      render: (text) => <div
+        style={{ color: "black", background: "#efefef", padding: "10px", textAlign: "right" }}>{text}</div>
+    }, {
+      title: "value",
+      dataIndex: "value"
+    }];
 
     /*
     *   <p style={{ marginTop: "10px" }}><h3>{this.state.data ? this.state.data.descr : ""}</h3></p>
@@ -412,8 +414,7 @@ class ViewDocument extends Component {
                 Modal.error({
                   content: data.data.Message
                 });
-              }
-              else {
+              } else {
                 this.setState({
                   ShowSign: false,
                   buttonShow: false
@@ -489,7 +490,7 @@ class ViewDocument extends Component {
                       <Table
                         rowKey={"key"}
                         className={"view_document_table"}
-                        columns={this.state.columns}
+                        columns={columns}
                         dataSource={[
                           {
                             key: 1,
