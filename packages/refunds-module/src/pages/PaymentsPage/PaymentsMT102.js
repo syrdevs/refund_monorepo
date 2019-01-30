@@ -217,7 +217,8 @@ class PaymentsMT102 extends Component {
         "dataIndex": "stornDate"
       }
 
-    ]
+    ],
+    gridFilterkey: 1
   };
 
   clearFilter = () => {
@@ -235,7 +236,8 @@ class PaymentsMT102 extends Component {
     });
   };
 
-  applyFilter = (filter) => {
+  applyFilter2 = (filter) => {
+
     if (filter.knpList != null && filter.knpList.length === 0) {
       delete filter["knpList"];
     }
@@ -243,9 +245,10 @@ class PaymentsMT102 extends Component {
     if (filter["stornReason.code"]) {
       filter["stornReason.code"] = "1";
     }
-    if (filter["isRefunded"] === false) {
-      delete filter["isRefunded"];
-    }
+    /* if (filter["isRefunded"] === false) {
+       delete filter["isRefunded"];
+     }*/
+
 
     this.setState({
       sortedInfo: {},
@@ -253,7 +256,44 @@ class PaymentsMT102 extends Component {
         ...this.state.parameters,
         start: 0,
         length: 15,
-        filter: { ...filter },
+        filter: { ...filter, ...this.state.parameters.filter },
+        sort: []
+      }
+    }, () => {
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal/paymentsData",
+        payload: {
+          ...this.state.parameters,
+          start: 0,
+          length: 15
+        }
+      });
+    });
+  };
+
+
+  applyFilter = (filter) => {
+
+    if (filter.knpList != null && filter.knpList.length === 0) {
+      delete filter["knpList"];
+    }
+
+    if (filter["stornReason.code"]) {
+      filter["stornReason.code"] = "1";
+    }
+   /* if (filter["isRefunded"] === false) {
+      delete filter["isRefunded"];
+    }*/
+
+
+    this.setState({
+      sortedInfo: {},
+      parameters: {
+        ...this.state.parameters,
+        start: 0,
+        length: 15,
+        filter: { ...filter, ...this.state.parameters.filter },
         sort: []
       }
     }, () => {
@@ -396,16 +436,15 @@ class PaymentsMT102 extends Component {
 
     this.props.eventManager.subscribe("onSelectFilter", (params) => {
       if (Object.keys(params).length > 0) {
-
         this.setState(({ filterContainer }) => ({
+          gridFilterkey: this.state.gridFilterkey+1,
           filterContainer: 6,
           parameters: {
             ...this.state.parameters,
-            //filter: { ...this.state.parameters.filter, params }
             filter: params
           }
         }), () => {
-          this.applyFilter(params);
+          this.applyFilter2(params);
         });
       }
       else {
@@ -441,9 +480,10 @@ class PaymentsMT102 extends Component {
             extra={<Icon style={{ "cursor": "pointer" }} onClick={this.filterPanelState}><FontAwesomeIcon
               icon={faTimes}/></Icon>}>
             <GridFilter
+              key={this.state.gridFilterkey}
               formFilter={this.state.parameters.filter}
               clearFilter={this.clearFilter}
-              applyFilter={(filter) => this.applyFilter(filter)} key={"1"}
+              applyFilter={(filter) => this.applyFilter(filter)}
               filterForm={this.state.filterForm}
               dateFormat={dateFormat}/>
           </Card>

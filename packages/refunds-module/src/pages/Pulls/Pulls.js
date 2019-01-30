@@ -959,14 +959,14 @@ class Pulls extends Component {
                     this.confirming();
                   }}
                     //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0)}
-                          disabled={SignBtnGroupsIsDisabled}
+                          disabled={!hasRole(["ADMIN", "DK1", "DK2"])}
                           style={{ marginLeft: "5px" }}
                           key={"confirm"}>
                     Подтвердить ( {this.state.selectedRowKeys.length} )
                   </Button>,
                   <Button
                     //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
-                    disabled={this.isCanSignButtonDisable()}
+                    disabled={!hasRole(["ADMIN", "DK1", "DK2"])}
                     onClick={() => {
                       this.rejecting();
                     }}
@@ -993,7 +993,7 @@ class Pulls extends Component {
                         > Назначить исполнителя ( {this.state.selectedRowKeys.length} )
                         </Menu.Item>
                         <Menu.Item
-                          disabled={SignBtnGroupsIsDisabled}
+                          disabled={!hasRole(["ADMIN", "DK1", "DK2"])}
                           //disabled={(this.state.selectedRowKeys.length === 0 || ((this.state.disBtn.currentStatus ? this.state.disBtn.currentStatus.result : 1) === 0))}
                           key="2"
                           onClick={() => {
