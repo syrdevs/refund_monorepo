@@ -57,13 +57,8 @@ class ViewDocument extends Component {
     super(props);
     this.state = {
 
-      columns: [{
-        title: "name",
-        dataIndex: "name"
-      }, {
-        title: "value",
-        dataIndex: "value"
-      }],
+      refundPackData: {},
+
 
       dataSource: [],
 
@@ -97,7 +92,26 @@ class ViewDocument extends Component {
   // };
 
 
+  getRefundPack = () => {
+    if (this.props.location.query && this.props.location.query.id && this.props.location.query.type && this.props.location.query.type === "refundPack") {
+      request("/api/uicommand/getObject", {
+        method: "POST",
+        body: {
+          "entity": "refundPack",
+          "id": this.props.location.query.id
+        }
+      }).then((e) => {
+        if (e)
+          this.setState({
+            refundPackData: e
+          });
+      });
+    }
+  };
+
   componentDidMount() {
+
+    this.getRefundPack();
 
     const { dispatch } = this.props;
     this.loadDataById(this.props.location.query.id);
@@ -233,9 +247,93 @@ class ViewDocument extends Component {
   callback = (key) => {
   };
 
+  // при подписание
+  isSignButtonDisable = (isSign) => {
+
+
+    var result = false;
+    let refundPack = this.state.refundPackData;
+
+
+    ///pack
+    if (refundPack) {
+
+
+      if (isSign) {
+        if (refundPack.rawRecordsCount !== 0 || refundPack.unconfirmedRecordsCount !== 0) {
+          result = true;
+        }
+      } else {
+        if (!(refundPack.rawRecordsCount === 0 && refundPack.unconfirmedRecordsCount !== 0)) {
+          result = true;
+        }
+      }
+
+      if (refundPack.currentStatus && refundPack.currentStatus.result === 0) {
+        result = true;
+      }
+    }
+
+
+    if (this.state.data) {
+      if (this.state.data.documentNeedToSign === false) {
+        result = true;
+      }
+
+      if (this.state.data.canSign === false) {
+        result = true;
+      }
+    }
+
+
+    //!(this.state.data ? this.state.data.documentNeedToSign && this.state.data.canSign : false)
+
+
+    return result;
+  };
+
+
+  // при отколненние
+  isCanSignButtonDisable = () => {
+    var result = false;
+
+    let refundPack = this.state.refundPackData;
+
+    if (this.state.data) {
+      if (this.state.data.documentNeedToSign === false) {
+        result = true;
+      }
+
+      if (this.state.data.canSign === false) {
+        result = true;
+      }
+    }
+
+
+    //!(this.state.data ? this.state.data.documentNeedToSign && this.state.data.canSign : false)
+
+    // if (this.state.disBtn.currentStatus && this.state.disBtn.currentStatus.result === 0) {
+    //   result = true;
+    // }
+    //
+    //
+
+
+    return result;
+  };
 
   render() {
 
+    const columns = [{
+      title: "name",
+      dataIndex: "name",
+      width: 100,
+      render: (text) => <div
+        style={{ color: "black", background: "#efefef", padding: "10px", textAlign: "right" }}>{text}</div>
+    }, {
+      title: "value",
+      dataIndex: "value"
+    }];
 
     /*
     *   <p style={{ marginTop: "10px" }}><h3>{this.state.data ? this.state.data.descr : ""}</h3></p>
@@ -316,8 +414,7 @@ class ViewDocument extends Component {
                 Modal.error({
                   content: data.data.Message
                 });
-              }
-              else {
+              } else {
                 this.setState({
                   ShowSign: false,
                   buttonShow: false
@@ -349,20 +446,29 @@ class ViewDocument extends Component {
                 {/*bodyStyle={{padding: 25}}*/}
                 {/*// title={<div>Информация о документе</div>}*/}
                 {/*>*/}
+
+
+                {//osi jerde
+                }
                 {this.state.buttonShow &&
                 <Button type="primary"
-                        disabled={!(this.state.data ? this.state.data.documentNeedToSign && this.state.data.canSign : false)}
+                        disabled={this.isSignButtonDisable(true)}
                         style={{ marginLeft: "10px" }} onClick={() => {
                   this.viewKeyModal();
                 }}>Подписать
                 </Button>}
+
+                {//osi jerde
+                }
                 {this.state.buttonShow &&
-                <Button type="danger" disabled={!(this.state.data ? this.state.data.documentNeedToSign && this.state.data.canSign : false)}
+                <Button type="danger" disabled={this.isSignButtonDisable(true)}
                         style={{ marginLeft: "5px" }} onClick={() => {
                   this.viewRejectModal();
                 }}>Отклонить
                 </Button>
                 }
+
+
                 {this.state.data.documentType &&
                 <DropDownAction
                   key={"dropdown_btn"}
@@ -384,7 +490,7 @@ class ViewDocument extends Component {
                       <Table
                         rowKey={"key"}
                         className={"view_document_table"}
-                        columns={this.state.columns}
+                        columns={columns}
                         dataSource={[
                           {
                             key: 1,
