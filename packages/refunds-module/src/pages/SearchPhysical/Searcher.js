@@ -663,7 +663,7 @@ class Searcher extends Component {
       value: ""
     }, {
       key: 10,
-      name: "МЕСТО ЖИТЕЛЬСТВО",
+      name: "МЕСТО ЖИТЕЛЬСТВА",
       value: ""
     }, {
       key: 11,
