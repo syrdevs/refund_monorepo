@@ -91,14 +91,17 @@ class ModalGridView extends Component {
     }
     }*/
 
-
+   /* console.log(this.props.filter);
+    console.log("this.props.filter");*/
     const data = this.props.filter;
-    // data.filter.dappRefundStatusList = [{ id: '8050e0eb-74c0-48cd-9bd5-5089585cc577' }];
     this.setState({
       filter: {
-        ...data,
+        "entity": "Refund",
+        "start": 0,
+        "length": 15,
+        "sort": [],
         filter: {
-          ...data.filter,
+          ...this.props.filter,
           "dappRefundStatusId.code": ["00007"]
         }
       }
@@ -116,15 +119,12 @@ class ModalGridView extends Component {
       payload: {
         "searched": true,
         "data": {
-          "dappRefundStatusId.code": [
-            "00007"
-          ]
+          ...this.state.filter.filter
         }
       }
     }).then((e) => {
-      console.log(e);
+
       if (this.props.universal.refundKnpList.length > 0) {
-        console.log(this.props.universal.refundKnpList[0].id);
         this.setState({
           filter: {
             ...this.state.filter,
@@ -301,8 +301,6 @@ class ModalGridView extends Component {
       <Tabs onChange={this.onChangetab}>
         {this.state.dataColumn.map((tabItem) => {
           return (<TabPane tab={tabItem.knpId} key={tabItem.id}>
-            {/*<Spin tip={formatMessage({ id: 'system.loading' })} spinning={this.props.loadingData}>*/}
-            {/*<Spin tip={formatMessage({ id: 'system.loading' })} spinning={false}>*/}
             <SmartGridView
               name={"mt102ModalPageColumns"}
               scroll={{ x: "auto", y: 300 }}
@@ -343,7 +341,6 @@ class ModalGridView extends Component {
 
               }}
             />
-            {/*</Spin>*/}
           </TabPane>);
         })}
       </Tabs>

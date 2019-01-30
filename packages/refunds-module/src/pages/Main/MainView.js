@@ -1161,7 +1161,7 @@ class MainView extends Component {
                                                 resetshow={(e) => {
                                                   this.setState({ ShowModal: false });
                                                 }}
-                                                filter={this.state.pagingConfig}/>}
+                                                filter={this.state.pagingConfig.filter}/>}
 
         <Card bodyStyle={{ padding: 5 }}>
           <Row>
