@@ -3,7 +3,7 @@ import { Redirect, Route, Switch, withRouter } from "react-router-dom";
 import styled from "styled-components";
 import { COLORS, LeftMenu, NoMatchRoute } from "@vitacore/shared-ui";
 import ContentLayout from "./layouts/ContentLayout";
-import { Provider } from "react-redux";
+//import { Provider } from "react-redux";
 import store from "./Redux/store";
 import routerConfig from "./config/router.config";
 import Loadable from "react-loadable";
@@ -32,8 +32,9 @@ const Content = styled.div`
 `;
 
 
-let RoutingCollection = renderRoutes(routerConfig);
 let leftMenuCollection = [];
+let RoutingCollection = renderRoutes(routerConfig);
+
 
 
 function menuItemRender() {
@@ -84,10 +85,6 @@ class App extends React.Component {
 
   componentDidMount() {
 
-    if (this.props.getUserInfo) {
-      hasRole(null, this.props.getUserInfo());
-    }
-
     if (this.props.subscribeToUserLanguageChange) {
       this.props.subscribeToUserLanguageChange(() => {
         window.location.reload();
@@ -96,6 +93,11 @@ class App extends React.Component {
   }
 
   render() {
+
+    if (this.props.getUserInfo) {
+      hasRole(null, this.props.getUserInfo());
+    }
+
 
     const location = this.props.location.pathname;
 
@@ -125,22 +127,22 @@ class App extends React.Component {
     });
 
     return (//<Provider store={store}>
-      <RootContainer>
-        <LeftMenu leftMenuItems={leftMenuCollection} location={location}
-                  goToLink={this.props.history.push}/>
-        <Content>
-          <ContentLayout
-            contentName={bcRoutes.length > 0 ? bcRoutes[bcRoutes.length - 1].breadcrumbName : null}
-            breadcrumbRoutes={bcRoutes}>
-            <Suspense fallback={<div>...</div>}>
-              <Switch>
-                {RoutingCollection}
-              </Switch>
-            </Suspense>
-          </ContentLayout>
-        </Content>
-      </RootContainer>
-    //</Provider>
+        <RootContainer>
+          <LeftMenu leftMenuItems={leftMenuCollection} location={location}
+                    goToLink={this.props.history.push}/>
+          <Content>
+            <ContentLayout
+              contentName={bcRoutes.length > 0 ? bcRoutes[bcRoutes.length - 1].breadcrumbName : null}
+              breadcrumbRoutes={bcRoutes}>
+              <Suspense fallback={<div>...</div>}>
+                <Switch>
+                  {RoutingCollection}
+                </Switch>
+              </Suspense>
+            </ContentLayout>
+          </Content>
+        </RootContainer>
+      // </Provider>
     );
   }
 }
