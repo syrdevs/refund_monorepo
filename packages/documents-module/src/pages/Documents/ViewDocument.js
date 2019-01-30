@@ -302,7 +302,7 @@ class ViewDocument extends Component {
         type={this.props.location.query.type}
         id={this.props.location.query.id}
         getKey={(e) => {
-                  console.log(e)
+          console.log(e);
           request("/api/contract/uploadSignedDocument", {
             method: "POST",
             body: {
@@ -350,13 +350,14 @@ class ViewDocument extends Component {
                 {/*// title={<div>Информация о документе</div>}*/}
                 {/*>*/}
                 {this.state.buttonShow &&
-                <Button type="primary" disabled={this.state.data ? this.state.data.documentNeedToSign === false : false}
+                <Button type="primary"
+                        disabled={!(this.state.data ? this.state.data.documentNeedToSign && this.state.data.canSign : false)}
                         style={{ marginLeft: "10px" }} onClick={() => {
                   this.viewKeyModal();
                 }}>Подписать
                 </Button>}
                 {this.state.buttonShow &&
-                <Button type="danger" disabled={this.state.data ? this.state.data.documentNeedToSign === false : false}
+                <Button type="danger" disabled={!(this.state.data ? this.state.data.documentNeedToSign && this.state.data.canSign : false)}
                         style={{ marginLeft: "5px" }} onClick={() => {
                   this.viewRejectModal();
                 }}>Отклонить
