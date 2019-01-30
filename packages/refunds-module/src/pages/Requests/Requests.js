@@ -12,7 +12,6 @@ import {
 } from "antd";
 import connect from "../../Redux";
 import GridFilter from "../../components/GridFilter";
-import ModalChangeDate from "../../components/ModalChangeDate";
 import SmartGridView from "../../components/SmartGridView";
 import { faTimes } from "@fortawesome/free-solid-svg-icons/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -22,13 +21,14 @@ import saveAs from "file-saver";
 import moment from "moment";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
+import ModalChangeDate from "../../components/ModalChangeDate";
 
 class Requests extends Component {
   constructor(props) {
     super(props);
     this.state = {
       columns: [
-        {
+        /*{
           dataIndex: "102",
           title: "МТ 102",
           width: 50,
@@ -60,7 +60,8 @@ class Requests extends Component {
               <Icon type="database" theme="outlined"/>
             </Button>
           )
-        }],
+        }*/
+        ],
       searchercont: 0,
       tablecont: 24,
       isSearcher: false,
@@ -495,23 +496,22 @@ class Requests extends Component {
 
     let actionColumns = [];
     let propColumns = [];
-
     columns.forEach((column) => {
       if (["receiptAppdateToFsms"].indexOf(column.dataIndex) !== -1) {
         actionColumns.push({
           ...column,
           order: 2,
           render: (text, row) => {
-            if (!text) {
+            if (!text.receiptAppdateToFsms) {
               return (<a
-                onClick={(e) => {
+                onClick={() => {
                   this.setState({
                     ShowModal: true,
                     ColType: column.dataIndex,
                     ModalData: {
                       id: row.id,
                       key: column.dataIndex,
-                      value: text
+                      value: null
                     }
                   });
                 }}
@@ -519,18 +519,18 @@ class Requests extends Component {
             }
             else {
               return (<a
-                onClick={(e) => {
+                onClick={() => {
                   this.setState({
                     ShowModal: true,
                     ColType: column.dataIndex,
                     ModalData: {
                       id: row.id,
                       key: column.dataIndex,
-                      value: text
+                      value: text.receiptAppdateToFsms
                     }
                   });
                 }}
-              >{text}</a>);
+              >{text.receiptAppdateToFsms}</a>);
             }
           }
         });
@@ -540,18 +540,16 @@ class Requests extends Component {
           ...column,
           order: 3,
           render: (text, row) => {
-            if (!text) {
+            if (!text.appEndDate) {
               return (<a
                 onClick={(e) => {
-
-
                   this.setState({
                     ShowModal: true,
                     ColType: column.dataIndex,
                     ModalData: {
                       id: row.id,
                       key: column.dataIndex,
-                      value: text
+                      value: null
                     }
                   });
                 }}
@@ -566,11 +564,11 @@ class Requests extends Component {
                     ModalData: {
                       id: row.id,
                       key: column.dataIndex,
-                      value: ""
+                      value: text.appEndDate
                     }
                   });
                 }}
-              >{text}</a>);
+              >{text.appEndDate}</a>);
             }
           }
         });
@@ -633,7 +631,6 @@ class Requests extends Component {
                 sortedInfo={this.state.sortedInfo}
                 showTotal={true}
                 showExportBtn={true}
-
                 dataSource={{
                   total: universal.table.totalElements,
                   pageSize: this.state.pagingConfig.length,
