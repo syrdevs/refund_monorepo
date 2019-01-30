@@ -1208,12 +1208,12 @@ class MainView extends Component {
                   }}>
                   {formatMessage({ id: "menu.mainview.setDateBtn" })}
                 </Menu.Item>
-                <Menu.Item disabled={hasRole(["ADMIN", "FSMS2"])} key="4" onClick={() => {
+                <Menu.Item disabled={!hasRole(["ADMIN", "FSMS2"])} key="4" onClick={() => {
                   this.showModal();
                 }}>
                   {formatMessage({ id: "menu.mainview.mt102Btn" })}
                 </Menu.Item>
-                <Menu.Item disabled={hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="5" onClick={() => {
+                <Menu.Item disabled={!hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="5" onClick={() => {
                 }}>
                   <Upload
                     showUploadList={false}
@@ -1241,19 +1241,19 @@ class MainView extends Component {
                     {formatMessage({ id: "menu.mainview.xmlBtn" })}
                   </Upload>
                 </Menu.Item>
-                <Menu.Item disabled={hasRole(["ADMIN"])} key="6" onClick={() => {
+                <Menu.Item disabled={!hasRole(["ADMIN"])} key="6" onClick={() => {
                   this.showGraphic();
                 }}>
                   {formatMessage({ id: "menu.mainview.infographBtn" })}
                 </Menu.Item>
-                <Menu.Item disabled={hasRole(["FSMS1", "FSMS2", "ADMIN"])} key="7" onClick={() => {
+                <Menu.Item disabled={!hasRole(["FSMS1", "FSMS2", "ADMIN"])} key="7" onClick={() => {
                   this.refundsReceiver();
                 }}>
                   {formatMessage({ id: "menu.mainview.refundreceiver" })}
                 </Menu.Item>
               </Menu>
               }>
-                <Button disabled={hasRole(["FSMS2", "ADMIN"])}
+                <Button disabled={!hasRole(["FSMS2", "ADMIN"])}
                         key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
                   type="down"/></Button>
               </Dropdown>
