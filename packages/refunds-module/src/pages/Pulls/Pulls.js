@@ -731,18 +731,18 @@ class Pulls extends Component {
 
 
    isSignButtonDisable=()=>{
-    var result = true;
+    var result = false;
 
     if (this.state.selectedRowKeys.length === 0) {
-      result = false;
+      result = true;
     }
 
     if (this.state.disBtn.rawRecordsCount !== 0 || this.state.disBtn.unconfirmedRecordsCount !== 0) {
-      result = false;
+      result = true;
     }
 
     if (this.state.disBtn.currentStatus && this.state.disBtn.currentStatus.result === 0) {
-      result = false;
+      result = true;
     }
 
     return result;
