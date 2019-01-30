@@ -379,7 +379,7 @@ class Pulls extends Component {
   };
 
   componentDidMount() {
-    if (!hasRole(["ADMIN", "DK1", "DK2"])) {
+    if (hasRole(["ADMIN", "DK1", "DK2"])) {
       this.state.fcolumn.push({
         title: "Исполнитель",
         order: 0,
@@ -668,7 +668,6 @@ class Pulls extends Component {
   };
 
   loadfromfilter = (item) => {
-    console.log(item)
     this.setState({
       disBtn: item,
       pagingConfig: {
@@ -773,6 +772,11 @@ class Pulls extends Component {
 
 
   render() {
+
+    console.log(this.state.disBtn.rawRecordsCount);
+    console.log(this.state.disBtn.unconfirmedRecordsCount);
+    console.log(this.state.disBtn.currentStatus);
+    console.log(hasRole(["ADMIN", "DK1", "DK2"]));
 
     const universal = {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}

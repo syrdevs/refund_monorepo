@@ -946,7 +946,7 @@ class MainView extends Component {
   };
 
   btnIsDisabled = (isRole, args) => {
-    return !isRole ? args.filter((eq) => (eq)).length > 0 : true;
+    return isRole ? args.filter((eq) => (eq)).length > 0 : true;
   };
 
   loadRpmuData = (recordId) => {

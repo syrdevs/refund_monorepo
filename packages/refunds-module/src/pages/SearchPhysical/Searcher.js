@@ -322,7 +322,7 @@ class Searcher extends Component {
             title: "",
             content: (
               <div>
-                Информация о потребителе не найдена 
+                Информация о потребителе не найдена
               </div>
             ),
             onOk() {
@@ -814,7 +814,7 @@ class Searcher extends Component {
                 title={formatMessage({ id: "report.param.searcher" })}
               >
 
-                <Col span={12}>
+                <Col span={8}>
                   <div style={mBottom}>ИИН:
                     <div style={{ width: "100%" }}>
                       <Row>
