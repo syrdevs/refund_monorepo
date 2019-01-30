@@ -322,7 +322,7 @@ class Searcher extends Component {
             title: "",
             content: (
               <div>
-                Информация о потребителе не найдена
+                Информация о потребителе не найдена 
               </div>
             ),
             onOk() {
