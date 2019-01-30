@@ -660,6 +660,7 @@ class Pulls extends Component {
   };
 
   loadfromfilter = (item) => {
+    console.log(item)
     this.setState({
       disBtn: item,
       pagingConfig: {
@@ -730,12 +731,14 @@ class Pulls extends Component {
   };
 
 
+
   isSignButtonDisable=()=>{
     var result = false;
-    console.log(this.state.selectedRowKeys.length);
-    console.log(this.state.disBtn.rawRecordsCount);
-    console.log(this.state.disBtn.unconfirmedRecordsCount);
-    console.log(this.state.disBtn.currentStatus);
+
+    if (!hasRole(["ADMIN", "DK1", "DK2"])) {
+      result = true;
+    }
+
     if (this.state.selectedRowKeys.length === 0) {
       result = true;
     }
