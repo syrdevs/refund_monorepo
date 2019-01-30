@@ -309,7 +309,7 @@ class ViewDocument extends Component {
               "entity": this.props.location.query.type,
               "alias": null,
               "id": this.props.location.query.id,
-              "xml": e[0].signXML
+              "xml": e[1].signXML
             },
             getResponse: (data) => {
               if (data.status >= 400) {
