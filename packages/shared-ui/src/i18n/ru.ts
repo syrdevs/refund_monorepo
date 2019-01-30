@@ -3,6 +3,7 @@ const ruTranslation = {
     leftMenu: {
       refunds: {
         _: 'Возвраты',
+        refund: 'Возвраты',
         requests: 'Заявки',
         reestr: 'Реестр возвратов',
         payments: 'Платежи',
@@ -19,6 +20,13 @@ const ruTranslation = {
       rpmu: {
         _: 'Потребители и плательщики',
         payments: 'Платежи',
+      },
+      refund: {
+        _: 'Возвраты',
+        requests: 'Заявки',
+        reestr: 'Реестр возвратов',
+        pulls: 'Управление пулами',
+        calendar: 'Календарь',
       },
       reports: {
         _: 'Отчеты',
