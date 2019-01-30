@@ -220,7 +220,7 @@ class ModalChangeDate extends Component {
         ]}
       >
 
-        <Spin spinning={this.props.loadingFiles}>
+
           <Row>
             {this.props.dataSource.value && <DatePicker
               allowClear={false}
@@ -244,16 +244,16 @@ class ModalChangeDate extends Component {
           {this.props.coltype !== "appEndDate" &&
           <Row style={{ marginTop: "15px" }}>
             {this.props.loadingFiles === false ?
-              <Spin tip={"Загрузка файла..."} spinning={this.props.uploadFile === true}> <Upload
+              <Upload
                 {...uploadProps}>
                 <Button size="large">
                   <Icon type="upload"/>{formatMessage({ id: "system.load" })}
                 </Button>
-              </Upload></Spin> : <Button size="large">
+              </Upload> : <Button size="large">
                 <Icon type="upload"/>{formatMessage({ id: "system.load" })}
               </Button>
             }
-          </Row>}</Spin>
+          </Row>}
       </Modal>
     );
   }
