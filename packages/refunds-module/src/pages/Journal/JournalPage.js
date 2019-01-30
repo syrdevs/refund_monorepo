@@ -147,7 +147,7 @@ class JournalPage extends Component {
         "length": 15,
         "entity": "refund_history",
         "filter": {},
-        "sort": []
+        "sort": [{field: "entryDate", desc: true}]
       }
     };
   }

@@ -281,7 +281,28 @@ class Searcher extends Component {
   };
 
   applyFilter = () => {
-    this.loadGridData();
+
+    if (this.state.parameters.filter.iin) {
+      this.loadGridData();
+      return
+    }
+    if (this.state.parameters.filter.lastName) {
+      this.loadGridData();
+      return
+    }
+    if (this.state.parameters.filter.firstName) {
+      this.loadGridData();
+      return
+    }
+    if (this.state.parameters.filter.patronymic) {
+      this.loadGridData();
+      return
+    }
+    if (this.state.parameters.filter.birthdate) {
+      this.loadGridData();
+      return
+    }
+
   };
 
   clearFilter = (pageNumber) => {
@@ -609,13 +630,13 @@ class Searcher extends Component {
 
 
   render() {
-    const {  isClearFilter } = this.state;
+    const { isClearFilter } = this.state;
     const CardHeight = { height: "auto", marginBottom: "10px" };
     const { person, personRPN, personMED } = this.state;
     const columns = [{
       title: "Наименование",
       dataIndex: "name",
-      render: (text) => <div style={{ color: "black" }}>{text}</div>,
+      render: (text) => <div style={{ color: "black",background :"#efefef",  padding: "10px",textAlign: "right" }}>{text}</div>,
       width: 100
 
     }, {
@@ -782,12 +803,12 @@ class Searcher extends Component {
     }
     return (<div>
         {/*<Modal*/}
-          {/*title=""*/}
-          {/*visible={this.state.visibleModal}*/}
-          {/*// onCancel={this.handleCancelModal}*/}
-          {/*onOk={this.handleCancelModal}*/}
+        {/*title=""*/}
+        {/*visible={this.state.visibleModal}*/}
+        {/*// onCancel={this.handleCancelModal}*/}
+        {/*onOk={this.handleCancelModal}*/}
         {/*>*/}
-          {/*<p>Информация о потребителе не найдена</p>*/}
+        {/*<p>Информация о потребителе не найдена</p>*/}
         {/*</Modal>*/}
         <Modal
           title=""
