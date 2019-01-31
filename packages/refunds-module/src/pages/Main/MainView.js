@@ -317,7 +317,7 @@ class MainView extends Component {
         },
         {
           "title": "Номер пула",
-          "dataIndex": "refundItem.refundPack.number ",
+          "dataIndex": "refundItem.refundPack.number",
           "isVisible": true
         },
         {
