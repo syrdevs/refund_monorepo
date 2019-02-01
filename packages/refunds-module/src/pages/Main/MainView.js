@@ -1249,11 +1249,11 @@ class MainView extends Component {
                     {formatMessage({ id: "menu.mainview.xmlBtn" })}
                   </Upload>
                 </Menu.Item>
-                <Menu.Item disabled={!hasRole(["ADMIN"])} key="6" onClick={() => {
+                {/*<Menu.Item disabled={!hasRole(["ADMIN"])} key="6" onClick={() => {
                   this.showGraphic();
                 }}>
                   {formatMessage({ id: "menu.mainview.infographBtn" })}
-                </Menu.Item>
+                </Menu.Item>*/}
                 <Menu.Item disabled={!hasRole(["FSMS1", "FSMS2", "ADMIN"])} key="7" onClick={() => {
                   this.refundsReceiver();
                 }}>

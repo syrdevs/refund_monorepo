@@ -265,10 +265,10 @@ class Searcher extends Component {
         }
         if (response.totalElements === 0) {
           Modal.info({
-            title: "",
+            title: formatMessage({ id: "system.error" }),
             content: (
               <div>
-                "Информация о потребителе не найдена"
+                "Информация о потребителе не найдена!"
               </div>
             ),
             onOk() {
@@ -340,10 +340,10 @@ class Searcher extends Component {
           });
         } else {
           Modal.info({
-            title: "",
+            title: formatMessage({ id: "system.error" }),
             content: (
               <div>
-                Информация о потребителе не найдена
+                Информация о потребителе не найдена!
               </div>
             ),
             onOk() {
