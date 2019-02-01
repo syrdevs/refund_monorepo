@@ -163,6 +163,31 @@ class Searcher extends Component {
     };
   }
 
+
+  componentDidMount() {
+
+    this.props.eventManager.subscribe("onSelectFilterByIin", (params) => {
+      if (Object.keys(params).length > 0) {
+
+        this.setState(({ filterContainer }) => ({
+          parameters: {
+            ...this.state.parameters,
+            //filter: { ...this.state.parameters.filter, params }
+            filter: params
+          }
+        }), () => {
+          this.applyFilter(params);
+        });
+      }
+      else {
+
+      }
+    });
+
+
+  }
+
+
   componentDidUpdate() {
 
     const { isClearFilter } = this.state;

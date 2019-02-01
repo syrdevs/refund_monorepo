@@ -547,6 +547,10 @@ class PaymentsMT102 extends Component {
               selectedRowKeys: selectedRowKeys
             });
           }}
+          onSelectRow={(record, index) => {
+            this.props.onSelect(record.iin);
+            //this.selectedRecord = record;
+          }}
         />
       </Col>
     </Row>);
