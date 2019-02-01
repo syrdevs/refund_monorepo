@@ -144,7 +144,11 @@ export default function request(url, option) {
   newOptions.url = baseUrl + url;
   newOptions.data = newOptions.body;
 
-  return axios(newOptions)
+
+  const _axios = newOptions.disableLoader ? axios.create()(newOptions) : axios(newOptions);
+
+
+  return _axios
   //.then(checkStatus)
   //.then(response => cachedSave(response, hashcode))
     .then(response => {
