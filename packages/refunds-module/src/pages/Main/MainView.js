@@ -47,6 +47,7 @@ import saveAs from "file-saver";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 import numberWithSpaces from "../../utils/numberFormat";
+import EmployeesModal from "../Options/EmployeesModal";
 
 
 const FormItem = Form.Item;
@@ -82,6 +83,7 @@ class MainView extends Component {
       searchButton: false,
       formValues: {},
       stepFormValues: {},
+      employvisible: false,
       fcolumn: [
         {
           title: formatMessage({ id: "menu.mainview.paylists" }),
@@ -760,6 +762,7 @@ class MainView extends Component {
       }
     ];
   };
+
   setStatusRecord = (statusCode, statusText) => {
     const { selectedRowKeys } = this.state;
     const { dispatch } = this.props;
@@ -881,6 +884,7 @@ class MainView extends Component {
       });
     }
   };
+
   AppRefundStatusAuto = () => {
     const { dispatch } = this.props;
     if (this.state.selectedRowKeys.length > 0) {
@@ -899,6 +903,7 @@ class MainView extends Component {
       });
     }
   };
+
   disableBtnIsReceiptDateNull = () => {
 
     const universal = {
@@ -1094,7 +1099,6 @@ class MainView extends Component {
     return decodeURI(filenames);
   };
 
-
   importXmlAction = (file) => {
 
     let formData = new FormData();
@@ -1112,6 +1116,35 @@ class MainView extends Component {
     });
 
   };
+
+  onSetUser = (id) => {
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal/setRefundNeedAcceptUser",
+      payload: {
+        "entity": "Refund",
+        "id": this.state.selectedRowKeys,
+        "userID": id
+      }
+    }).then((e) => {
+      this.loadMainGridData();
+    })
+      .catch((e) => {
+        Modal.error({
+          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+        });
+        this.loadMainGridData();
+      });
+
+  };
+
+  hideemployes = () => {
+    this.setState({
+      employvisible: false
+    });
+  };
+
+
 
   render() {
     const universal = {
@@ -1137,6 +1170,11 @@ class MainView extends Component {
           onSelectedRows={(selectedRecords) => {
           }}
         />}
+
+
+        {this.state.employvisible && <EmployeesModal
+          onChecked={(id) => this.onSetUser(id)}
+          onCancel={this.hideemployes} keys={this.state.selectedRowKeys}/>}
 
         {this.state.ModalChangeDateRefund && <ModalChangeDateRefund
           selectedRowKeys={this.state.selectedRowKeys}
@@ -1188,6 +1226,18 @@ class MainView extends Component {
                       disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.disableBtnIsReceiptDateNull(), this.state.btnhide, this.state.selectedRowKeys.length === 0])}
                       style={{ marginLeft: "5px", marginRight: "5px" }}
                       key={"run"}>{formatMessage({ id: "menu.mainview.performBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}</Button>
+
+
+              <Button
+                disabled={!hasRole(["ADMIN", "DPN2"]) || this.state.selectedRowKeys.length === 0}
+                onClick={() => {
+                  this.setState({
+                    employvisible: true
+                  });
+                }}
+                key="employer"
+              > Назначить исполнителя ( {this.state.selectedRowKeys.length} )
+              </Button>
 
               <Button onClick={() => {
                 this.createPull();
