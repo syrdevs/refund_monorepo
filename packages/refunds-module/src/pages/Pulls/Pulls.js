@@ -161,7 +161,7 @@ class Pulls extends Component {
               }}
               onChange={(file) => {
                 if (file.status !== "removing") {
-                  this.uploadFile(record.refund.id, file);
+                  this.uploadFile(record, file);
                 }
               }}>
               {/*<Icon type="database" theme="outlined"/>*/}
@@ -360,17 +360,36 @@ class Pulls extends Component {
     });
   };
 
-  uploadFile = (id, file) => {
-    let formData = new FormData();
-    formData.append("content", file.file);
-    formData.append("entity", "Refund");
-    formData.append("path", "refundFiles");
-    formData.append("id", id);
-    request("/api/uicommand/uploadFile", {
-      method: "POST",
-      body: formData
-    }).then(() => {
-      this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+  uploadFile = (record, file) => {
+    //refund.personIin
+
+    const { dispatch } = this.props;
+    dispatch({
+      type: "universal2/getIIN",
+      payload: {
+        "start": 0,
+        "length": 1000,
+        "entity": "refundItem",
+        "alias": null,
+        "filter": {
+          "refundPack.id": record.refundPack.id,
+          "refund.personIin": record.refund.personIin
+        }
+      }
+    }).then((e) => {
+        const IDs = e.content.map((item)=>{return item.refund.id});
+        let formData = new FormData();
+        formData.append("content", file.file);
+        formData.append("entity", "Refund");
+        formData.append("path", "refundFiles");
+        //massiv
+        formData.append("id", JSON.stringify(IDs));
+        request("/api/uicommand/uploadFile", {
+          method: "POST",
+          body: formData
+        }).then(() => {
+          this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
+        });
     });
   };
 
@@ -748,14 +767,10 @@ class Pulls extends Component {
     //userState.roles = JSON.parse(localStorage.getItem("roles"));
     //console.log(this.isRole(["ADMIN", "DK1", "DK2"]));
     //console.log(JSON.parse(localStorage.getItem("roles")));
-
-
     var result = false;
-
     /*if (!hasRole(["ADMIN", "DK1", "DK2"])) {
       result = true;
     }*/
-
     if (!hasRole(["ADMIN", "DK1", "DK2"])) {
       result = true;
     }
@@ -804,13 +819,13 @@ class Pulls extends Component {
 
 
   render() {
-
     console.log("this.state.disBtn.rawRecordsCount = " + this.state.disBtn.rawRecordsCount);
     console.log("this.state.disBtn.unconfirmedRecordsCount =" + this.state.disBtn.unconfirmedRecordsCount);
     if (this.state.disBtn.currentStatus) {
       console.log("this.state.disBtn.currentStatus = " + this.state.disBtn.currentStatus.result);
     }
     console.log("role = " + hasRole(["ADMIN", "DK1", "DK2"]));
+
 
     const universal = {
       table: this.props.universal2.references[this.state.pagingConfig.entity] ? this.props.universal2.references[this.state.pagingConfig.entity] : {}

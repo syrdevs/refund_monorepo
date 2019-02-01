@@ -49,8 +49,21 @@ export default {
           response: response || {},
         },
       });
-
     },
+
+    * getIIN(payload, { call, put }) {
+      console.log("test");
+      const response = yield call(getList, payload);
+      yield put({
+        type: 'getIINData',
+        payload: {
+          type: payload.payload.entity,
+          response: response || {},
+        },
+      });
+    },
+
+
     * getPayerList(payload, { call, put }) {
       const response = yield call(getPayerList, payload);
       yield put({
@@ -169,6 +182,15 @@ export default {
         references: {
           ...state.references,
           [payload.type]: payload.response,
+        },
+      };
+    },
+    getIINData(state, { payload }) {
+      return {
+        ...state,
+        references: {
+          ...state.references,
+          refundPackIINs: payload.response,
         },
       };
     },
