@@ -570,6 +570,8 @@ class PaymentsPage extends Component {
           onChange={this.tabchange}>
           <TabPane tab={formatMessage({ id: "menu.payments.searchbtn" })} key="searcher">
             <Searcher
+
+              eventManager={this.state.eventManager}
               onSelect={(iin) => {
                 //console.log(iin);
                 this.setState({
@@ -638,7 +640,16 @@ class PaymentsPage extends Component {
             />
           </TabPane>
           <TabPane forceRender tab={formatMessage({ id: "menu.payments.payment102" })} key="mt102">
-            <PaymentsMT102 eventManager={this.state.eventManager}/>
+            <PaymentsMT102 eventManager={this.state.eventManager}
+                           onSelect={(iin) => {
+                             //console.log(iin);
+                             this.setState({
+                               activeKey: "searcher"
+                             }, () => {
+                               this.state.eventManager.handleEvent("onSelectFilterByIin", { iin: iin });
+                             });
+                           }}
+            />
           </TabPane>
           {/*<TabPane tab={'Список плательщиков'} key="employees">*/}
           {/*<Employees/>*/}
