@@ -138,7 +138,7 @@ class SearcherJur extends Component {
             },()=>{
               Modal.error({
                 title: formatMessage({ id: "system.error" }),
-                content: "Информация о плательщике не найдено!"
+                content: "Информация о плательщике не найдена!"
               });
             });
           }

@@ -45,6 +45,8 @@ const formItemLayout = {
 
 class PaymentsMT102 extends Component {
   state = {
+    selectedIndex: null,
+    selectedRecord: null,
     selectedRowKeys: [],
     sortedInfo: {},
     parameters: {
@@ -428,8 +430,7 @@ class PaymentsMT102 extends Component {
         }), () => {
           this.applyFilter(params);
         });
-      }
-      else {
+      } else {
 
       }
     });
@@ -442,7 +443,15 @@ class PaymentsMT102 extends Component {
 
     const paymentsData = this.props.universal.paymentsData[this.state.parameters.entity];
 
-    let addonButtons = [];
+    let addonButtons = [<Button
+      disabled={this.state.selectedRecord === null}
+      key={"mt102paymentBtn"}
+      onClick={() => {
+        if (this.state.selectedRecord !== null) {
+          this.props.onSelect(this.state.selectedRecord.iin);
+        }
+      }}>
+      Карточка потребителя</Button>];
     let extraButtons = [<span key={"total-count"} style={{
       color: "#002140",
       fontSize: "12px",
@@ -484,8 +493,11 @@ class PaymentsMT102 extends Component {
           rowKey={"id"}
           loading={this.props.loadingData}
           fixedHeader={true}
-          rowSelection={true}
-          rowClassName={(record) => {
+          rowSelection={false}
+          rowClassName={(record,index) => {
+            if(record){
+              return this.state.selectedIndex === index ? "active" : "";
+            }
             if (record.isRefunded) {
               return "redRow";
             }
@@ -495,9 +507,9 @@ class PaymentsMT102 extends Component {
           }
           }
           columns={this.state.columns}
-          onColumnsChange={(isChanged, dataIndex) => {
-            console.log(dataIndex);
-          }}
+          // onColumnsChange={(isChanged, dataIndex) => {
+          //   console.log(dataIndex);
+          // }}
           sorted={true}
           sortedInfo={this.state.sortedInfo}
           showExportBtn={true}
@@ -546,6 +558,14 @@ class PaymentsMT102 extends Component {
             this.setState({
               selectedRowKeys: selectedRowKeys
             });
+          }}
+          onSelectRow={(record, index) => {
+            this.setState({
+              selectedRecord: record,
+              selectedIndex: index
+            });
+
+
           }}
         />
       </Col>

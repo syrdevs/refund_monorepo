@@ -163,6 +163,31 @@ class Searcher extends Component {
     };
   }
 
+
+  componentDidMount() {
+
+    this.props.eventManager.subscribe("onSelectFilterByIin", (params) => {
+      if (Object.keys(params).length > 0) {
+
+        this.setState(({ filterContainer }) => ({
+          parameters: {
+            ...this.state.parameters,
+            //filter: { ...this.state.parameters.filter, params }
+            filter: params
+          }
+        }), () => {
+          this.applyFilter(params);
+        });
+      }
+      else {
+
+      }
+    });
+
+
+  }
+
+
   componentDidUpdate() {
 
     const { isClearFilter } = this.state;
@@ -265,10 +290,10 @@ class Searcher extends Component {
         }
         if (response.totalElements === 0) {
           Modal.info({
-            title: "",
+            title: formatMessage({ id: "system.error" }),
             content: (
               <div>
-                "Информация о потребителе не найдена"
+                "Информация о потребителе не найдена!"
               </div>
             ),
             onOk() {
@@ -340,10 +365,10 @@ class Searcher extends Component {
           });
         } else {
           Modal.info({
-            title: "",
+            title: formatMessage({ id: "system.error" }),
             content: (
               <div>
-                Информация о потребителе не найдена
+                Информация о потребителе не найдена!
               </div>
             ),
             onOk() {
