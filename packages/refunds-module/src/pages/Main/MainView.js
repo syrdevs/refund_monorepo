@@ -329,7 +329,12 @@ class MainView extends Component {
         {
           "title": "Причина отклонения",
           "dataIndex": "refundItem.rejectText"
+        },
+        {
+          "title": "Исполнитель",
+          "dataIndex": "needAcceptedUser.userName"
         }
+        // -
         //
         // {
         //   "title": "Веб-сервис (сообщение) ",
@@ -1135,7 +1140,6 @@ class MainView extends Component {
         });
         this.loadMainGridData();
       });
-
   };
 
   hideemployes = () => {
