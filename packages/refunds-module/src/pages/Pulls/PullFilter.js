@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import {
   Form, Select, InputNumber, Switch, Radio,
   Slider, Button, Upload, Icon, Rate, Checkbox,
-  Row, Col, Input, DatePicker, Sea, Card, Collapse, Pagination, Menu, Dropdown, Modal
+  Row, Col, Input, DatePicker, Sea, Card, Collapse, Pagination, Menu, Dropdown, Modal, Badge
 } from "antd";
 import "./PullFilter.css";
 import connect from "../../Redux";
@@ -213,9 +213,18 @@ class PullFilter extends Component {
     });
   };
 
+  setBadgeStatus = (value) => {
+    if (value) {
+      return "success";
+    } else if (value === undefined) {
+      return "default";
+    } else {
+      return "error";
+    }
+  };
 
   render = () => {
-
+    console.log(this.props.universal2.references[this.state.pullpagingConfig.entity]);
     const universal = {
       table: this.props.universal2.references[this.state.pullpagingConfig.entity] ? this.props.universal2.references[this.state.pullpagingConfig.entity] : {}
     };
@@ -255,6 +264,7 @@ class PullFilter extends Component {
               style={{ width: "96%", margin: "0 2% 0 2%" }}>
           {
             universal.table.content && universal.table.content.map((item, idx) => {
+
               return <Card
                 style={pullStyle}
                 className={idx === this.state.selectedCardIndex ? "cardbtn active" : "cardbtn"}
@@ -271,7 +281,11 @@ class PullFilter extends Component {
                 {/*"Количество не отработанных:" + item.rawRecordsCount + "" +*/}
                 {/*"Количество отказанных:" + item.unconfirmedRecordsCount}*/}
                 {/*/>*/}
-                <b>{"Номер: " + item.number }</b>
+
+                {/*<b>{"Номер: " + item.number }</b>*/}
+                  { (item.rawRecordsCount ===0 && item.unconfirmedRecordsCount ===0) && <b>Номер: <span><Badge style={{verticalAlign: 'baseline'}} status="success"/>{item.number}</span></b>}
+                  { (item.unconfirmedRecordsCount > 0) &&  <b>Номер: <span><Badge style={{verticalAlign: 'baseline'}} status="error"/>{item.number}</span></b>}
+                  { (item.rawRecordsCount > 0 && item.unconfirmedRecordsCount ===0) && <b>Номер:  <span><Badge style={{verticalAlign: 'baseline'}} status="default"/>{item.number}</span></b>}
                 <br/>
                 {"Инициатор: " + item.users.userName}
                 <br/>
