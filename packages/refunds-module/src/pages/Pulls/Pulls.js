@@ -665,6 +665,7 @@ class Pulls extends Component {
   };
 
   loadPull = (id, item) => {
+    console.log(id);
     this.setState({
       pagingConfig: {
         ...this.state.pagingConfig,
@@ -954,7 +955,6 @@ class Pulls extends Component {
                 actionColumns={this.state.fcolumn}
                 columns={this.state.columns}
                 hideFilterBtn
-                hideRefreshBtn
                 sortedInfo={this.state.sortedInfo}
                 sorted={true}
                 showTotal={true}
@@ -965,6 +965,9 @@ class Pulls extends Component {
                   pageSize: this.state.pagingConfig.length,
                   page: this.state.pagingConfig.start + 1,
                   data: universal.table.content
+                }}
+                onRefresh={() => {
+                  this.loadPull(this.state.pagingConfig.filter["refundPack.id"]);
                 }}
                 addonButtons={[
                   <Button
@@ -1066,9 +1069,6 @@ class Pulls extends Component {
                 }}
                 onFilter={(filters) => {
 
-                }}
-                onRefresh={() => {
-                  this.loadMainGridData();
                 }}
                 onSearch={() => {
                 }}
