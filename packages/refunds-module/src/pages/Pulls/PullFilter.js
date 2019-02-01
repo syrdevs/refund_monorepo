@@ -283,9 +283,9 @@ class PullFilter extends Component {
                 {/*/>*/}
 
                 {/*<b>{"Номер: " + item.number }</b>*/}
-                  { (item.rawRecordsCount ===0 && item.unconfirmedRecordsCount ===0) && <b>Номер: <span><Badge style={{verticalAlign: 'baseline'}} status="success"/>{item.number}</span></b>}
-                  { (item.unconfirmedRecordsCount > 0) &&  <b>Номер: <span><Badge style={{verticalAlign: 'baseline'}} status="error"/>{item.number}</span></b>}
-                  { (item.rawRecordsCount > 0 && item.unconfirmedRecordsCount ===0) && <b>Номер:  <span><Badge style={{verticalAlign: 'baseline'}} status="default"/>{item.number}</span></b>}
+                  { (item.rawRecordsCount ===0 && item.unconfirmedRecordsCount ===0) && <b><Badge style={{verticalAlign: 'baseline'}} status="success"/>Номер: {item.number}</b>}
+                  { (item.unconfirmedRecordsCount > 0) &&  <b><Badge style={{verticalAlign: 'baseline'}} status="error"/>Номер: {item.number}</b>}
+                  { (item.rawRecordsCount > 0 && item.unconfirmedRecordsCount ===0) && <b><Badge style={{verticalAlign: 'baseline'}} status="default"/>Номер:  {item.number}</b>}
                 <br/>
                 {"Инициатор: " + item.users.userName}
                 <br/>
