@@ -172,7 +172,7 @@ class DogovorModal extends Component {
         else this.props.hide();
       }}
       visible={true}>
-      <Spin spinning={this.props.loading}>
+      {/*<Spin spinning={this.props.loading}>*/}
         <div className={"DogovorModal"}>
           <SmartGridView
             scroll={{ x: "auto", y: 280 }}
@@ -208,7 +208,7 @@ class DogovorModal extends Component {
             }}
           />
         </div>
-      </Spin>
+      {/*</Spin>*/}
     </Modal>);
   };
 }

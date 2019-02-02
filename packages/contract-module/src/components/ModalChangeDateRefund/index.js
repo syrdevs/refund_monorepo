@@ -50,7 +50,7 @@ class ModalChangeDateRefund extends Component {
         width={500}
         centered
         visible={true}>
-        <Spin spinning={this.state.loading}>
+        {/*<Spin spinning={this.state.loading}>*/}
           <span>Дата:</span> <DatePicker
           allowClear={false}
           size="large"
@@ -58,7 +58,7 @@ class ModalChangeDateRefund extends Component {
           format={this.props.dateFormat}
           onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
         />
-        </Spin>
+        {/*</Spin>*/}
       </Modal>
     );
   }

@@ -134,14 +134,14 @@ class ModalContent extends Component {
       <br/>
       <br/>
       <p>Список:</p>
-      <Spin spinning={this.props.loadingData}>
+      {/*<Spin spinning={this.props.loadingData}>*/}
         <Table
           {...tableOptions}
           className={'ant_modal_grid'}
           size={'small'}
           dataSource={dataSource}
           columns={columns}/>
-      </Spin>
+      {/*</Spin>*/}
     </Modal>);
   };
 }

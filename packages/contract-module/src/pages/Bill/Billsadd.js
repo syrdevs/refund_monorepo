@@ -319,8 +319,8 @@ class Billsadd extends Component {
           ]}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
-          <Spin
-            spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType && this.props.loadingsave}>
+          {/*<Spin*/}
+            {/*spinning={this.props.loadingperiodYear && this.props.loadingperiodSection && this.props.loadingorganization && this.props.loadingmedicalType && this.props.loadingsave}>*/}
             <Row style={{ marginTop: "5px" }}>
               <Form layout="horizontal" hideRequiredMark>
                 <Tabs
@@ -558,7 +558,7 @@ class Billsadd extends Component {
                 </Tabs>
               </Form>
             </Row>
-          </Spin>
+          {/*</Spin>*/}
         </Card>
       </ContentLayout>
 

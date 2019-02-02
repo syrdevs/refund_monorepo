@@ -233,7 +233,6 @@ class InfoPage extends Component {
       });
     }
 
-
     return (<Card style={{ marginLeft: "-10px" }}>
 
       {this.state.CounterAgentsModal.visible && <CounterAgentModal
@@ -328,6 +327,28 @@ class InfoPage extends Component {
             </LinkModal>)}
         </Form.Item>
 
+        <Form.Item  {...formItemLayout} label={"Документ-основание"}>
+          {[
+            "Протокол #1",
+            "Протокол #2",
+            "Протокол #3"].map(x => (
+            <span
+              style={{
+                color: "#1890ff",
+                textDecoration: "underline",
+                cursor: "pointer"
+              }}
+              onClick={() => {
+
+              }}>
+              {x}
+              <br/>
+        </span>
+          ))}
+
+
+        </Form.Item>
+
         <Form.Item {...formItemLayout} label="Учетный период">
           {getFieldDecorator("periodYear", {
             rules: [{ required: true, message: "не заполнено" }],
@@ -351,7 +372,27 @@ class InfoPage extends Component {
           )}
         </Form.Item>
 
-        <Form.Item {...formItemLayout} label="Родительский договор">
+        <Form.Item {...formItemLayout} label="Вид договора">
+          {getFieldDecorator("contractType", {
+            rules: [{ required: true, message: "не заполнено" }],
+            initialValue: getObjectData.contractType ? getObjectData.contractType.id : this.props.location.query.contractTypeId || null
+          })(
+            <Select placeholder="Вид договора"
+                    onChange={(value, option) => {
+                      this.setState({ contractAlterationReason: option.props.prop.code });
+
+                      let parentContract = this.props.form.getFieldValue("parentContract").value;
+
+                      if ((option.props.prop.code === "3" || option.props.prop.code === "2") && parentContract !== null) {
+                        this.props.getSubContractById(parentContract.id, value);
+                      }
+                    }}>
+              {contractTypeDataSource}
+            </Select>
+          )}
+        </Form.Item>
+
+        <Form.Item {...formItemLayout} label="Основной договор">
           {getFieldDecorator("parentContract", {
             initialValue: { value: getObjectData.parentContract ? getObjectData.parentContract : null },
             rules: [{
@@ -409,48 +450,28 @@ class InfoPage extends Component {
         </Form.Item>
 
 
-        <Form.Item {...formItemLayout} label="Протокол распределения объемов">
-          {(getObjectData.planProtocol && getObjectData.planProtocol.number) &&
-          <span
-            className="ant-form-text">
-            {getObjectData._documentSources ? getObjectData._documentSources.map((protocol) => {
-              return <div>№ {protocol.number} от {protocol.documentDate}</div>;
-            }) : null}
- </span>
-          }
-        </Form.Item>
+        {/*<Form.Item {...formItemLayout} label="Протокол распределения объемов">*/}
+        {/*{(getObjectData.planProtocol && getObjectData.planProtocol.number) &&*/}
+        {/*<span*/}
+        {/*className="ant-form-text">*/}
+        {/*{getObjectData._documentSources ? getObjectData._documentSources.map((protocol) => {*/}
+        {/*return <div>№ {protocol.number} от {protocol.documentDate}</div>;*/}
+        {/*}) : null}*/}
+        {/*</span>*/}
+        {/*}*/}
+        {/*</Form.Item>*/}
 
 
-        < Form.Item {...formItemLayout} label="Заявка на объемы">
-          {(getObjectData.proposal && getObjectData.proposal.number) &&
-          <span
-            className="ant-form-text">№{getObjectData.proposal.number} от {getObjectData.proposal.documentDate}</span>
-          }
-        </Form.Item>
+        {/*< Form.Item {...formItemLayout} label="Заявка на объемы">*/}
+        {/*{(getObjectData.proposal && getObjectData.proposal.number) &&*/}
+        {/*<span*/}
+        {/*className="ant-form-text">№{getObjectData.proposal.number} от {getObjectData.proposal.documentDate}</span>*/}
+        {/*}*/}
+        {/*</Form.Item>*/}
 
+        {console.log(contractTypeDataSource)}
 
-        <Form.Item {...formItemLayout} label="Вид договора">
-          {getFieldDecorator("contractType", {
-            rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.contractType ? getObjectData.contractType.id : null
-          })(
-            <Select placeholder="Вид договора"
-                    onChange={(value, option) => {
-                      this.setState({ contractAlterationReason: option.props.prop.code });
-
-                      let parentContract = this.props.form.getFieldValue("parentContract").value;
-
-                      if ((option.props.prop.code === "3" || option.props.prop.code === "2") && parentContract !== null) {
-                        this.props.getSubContractById(parentContract.id, value);
-                      }
-                    }}>
-              {contractTypeDataSource}
-            </Select>
-          )}
-        </Form.Item>
-
-
-        {this.state.contractAlterationReason === "2" &&
+        {(this.state.contractAlterationReason === "02" || contractTypeDataSource.findIndex(x => (x.key === this.props.location.query.contractTypeId && x.props.prop.code === "02")) !== -1) &&
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator("contractAlternation", {
             rules: [{ required: false, message: "не заполнено" }],
@@ -463,6 +484,25 @@ class InfoPage extends Component {
         </Form.Item>
         }
 
+        <Form.Item {...formItemLayout} label="Изменения к договору">
+          {[
+            "Договор #1",
+            "Договор #2",
+            "Договор #3"].map(x => (
+            <span
+              style={{
+                color: "#1890ff",
+                textDecoration: "underline",
+                cursor: "pointer"
+              }}
+              onClick={() => {
+
+              }}>
+              {x}
+              <br/>
+        </span>
+          ))}
+        </Form.Item>
 
         <Form.Item {...formItemLayout} label="Номер">
           {getFieldDecorator("number", {
@@ -502,13 +542,13 @@ class InfoPage extends Component {
         </Form.Item>
 
 
-        <Form.Item {...formItemLayout} label="Примечание">
+        <Form.Item {...formItemLayout} label="Комментарий">
           {getFieldDecorator("descr", {
             rules: [{ required: false, message: "не заполнено" }],
             initialValue: getObjectData.descr ? getObjectData.descr : null
           })(
             <TextArea
-              placeholder="Примечание"
+              placeholder="Комментарий"
               rows={4}/>
           )}
         </Form.Item>

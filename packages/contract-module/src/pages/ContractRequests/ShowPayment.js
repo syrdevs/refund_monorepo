@@ -436,7 +436,7 @@ class ShowPayment extends Component {
           className={"headPanel"}
           bordered={false}
           bodyStyle={{ padding: 0 }}>
-          <Spin spinning={this.state.loadData}>
+          {/*<Spin spinning={this.state.loadData}>*/}
             <Row style={{ marginTop: "5px" }}>
               <Form layout="horizontal" hideRequiredMark>
                 <Tabs
@@ -533,7 +533,7 @@ class ShowPayment extends Component {
                 </Tabs>
               </Form>
             </Row>
-          </Spin>
+          {/*</Spin>*/}
         </Card>
       </ContentLayout>
     );
