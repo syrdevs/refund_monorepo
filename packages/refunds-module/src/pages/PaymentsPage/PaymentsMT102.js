@@ -124,6 +124,10 @@ class PaymentsMT102 extends Component {
         name: "paymentperiod",
         type: "monthPicker"
       }, {
+        label: "Перенесенный период",
+        name: "paymentPeriodTransfer",
+        type: "monthPicker"
+      }, {
         label: "Ошибочные ",
         name: "stornReason.code",
         type: "checkbox"
@@ -214,6 +218,10 @@ class PaymentsMT102 extends Component {
       }, {
         "title": "Дата сторнирования",
         "dataIndex": "stornDate"
+      }, {
+        "title": "Перенесенный период",
+        "dataIndex": "paymentPeriodTransfer",
+
       }
 
     ],
