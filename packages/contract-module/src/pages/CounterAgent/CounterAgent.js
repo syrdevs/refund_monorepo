@@ -169,7 +169,12 @@ class CounterAgent extends Component {
         <Button
           key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
           type="down"/></Button>
-      </Dropdown>
+      </Dropdown>,
+      <Button key={"create"}
+              onClick={() => {
+                this.props.history.push("/contracts/v2/counteragent/create");
+              }}
+      >Создать контрагент</Button>
     ];
 
 

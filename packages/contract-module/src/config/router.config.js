@@ -22,6 +22,10 @@ export default [
           {
             path: "/contracts/v2/counteragent/main",
             component: "./CounterAgent/CounterAgent"
+          },
+          {
+            path: "/contracts/v2/counteragent/create",
+            component: "./CounterAgent/CounterAgentNew"
           }
           // {
           //   path: '/contracts/v2/counteragent/viewcontract',
