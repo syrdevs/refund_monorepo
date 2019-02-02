@@ -234,6 +234,15 @@ class SmartGridView extends Component {
         let columnIndex = columns.findIndex(x => x.title === actionColumn.title);
 
         if (columnIndex === -1) {
+
+          console.log(actionColumn)
+
+          let extraProps = {};
+
+          if (actionColumn.dataIndex) {
+            extraProps.dataIndex = actionColumn.dataIndex;
+          }
+
           columns.push({
             key: actionColumn.key,
             className: actionColumn.className,
@@ -242,7 +251,8 @@ class SmartGridView extends Component {
             order: actionColumn.order,
             sorted: actionColumn.sorted,
             //dataIndex: actionColumn.title,
-            isVisible: actionColumn.isVisible
+            isVisible: actionColumn.isVisible,
+            ...extraProps
           });
         }
 
