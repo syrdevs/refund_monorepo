@@ -35,6 +35,14 @@ export default [
         ]
       },
       {
+        path: "/contracts/v2/documents",
+        icon: "database",
+        name: "documents",
+        routes: [
+          { path: "/contracts/v2/documents", redirect: "/documents/main" }
+        ]
+      },
+      {
         path: "/contracts/v2/contracts",
         name: "contracts",
         component: "./CounterAgent/CounterAgentMain",

@@ -40,7 +40,7 @@ class ReportsGrid extends Component {
     _configTimer: {
 
       second: 2000,
-      count: 100
+      count: 2000
     },
 
     tasks: [],
@@ -237,6 +237,7 @@ class ReportsGrid extends Component {
   getOrder = async (taskItem, count, call) => {
 
     request("/api/report/getReportStatus?id=" + taskItem, {
+      disableLoader: true,
       getResponse: (response) => {
         if (response.status === 200) {
           const json = response.data;
@@ -293,6 +294,7 @@ class ReportsGrid extends Component {
 
     request("/api/report/createReport", {
       method: "POST",
+      disableLoader: true,
       body: {
         "id": this.props.record.id,
         "parameters": this.props.filterData

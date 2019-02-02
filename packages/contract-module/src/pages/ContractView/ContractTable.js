@@ -29,10 +29,11 @@ import ContentLayout from "../../layouts/ContentLayout";
 import DropDownAction from "../../components/DropDownAction";
 
 const dateFormat = "DD.MM.YYYY";
-
+const SubMenu = Menu.SubMenu;
 
 class ContractTable extends Component {
   state = {
+    selectedRecord: null,
     selectedRow: null,
     selectedRowKeys: [],
     filterContainer: 0,
@@ -70,13 +71,23 @@ class ContractTable extends Component {
       },
       {
         name: "dateBegin",
-        label: "Дата начала",
+        label: "Дата начала действия",
         type: "betweenDate"
       },
       {
         name: "dateEnd",
-        label: "Дата окончания",
+        label: "Дата окончания действия",
         type: "betweenDate"
+      },
+      {
+        name: "contragent.organization",
+        label: "Контрагент",
+        type: "text"
+      },
+      {
+        name: "activity.name",
+        label: "Вид деятельности",
+        type: "text"
       }
     ],
     // filterForm: [
@@ -174,7 +185,7 @@ class ContractTable extends Component {
       },
       {
         title: "Вид договора",
-        dataIndex: "contractType",
+        dataIndex: "contractType.shortName",
         isVisible: true
       },
       {
@@ -198,7 +209,7 @@ class ContractTable extends Component {
         isVisible: true
       },
       {
-        title: "Сумма",
+        title: "Сумма, т",
         dataIndex: "documentSum",
         isVisible: true
       },
@@ -403,6 +414,10 @@ class ContractTable extends Component {
   }
 
   render = () => {
+
+    let subMenuChilds = this.state.selectedRecord && this.state.selectedRecord.contractType && this.state.selectedRecord.contractType._contractTypeChilds;
+
+
     const { universal2 } = this.props;
     const contracts = universal2.references[this.state.gridParameters.entity];
 
@@ -433,6 +448,26 @@ class ContractTable extends Component {
           key="3">
           Удалить
         </Menu.Item>
+        <SubMenu disabled={!subMenuChilds} key="9"
+                 title="Дополнительное соглашение">
+          {subMenuChilds && subMenuChilds
+            .filter((menuItem) => (menuItem.basicContractTypeCode === "2"))
+            .map((menuItem) => (<Menu.Item
+              onClick={() => {
+                this.props.history.push("/contracts/v2/contracts/create?contractId=" + this.state.selectedRecord.id + "&contractTypeId=" + menuItem.id);
+              }}
+              key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
+        </SubMenu>
+        <SubMenu disabled={!subMenuChilds} key="7"
+                 title=" Договор субподряда">
+          {subMenuChilds && subMenuChilds
+            .filter((menuItem) => (menuItem.basicContractTypeCode === "3"))
+            .map((menuItem) => (<Menu.Item
+              onClick={() => {
+                this.props.history.push("/contracts/v2/contracts/create?contractId=" + this.state.selectedRecord.id + "&contractTypeId=" + menuItem.id);
+              }}
+              key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
+        </SubMenu>
         <Menu.Item
           key='4'
           disabled={this.state.selectedRowKeys.length === 0}
@@ -489,6 +524,14 @@ class ContractTable extends Component {
           disabled={this.state.selectedRowKeys.length !== 1}
         >
           Создать акт
+        </Menu.Item>
+        <Menu.Item
+          onClick={() => {
+            console.log(this.props.universal2.references[this.state.gridParameters.entity].content);
+          }}
+          disabled={false}
+          key="8">
+          Включить/Отключить режим отображения иерархии
         </Menu.Item>
       </Menu>}>
         <Button
@@ -559,7 +602,7 @@ class ContractTable extends Component {
               selectedRowKeys={this.state.selectedRowKeys}
               showExportBtn={true}
               addonButtons={addonButtons}
-              actionColumns={this.state.fcolumn}
+              actionColumns={[]}
               actionExport={() => {
                 // console.log('export');
               }}
@@ -577,9 +620,9 @@ class ContractTable extends Component {
                 this.filterPanelState();
               }}
               onSelectRow={(record, index) => {
-                // this.setState({
-                //   selectedRow: record,
-                // });
+                this.setState({
+                  selectedRecord: record
+                });
               }}
               onSelectCheckboxChange={(selectedRowKeys) => {
                 this.setState({
