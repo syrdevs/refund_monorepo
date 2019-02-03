@@ -1,6 +1,26 @@
 import React, { Component } from 'react';
-import { Tabs, Spin, Form, Divider, Button, Icon, Col, Card, Row, Select, Input, Table, Popconfirm, DatePicker, LocaleProvider, Badge  } from 'antd';
+import {
+  Tabs,
+  Spin,
+  Form,
+  Divider,
+  Button,
+  Icon,
+  Col,
+  Card,
+  Row,
+  Select,
+  Input,
+  Table,
+  Popconfirm,
+  DatePicker,
+  LocaleProvider,
+  Badge,
+  Radio, Switch, Modal
+} from "antd";
 import connect from "../../Redux";
+import ContentLayout from "../../layouts/ContentLayout";
+import styles from "../Acts/style.css";
 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
@@ -13,25 +33,35 @@ const formRenderLayout = {
   wrapperCol: { md: 24, xs: 24, sm: 24},
 }
 const Option = Select.Option;
+const RenderformItemLayout = {
+  labelCol: {
+    span: 10
+  },
+  wrapperCol: {
+    span: 14
+  }
+};
+
 
 const RendetField =({name, label, type, getFieldDecorator, validatemessage, references}) => {
   switch (type) {
     case 'combobox': {
       return(
         <FormItem
-          style={{marginBottom:'0px'}}
+          {...RenderformItemLayout}
+          style={{marginBottom:'24px'}}
           label={label}
 
         >
           {getFieldDecorator(name, {
             rules: [{
-              required: true,
+              required: false,
               message: validatemessage,
             }],
           })(
             <Select  key={name} style={{marginLeft:'10px', width:'95%'}} name={name}>
               {references && references.map((item) => {
-                return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                return <Select.Option key={item.id} value={item.id} prop={item}>{item.nameRu}</Select.Option>;
               })}
             </Select>)}
         </FormItem>
@@ -39,13 +69,14 @@ const RendetField =({name, label, type, getFieldDecorator, validatemessage, refe
     case 'text': {
       return(
         <FormItem
-          style={{marginBottom:'0px'}}
+          {...RenderformItemLayout}
+          style={{marginBottom:'24px'}}
           key={name}
           label={label}
         >
           {getFieldDecorator(name, {
             rules: [{
-              required: true,
+              required: false,
               message: validatemessage,
             }],
             initialValue: ''
@@ -56,12 +87,13 @@ const RendetField =({name, label, type, getFieldDecorator, validatemessage, refe
     case 'datePicker': {
       return(
         <FormItem
-          style={{marginBottom:'0px'}}
+          {...RenderformItemLayout}
+          style={{marginBottom:'24px'}}
           label={label}
         >
           {getFieldDecorator(name, {
             rules: [{
-              required: true,
+              required: false,
               message: validatemessage,
             }],
             initialValue: ''
@@ -87,32 +119,32 @@ class CounterAgentNew extends Component {
       panes: [
         { title: 'Организация', content:  [
             {
-              name: 'org_form',
+              name: 'legalForm',
               label: 'Организационно-правовая форма',
-              type: 'text',
+              type: 'combobox',
             },
             {
-              name: 'org_name',
+              name: 'name',
               label: 'Наименование',
               type: 'text',
             },
             {
-              name: 'full_org_name',
+              name: 'fullName',
               label: 'Наименование полное',
               type: 'text',
             },
             {
-              name: 'short_org_name',
+              name: 'shortName',
               label: 'Наименование краткое',
               type: 'text',
             }
           ],key: '7' }
       ],
-      fizpane: { title: 'Физическое лицо', content:  [
-          {
+      fizpane: { title: 'Индивидуальный предприниматель', content:  [
+         /* {
             name: 'fiz_surname',
-            label: 'Фамилия',
-            type: 'text',
+            label: 'Вид идентификатора',
+            type: 'combobox',
           },
           {
             name: 'fiz_name',
@@ -143,7 +175,7 @@ class CounterAgentNew extends Component {
             name: 'fiz_fio_genitive_initials',
             label: 'Фамилия и инициалы в родительном падеже',
             type: 'text',
-          },
+          },*/
         ],key: '7' },
       orgpane: { title: 'Организация', content:  [
           {
@@ -152,17 +184,17 @@ class CounterAgentNew extends Component {
             type: 'text',
           },
           {
-            name: 'org_name',
+            name: 'name',
             label: 'Наименование',
             type: 'text',
           },
           {
-            name: 'full_org_name',
+            name: 'fullName',
             label: 'Наименование полное',
             type: 'text',
           },
           {
-            name: 'short_org_name',
+            name: 'shortName',
             label: 'Наименование краткое',
             type: 'text',
           }
@@ -176,6 +208,7 @@ class CounterAgentNew extends Component {
       bankscount: 0,
       responsescount:0,
       RegistrerSZscount:0,
+      Industbasecount:0,
       idents:[],
       identitiesarr:[],
       adressesarr:[],
@@ -189,6 +222,7 @@ class CounterAgentNew extends Component {
       banks:[],
       responses: [],
       RegistrerSZs: [],
+      Industbase: [],
       smarttabs:[
         {
           name: "identities",
@@ -318,8 +352,31 @@ class CounterAgentNew extends Component {
                         message: this.state.validatemessage,
                       }],
                     })(
-                      <Input name={'adresstype'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'adresstype', "adresses")}}/>)}
+                      /*<Input name={'adresstype'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'adresstype', "adresses")}}/>*/
+
+                      <Select name={'adresstype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'adresstype', "adresses")}}>
+                          {this.props.universal2.references.addressType.content && this.props.universal2.references.addressType.content.map((item) => {
+                            return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                          })}
+                      </Select>
+
+                    )}
                   </FormItem>)
+
+
+/*
+                {this.props.form.getFieldDecorator('identitytype'+record.key, {
+                  rules: [{
+                    required: true,
+                    message: this.state.validatemessage,
+                  }],
+                })(
+                  <Select name={'identitytype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'identitytype', 'identities')}}>
+                    {this.props.universal.identifierType.content && this.props.universal.identifierType.content.map((item) => {
+                      return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                    })}
+                  </Select>
+                )}*/
               },
             },
             {
@@ -413,7 +470,14 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <Input name={'contacttype'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'contacttype', "contacts")}}/>)}
+                    /*<Input name={'contacttype'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'contacttype', "contacts")}}/>)}*/
+
+                  <Select name={'contacttype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'contacttype', "contacts")}}>
+                    {this.props.universal2.references.contactType.content && this.props.universal2.references.contactType.content.map((item) => {
+                      return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                    })}
+                  </Select>
+                  )}
                 </FormItem>)
             },
           },
@@ -515,24 +579,30 @@ class CounterAgentNew extends Component {
           },
           columns: [
             {
-              dataIndex: 'bik',
-              title: 'БИК',
+              dataIndex: 'bank',
+              title: 'Банк (БВУ)',
               width: '15%',
               render: (text, record) => {
                 return (
                   <FormItem
                   >
-                    {this.props.form.getFieldDecorator('bik'+record.key, {
+                    {this.props.form.getFieldDecorator('bank'+record.key, {
                       rules: [{
                         required: true,
                         message: this.state.validatemessage,
                       }],
                     })(
-                      <Input name={'bik'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'bik', "banks")}}/>)}
+                      /*<Input name={'bank'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'bank', "banks")}}/>)}*/
+                      <Select name={'bank'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'bank', "banks")}}>
+                      {this.props.universal2.references.bank.content && this.props.universal2.references.bank.content.map((item) => {
+                        return <Select.Option key={item.id}>{item.bikCode+"  "+item.shortName}</Select.Option>;
+                      })}
+                      </Select>
+                      )}
                   </FormItem>)
               },
             },
-            {
+           /* {
               dataIndex: 'bankname',
               title: 'Наименование банка (краткое)',
               width: '25%',
@@ -549,10 +619,10 @@ class CounterAgentNew extends Component {
                       <Input name={'bankname'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'bankname', "banks")}}/>)}
                   </FormItem>)
               },
-            },
+            },*/
             {
               dataIndex: 'iik',
-              title: 'ИИК',
+              title: 'Счет (ИИК)',
               width: '10%',
               render: (text, record) => {
                 return (
@@ -616,13 +686,13 @@ class CounterAgentNew extends Component {
               render: (text, record) => {
                 return (<FormItem
                 >
-                  {this.props.form.getFieldDecorator('bankbeginDate'+record.key, {
+                  {this.props.form.getFieldDecorator('bankendDate'+record.key, {
                     rules: [{
                       required: true,
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'bankbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'bankbeginDate', "banks")}}/>
+                    <DatePicker style={{width:'100%'}} name={'bankendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'bankendDate', "banks")}}/>
                   )}
                 </FormItem>)
               },
@@ -642,7 +712,7 @@ class CounterAgentNew extends Component {
             }
           ]
         },
-        {
+        /*{
           name: "responses",
           title:"Ответственные лица",
           cols:{
@@ -871,6 +941,85 @@ class CounterAgentNew extends Component {
               },
             }
           ]
+        },*/
+        {
+          name: "Industbase",
+          title:"Производственная база",
+          cols:{
+            identitytype:null,
+            identityname:null,
+            identitybeginDate:null,
+            identityendDate:null,
+          },
+          columns: [
+            {
+              dataIndex: 'indusadress',
+              title: 'Адрес',
+              width: '60%',
+              render: (text, record) => {
+                return (
+                  <FormItem
+                  >
+                    {this.props.form.getFieldDecorator('indusadress'+record.key, {
+                      rules: [{
+                        required: true,
+                        message: this.state.validatemessage,
+                      }],
+                    })(
+                      <Input name={'indusadress'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'indusadress', "Industbase")}}/>)}
+                  </FormItem>)
+              },
+            },
+            {
+              dataIndex: 'indusbeginDate',
+              title: 'Дата начала',
+              width: '15%',
+              render: (text, record) => {
+                return (<FormItem
+                >
+                  {this.props.form.getFieldDecorator('indusbeginDate'+record.key, {
+                    rules: [{
+                      required: true,
+                      message: this.state.validatemessage,
+                    }],
+                  })(
+                    <DatePicker style={{width:'100%'}} name={'indusbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'indusbeginDate', "Industbase")}}/>
+                  )}
+                </FormItem>)
+              },
+            },
+            {
+              dataIndex: 'indusendDate',
+              title: 'Дата окончания',
+              width: '15%',
+              render: (text, record) => {
+                return (<FormItem
+                >
+                  {this.props.form.getFieldDecorator('indusendDate'+record.key, {
+                    rules: [{
+                      required: true,
+                      message: this.state.validatemessage,
+                    }],
+                  })(
+                    <DatePicker style={{width:'100%'}} name={'indusendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'indusendDate', "Industbase")}}/>
+                  )}
+                </FormItem>)
+              },
+            },
+            {
+              title: 'Действие',
+              dataIndex: 'operation',
+              width: '10%',
+              render: (text, record) => {
+                const { editable } = record;
+                return (
+                  <div style={{marginTop: '-20px'}}>
+                    <a onClick={() => this.remove('Industbase',record.key, 'Industbasecount')}>Удалить</a>
+                  </div>
+                );
+              },
+            }
+          ]
         },
       ]
     };
@@ -892,6 +1041,30 @@ class CounterAgentNew extends Component {
       },
     });
     dispatch({
+      type: 'universal2/getList',
+      payload: {
+        "start":0,
+        "length":1000,
+        "entity":"addressType"
+      },
+    });
+    dispatch({
+      type: 'universal2/getList',
+      payload: {
+        "start":0,
+        "length":1000,
+        "entity":"contactType"
+      },
+    })
+    dispatch({
+      type: 'universal2/getList',
+      payload: {
+        "start":0,
+        "length":1000,
+        "entity":"bank"
+      },
+    })
+    dispatch({
       type: 'universal/getcurrencyType',
       payload: {
         "start":0,
@@ -910,12 +1083,16 @@ class CounterAgentNew extends Component {
   }
 
   selecttypeagent = (e) => {
+    /*        console.log(e.target.value);
     this.setState({
       panes: [
-        ...this.state.panes.filter((item)=>item.key !=='7'),
-        this.state[e],
+        this.state[e.target.value],
+        ...this.state.panes.filter((item)=>{
+          console.log(item);
+          item.key !=='7'
+        }),
       ]
-    });
+    });*/
   }
 
   fieldOnChange = (filterItem, value) => {
@@ -958,14 +1135,143 @@ class CounterAgentNew extends Component {
   }
 
   sendserver = (e) => {
-   /* console.log(this.state.identities)
+    //console.log(this.state.identities)
     this.props.form.validateFields(
       (err, values) => {
         if (!err) {
-          console.log({
-            ...values,
-            identities: this.state.idents
+          console.log(values.isRural);
+          /*console.log({
+            "entity":"clinic",
+            "alias":null,
+            "data":{
+              "shortName": values.shortName,
+              "code": "1",
+              "name": values.name,
+              "dateBegin": values.dateBegin.format('DD.MM.YYYY'),
+              "dateEnd": values.dateEnd.format('DD.MM.YYYY'),
+              "legalForm": (this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []).filter((item)=>{return item.id === values.legalForm}),
+              "idendifiers": this.state.identities.map((item)=>{
+                return {
+                  "value": item.identityname,
+                  "dateBegin": item.identitybeginDate.format('DD.MM.YYYY'),
+                  "dateEnd": item.identityendDate.format('DD.MM.YYYY'),
+                  "idendifierType": {
+                    "id": item.identitytype
+                  }
+                }
+              }),
+              "bankAccounts": this.state.banks.map((item)=>{
+                    return {
+                      "accountNumber": item.iik,
+                      "dateBegin": item.bankbeginDate.format('DD.MM.YYYY'),
+                      "dateEnd": item.bankendDate.format('DD.MM.YYYY'),
+                      "bank": {
+                        "id": item.bank
+
+                      },
+                      "currencyType": {
+                        "id": item.currency
+                      }
+                    }
+              }),
+              "addresses": this.state.adresses.map((item)=>{
+                    return {
+                      "addressText": item.adressname,
+                      "dateBegin": item.adressbeginDate.format('DD.MM.YYYY'),
+                      "dateEnd": item.adressendDate.format('DD.MM.YYYY'),
+                      "addressType": {
+                        "id": item.adresstype
+                      }
+                    }
+              }),
+              "contacts": this.state.contacts.map((item)=>{
+                return {
+                  "comment": item.contactnote,
+                  "value": item.contactname,
+                  "dateBegin": item.contactbeginDate,
+                  "dateEnd": item.contactendDate,
+                  "contactType": {
+                  "id": item.contacttype
+                }
+                }
+
+              }),
+            }
+          })*/
+          //saveobject
+          const { dispatch } = this.props;
+          dispatch({
+            type: 'universal/saveobject',
+            payload: {
+              "entity":"clinic",
+              "alias":null,
+              "data":{
+                "shortName": values.shortName,
+                "code": "1",
+                "name": values.name,
+                "isRural": values.isRural ? true : false,
+                "dateBegin": values.dateBegin.format('DD.MM.YYYY'),
+                "dateEnd": values.dateEnd.format('DD.MM.YYYY'),
+                "legalForm": (this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []).filter((item)=>{return item.id === values.legalForm}),
+                "idendifiers": this.state.identities.map((item)=>{
+                  return {
+                    "value": item.identityname,
+                    "dateBegin": item.identitybeginDate.format('DD.MM.YYYY'),
+                    "dateEnd": item.identityendDate.format('DD.MM.YYYY'),
+                    "idendifierType": {
+                      "id": item.identitytype
+                    }
+                  }
+                }),
+                "bankAccounts": this.state.banks.map((item)=>{
+                  return {
+                    "accountNumber": item.iik,
+                    "dateBegin": item.bankbeginDate.format('DD.MM.YYYY'),
+                    "dateEnd": item.bankendDate.format('DD.MM.YYYY'),
+                    "bank": {
+                      "id": item.bank
+
+                    },
+                    "currencyType": {
+                      "id": item.currency
+                    }
+                  }
+                }),
+                "addresses": this.state.adresses.map((item)=>{
+                  return {
+                    "addressText": item.adressname,
+                    "dateBegin": item.adressbeginDate.format('DD.MM.YYYY'),
+                    "dateEnd": item.adressendDate.format('DD.MM.YYYY'),
+                    "addressType": {
+                      "id": item.adresstype
+                    }
+                  }
+                }),
+                "contacts": this.state.contacts.map((item)=>{
+                  return {
+                    "comment": item.contactnote,
+                    "value": item.contactname,
+                    "dateBegin": item.contactbeginDate,
+                    "dateEnd": item.contactendDate,
+                    "contactType": {
+                      "id": item.contacttype
+                    }
+                  }
+
+                }),
+              }
+            },
+          }).then((e)=>{
+            console.log(e)
+            Modal.success({
+              title: 'Успешно сохранен',
+              content: 'ID субьекта: '+e.id,
+              onOk: () => {
+                this.props.history.push("/contracts/v2/counteragent/main");
+              }
+            });
           })
+
         }
         else {
           this.setState({
@@ -973,7 +1279,7 @@ class CounterAgentNew extends Component {
           })
         }
       },
-    );*/
+    );
   }
 
   cancelform = () => {
@@ -991,14 +1297,23 @@ class CounterAgentNew extends Component {
     } = this.props;
 
     return (
-      <Card
-        title="Форма регистрации контрагента"
-        bodyStyle={{ padding: 5 }}
-      >
+      <ContentLayout
+        contentName={"Форма регистрации субъекта здравоохранения"}
+        breadcrumbRoutes={[{
+          path: "/",
+          breadcrumbName: "Главная"
+        }, {
+          path: "/contracts/v2/counteragent/main",
+          breadcrumbName: "Субъекты здравоохранения"
+        },{
+          path: "/contracts/v2/counteragent/main/create",
+          breadcrumbName: "Форма регистрации субъекта здравоохранения"
+        },
+        ]}>
         <Form layout={'horizontal'}>
           <Row>
-            <div style={{marginTop:'20px'}}>
-              {this.state.isNew &&
+            <div>
+             {/* {this.state.isNew &&
               <div>
                 <FormItem
                   label={<span style={title}>Краткое наименование</span>}
@@ -1013,8 +1328,8 @@ class CounterAgentNew extends Component {
                 >
                   <div style={titledata}>Aкционерное Общество Нейрореабилитационный центр "Луч"</div>
                 </FormItem>
-              </div>}
-              <FormItem
+              </div>}*/}
+              {/*<FormItem
                 label={<span style={title}>Код контрагента</span>}
                 {...formItemLayout}
               >
@@ -1026,18 +1341,49 @@ class CounterAgentNew extends Component {
                   initialValue: this.state.data.codeagent
                 })(
                   <Input style={titledata} name='codeagent' onChange={(e)=>{this.mainfiels(e)}} disabled={this.state.isNew}/>)}
-              </FormItem>
+              </FormItem>*/}
+              {/*style={{marginBottom: '10px'}}*/}
+              {/*<Select  defaultValue="Организация" style={titledata} onChange={this.selecttypeagent}>
+                  <Option value="orgpane">Организация</Option>
+                  <Option value="fizpane">Индивидуальный предприниматель</Option>
+                </Select>*/}
               <FormItem
-                style={{marginBottom: '10px'}}
-                label={<span style={title}>Вид контрагента</span>}
+                label={<span style={title}>Вид субъекта здравоохранения</span>}
                 {...formItemLayout}
               >
-                <Select  defaultValue="Организация" style={titledata} onChange={this.selecttypeagent}>
-                  <Option value="orgpane">Организация</Option>
-                  <Option value="fizpane">Физическое лицо</Option>
-                </Select>
+                {getFieldDecorator('radio-button')(
+                <Radio.Group style={{marginTop: '8px'}} onChange={this.selecttypeagent}>
+                  <Radio value="orgpane">Организация</Radio>
+                  <Radio value="fizpane">Индивидуальный предприниматель</Radio>
+                </Radio.Group>
+                )}
               </FormItem>
-              {this.state.isNew &&
+              <FormItem
+                label={<span style={title}>СЗ районного значения и села</span>}
+                {...formItemLayout}
+              >
+                {getFieldDecorator('isRural', { valuePropName: 'checked' })(
+                  <Switch  style={{marginTop: '8px'}} name={'isRural'}/>
+                )}
+              </FormItem>
+              <FormItem
+                label={<span style={title}>Дата начала работы</span>}
+                {...formItemLayout}
+              >
+
+                {getFieldDecorator('dateBegin')(
+                  <DatePicker style={{marginLeft:'10px', width:'95%'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
+                )}
+              </FormItem>
+              <FormItem
+                label={<span style={title}>Дата окончания работы</span>}
+                {...formItemLayout}
+              >
+                {getFieldDecorator('dateEnd')(
+                  <DatePicker style={{marginLeft:'10px', width:'95%'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
+                )}
+              </FormItem>
+             {/* {this.state.isNew &&
               <div>
                 <FormItem
                   label={<span style={title}>ОПФ</span>}
@@ -1055,44 +1401,23 @@ class CounterAgentNew extends Component {
                 >
                   <Input style={titledata} value='Нейрореабилитационный центр "Луч"' disabled/>
                 </FormItem>
-              </div>}
+              </div>}*/}
             </div>
           </Row>
-
-
           <Row>
             <div style={{ margin: '0px 20px 0px 20px' }}>
               <Divider
                 style={{ marginBottom: '20px' }}
               />
-              <Tabs
+             {/* <Tabs
                 tabPosition='top'
                 style={{marginBottom:'20px', minHeight: '550px'}}
-              >
-                { smarttabs.map(smarttab => {
-                  return (
-                    <TabPane tab={
-                      <Badge count={this.state[smarttab.name+'count']} style={{ backgroundColor: '#1990FF' }}><div><span style={title}>{smarttab.title}</span></div></Badge>} key={smarttab.name}>
-                      <div>
-                        <Button onClick={()=>{this.setState({
-                          [smarttab.name]: [
-                            ...this.state[smarttab.name],
-                            {
-                              ...smarttab.cols,
-                              key: this.state[smarttab.name+'count'],
-                            }
-
-                          ],
-                          [smarttab.name+'count']: this.state[smarttab.name+'count']+1
-                        },()=>{
-                        })}} type="primary" style={{ marginBottom: 16 }}>
-                          Добавить
-                        </Button>
-                        <Table bordered={false} dataSource={this.state[smarttab.name]} columns={this.state.smarttabs.find(x => x.name === smarttab.name).columns} />
-                      </div>
-                    </TabPane>
-                  )
-                })}
+              >*/}
+                <Tabs
+                  className={styles.stepFormText}
+                  type={"card"}
+                  defaultActiveKey="form"
+                  tabPosition={"left"}>
                 { panes.map(pane =>{
                     return(
                       <TabPane tab={<span style={title}>{pane.title}</span>}  key={pane.key}>
@@ -1115,6 +1440,31 @@ class CounterAgentNew extends Component {
                     )
                   }
                 )}
+                { smarttabs.map(smarttab => {
+                  return (
+                    <TabPane tab={
+                      <Badge count={this.state[smarttab.name+'count']} style={{ backgroundColor: '#1990FF' }}><div><span style={title}>{smarttab.title}</span></div></Badge>} key={smarttab.name}>
+                      <div>
+                        <Button onClick={()=>{
+                          this.setState({
+                          [smarttab.name]: [
+                            ...this.state[smarttab.name],
+                            {
+                              ...smarttab.cols,
+                              key: this.state[smarttab.name+'count'],
+                            }
+                          ],
+                          [smarttab.name+'count']: this.state[smarttab.name+'count']+1
+                        },()=>{
+                        })}} type="primary" style={{ marginBottom: 16 }}>
+                          Добавить
+                        </Button>
+                        <Table bordered={false} dataSource={this.state[smarttab.name]} columns={this.state.smarttabs.find(x => x.name === smarttab.name).columns} />
+                      </div>
+                    </TabPane>
+                  )
+                })}
+
               </Tabs>
             </div>
           </Row>
@@ -1145,7 +1495,8 @@ class CounterAgentNew extends Component {
             </Col>
           </Row>
         </Form>
-      </Card>
+      </ContentLayout>
+
     );
   };
 }
@@ -1156,3 +1507,5 @@ export default connect(({ references, universal, loading }) => ({
   universal,
   loadingData: loading.effects['references/load'],
 }))(CounterAgentNew);
+
+{/* */}

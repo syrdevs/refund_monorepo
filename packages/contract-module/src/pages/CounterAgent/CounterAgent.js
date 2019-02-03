@@ -180,13 +180,13 @@ class CounterAgent extends Component {
 
     return (
       <ContentLayout
-        contentName={"Контрагенты"}
+        contentName={"Субъекты здравоохранения"}
         breadcrumbRoutes={[{
           path: "/",
           breadcrumbName: "Главная"
         }, {
           path: "/contracts/v2/counteragent/main",
-          breadcrumbName: "Контрагенты"
+          breadcrumbName: "Субъекты здравоохранения"
         }]}>
         <Row>
           <Col sm={24} md={this.state.tablecont}>
@@ -206,6 +206,20 @@ class CounterAgent extends Component {
               actionExport={() => {
               }}
               columns={this.state.columns}
+              actionColumns={[
+                 {
+                  title: "СЗ районного значения и села",
+                  key: "sz_region",
+                  order: 10,
+                  isVisible: true,
+                  width: 200,
+                  render: (item) => {
+                    if (item.isRural) {
+                      return <Icon type="check" />;
+                    }
+                  }
+                }
+                ]}
               sorted={true}
               showTotal={true}
               dataSource={{
