@@ -12,6 +12,7 @@ import {
   //InputNumber,
   Select,
   Input,
+  Checkbox,
   Table,
   Popconfirm,
   Tag,
@@ -165,424 +166,423 @@ function momentDefine() {
 
 @Form.create()
 class SpecPage extends Component {
-  state = {
-    selectedRowKeys: [],
+  constructor(props) {
+    super(props);
 
-    dataStoreGuid: null,
-    validatemessage: "не заполнено",
-    columns: [
-      {
-        title: "Код",
-        dataIndex: "activity.code",
-        render: (text, record) => {
+    this.state = {
 
-          if (record.key === "total") {
-            return <span><b>{record.activity.code}</b></span>;
-          } else {
-            return <span>{record.activity.code}</span>;
-          }
-          //
-          // return (
-          //   <FormItem>
-          //     {this.props.form.getFieldDecorator('spespage.code' + record.key, {
-          //       rules: [{
-          //         required: false,
-          //         message: this.state.validatemessage,
-          //       }],
-          //       initialValue: text,
-          //     })(
-          //       <Input readOnly={true} style={{ width: 150 }} name={'code' + record.key}
-          //              onChange={(e) => {
-          //                //this.identValue(e.target.value, record, 'code', 'identities');
-          //              }
-          //
-          //              }/>)}
-          //   </FormItem>);
-        }
-      },
-      {
-        title: "Вид деятельности",
-        dataIndex: "activity.name",
-        type: "combobox",
-        width: "30%",
-        render: (text, record) => {
+      hideFactorColumns: true,
 
-          if (record.key === "total") {
-            return "";
-          } else {
-            return <div style={{ width: 350 }}>{record.activity.name}</div>;
-          }
+      selectedRowKeys: [],
 
-          // return (
-          //   <FormItem>
-          //     {this.props.form.getFieldDecorator('spespage.activity' + record.key, {
-          //       initialValue: record.id ? record.id : null,
-          //       rules: [{
-          //         required: false,
-          //         message: this.state.validatemessage,
-          //       }],
-          //     })(
-          //       <Select
-          //         name={'activity' + record.key}
-          //         style={{ width: 350 }}
-          //         onChange={(e, option) => {
-          //           record['activity'] = {
-          //             prop: option.props.prop,
-          //             code: option.props.prop.activity.code,
-          //             id: option.props.prop.activity.id,
-          //             name: option.props.prop.activity.name,
-          //           };
-          //
-          //           this.changeContractType(record.key, e);
-          //
-          //           // this.identValue(e, record, 'type_activities', 'identities');
-          //         }}>
-          //         {this.props.universal2.references['activityList'] && this.props.universal2.references['activityList'].content.map((item) =>
-          //           <Option value={item.activity.id} prop={item}
-          //                   key={item.activity.id}>{item.activity.name}</Option>)}
-          //       </Select>,
-          //     )}
-          //   </FormItem>);
-        }
-      },
-      {
-        title: "Способ оплаты",
-        dataIndex: "paymentType.nameRu",
-        width: 150,
-        render: (text, record) => {
-          if (record.key === "total") {
-            return "";
-          }
+      dataStoreGuid: null,
+      validatemessage: "не заполнено",
+      columns: [],
+      baseColumns: [
+        {
+          title: "Код",
+          dataIndex: "activity.code",
+          render: (text, record) => {
 
-          return <span>{record.paymentType ? record.paymentType.nameRu : null}</span>;
-
-          // return (
-          //   <FormItem>
-          //     {this.props.form.getFieldDecorator('spespage.paymentType' + record.key, {
-          //       rules: [{
-          //         required: false,
-          //         message: this.state.validatemessage,
-          //       }],
-          //     })(<span>{record.paymentType ? record.paymentType.nameRu : null}</span>)}
-          //   </FormItem>);
-        }
-      },
-      {
-        title: "Единица учета",
-        dataIndex: "measureUnit.nameRu",
-        width: 150,
-        render: (text, record) => {
-
-          if (record.key === "total") {
-            return "";
-          }
-
-
-          return record.measureUnit ? <Tag style={{ fontSize: "14px" }} color="blue"
-                                           key={record.key}>{record.measureUnit.nameRu}</Tag> : <span> </span>;
-
-          // return (
-          //   <FormItem>
-          //     {this.props.form.getFieldDecorator('spespage.unit' + record.key, {
-          //       rules: [{
-          //         required: false,
-          //         message: this.state.validatemessage,
-          //       }],
-          //     })(
-          //       record.measureUnit ? <Tag style={{ fontSize: '14px' }} color="blue"
-          //                                 key={record.key}>{record.measureUnit.nameRu}</Tag> : <span> </span>,
-          //     )}
-          //   </FormItem>);
-        }
-      },
-      {
-        title: "Всего",
-        children: [
-          {
-            title: "Количество",
-            dataIndex: "value",
-            width: "10%",
-            render: (text, record) => {
-
-              let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
-              let countValue = record.value ? record.value : 0;
-
-              record["valueSum"] = tariffValue * countValue;
-
-              if (record.key === "total" && record.hasOwnProperty("valueTotal")) {
-                return <Input disabled={true} value={record.valueTotal}/>;
-              }
-
-              record["percentAdvance"] = this.calculateAllMonthValue(record);
-              record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
-
-              return (<InputNumber
-                defaultValue={record.value ? record.value : 0}
-                style={{ width: 70 }}
-                name={"amount" + record.key}
-                onChange={(e) => {
-                  record["value"] = e;
-                  record["percentAdvance"] = this.calculateAllMonthValue(record);
-
-                  let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
-                  let countValue = record.value ? record.value : 0;
-
-                  record["valueSum"] = tariffValue * countValue;
-                  record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
-
-                  this.setState(prevState => ({
-                    smarttabDataSource: prevState.smarttabDataSource
-                  }));
-
-
-                }}/>);
-
-              // return (
-              //   <FormItem
-              //   >
-              //     {this.props.form.getFieldDecorator('spespage.amount' + record.key, {
-              //       rules: [{
-              //         required: false,
-              //         message: this.state.validatemessage,
-              //       }],
-              //       initialValue: record.value ? record.value : 0,
-              //     })(
-              //       )}
-              //   </FormItem>);
+            if (record.key === "total") {
+              return <span><b>{record.activity.code}</b></span>;
+            } else {
+              return <span>{record.activity.code}</span>;
             }
-          },
-          {
-            title: "Тариф (₸)",
-            dataIndex: "tariffItem.name",
-            isVisible: true,
-            order: 2,
-            width: "20%",
-            key: "tariff",
-            onCell: record => {
-              return {
-                onClick: () => {
+            //
+            // return (
+            //   <FormItem>
+            //     {this.props.form.getFieldDecorator('spespage.code' + record.key, {
+            //       rules: [{
+            //         required: false,
+            //         message: this.state.validatemessage,
+            //       }],
+            //       initialValue: text,
+            //     })(
+            //       <Input readOnly={true} style={{ width: 150 }} name={'code' + record.key}
+            //              onChange={(e) => {
+            //                //this.identValue(e.target.value, record, 'code', 'identities');
+            //              }
+            //
+            //              }/>)}
+            //   </FormItem>);
+          }
+        },
+        {
+          title: "Вид деятельности",
+          dataIndex: "activity.name",
+          type: "combobox",
+          width: "30%",
+          render: (text, record) => {
 
+            if (record.key === "total") {
+              return "";
+            } else {
+              return <div style={{ width: 350 }}>{record.activity.name}</div>;
+            }
+
+            // return (
+            //   <FormItem>
+            //     {this.props.form.getFieldDecorator('spespage.activity' + record.key, {
+            //       initialValue: record.id ? record.id : null,
+            //       rules: [{
+            //         required: false,
+            //         message: this.state.validatemessage,
+            //       }],
+            //     })(
+            //       <Select
+            //         name={'activity' + record.key}
+            //         style={{ width: 350 }}
+            //         onChange={(e, option) => {
+            //           record['activity'] = {
+            //             prop: option.props.prop,
+            //             code: option.props.prop.activity.code,
+            //             id: option.props.prop.activity.id,
+            //             name: option.props.prop.activity.name,
+            //           };
+            //
+            //           this.changeContractType(record.key, e);
+            //
+            //           // this.identValue(e, record, 'type_activities', 'identities');
+            //         }}>
+            //         {this.props.universal2.references['activityList'] && this.props.universal2.references['activityList'].content.map((item) =>
+            //           <Option value={item.activity.id} prop={item}
+            //                   key={item.activity.id}>{item.activity.name}</Option>)}
+            //       </Select>,
+            //     )}
+            //   </FormItem>);
+          }
+        },
+        {
+          title: "Способ оплаты",
+          dataIndex: "paymentType.nameRu",
+          width: 150,
+          render: (text, record) => {
+            if (record.key === "total") {
+              return "";
+            }
+
+            return <span>{record.paymentType ? record.paymentType.nameRu : null}</span>;
+
+            // return (
+            //   <FormItem>
+            //     {this.props.form.getFieldDecorator('spespage.paymentType' + record.key, {
+            //       rules: [{
+            //         required: false,
+            //         message: this.state.validatemessage,
+            //       }],
+            //     })(<span>{record.paymentType ? record.paymentType.nameRu : null}</span>)}
+            //   </FormItem>);
+          }
+        },
+        {
+          title: "Единица учета",
+          dataIndex: "measureUnit.nameRu",
+          width: 150,
+          render: (text, record) => {
+
+            if (record.key === "total") {
+              return "";
+            }
+
+
+            return record.measureUnit ? <Tag style={{ fontSize: "14px" }} color="blue"
+                                             key={record.key}>{record.measureUnit.nameRu}</Tag> : <span> </span>;
+
+            // return (
+            //   <FormItem>
+            //     {this.props.form.getFieldDecorator('spespage.unit' + record.key, {
+            //       rules: [{
+            //         required: false,
+            //         message: this.state.validatemessage,
+            //       }],
+            //     })(
+            //       record.measureUnit ? <Tag style={{ fontSize: '14px' }} color="blue"
+            //                                 key={record.key}>{record.measureUnit.nameRu}</Tag> : <span> </span>,
+            //     )}
+            //   </FormItem>);
+          }
+        },
+        {
+          title: "Всего",
+          children: [
+            {
+              title: "Количество",
+              dataIndex: "value",
+              width: "10%",
+              render: (text, record) => {
+
+                let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
+                let countValue = record.value ? record.value : 0;
+
+                record["valueSum"] = tariffValue * countValue;
+
+                if (record.key === "total" && record.hasOwnProperty("valueTotal")) {
+                  return <Input disabled={true} value={record.valueTotal}/>;
                 }
-              };
-            },
-            render: (text, record) => {
 
-              if (record.key === "total" && record.hasOwnProperty("tariffItemTotal")) {
-                return <span>{record.tariffItemTotal}</span>;
+                record["percentAdvance"] = this.calculateAllMonthValue(record);
+                record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+
+                return (<InputNumber
+                  defaultValue={record.value ? record.value : 0}
+                  style={{ width: 70 }}
+                  name={"amount" + record.key}
+                  onChange={(e) => {
+                    record["value"] = e;
+                    record["percentAdvance"] = this.calculateAllMonthValue(record);
+
+                    let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
+                    let countValue = record.value ? record.value : 0;
+
+                    record["valueSum"] = tariffValue * countValue;
+                    record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+
+                    this.setState(prevState => ({
+                      smarttabDataSource: prevState.smarttabDataSource
+                    }));
+
+
+                  }}/>);
+
+                // return (
+                //   <FormItem
+                //   >
+                //     {this.props.form.getFieldDecorator('spespage.amount' + record.key, {
+                //       rules: [{
+                //         required: false,
+                //         message: this.state.validatemessage,
+                //       }],
+                //       initialValue: record.value ? record.value : 0,
+                //     })(
+                //       )}
+                //   </FormItem>);
               }
+            },
+            {
+              title: "Тариф (₸)",
+              dataIndex: "tariffItem.name",
+              isVisible: true,
+              order: 2,
+              width: "20%",
+              key: "tariff",
+              onCell: record => {
+                return {
+                  onClick: () => {
 
-              return <span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>;
+                  }
+                };
+              },
+              render: (text, record) => {
 
-              // return <FormItem>
-              //   {this.props.form.getFieldDecorator('spespage.tariff' + record.key, {
-              //     rules: [{
-              //       required: false,
-              //       message: this.state.validatemessage,
-              //     }],
-              //   })(<span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>)}
-              // </FormItem>;
-            }
-          },
-          {
-            title: "Сумма (₸)",
-            dataIndex: "valueSum",
-            isVisible: true,
-            order: 2,
-            width: "20%",
-            key: "summa",
-            onCell: record => {
-              return {
-                onClick: () => {
-
+                if (record.key === "total" && record.hasOwnProperty("tariffItemTotal")) {
+                  return <span>{record.tariffItemTotal}</span>;
                 }
-              };
-            },
-            render: (text, record) => {
 
-              if (record.key === "total" && record.hasOwnProperty("valueSumTotal")) {
-                return <span>{record.valueSumTotal}</span>;
+                return <span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>;
+
+                // return <FormItem>
+                //   {this.props.form.getFieldDecorator('spespage.tariff' + record.key, {
+                //     rules: [{
+                //       required: false,
+                //       message: this.state.validatemessage,
+                //     }],
+                //   })(<span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>)}
+                // </FormItem>;
               }
+            },
+            {
+              title: "Сумма (₸)",
+              dataIndex: "valueSum",
+              isVisible: true,
+              order: 2,
+              width: "20%",
+              key: "summa",
+              onCell: record => {
+                return {
+                  onClick: () => {
 
-              return <span>{record.valueSum ? record.valueSum : 0}</span>;
+                  }
+                };
+              },
+              render: (text, record) => {
 
-              // return <FormItem>
-              //   {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
-              //     rules: [{
-              //       required: false,
-              //       message: this.state.validatemessage,
-              //     }],
-              //   })(
-              //     <span>{record.valueSum ? record.valueSum : 0}</span>,
-              //   )}
-              // </FormItem>;
-            }
-          },
-          {
-            title: "% Аванса",
-            dataIndex: "percentAvance",
-            isVisible: true,
-            order: 2,
-            width: "20%",
-            key: "percentAvance",
-            onCell: record => {
-              return {
-                onClick: () => {
-
+                if (record.key === "total" && record.hasOwnProperty("valueSumTotal")) {
+                  return <span>{record.valueSumTotal}</span>;
                 }
-              };
-            },
-            render: (text, record) => {
 
-              if (record.key === "total") {
-                return <Input disabled={true} value={record.percentAvanceTotal ? record.percentAvanceTotal : 0}/>;
+                return <span>{record.valueSum ? record.valueSum : 0}</span>;
+
+                // return <FormItem>
+                //   {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
+                //     rules: [{
+                //       required: false,
+                //       message: this.state.validatemessage,
+                //     }],
+                //   })(
+                //     <span>{record.valueSum ? record.valueSum : 0}</span>,
+                //   )}
+                // </FormItem>;
               }
+            },
+            {
+              title: "% Аванса",
+              dataIndex: "percentAvance",
+              isVisible: true,
+              order: 2,
+              width: "20%",
+              key: "percentAvance",
+              onCell: record => {
+                return {
+                  onClick: () => {
 
-              record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+                  }
+                };
+              },
+              render: (text, record) => {
 
-              return (<InputNumber
-                defaultValue={record["percentAvance"] ? record["percentAvance"] : 0}
-                onChange={(e) => {
-                  record["percentAvance"] = e;
-                  record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
-
-                  this.setState(prevState => ({
-                    smarttabDataSource: prevState.smarttabDataSource
-                  }));
-
-                }}/>);
-
-              // return (<FormItem>
-              //   {this.props.form.getFieldDecorator('spespage.sumAvance' + record.key, {
-              //     initialValue: record['percentAvance'] ? record['percentAvance'] : 0,
-              //     rules: [{
-              //       required: false,
-              //       message: this.state.validatemessage,
-              //     }],
-              //   })(
-              //     <InputNumber onChange={(e) => {
-              //       record['percentAvance'] = e;
-              //       record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
-              //
-              //       this.setState(prevState => ({
-              //         smarttabDataSource: prevState.smarttabDataSource,
-              //       }));
-              //
-              //     }}/>,
-              //   )}
-              // </FormItem>);
-            }
-          },
-          {
-            title: "Аванс (₸)",
-            dataIndex: "sumAdvance",
-            isVisible: true,
-            order: 2,
-            width: "20%",
-            key: "avans",
-            onCell: record => {
-              return {
-                onClick: () => {
-
+                if (record.key === "total") {
+                  return <Input disabled={true} value={record.percentAvanceTotal ? record.percentAvanceTotal : 0}/>;
                 }
-              };
+
+                record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+
+                return (<InputNumber
+                  defaultValue={record["percentAvance"] ? record["percentAvance"] : 0}
+                  onChange={(e) => {
+                    record["percentAvance"] = e;
+                    record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+
+                    this.setState(prevState => ({
+                      smarttabDataSource: prevState.smarttabDataSource
+                    }));
+
+                  }}/>);
+
+                // return (<FormItem>
+                //   {this.props.form.getFieldDecorator('spespage.sumAvance' + record.key, {
+                //     initialValue: record['percentAvance'] ? record['percentAvance'] : 0,
+                //     rules: [{
+                //       required: false,
+                //       message: this.state.validatemessage,
+                //     }],
+                //   })(
+                //     <InputNumber onChange={(e) => {
+                //       record['percentAvance'] = e;
+                //       record['sumAdvance'] = record['valueSum'] * record['percentAvance'] / 100;
+                //
+                //       this.setState(prevState => ({
+                //         smarttabDataSource: prevState.smarttabDataSource,
+                //       }));
+                //
+                //     }}/>,
+                //   )}
+                // </FormItem>);
+              }
             },
-            render: (text, record) => {
+            {
+              title: "Аванс (₸)",
+              dataIndex: "sumAdvance",
+              isVisible: true,
+              order: 2,
+              width: "20%",
+              key: "avans",
+              onCell: record => {
+                return {
+                  onClick: () => {
 
-              if (record.key === "total" && record.hasOwnProperty("sumAdvanceTotal")) {
-                return <span>{record.sumAdvanceTotal ? record.sumAdvanceTotal : 0}</span>;
-                //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
-              }
+                  }
+                };
+              },
+              render: (text, record) => {
 
-              return <span>{record.sumAdvance ? record.sumAdvance : 0}</span>;
-              {/*<FormItem>*/
-              }
-              {/*{this.props.form.getFieldDecorator('spespage.avans' + record.key, {*/
-              }
-              {/*initialValue: record.sumAdvance ? record.sumAdvance : 0,*/
-              }
-              {/*rules: [{*/
-              }
-              {/*required: false,*/
-              }
-              {/*message: this.state.validatemessage,*/
-              }
-              {/*}],*/
-              }
-              {/*})(*/
-              }
-              {/*<InputNumber*/
-              }
-              {/*style={{ width: 90 }}*/
-              }
-              {/*step={0.01}*/
-              }
-              {/*onChange={(d) => {*/
-              }
-              {/*record['sumAdvance'] = d;*/
-              }
-              {/*// this.onChangePayment(text, d);*/
-              }
-              {/*}}*/
-              }
-              {/*/>,*/
-              }
-              {/*)}*/
-              }
-              {/*</FormItem>;*/
-              }
-            }
-          }]
-      },
-      {
-        title: "Остаток",
-        dataIndex: "percentAdvance",
-        width: "20%",
-        render: (text, record) => {
+                if (record.key === "total" && record.hasOwnProperty("sumAdvanceTotal")) {
+                  return <span>{record.sumAdvanceTotal ? record.sumAdvanceTotal : 0}</span>;
+                  //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
+                }
 
-          if (record.key === "total" && record.hasOwnProperty("percentAdvanceTotal")) {
-            return <span>{record.percentAdvanceTotal ? record.percentAdvanceTotal : 0}</span>;
-            //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
-          }
-
-          return <span>{record.percentAdvance ? record.percentAdvance : 0}</span>;
+                return <span>{record.sumAdvance ? record.sumAdvance : 0}</span>;
+                {/*<FormItem>*/
+                }
+                {/*{this.props.form.getFieldDecorator('spespage.avans' + record.key, {*/
+                }
+                {/*initialValue: record.sumAdvance ? record.sumAdvance : 0,*/
+                }
+                {/*rules: [{*/
+                }
+                {/*required: false,*/
+                }
+                {/*message: this.state.validatemessage,*/
+                }
+                {/*}],*/
+                }
+                {/*})(*/
+                }
+                {/*<InputNumber*/
+                }
+                {/*style={{ width: 90 }}*/
+                }
+                {/*step={0.01}*/
+                }
+                {/*onChange={(d) => {*/
+                }
+                {/*record['sumAdvance'] = d;*/
+                }
+                {/*// this.onChangePayment(text, d);*/
+                }
+                {/*}}*/
+                }
+                {/*/>,*/
+                }
+                {/*)}*/
+                }
+                {/*</FormItem>;*/
+                }
+              }
+            }]
         }
-      }
 
-      // {
-      //   title: '',
-      //   dataIndex: 'operation',
-      //   width: '2%',
-      //   render: (text, record) => {
-      //     const { editable } = record;
-      //     return (
-      //       <div style={{ marginTop: '-20px' }}><Icon
-      //         onClick={() => this.remove('identities', record.key, 'identitiescount')}><FontAwesomeIcon
-      //         icon={faTrash}/></Icon></div>
-      //     );
-      //   },
-      // },
-    ],
 
-    activity_type: null,
+        // {
+        //   title: '',
+        //   dataIndex: 'operation',
+        //   width: '2%',
+        //   render: (text, record) => {
+        //     const { editable } = record;
+        //     return (
+        //       <div style={{ marginTop: '-20px' }}><Icon
+        //         onClick={() => this.remove('identities', record.key, 'identitiescount')}><FontAwesomeIcon
+        //         icon={faTrash}/></Icon></div>
+        //     );
+        //   },
+        // },
+      ],
 
-    dataSource: [],
+      activity_type: null,
 
-    smarttabDataSource: [],
-    smarttabcols: {
-      code: null,
-      activity: null,
-      currencyType: null,
-      measureUnit: null,
-      value: 0,
-      tariffItem: 0,
-      valueSum: 0,
-      sumAdvance: 0,
-      contractTimeItem: null
-    },
-    smarttabcount: 0,
-    identitiescount: 0,
-    identities: []
+      dataSource: [],
+
+      smarttabDataSource: [],
+      smarttabcols: {
+        code: null,
+        activity: null,
+        currencyType: null,
+        measureUnit: null,
+        value: 0,
+        tariffItem: 0,
+        valueSum: 0,
+        sumAdvance: 0,
+        contractTimeItem: null
+      },
+      smarttabcount: 0,
+      identitiescount: 0,
+      identities: []
+    };
   };
+
+  getHideState() {
+    return this.state.hideFactorColumns;
+  }
 
   calculateAllMonthValue = (record) => {
 
@@ -955,6 +955,7 @@ class SpecPage extends Component {
       })
       .forEach((recordItem) => {
         let monthColumn = {
+          isHide: this.getHideState(),
           title: recordItem.periodSection.name,
           children: [
             {
@@ -1076,7 +1077,21 @@ class SpecPage extends Component {
         ...prevState.smarttabcols,
         contractTimeItem: smartdataColumns
       },
-      columns: prevState.columns.concat(extraColumns)
+      columns: [...prevState.baseColumns, {
+        title: "Остаток",
+        dataIndex: "percentAdvance",
+        width: "20%",
+        isHide: this.getHideState(),
+        render: (text, record) => {
+
+          if (record.key === "total" && record.hasOwnProperty("percentAdvanceTotal")) {
+            return <span>{record.percentAdvanceTotal ? record.percentAdvanceTotal : 0}</span>;
+            //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
+          }
+
+          return <span>{record.percentAdvance ? record.percentAdvance : 0}</span>;
+        }
+      }].concat(extraColumns)
     }));
   };
 
@@ -1100,7 +1115,6 @@ class SpecPage extends Component {
       let specifyKeys = {};
       let specifyData = this.state.smarttabDataSource;
 
-      console.log(specifyData);
 
       specifyData.forEach((item) => {
 
@@ -1319,6 +1333,7 @@ class SpecPage extends Component {
     return contractTimeIndexKeys;
   };
 
+
   render = () => {
 
     let selectedRowKeys = this.state.selectedRowKeys;
@@ -1420,6 +1435,16 @@ class SpecPage extends Component {
         }}>
           Удалить
         </Button>
+        <Checkbox style={{ marginLeft: "10px" }}
+                  onChange={(e) => {
+                    this.setState({
+                      hideFactorColumns: e.target.checked
+                    }, () => {
+                      this.renderMonthColumns();
+                    });
+                  }}
+                  checked={this.state.hideFactorColumns}>Показать график
+        </Checkbox>
 
         <div className={TabPageStyle.SpesPage}>
           <Table
@@ -1429,11 +1454,22 @@ class SpecPage extends Component {
             rowSelection={rowSelection}
             pagination={false}
             bordered={true}
-            dataSource={dataSource} columns={this.state.columns}/>
+            dataSource={dataSource} columns={this.state.columns.filter(x => {
+            if (!x.hasOwnProperty("isHide")) {
+              return true;
+            }
+
+            if (x.hasOwnProperty("isHide") && x.isHide) {
+              return true;
+            }
+
+            return false;
+          })}/>
         </div>
       </Card>);
   };
 }
+
 export default connect(({ universal2, loading }) => ({
   universal2,
   loadingData: loading.effects["universal2/getList"]

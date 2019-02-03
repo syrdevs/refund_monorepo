@@ -756,10 +756,11 @@ class GridFilter extends Component {
           params.isClearFilter = isClearFilter;
         }
 
-        return (<div key={_index} style={mBottom}>{filterItem.label}:<SelectList {...params} name={filterItem.name}
-                                                                                 onSelect={(record) => {
-                                                                                   //to do filter
-                                                                                   //console.log(record);
+        return (<div key={_index} style={mBottom}>{filterItem.label}:<SelectList {...params}
+                                                                                 filterItem={filterItem}
+                                                                                 name={filterItem.name}
+                                                                                 onSelect={(value) => {
+                                                                                   this.fieldOnChange(filterItem, value);
                                                                                  }}/></div>);
       }
 

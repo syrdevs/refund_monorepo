@@ -14,11 +14,27 @@ class ContragentsPage extends Component {
 
     columns: [{
       title: "Роль",
-      dataIndex: "contractRole.nameRu",
+      dataIndex: "contractRole",
+      isVisible: true
+    }, {
+      title: "БИН/ИИН",
+      dataIndex: "bin",
       isVisible: true
     }, {
       title: "Контрагент",
       dataIndex: "organization.name",
+      isVisible: true
+    }, {
+      title: "БИК",
+      dataIndex: "bankAccount.bank.bikCode",
+      isVisible: true
+    }, {
+      title: "Банк",
+      dataIndex: "bankAccount.bank.name",
+      isVisible: true
+    }, {
+      title: "Счет",
+      dataIndex: "bankAccount.accountNumber",
       isVisible: true
     }],
 
@@ -81,7 +97,11 @@ class ContragentsPage extends Component {
       </Button>,
     * */
 
-    const addonButtons = [];
+    const addonButtons = [
+      <Button disabled={true} onClick={()=>{}}>Обновить</Button>,
+      <Button disabled={true} onClick={()=>{}}>Выбрать</Button>,
+      <Button disabled={true} onClick={()=>{}}>Указать другой счет</Button>,
+    ];
 
     // if (this.state.dataSource.length > 0) {
     //   addonButtons.push(<Button
@@ -92,6 +112,8 @@ class ContragentsPage extends Component {
     //     Очистить
     //   </Button>);
     // }
+
+
 
     return <Card style={{ marginLeft: "-10px" }} bodyStyle={{ padding: 5 }}>
       {this.state.ContragentsModal.visible &&
@@ -115,7 +137,7 @@ class ContragentsPage extends Component {
         }}/>}
       <SmartGridView
         hidePagination={true}
-        name='ContragentPageViewNew'
+        name={"ContragentPageViewNew"}
         rowKey={"id"}
         showExportBtn={true}
         showTotal={true}

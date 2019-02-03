@@ -98,18 +98,20 @@ class CounterAgentCreate extends Component {
   getCounterAgentById = (id, year) => {
     const { dispatch } = this.props;
 
-    dispatch({
-      type: "universal/getCounterAgentData",
-      payload: {
-        "contragentId": id,
-        "year": year
-      }
-    }).then(() => {
-      this.props.form.resetFields();
-      this.setState({
-        dataStoreGuid: Guid.newGuid()
-      });
-    });
+    console.log(id,year)
+
+    // dispatch({
+    //   type: "universal/getCounterAgentData",
+    //   payload: {
+    //     "contragentId": id,
+    //     "year": year
+    //   }
+    // }).then(() => {
+    //   this.props.form.resetFields();
+    //   this.setState({
+    //     dataStoreGuid: Guid.newGuid()
+    //   });
+    // });
 
   };
 
@@ -276,9 +278,10 @@ class CounterAgentCreate extends Component {
       formData.parentContract = this.props.universal2.references.contract.content[0];
     }
 
+
     return (
       <ContentLayout
-        contentName={"Новый договор"}
+        contentName={"Новый документ"}
         breadcrumbRoutes={[{
           path: "/",
           breadcrumbName: "Главная"

@@ -3,6 +3,7 @@ import {
   Button, Radio, Icon
 } from "antd";
 
+const RadioGroup = Radio.Group;
 
 class ButtonGroup extends React.Component {
   constructor(props) {
@@ -19,14 +20,24 @@ class ButtonGroup extends React.Component {
 
   render() {
 
-    const { buttons, onChange, value } = this.props;
+    const { buttons, onChange, value, buttonType } = this.props;
+    const radioStyle = {
+      display: "block",
+      height: "30px",
+      lineHeight: "30px"
+    };
+    let buttonStyle = {};
 
     if (value === null)
       this.setState({
         selectValue: null
       });
 
-    return (<Radio.Group
+    if (buttonType && buttonType === "radio") {
+      buttonStyle.style = radioStyle;
+    }
+
+    return (<RadioGroup
       style={{
         display: "block"
       }}
@@ -41,8 +52,11 @@ class ButtonGroup extends React.Component {
         });
 
       }}>
-      {buttons ? buttons.map((btn) => (<Radio.Button key={btn.value} value={btn.value}>{btn.label}</Radio.Button>)) : []}
-    </Radio.Group>);
+      {buttons ? buttons.map((btn) => (buttonType && buttonType === "radio" ?
+        <Radio key={btn.value}
+               value={btn.value} {...buttonStyle}>{btn.label}</Radio> :
+        <Radio.Button key={btn.value} value={btn.value}>{btn.label}</Radio.Button>)) : []}
+    </RadioGroup>);
   }
 }
 
