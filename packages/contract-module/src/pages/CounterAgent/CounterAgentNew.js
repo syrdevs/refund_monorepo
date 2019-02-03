@@ -1262,7 +1262,6 @@ class CounterAgentNew extends Component {
               }
             },
           }).then((e)=>{
-            console.log(e)
             Modal.success({
               title: 'Успешно сохранен',
               content: 'ID субьекта: '+e.id,
@@ -1271,6 +1270,11 @@ class CounterAgentNew extends Component {
               }
             });
           })
+            .catch((e) => {
+              Modal.error({
+                content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+              });
+            });
 
         }
         else {
@@ -1283,7 +1287,7 @@ class CounterAgentNew extends Component {
   }
 
   cancelform = () => {
-
+    this.props.history.push("/contracts/v2/counteragent/main");
   }
 
   render() {
@@ -1372,7 +1376,7 @@ class CounterAgentNew extends Component {
               >
 
                 {getFieldDecorator('dateBegin')(
-                  <DatePicker style={{marginLeft:'10px', width:'95%'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
+                  <DatePicker style={{ width:'180px'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
                 )}
               </FormItem>
               <FormItem
@@ -1380,7 +1384,7 @@ class CounterAgentNew extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('dateEnd')(
-                  <DatePicker style={{marginLeft:'10px', width:'95%'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
+                  <DatePicker style={{ width:'180px'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
                 )}
               </FormItem>
              {/* {this.state.isNew &&
