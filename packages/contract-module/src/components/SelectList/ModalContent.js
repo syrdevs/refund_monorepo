@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component } from "react";
 import {
   Card,
   Tabs,
@@ -19,81 +19,131 @@ import {
   Checkbox,
   Spin,
   LocaleProvider,
-  Divider,
-} from 'antd';
-import './index.less';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCreditCard, faColumns } from '@fortawesome/free-solid-svg-icons/index';
-import { Resizable } from 'react-resizable';
-import formatMessage from '../../utils/formatMessage';
-import componentLocal from '../../locales/components/componentLocal';
-import connect from '../../Redux';
+  Divider
+} from "antd";
+import "./index.css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faSyncAlt } from "@fortawesome/free-solid-svg-icons";
+import { faCreditCard, faColumns } from "@fortawesome/free-solid-svg-icons/index";
+import { Resizable } from "react-resizable";
+import formatMessage from "../../utils/formatMessage";
+import componentLocal from "../../locales/components/componentLocal";
+import connect from "../../Redux";
+import request from "../../utils/request";
 
 const Search = Input.Search;
 
-
-
 class ModalContent extends Component {
-  state = {
-    selectedRow: false,
-    okBtnDisabled: true,
-    selectedRecord: false,
-    selectedRowKeys: [],
+
+  constructor(props) {
+    super(props);
+    this.state = {
+      selectedRow: false,
+      okBtnDisabled: true,
+      selectedRecord: false,
+      selectedRowKeys: [],
+      pagingConfig: props.modalProps.pagingConfig,
+
+      columns: [],
+      dataStore: []
+    };
+  }
+
+  loadReferences = () => {
+
+    request("/api/dictionaryListByName?name=knp", {
+      getResponse: (response) => {
+        if (response.status === 200) {
+          this.setState({
+            dataStore: response.data
+          });
+        }
+      }
+    });
+  };
+  loadGetList = () => {
+    request("/api/uicommand/getList", {
+      method: "POST",
+      body: this.state.pagingConfig,
+      getResponse: (response) => {
+        if (response.status === 200) {
+          this.setState({
+            dataStore: response.data && response.data.content ? response.data.content : []
+          });
+        }
+      }
+    });
   };
 
   componentDidMount() {
-    const { dispatch } = this.props;
-    dispatch({
-      type: 'references/load',
-      code: 'knp',
-    });
+    if (this.props.modalProps.actionType === "getList") {
+      this.setState({
+        columns: this.props.modalProps.columns
+      }, () => {
+        this.loadGetList();
+      });
+    } else {
+      this.setState({
+        columns: [{
+          title: "Код",
+          dataIndex: "code",
+          key: "code"
+        }, {
+          title: "Наименование",
+          dataIndex: "nameRu",
+          key: "nameRu"
+        }]
+      }, () => {
+        this.loadReferences();
+      });
+    }
+
+
   }
 
   componentWillUnmount() {
-
+    console.log("willunmount");
   }
 
   handleOk = () => {
     // to do name reference
-    var records = this.props.references['knp'].filter(x => this.state.selectedRowKeys.findIndex(a => a === x.id) >= 0);
-    this.props.onSelect(this.props.multipleSelect ? records : this.state.selectedRecord);
+    //var records = this.props.references["knp"].filter(x => this.state.selectedRowKeys.findIndex(a => a === x.id) >= 0);
+    //this.props.onSelect(this.props.multipleSelect ? records : this.state.selectedRecord);
+    this.props.onSelect(this.state.selectedRecord);
   };
   handleCancel = () => {
     this.props.hideModal();
   };
 
   onSearch = (value) => {
-    console.log('search ' + value);
+    if (this.props.modalProps.actionType === "getList") {
+      this.setState(prevState => ({
+        pagingConfig: {
+          ...prevState.pagingConfig,
+          filter: {
+            [this.props.modalProps.inputFilterName]: value
+          }
+        }
+      }), () => this.loadGetList());
+    }
+
   };
 
 
   render = () => {
 
-    const dataSource = this.props.references['knp'];
-
-    const columns = [{
-      title: 'Код',
-      dataIndex: 'code',
-      key: 'code',
-    }, {
-      title: 'Наименование',
-      dataIndex: 'nameRu',
-      key: 'nameRu',
-    }];
-
 
     let tableOptions = {
-      rowKey: 'id',
+      rowKey: "id",
       useFixedHeader: true,
       scroll: {
-        y: 250,
-      },
+        y: 250
+      }
     };
 
     if (!this.props.multipleSelect) {
       tableOptions.rowClassName = (record, index) => {
-        return this.state.selectedRow === index ? 'active' : '';
+        return this.state.selectedRow === index ? "active" : "";
       };
     }
 
@@ -101,8 +151,8 @@ class ModalContent extends Component {
       onClick: () => this.setState({
         selectedRecord: record,
         selectedRow: index,
-        okBtnDisabled: false,
-      }),
+        okBtnDisabled: false
+      })
     });
 
     if (this.props.multipleSelect) {
@@ -110,7 +160,7 @@ class ModalContent extends Component {
         onChange: (selectedRowKeys, selectedRows) => {
           if (selectedRowKeys.length > 0)
             this.setState({ selectedRowKeys: selectedRowKeys, okBtnDisabled: false });
-        },
+        }
       };
     }
 
@@ -119,15 +169,15 @@ class ModalContent extends Component {
       width={700}
       title="Информация"
       okButtonProps={{
-        disabled: this.state.okBtnDisabled,
+        disabled: this.state.okBtnDisabled
       }}
       style={{ top: 40 }}
-      okText={'Выбрать'}
+      okText={"Выбрать"}
       visible={this.props.visible}
       onOk={this.handleOk}
       onCancel={this.handleCancel}>
       <Search
-        placeholder="введите текст"
+        placeholder="Введите"
         onSearch={value => this.onSearch(value)}
         enterButton
       />
@@ -135,18 +185,16 @@ class ModalContent extends Component {
       <br/>
       <p>Список:</p>
       {/*<Spin spinning={this.props.loadingData}>*/}
-        <Table
-          {...tableOptions}
-          className={'ant_modal_grid'}
-          size={'small'}
-          dataSource={dataSource}
-          columns={columns}/>
+      <Table
+        {...tableOptions}
+        className={"ant_modal_grid"}
+        rowKey={this.props.modalProps.keyField ? this.props.modalProps.keyField : "id"}
+        size={"small"}
+        dataSource={this.state.dataStore}
+        columns={this.state.columns}/>
       {/*</Spin>*/}
     </Modal>);
   };
 }
 
-connect(({ references, loading }) => ({
-  references,
-  loadingData: loading.effects['references/load'],
-}))(ModalContent);
+export default ModalContent;

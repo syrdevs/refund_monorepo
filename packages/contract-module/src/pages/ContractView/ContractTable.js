@@ -27,6 +27,7 @@ import { faTimes } from "@fortawesome/free-solid-svg-icons/index";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ContentLayout from "../../layouts/ContentLayout";
 import DropDownAction from "../../components/DropDownAction";
+import getTreeFormat from "../../utils/getTree";
 
 const dateFormat = "DD.MM.YYYY";
 const SubMenu = Menu.SubMenu;
@@ -67,27 +68,69 @@ class ContractTable extends Component {
       {
         name: "documentDate",
         label: "Дата договора",
-        type: "betweenDate"
+        type: "listbetweenDate"
       },
       {
         name: "dateBegin",
         label: "Дата начала действия",
-        type: "betweenDate"
+        type: "listbetweenDate"
       },
       {
         name: "dateEnd",
         label: "Дата окончания действия",
-        type: "betweenDate"
+        type: "listbetweenDate"
       },
       {
-        name: "contragent.organization",
+        name: "contragent.id",
         label: "Контрагент",
-        type: "text"
+        actionType: "getList",
+        multipleSelect: false,
+        keyField: "id",
+        columns: [
+          {
+            dataIndex: "bin",
+            title: "БИН"
+          }, {
+            dataIndex: "name",
+            title: "Наименование"
+          }
+        ],
+        inputFilterName: "freeSearch",
+        pagingConfig: {
+          "start": 0,
+          "length": 20,
+          "entity": "organization",
+          "alias": "display",
+          "filter": {}
+        },
+        type: "selectlist"
       },
       {
-        name: "activity.name",
+        name: "activityFilter",
         label: "Вид деятельности",
         type: "text"
+      },
+      {
+        name: "_currentStatus",
+        label: "Статус документа",
+        buttonType: "radio",
+        type: "ButtonGroup",
+        buttons: [{
+          label: "черновик",
+          value: "0"
+        }, {
+          label: "на рассмотрении",
+          value: "1"
+        }, {
+          label: "готов",
+          value: "2"
+        }, {
+          label: "отклонен",
+          value: "3"
+        }, {
+          label: "все",
+          value: null
+        }]
       }
     ],
     // filterForm: [
@@ -179,7 +222,7 @@ class ContractTable extends Component {
       },
       {
         title: "Контрагент",
-        dataIndex: "contragent.organization",
+        dataIndex: "contragent.shortName",
         isVisible: true,
         width: 360
       },
@@ -336,7 +379,7 @@ class ContractTable extends Component {
     ShowContract: false,
     gridParameters: {
       start: 0,
-      length: 10,
+      length: 15,
       entity: "contract",
       alias: "contractList",
       filter: {},
@@ -354,7 +397,7 @@ class ContractTable extends Component {
       sortedInfo: {},
       gridParameters: {
         start: 0,
-        length: 10,
+        length: 15,
         entity: "contract",
         alias: "contractList",
         filter: {},
@@ -415,8 +458,8 @@ class ContractTable extends Component {
 
   render = () => {
 
-    let subMenuChilds = this.state.selectedRecord && this.state.selectedRecord.contractType && this.state.selectedRecord.contractType._contractTypeChilds;
 
+    let subMenuChilds = this.state.selectedRecord && this.state.selectedRecord.contractType && this.state.selectedRecord.contractType._contractTypeChilds;
 
     const { universal2 } = this.props;
     const contracts = universal2.references[this.state.gridParameters.entity];
@@ -525,14 +568,14 @@ class ContractTable extends Component {
         >
           Создать акт
         </Menu.Item>
-        <Menu.Item
-          onClick={() => {
-            console.log(this.props.universal2.references[this.state.gridParameters.entity].content);
-          }}
-          disabled={false}
-          key="8">
-          Включить/Отключить режим отображения иерархии
-        </Menu.Item>
+        {/*<Menu.Item*/}
+        {/*onClick={() => {*/}
+        {/*console.log(this.props.universal2.references[this.state.gridParameters.entity].content);*/}
+        {/*}}*/}
+        {/*disabled={false}*/}
+        {/*key="8">*/}
+        {/*Включить/Отключить режим отображения иерархии*/}
+        {/*</Menu.Item>*/}
       </Menu>}>
         <Button
           key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon

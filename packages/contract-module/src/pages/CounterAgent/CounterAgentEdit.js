@@ -16,7 +16,7 @@ import {
   Modal,
   Spin
 } from "antd";
-import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage, AttachmentPage } from "./TabPages";
+import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage, AttachmentPage,ProductionBasePage } from "./TabPages";
 
 import ContentLayout from "../../layouts/ContentLayout";
 import styles from "./CounterAgent.css";
@@ -321,18 +321,18 @@ class CounterAgentEdit extends Component {
   getCounterAgentById = (id, year) => {
     const { dispatch } = this.props;
 
-    dispatch({
-      type: "universal/getCounterAgentData",
-      payload: {
-        "contragentId": id,
-        "year": year
-      }
-    }).then(() => {
-      this.props.form.resetFields();
-      this.setState({
-        dataStoreGuid: Guid.newGuid()
-      });
-    });
+    // dispatch({
+    //   type: "universal/getCounterAgentData",
+    //   payload: {
+    //     "contragentId": id,
+    //     "year": year
+    //   }
+    // }).then(() => {
+    //   this.props.form.resetFields();
+    //   this.setState({
+    //     dataStoreGuid: Guid.newGuid()
+    //   });
+    // });
 
   };
 
@@ -526,6 +526,9 @@ class CounterAgentEdit extends Component {
                 <ContragentsPage
                   gridData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}
                   selectedData={this.props.location.state}/>
+              </TabPane>
+              <TabPane tab={"Производственная база"} key={"production_base"}>
+                  <ProductionBasePage/>
               </TabPane>
               <TabPane
                 tab={<Badge count={this.state.tabRecordsCount.documentsCount} style={{ backgroundColor: "#1990FF" }}>
