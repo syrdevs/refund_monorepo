@@ -168,7 +168,6 @@ class Searcher extends Component {
 
     this.props.eventManager.subscribe("onSelectFilterByIin", (params) => {
       if (Object.keys(params).length > 0) {
-
         this.setState(({ filterContainer }) => ({
           parameters: {
             ...this.state.parameters,
