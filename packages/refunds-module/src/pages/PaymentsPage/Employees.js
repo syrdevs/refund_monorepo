@@ -153,9 +153,15 @@ class Employees extends Component {
 
   componentDidMount() {
     this.loadGridData();
+    this.props.eventManager.subscribe("employeesRefreshGuid", (params) => {
+      this.loadGridData();
+    });
   }
 
   componentDidUpdate() {
+    // if(this.props.onSearch!==this.state.parameters.filter.iin){
+    //   this.loadGridData();
+    // }
     // ()=>{this.loadGridData()}
   }
 

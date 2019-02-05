@@ -452,6 +452,7 @@ class Searcher extends Component {
         }
       });
       console.log(this.state.iin);
+      this.props.eventManager.handleEvent("employeesRefreshGuid", { });
     });
 
     this.setState({
