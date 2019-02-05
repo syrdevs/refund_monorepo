@@ -447,7 +447,9 @@ class Searcher extends Component {
           });
         }
       });
+      console.log(this.state.iin)
     });
+
     this.setState({
       visible: false
     });

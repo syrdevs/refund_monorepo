@@ -52,7 +52,7 @@ class Employees extends Component {
       start: 0,
       length: 15,
       entity: "mt102",
-      filter: { "iin": this.props.onSearch },
+      filter: { "iin": this.props.onSearch},
       "sort": [
         {
           "field": "paymentperiod",
@@ -121,7 +121,11 @@ class Employees extends Component {
       payload: {
         ...this.state.parameters,
         start: current,
-        length: pageSize
+        length: pageSize,
+        filter: {
+          ...this.state.parameters.filter,
+          iin: this.props.onSearch
+        }
       }
     }));
   };
@@ -137,12 +141,22 @@ class Employees extends Component {
     let sortField = this.state.sortedInfo;
     dispatch({
       type: "universal2/getPayerList",
-      payload: this.state.parameters
+      payload:    {
+        ...this.state.parameters,
+        filter: {
+          ...this.state.parameters.filter,
+          iin: this.props.onSearch
+        }
+      }
     });
   };
 
   componentDidMount() {
     this.loadGridData();
+  }
+
+  componentDidUpdate() {
+    // this.loadGridData();
   }
 
   exportToExcel = () => {
