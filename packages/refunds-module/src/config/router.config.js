@@ -15,7 +15,7 @@ export default [
     //component: "../App",
     //Routes: ["src/pages/Authorized"],
     authority: ["ADMIN", "FSMS1", "FSMS2"],
-    redirect: "/refunds/home",
+    redirect: "/refunds/rpmu/payments",
     routes: [
       {
         path:"/refunds/refunds",

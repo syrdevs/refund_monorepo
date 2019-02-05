@@ -155,13 +155,13 @@ class MainView extends Component {
           "isVisible": true,
           order: 6,
           "dataIndex": "refundPayAmount",
-          render: (value) => {
-            if (value.refundPayAmount) {
-              return numberWithSpaces(value.refundPayAmount);
-            }
-
-            return "";
-          }
+          // render: (value) => {
+          //   if (value.refundPayAmount) {
+          //     return numberWithSpaces(value.refundPayAmount);
+          //   }else{
+          //     return "";
+          //   }
+          // }
         },
         {
           "title": "Сумма отчислений/взносов",

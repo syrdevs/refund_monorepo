@@ -110,7 +110,7 @@ class PaymentsMT102 extends Component {
         withMax: 12
       },
       {
-        label: "Отправитель (Наименование)",
+        label: "Плательщик (Наименование)",
         name: "senderName",
         type: "text"
       },
@@ -202,7 +202,7 @@ class PaymentsMT102 extends Component {
         "dataIndex": "senderBin",
         "isVisible": "true"
       }, {
-        "title": "Отправитель (Наименование)",
+        "title": "Плательщик (Наименование)",
         "dataIndex": "senderName",
         "isVisible": "true"
       }, {
@@ -424,7 +424,24 @@ class PaymentsMT102 extends Component {
   };
 
   componentDidMount() {
+    this.props.eventManager.subscribe("mt102filter", (params) => {
+      if (Object.keys(params).length > 0) {
 
+        this.setState(({ filterContainer }) => ({
+          filterContainer: 6,
+          parameters: {
+            ...this.state.parameters,
+            //filter: { ...this.state.parameters.filter, params }
+           // filter: {iin:params.iin,paymentperiod:params.paymentperiod}
+            filter: {...params.record}
+          }
+        }), () => {
+          this.applyFilter(params.record);
+        });
+      } else {
+
+      }
+    });
     this.props.eventManager.subscribe("onSelectFilter", (params) => {
       if (Object.keys(params).length > 0) {
 
@@ -572,8 +589,6 @@ class PaymentsMT102 extends Component {
               selectedRecord: record,
               selectedIndex: index
             });
-
-
           }}
         />
       </Col>

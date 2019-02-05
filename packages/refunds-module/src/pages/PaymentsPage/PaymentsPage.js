@@ -58,10 +58,10 @@ class PaymentsPage extends Component {
     this.state = {
       eventManager: {
         _events: {},
-        handleEvent: (evName, params) => {
+        handleEvent: (evName, params, cb) => {
           if (!this.state.eventManager._events[evName]) return [];//throw new Error('eventName not registered');
 
-          return this.state.eventManager._events[evName](params);
+          return this.state.eventManager._events[evName](params, cb);
         },
         subscribe: (evName, fn) => {
           this.state.eventManager._events[evName] = fn;
@@ -255,6 +255,14 @@ class PaymentsPage extends Component {
   }
 
   componentDidMount() {
+    //main event page tab
+    this.state.eventManager.subscribe("paymentSelectTab", (params, cb) => {
+      this.setState({
+        activeKey: "searcherJur"
+      }, () => {
+        if (cb) cb();
+      });
+    });
     // this.loadGridData();
     // console.log(this.state.paymentspagemt100columns);
     // this.setState({
@@ -570,10 +578,15 @@ class PaymentsPage extends Component {
           onChange={this.tabchange}>
           <TabPane tab={formatMessage({ id: "menu.payments.searchbtn" })} key="searcher">
             <Searcher
-
               eventManager={this.state.eventManager}
+              onSelectMonth={(record) => {
+                this.setState({
+                  activeKey: "mt102"
+                }, () => {
+                  this.state.eventManager.handleEvent("mt102filter", { record });
+                });
+              }}
               onSelect={(iin) => {
-                //console.log(iin);
                 this.setState({
                   activeKey: "mt102"
                 }, () => {
@@ -602,6 +615,7 @@ class PaymentsPage extends Component {
           </TabPane>
           <TabPane tab={formatMessage({ id: "menu.payments.searchbtnJur" })} key="searcherJur">
             <SearcherJur
+              eventManager={this.state.eventManager}
               searchbybin={(bin) => {
                 // this.setState({
                 //   sortedInfo: {},

@@ -156,7 +156,7 @@ class Employees extends Component {
   }
 
   componentDidUpdate() {
-    // this.loadGridData();
+    // ()=>{this.loadGridData()}
   }
 
   exportToExcel = () => {
@@ -269,12 +269,14 @@ class Employees extends Component {
     const { value, mode } = this.state;
 
     let addonButtons = [<Button
+      disabled={this.state.selectedRecord === null}
+      key={"mt102paymentBtndd"}
       onClick={() => {
-        this.setState({
-          visibleAddConsumer: true
-        });
+        if (this.state.selectedRecord !== null) {
+          this.props.onSelectBin(this.state.selectedRecord.senderBin);
+        }
       }}>
-      Добавить</Button>];
+      Карточка потребителя</Button>];
     // let extraButtons = [<span key={"total-count"} style={{
     //   color: "#002140",
     //   fontSize: "12px",
@@ -418,17 +420,18 @@ class Employees extends Component {
           }}
           actionExport={() => this.exportToExcel()}
           // extraButtons={extraButtons}
-          // addonButtons={addonButtons}
-          // onSelectRow={(record, index) => {
-          //   console.log(record);
-          //   this.setState({
-          //     selectedRecord: record
-          //   });
-          //   //this.selectedRecord = record;
-          // }}
+          addonButtons={addonButtons}
+
           onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
           onRefresh={() => {
             this.loadGridData();
+          }}
+          onSelectRow={(record, index) => {
+            console.log(record)
+            this.setState({
+              selectedRecord: record,
+              selectedIndex: index
+            });
           }}
           // onSearch={() => {
           //   this.filterPanelState();

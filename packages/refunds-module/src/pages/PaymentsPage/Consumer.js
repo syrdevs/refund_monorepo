@@ -92,7 +92,7 @@ class Consumer extends Component {
         "title": "Дата и время создания",
         "dataIndex": "createDateTime",
         "isVisible": "true"
-      },
+      }
     ]
   };
 
@@ -210,24 +210,47 @@ class Consumer extends Component {
     this.loadGridData();
   }
 
+
   addSpecial = (iin) => {
+
+
     const { dispatch } = this.props;
     dispatch({
-      type: "universal2/addSpecial",
-      payload: iin
+      type: "universal/SearcherData",
+      payload: {
+        iin: iin
+      }
     }).then(() => {
-      this.loadGridData();
-    })
-
-      .catch((r) => {
-        // console.log(r)
-        let msg = r.getResponseValue();
-        // message.warning(msg.data.Message);
-        Modal.error({
-          title: "Внимание",
-          content: msg.data.Message
+      if (JSON.stringify(this.props.universal.searcherdata) !== "{}" && this.props.universal.searcherdata) {
+        dispatch({
+          type: "universal2/addSpecial",
+          payload: iin
+        }).then(() => {
+          this.loadGridData();
+        }).catch((r) => {
+          // console.log(r)
+          let msg = r.getResponseValue();
+          // message.warning(msg.data.Message);
+          Modal.error({
+            title: "Внимание",
+            content: msg.data.Message
+          });
         });
-      });
+      } else {
+        Modal.info({
+          title: formatMessage({ id: "system.error" }),
+          content: (
+            <div>
+              Информация о потребителе не найдена!
+            </div>
+          ),
+          onOk() {
+          }
+        });
+      }
+    });
+
+
   };
 
   exportToExcel = () => {
@@ -242,8 +265,7 @@ class Consumer extends Component {
         "entityClass": "specialList",
         "fileName": "Сотрудники",
         "filter": this.state.parameters.filter,
-        "columns": [
-        ].concat(columns.filter(column => column.isVisible))
+        "columns": [].concat(columns.filter(column => column.isVisible))
       },
       getResponse: (response) => {
         if (response.status === 200) {
@@ -330,7 +352,7 @@ class Consumer extends Component {
           });
         }
         if (response.status === 200) {
-          console.log(response)
+          console.log(response);
           // message.info("Загружено: " + response.data.loadNewCount + " из: " + response.data.allItemCount);
           Modal.info({
             title: "Внимание",
@@ -360,7 +382,7 @@ class Consumer extends Component {
           });
         }
         if (response.status === 200) {
-          console.log(response)
+          console.log(response);
           // message.info("Загружено: " + response.data.loadNewCount + " из: " + response.data.allItemCount);
           Modal.info({
             title: "Внимание",
@@ -567,7 +589,7 @@ class Consumer extends Component {
       <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
 
         <SmartGridView
-          name={'consumerPageColumns'}
+          name={"consumerPageColumns"}
           // scroll={{ x: "auto" }}
           fixedBody={true}
           actionColumns={[]}
@@ -631,7 +653,7 @@ class Consumer extends Component {
           }}
           actionExport={() => this.exportToExcel()}
           // extraButtons={extraButtons}
-          addonButtons={[addonButtons, delButtons, importButtons,deletButtons]}
+          addonButtons={[addonButtons, delButtons, importButtons, deletButtons]}
           onSelectRow={(record, index) => {
             console.log(record);
             this.setState({

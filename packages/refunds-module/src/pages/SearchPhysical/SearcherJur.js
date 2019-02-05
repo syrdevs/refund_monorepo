@@ -45,6 +45,15 @@ class SearcherJur extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.eventManager.subscribe("onSelectFilterByBin", (params) => {
+      if (Object.keys(params).length > 0) {
+        this.searchperson(params)
+      }
+      else {
+      }
+    });
+  }
 
   monthCellRender = (value) => {
     let result = (<div style={{ backgroundColor: "red", opacity: "0.1", height: "100%", width: "100%" }}></div>);
@@ -151,6 +160,9 @@ class SearcherJur extends Component {
     this.payesSearcher(value.year());
     this.state.yearDo = value.year();
   };
+
+
+
 
   payesSearcher = (year) => {
     const { dispatch } = this.props;

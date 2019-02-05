@@ -26,6 +26,7 @@ import Employees from "../PaymentsPage/Employees";
 import Appeals from "../PaymentsPage/Appeals";
 import GridFilter from "../../components/GridFilter";
 import Medicine from "../PaymentsPage/Medicine";
+import PaymentsMT102 from "../PaymentsPage/PaymentsMT102";
 
 const dateFormat = "DD.MM.YYYY";
 const FormItem = Form.Item;
@@ -177,8 +178,7 @@ class Searcher extends Component {
         }), () => {
           this.applyFilter(params);
         });
-      }
-      else {
+      } else {
       }
     });
 
@@ -228,6 +228,10 @@ class Searcher extends Component {
           result = (
             <div
               style={{ backgroundColor: "rgba(255, 71, 65, 0.2)", height: "100%", width: "100%", padding: "10px" }} //
+              onClick={() => {
+
+                this.props.onSelectMonth({iin:this.state.iin,paymentperiod:item.payPeriod});
+              }}
             >
               {/* <p>Сумма: {item.totalAmount}</p>
               <p>Кол-во: {item.totalElements}</p>*/}
@@ -307,23 +311,23 @@ class Searcher extends Component {
 
     if (this.state.parameters.filter.iin) {
       this.loadGridData();
-      return
+      return;
     }
     if (this.state.parameters.filter.lastName) {
       this.loadGridData();
-      return
+      return;
     }
     if (this.state.parameters.filter.firstName) {
       this.loadGridData();
-      return
+      return;
     }
     if (this.state.parameters.filter.patronymic) {
       this.loadGridData();
-      return
+      return;
     }
     if (this.state.parameters.filter.birthdate) {
       this.loadGridData();
-      return
+      return;
     }
 
   };
@@ -447,7 +451,7 @@ class Searcher extends Component {
           });
         }
       });
-      console.log(this.state.iin)
+      console.log(this.state.iin);
     });
 
     this.setState({
@@ -661,7 +665,8 @@ class Searcher extends Component {
     const columns = [{
       title: "Наименование",
       dataIndex: "name",
-      render: (text) => <div style={{ color: "black",background :"#efefef",  padding: "10px",textAlign: "right" }}>{text}</div>,
+      render: (text) => <div
+        style={{ color: "black", background: "#efefef", padding: "10px", textAlign: "right" }}>{text}</div>,
       width: 100
 
     }, {
@@ -1057,6 +1062,18 @@ class Searcher extends Component {
               disabled={!personRPN.iin}
             >
               <Employees
+                eventManager={this.props.eventManager}
+                onSelectBin={(bin) => {
+                  // this.setState({
+                  //    activeKey: "searcherJur"
+                  // }, () => {
+                  //    this.props.eventManager.handleEvent("onSelectFilterByBin",  bin.senderBin );
+                  // });
+
+                  this.props.eventManager.handleEvent("paymentSelectTab", bin, () => {
+                    this.props.eventManager.handleEvent("onSelectFilterByBin",  bin);
+                  });
+                }}
                 onSearch={this.state.iin}
               />
             </TabPane>
@@ -1071,6 +1088,7 @@ class Searcher extends Component {
                     title={formatMessage({ id: "Информация о задолженности" })}
                     type="inner"
                   >
+                    <Col span={12}>
                     <Calendar
                       onPanelChange={this.onPanelChange}
                       mode='year'
@@ -1080,6 +1098,8 @@ class Searcher extends Component {
                       defaultValue={moment("2018-02-27T10:00:00")}
                       validRange={[moment("2018-02-27T10:00:00"), moment("2018-02-27T10:00:00")]}
                     />
+                    </Col>
+                    <Col span={12}>
                     <Calendar
                       onPanelChange={this.onPanelChange}
                       mode='year'
@@ -1088,7 +1108,7 @@ class Searcher extends Component {
                       fullscreen
                       defaultValue={moment("2019-02-27T10:00:00")}
                       validRange={[moment("2019-02-27T10:00:00"), moment("2019-02-27T10:00:00")]}
-                    />
+                    /></Col>
                   </Card>
                 </Col>
               </Row>
