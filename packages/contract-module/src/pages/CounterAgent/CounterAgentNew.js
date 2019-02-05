@@ -1105,16 +1105,16 @@ class CounterAgentNew extends Component {
   };
 
   identValue = (e, record, name, arrname) => {
+    let findItemIdx = this.state[arrname].findIndex((value) => value.key === record.key);
+    let _dataSource = this.state[arrname];
+    _dataSource[findItemIdx] = {
+      ...record,
+      [name]: e
+    };
     this.setState({
-      [arrname]: [
-        ...this.state[arrname].filter((value)=> value.key!==record.key),
-        {
-          ...record,
-          [name]:e
-        }
-      ]
-    })
-  }
+      [arrname]: _dataSource
+    }, () => {});
+  };
 
   remove(table, key, count) {
     this.setState({
