@@ -520,14 +520,15 @@ class PaymentsMT102 extends Component {
           fixedHeader={true}
           rowSelection={false}
           rowClassName={(record,index) => {
-            if(record){
-              return this.state.selectedIndex === index ? "active" : "";
-            }
+
             if (record.isRefunded) {
               return "redRow";
             }
             if (record.stornDate) {
               return "grayRow";
+            }
+            if(record){
+              return this.state.selectedIndex === index ? "active" : "";
             }
           }
           }
