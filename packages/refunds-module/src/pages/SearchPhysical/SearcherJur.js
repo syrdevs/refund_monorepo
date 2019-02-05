@@ -48,7 +48,7 @@ class SearcherJur extends Component {
   componentDidMount() {
     this.props.eventManager.subscribe("onSelectFilterByBin", (params) => {
       if (Object.keys(params).length > 0) {
-        this.searchperson(params)
+        this.searchperson(params);
       }
       else {
       }
@@ -107,6 +107,34 @@ class SearcherJur extends Component {
     }
   };
 
+  getPayersListData = () => {
+    const { dispatch } = this.props;
+
+    dispatch({
+      type: "universal2/getPayerList",
+      payload: {
+        "entity": "mt102",
+        "alias": null,
+        "filter": {
+          "senderBin": this.state.bin
+        },
+        "sort": [
+          {
+            "field": "knp"
+          }
+        ],
+        "group": [
+          {
+            "field": "knp"
+          },
+          {
+            "field": "paymentsum",
+            "needSum": true
+          }
+        ]
+      }
+    });
+  };
 
   searchperson = (value) => {
     const { dispatch } = this.props;
@@ -120,38 +148,39 @@ class SearcherJur extends Component {
           bin: this.state.bin
         }
       }).then(() => {
-          if (JSON.stringify(this.props.universal.searcherjur) !== "{}" && this.props.universal.searcherjur) {
+        if (JSON.stringify(this.props.universal.searcherjur) !== "{}" && this.props.universal.searcherjur) {
 
-            this.setState({
-              jur: this.props.universal.searcherjur
-            }, () => {
-              if (this.state.yearDo === null) {
-                this.payesSearcher(moment(new Date()).year());
-              } else {
-                this.payesSearcher(this.state.yearDo);
-              }
+          this.setState({
+            jur: this.props.universal.searcherjur
+          }, () => {
+            if (this.state.yearDo === null) {
+              this.payesSearcher(moment(new Date()).year());
+            } else {
+              this.payesSearcher(this.state.yearDo);
+            }
 
+          });
+        }
+        else {
+          this.setState({
+            jur: {
+              "senderName": "",
+              "senderBin": "",
+              "senderBankBik": "",
+              "paymentCount": null,
+              "paymentSum": null
+            },
+            loading: false,
+            payes: []
+          }, () => {
+            Modal.error({
+              title: formatMessage({ id: "system.error" }),
+              content: "Информация о плательщике не найдена!"
             });
-          }
-          else {
-            this.setState({
-              jur: {
-                "senderName": "",
-                "senderBin": "",
-                "senderBankBik": "",
-                "paymentCount": null,
-                "paymentSum": null
-              },
-              loading: false,
-              payes: []
-            },()=>{
-              Modal.error({
-                title: formatMessage({ id: "system.error" }),
-                content: "Информация о плательщике не найдена!"
-              });
-            });
-          }
+          });
+        }
 
+        this.getPayersListData();
       });
     });
   };
@@ -160,8 +189,6 @@ class SearcherJur extends Component {
     this.payesSearcher(value.year());
     this.state.yearDo = value.year();
   };
-
-
 
 
   payesSearcher = (year) => {
@@ -194,6 +221,32 @@ class SearcherJur extends Component {
     const CardHeight = { height: "auto", marginBottom: "10px" };
     const { jur } = this.state;
 
+
+    let getPayerStoreData = [
+      { key: "КОЛИЧЕСТВО ПЛАТЕЖЕЙ" },
+      { key: "СУММА ПЛАТЕЖЕЙ"  }
+    ];
+
+    let getPayerStoreColumns = [{
+      dataIndex: "key",
+      title: ""
+    }];
+
+    let getPayerListData = this.props.universal2.getPayerList["mt102"];
+
+    if (Array.isArray(getPayerListData)) {
+      getPayerListData.forEach((item) => {
+        getPayerStoreColumns.push({
+          dataIndex: "column_" + item.knp,
+          title: item.knp
+        });
+
+        getPayerStoreData[0]["column_" + item.knp] = item._groupCount;
+        getPayerStoreData[1]["column_" + item.knp] = item.paymentsum;
+      });
+
+
+    }
 
     const columns = [{
       title: "Наименование",
@@ -228,16 +281,7 @@ class SearcherJur extends Component {
         name: "РАЙОН",
         value: jur.raion
       },
-      {
-        key: 4,
-        name: "КОЛИЧЕСТВО ПЛАТЕЖЕЙ",
-        value: jur.paymentCount
-      },
-      {
-        key: 5,
-        name: "СУММА ПЛАТЕЖЕЙ",
-        value: jur.paymentSum
-      }, {
+       {
         key: 6,
         name: "КОЛИЧЕСТВО ПОТРЕБИТЕЛЕЙ",
         value: jur.personCount
@@ -249,80 +293,93 @@ class SearcherJur extends Component {
         key: 8,
         name: "СУММА ВОЗВРАТОВ",
         value: jur.refundSum
-      }
+      },{
+        key: 4,
+        name: "КОЛИЧЕСТВО ПЛАТЕЖЕЙ",
+        value: jur.paymentCount
+      },
+      {
+        key: 5,
+        name: "СУММА ПЛАТЕЖЕЙ",
+        value: jur.paymentSum
+      },
     ];
 
     return (<div>
         {/*<Spin tip="" spinning={this.state.loading}>*/}
-          <Row style={{ marginBottom: "10px" }}>
-            <Col span={10}>
-              <div style={CardHeight}>
-                <Card
-                  style={{ height: "140px", marginBottom: "10px" }}
-                  type="inner"
-                  bodyStyle={{ padding: 25 }}
-                  title={formatMessage({ id: "report.param.searcher" })}
-                >
-                  <div style={{ display: "block" }}>
-                    <div style={{ float: "left", width: this.state.jur.senderBin ? "60%" : "100%" }}>
-                      <Search
-                        placeholder="Введите БИН/ИИН"
-                        enterButton={formatMessage({ id: "system.search" })}
-                        //size="large"
-                        maxLength={12}
-                        onSearch={value => this.searchperson(value)}
-                      />
-                    </div>
-                    {this.state.jur.senderBin && <div
+        <Row style={{ marginBottom: "10px" }}>
+          <Col span={14}>
+            <div style={CardHeight}>
+              <Card
+                style={{ height: "140px", marginBottom: "10px" }}
+                type="inner"
+                bodyStyle={{ padding: 25 }}
+                title={formatMessage({ id: "report.param.searcher" })}
+              >
+                <div style={{ display: "block" }}>
+                  <div style={{ float: "left", width: this.state.jur.senderBin ? "60%" : "60%" }}>
+                    <Search
+                      placeholder="Введите БИН/ИИН"
+                      enterButton={formatMessage({ id: "system.search" })}
+                      //size="large"
+                      maxLength={12}
+                      onSearch={value => this.searchperson(value)}
+                    />
+                  </div>
+                  {this.state.jur.senderBin && <div
                     style={{ float: "left", width: "40%", paddingLeft: "10px" }}>
                     <Button
-                    //size={"large"}
-                    onClick={() => {
-                    if (this.state.bin) {
-                    this.props.searchbybin(this.state.bin);
-                    }
-                    }}
+                      //size={"large"}
+                      onClick={() => {
+                        if (this.state.bin) {
+                          this.props.searchbybin(this.state.bin);
+                        }
+                      }}
                     >Просмотр платежей</Button>
-                    </div>}
+                  </div>}
 
-                  </div>
-                </Card>
-                <Card
-                  bodyStyle={{ height: "auto" }}
-                  title={formatMessage({ id: this.props.persontitle })}
-                  type="inner"
-                >
-                  <Table
-                    columns={columns}
-                    dataSource={Jurdata}
-                    style={{ height: "auto" }}
-                    pagination={{ pageSize: 50, position: "none" }}
-                    showHeader={false}
-                    size={"default"}
-                  />
-                </Card>
-              </div>
-            </Col>
-            <Col span={14}>
-              <Card
-                style={{ height: "600", marginLeft: "10px" }}
-                title={formatMessage({ id: "report.param.monthpay" })}
-                type="inner"
-              >
-                <div style={{ height: "500px" }}>
-                  <Calendar
-                    onPanelChange={this.onPanelChange}
-                    mode='year'
-                    className={style.customCalendar}
-                    monthCellRender={this.monthCellRender}
-                    fullscreen
-                  />
-                </div>
-                <div style={{ height: "50px", marginLeft: "10px" }}>
                 </div>
               </Card>
-            </Col>
-          </Row>
+              <Card
+                bodyStyle={{ height: "auto" }}
+                title={formatMessage({ id: this.props.persontitle })}
+                type="inner"
+              >
+                <Table
+                  columns={columns}
+                  dataSource={Jurdata}
+                  style={{ height: "auto" }}
+                  pagination={{ pageSize: 50, position: "none" }}
+                  showHeader={false}
+                  size={"default"}
+                />
+                <Table
+                  columns={getPayerStoreColumns}
+                  dataSource={getPayerStoreData}
+                />
+              </Card>
+            </div>
+          </Col>
+          <Col span={10}>
+            <Card
+              style={{ height: "600", marginLeft: "10px" }}
+              title={formatMessage({ id: "report.param.monthpay" })}
+              type="inner"
+            >
+              <div style={{ height: "500px" }}>
+                <Calendar
+                  onPanelChange={this.onPanelChange}
+                  mode='year'
+                  className={style.customCalendar}
+                  monthCellRender={this.monthCellRender}
+                  fullscreen
+                />
+              </div>
+              <div style={{ height: "50px", marginLeft: "10px" }}>
+              </div>
+            </Card>
+          </Col>
+        </Row>
         {/*</Spin>*/}
       </div>
     );

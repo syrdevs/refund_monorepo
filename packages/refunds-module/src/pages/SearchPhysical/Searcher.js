@@ -866,11 +866,11 @@ class Searcher extends Component {
                 title={formatMessage({ id: "report.param.searcher" })}
               >
 
-                <Col span={8}>
+                <Col span={12}>
                   <div style={mBottom}>ИИН:
                     <div style={{ width: "100%" }}>
                       <Row>
-                        <Col span={12}>
+                        <Col span={14}>
                           <Input style={{ width: "100%" }} value={this.state.parameters.filter.iin} maxLength={12}
                                  onChange={(e) => {
                                    this.fieldOnChange("iin", e.target.value);
