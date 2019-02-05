@@ -179,7 +179,6 @@ class Searcher extends Component {
         });
       }
       else {
-
       }
     });
 
