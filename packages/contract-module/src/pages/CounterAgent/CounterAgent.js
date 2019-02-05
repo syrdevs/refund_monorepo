@@ -165,6 +165,14 @@ class CounterAgent extends Component {
           }}>
           Создать договор
         </Menu.Item>
+        <Menu.Item
+          disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
+          key='change'
+          onClick={() => {
+            this.props.history.push("/contracts/v2/counteragent/edit?id=" + this.state.selectedRecord.id);
+          }}>
+          Открыть
+        </Menu.Item>
       </Menu>}>
         <Button
           key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon

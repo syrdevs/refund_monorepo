@@ -436,7 +436,7 @@ export default {
         getObjectData: payload
       };
     },
-    clearDataReducer(state, { payload }) {
+    clearDataReducer(state, { payload }) {getlegalForm
       return {
         ...state,
         [payload.typeName]: payload.value
