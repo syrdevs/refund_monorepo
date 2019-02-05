@@ -1561,7 +1561,7 @@ class AgentCreate extends Component {
                 {smarttabs.map(smarttab => {
                   return (
                     <TabPane tab={
-                      <Badge count={this.state[smarttab.name].length} style={{ backgroundColor: "#1990FF" }}>
+                      <Badge count={this.state[smarttab.name].length} style={{ backgroundColor: "#1990FF", marginLeft:'5px'}}>
                         <div><span style={title}>{smarttab.title}</span></div>
                       </Badge>} key={smarttab.name}>
                       <div>
