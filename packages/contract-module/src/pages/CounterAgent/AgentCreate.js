@@ -602,7 +602,7 @@ class AgentCreate extends Component {
             {
               dataIndex: "bank",
               title: "Банк (БВУ)",
-              width: "15%",
+              width: "10%",
               render: (text, record) => {
                 return (
                   <FormItem
@@ -648,7 +648,7 @@ class AgentCreate extends Component {
             {
               dataIndex: "iik",
               title: "Счет (ИИК)",
-              width: "10%",
+              width: "54%",
               render: (text, record) => {
                 return (
                   <FormItem
@@ -695,7 +695,7 @@ class AgentCreate extends Component {
             {
               dataIndex: "bankbeginDate",
               title: "Дата начала действия",
-              width: "13%",
+              width: "10%",
               render: (text, record) => {
                 return (<FormItem
                 >
@@ -717,7 +717,7 @@ class AgentCreate extends Component {
             {
               dataIndex: "bankendDate",
               title: "Дата окончания действия",
-              width: "15%",
+              width: "13%",
               render: (text, record) => {
                 return (<FormItem
                 >
@@ -739,7 +739,7 @@ class AgentCreate extends Component {
             {
               title: "Действие",
               dataIndex: "operation",
-              width: "10%",
+              width: "13%",
               render: (text, record) => {
                 const { editable } = record;
                 return (
@@ -994,7 +994,7 @@ class AgentCreate extends Component {
             {
               dataIndex: "indusadress",
               title: "Адрес",
-              width: "60%",
+              width: "50%",
               render: (text, record) => {
                 return (
                   <FormItem
@@ -1005,9 +1005,15 @@ class AgentCreate extends Component {
                         message: this.state.validatemessage
                       }]
                     })(
-                      <Input name={"indusadress" + record.key} onChange={(e) => {
-                        this.identValue(e.target.value, record, "indusadress", "Industbase");
-                      }}/>)}
+                      <Select name={"bank" + record.key} style={{ width: '90%' }} onChange={(e) => {
+                        this.identValue(e, record, "bank", "banks");
+                      }}>
+                        {this.state.adresses && this.state.adresses.map((item) => {
+                          return <Select.Option value={item.adressname}
+                                                key={item.adressname}>{item.adressname}</Select.Option>;
+                        })}
+                      </Select>
+                    )}
                   </FormItem>);
               }
             },
@@ -1101,8 +1107,8 @@ class AgentCreate extends Component {
         })
         .catch((e) => {
           Modal.error({
-            content: "Ошибка на стороне сервера!",
-           // content: e.getResponseValue().data ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!",
+            //content: "Ошибка на стороне сервера!",
+            content: e.getResponseValue().data ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!",
             onOk: () => {
               this.props.history.push("/contracts/v2/counteragent/main");
             }
@@ -1163,7 +1169,8 @@ class AgentCreate extends Component {
       payload: {
         "start": 0,
         "length": 1000,
-        "entity": "legalForm"
+        "entity": "legalForm",
+        sort: [{field: "nameRu", 'asc': true}],
       }
     });
   };
@@ -1277,18 +1284,17 @@ class AgentCreate extends Component {
   };
 
   saveobject = (values) => {
-    console.log(values);
     let attr = {
       "entity": "clinic",
       "alias": null,
       "data": {
-        "shortName": values.shortName,
-        "fullName": values.fullName,
+        "shortName": values.shortName ? values.shortName : "",
+        "fullName": values.fullName ? values.fullName : "",
         "code": "1",
-        "name": values.name,
+        "name": values.name ? values.name : "",
         "isRural": values.isRural ? true : false,
-        "dateBegin": values.dateBegin.format("DD.MM.YYYY"),
-        "dateEnd": values.dateEnd.format("DD.MM.YYYY"),
+        "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY"): null,
+        "dateEnd": values.dateEnd ? values.dateEnd.format("DD.MM.YYYY"): null,
         "_organization": values.legalForm ? (this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []).filter((item) => {
           return item.id === values.legalForm;
         }) : undefined
@@ -1299,64 +1305,92 @@ class AgentCreate extends Component {
     }
     if (this.state.identities) {
       attr.data.idendifiers = this.state.identities ? this.state.identities.map((item) => {
-        console.log(item)
-        return {
+
+        let val = {
           "value": item.identityname ? item.identityname : null,
           "dateBegin": item.identitybeginDate ? item.identitybeginDate.format("DD.MM.YYYY") : null,
           "dateEnd": item.identityendDate ? item.identityendDate.format("DD.MM.YYYY") : null,
-          "idendifierType": {
-            "id": item.identitytype
-          }
         };
+        if (item.identitytype) {
+          val = {
+            ...val,
+            "idendifierType": {
+              "id": item.identitytype
+            }
+          }
+        }
+        return val;
       }) : undefined;
     }
     if (this.state.banks) {
-      console.log(this.state.banks);
       attr.data.bankAccounts = this.state.banks ? this.state.banks.map((item) => {
-        return {
-          "accountNumber": item.iik ? item.iik : '',
-          "dateBegin": item.bankbeginDate ? item.bankbeginDate.format("DD.MM.YYYY") : null,
-          "dateEnd": item.bankendDate ? item.bankendDate.format("DD.MM.YYYY") : null,
-          "bank": {
-            "id": item.bank ? item.bank : undefined
-          },
-          "currencyType": {
-            "id": item.currency ? item.currency : undefined
+       let val = {
+         "accountNumber": item.iik ? item.iik : '',
+         "dateBegin": item.bankbeginDate ? item.bankbeginDate.format("DD.MM.YYYY") : null,
+         "dateEnd": item.bankendDate ? item.bankendDate.format("DD.MM.YYYY") : null,
+       }
+
+        if (item.bank) {
+          val = {
+            ...val,
+            "bank": {
+              "id": item.bank ? item.bank : undefined
+            },
           }
         }
+        if (item.currency) {
+          val = {
+            ...val,
+            "currencyType": {
+              "id": item.currency ? item.currency : undefined
+            }
+          }
+        }
+        return val;
       }) : undefined;
-      console.log(attr.data);
-      console.log("attr.data");
     }
     if (this.state.adresses) {
       attr.data.addresses = this.state.adresses ? this.state.adresses.map((item) => {
-        console.log(item)
-        return {
+        let val =  {
           "addressText": item.adressname,
           "dateBegin": item.adressbeginDate ? item.adressbeginDate.format("DD.MM.YYYY") : null,
           "dateEnd": item.adressendDate ? item.adressendDate.format("DD.MM.YYYY") : null,
-          "addressType": {
-            "id": item.adresstype
-          }
         };
+        if (item.adresstype) {
+          val = {
+            ...val,
+            "addressType": {
+              "id": item.adresstype
+            }
+          }
+        }
+        return val;
       }) : undefined;
     }
     if (this.state.contacts) {
       attr.data.contacts = this.state.contacts ? this.state.contacts.map((item) => {
-        return {
+
+        let val =  {
           "comment": item.contactnote,
           "value": item.contactname,
           "dateBegin": item.contactbeginDate ? item.contactbeginDate.format("DD.MM.YYYY") : null,
           "dateEnd": item.contactendDate ? item.contactendDate.format("DD.MM.YYYY") : null,
-          "contactType": {
-            "id": item.contacttype
-          }
         };
 
+        if (item.contacttype) {
+          val = {
+            ...val,
+            "contactType": {
+              "id": item.contacttype
+            }
+          }
+        }
+        return val;
       }) : undefined;
     }
 
-
+    console.log("attr");
+    console.log(attr);
     const { dispatch } = this.props;
     dispatch({
       type: "universal/saveobject",
@@ -1373,8 +1407,8 @@ class AgentCreate extends Component {
       })
       .catch((e) => {
         Modal.error({
-          content:  "Ошибка на стороне сервера!",
-          //content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
+          //content:  "Ошибка на стороне сервера!",
+          content: e.getResponseValue().data.Message ? (e.getResponseValue().data.Message) : "Ошибка на стороне сервера!"
         });
       });
   };
@@ -1393,7 +1427,7 @@ class AgentCreate extends Component {
       form: { getFieldDecorator }
     } = this.props;
     console.log(this.props.location.query.id)
-    let  label = 'Форма создание субъекта здравоохранения'
+    let  label = 'Форма создания субъекта здравоохранения'
     if (this.props.location.query.id) {
       label= 'Форма редактирование субъекта здравоохранения'
     }
@@ -1454,6 +1488,9 @@ class AgentCreate extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator("radio-button", {
+                  rules: [{
+                    required: false
+                  }],
                   initialValue: "orgpane"
                 })(
                   <Radio.Group style={{ marginTop: "8px" }} onChange={this.selecttypeagent}>
@@ -1467,6 +1504,9 @@ class AgentCreate extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator("isRural", {
+                  rules: [{
+                    required: false
+                  }],
                   valuePropName: "checked",
                   initialValue: this.state.counteragent.isRural
                 })(
@@ -1479,6 +1519,9 @@ class AgentCreate extends Component {
               >
 
                 {getFieldDecorator("dateBegin", {
+                  rules: [{
+                    required: false
+                  }],
                   initialValue: this.state.counteragent.dateBegin ? moment(this.state.counteragent.dateBegin, "DD.MM.YYYY") : null
                 })
                 (
@@ -1490,6 +1533,9 @@ class AgentCreate extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator("dateEnd", {
+                  rules: [{
+                    required: false
+                  }],
                   initialValue: this.state.counteragent.dateEnd ? moment(this.state.counteragent.dateEnd, "DD.MM.YYYY") : null
                 })
                 (
@@ -1607,7 +1653,7 @@ class AgentCreate extends Component {
                     this.sendserver(e);
                   }}
                 >
-                  Добавить
+                  Сохранить
                 </Button>
                 <Button
                   size={"large"}

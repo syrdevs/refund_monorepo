@@ -196,6 +196,9 @@ export default function request(url, option) {
       }
 
       return {
+        getResponseValue:()=>{
+          return e.response;
+        },
         error: true,
         status: e.response && e.response.status ? e.response.status : null,
         message: e.response && e.response.statusText ? e.response.statusText : null

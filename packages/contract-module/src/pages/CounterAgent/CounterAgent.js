@@ -25,6 +25,11 @@ import connect from "../../Redux";
 import hasRole from "../../utils/hasRole";
 import ContentLayout from "../../layouts/ContentLayout";
 import { Animated } from "react-animated-css";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faTimes } from "@fortawesome/free-solid-svg-icons";
+import GridFilter from "../../components/GridFilter";
+
+const dateFormat = "YYYY/MM/DD";
 
 class CounterAgent extends Component {
   constructor(props) {
@@ -68,7 +73,7 @@ class CounterAgent extends Component {
       ],
       selectedRecord: null,
       xsize: "auto",
-
+      filterContainer: 0,
       gridParameters: {
         start: 0,
         length: 10,
@@ -76,7 +81,44 @@ class CounterAgent extends Component {
         entity: "clinic",
         filter: {},
         sort: []
-      }
+      },
+      filterForm: [
+        {
+          name: "freeSearch",
+          label: "БИН/ИИН",
+          type: "text"
+        },
+        {
+          name: "nameSearch",
+          label: 'Наименование',
+          type: "text"
+        },
+        {
+          name: "addressSearch",
+          label: 'Адрес',
+          type: "text"
+        },
+        {
+          label: "Дата регистрации",
+          name: "registrationDate",
+          type: "listbetweenDate"
+        },
+        {
+          label: "Дата включения в БДСЗ",
+          name: "clinicRegisters.dateBegin",
+          type: "listbetweenDate"
+        },
+        {
+          label: "Дата исключения из БДСЗ",
+          name: "clinicRegisters.dateEnd",
+          type: "listbetweenDate"
+        },
+        {
+          label: "СЗ районного значения и села",
+          name: "isRural",
+          type: "checkbox"
+        }
+      ],
     };
   }
 
@@ -114,19 +156,51 @@ class CounterAgent extends Component {
     this.loadMainGridData();
   }
 
-  toggleSearcher() {
-
-  }
-
   toggleItems() {
   }
 
-  goForm = () => {
-    this.setState({
-      isForm: !this.state.isForm
-    });
+  filterPanelState = () => {
+    this.setState(({ filterContainer }) => ({
+      filterContainer: filterContainer === 6 ? 0 : 6
+    }));
   };
 
+  clearFilter = (pageNumber) => {
+    this.setState({
+      sortedInfo: {},
+      gridParameters: {
+        start: 0,
+        length: 10,
+        alias: "clinicList",
+        entity: "clinic",
+        filter: {},
+        sort: []
+      }
+    }, () => {
+      this.loadMainGridData();
+    });
+  };
+//test
+  applyFilter = (filter) => {
+    this.setState({
+      sortedInfo: {},
+      gridParameters: {
+        start: 0,
+        length: 10,
+        alias: "clinicList",
+        entity: "clinic",
+        filter: { ...filter },
+        sort: []
+      }
+    }, () => {
+
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal2/getList",
+        payload: this.state.gridParameters
+      });
+    });
+  };
 
   render() {
     const { universal2 } = this.props;
@@ -152,6 +226,14 @@ class CounterAgent extends Component {
         {/*</Menu.Item>*/}
         <Menu.Item
           disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
+          key='change'
+          onClick={() => {
+            this.props.history.push("/contracts/v2/counteragent/edit?id=" + this.state.selectedRecord.id);
+          }}>
+          Открыть
+        </Menu.Item>
+        <Menu.Item
+          disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
           key='register_document'
           onClick={() => {
             this.props.history.push("/contracts/v2/contracts/create?counterAgentId=" + this.state.selectedRecord.id);
@@ -165,14 +247,6 @@ class CounterAgent extends Component {
           }}>
           Создать договор
         </Menu.Item>
-        <Menu.Item
-          disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
-          key='change'
-          onClick={() => {
-            this.props.history.push("/contracts/v2/counteragent/edit?id=" + this.state.selectedRecord.id);
-          }}>
-          Открыть
-        </Menu.Item>
       </Menu>}>
         <Button
           key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
@@ -182,7 +256,7 @@ class CounterAgent extends Component {
               onClick={() => {
                 this.props.history.push("/contracts/v2/counteragent/create");
               }}
-      >Создать контрагент</Button>
+      >Создать субъект здравоохранения</Button>
     ];
 
 
@@ -197,9 +271,28 @@ class CounterAgent extends Component {
           breadcrumbName: "Субъекты здравоохранения"
         }]}>
         <Row>
-          <Col sm={24} md={this.state.tablecont}>
-            {!this.state.isForm &&
+          <Col sm={24} md={this.state.filterContainer}>
+            <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
+              <Card
+                headStyle={{
+                  padding: "0 14px"
+                }}
+                style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
+                type="inner"
+                title={formatMessage({ id: "system.filter" })}
+                extra={<Icon style={{ "cursor": "pointer" }} onClick={this.filterPanelState}><FontAwesomeIcon
+                  icon={faTimes}/></Icon>}>
+                <GridFilter
+                  // clearFilter={this.clearFilter(pageNumber)}
+                  clearFilter={(pageNumber) => this.clearFilter(pageNumber)}
+                  applyFilter={(filter) => this.applyFilter(filter)} key={"1"}
+                  filterForm={this.state.filterForm}
+                  dateFormat={dateFormat}/>
+              </Card>
+            </Animated>
 
+          </Col>
+          <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
             <SmartGridView
               name='CounterAgentPageColumns'
               scroll={{ x: this.state.xsize }}
@@ -254,14 +347,14 @@ class CounterAgent extends Component {
                 this.loadMainGridData();
               }}
               onSearch={() => {
-
+                this.filterPanelState();
               }}
               onSelectCheckboxChange={(selectedRowKeys) => {
                 // this.setState({
                 //   selectedRowKeys: selectedRowKeys,
                 // });
               }}
-            />}
+            />
           </Col>
 
         </Row>
