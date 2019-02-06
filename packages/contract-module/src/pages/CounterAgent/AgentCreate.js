@@ -59,7 +59,7 @@ const RendetField = ({ name, label, local, type, getFieldDecorator, validatemess
               required: false,
               message: validatemessage
             }],
-            initialValue: counteragent[local] ? counteragent[local].id : null
+            initialValue: counteragent ? (counteragent[local] ? counteragent[local].id : null) : null
           })(
             <Select key={name} style={{ marginLeft: "10px", width: "95%" }} name={name}>
               {references && references.map((item) => {
@@ -82,7 +82,7 @@ const RendetField = ({ name, label, local, type, getFieldDecorator, validatemess
               required: false,
               message: validatemessage
             }],
-            initialValue: counteragent[local]
+            initialValue: counteragent ? counteragent[local] : null
           })(
             <Input key={name} style={{ marginLeft: "10px", width: "95%" }} name={name}/>)}
         </FormItem>
@@ -100,7 +100,7 @@ const RendetField = ({ name, label, local, type, getFieldDecorator, validatemess
               required: false,
               message: validatemessage
             }],
-            initialValue: counteragent[local] ? moment(counteragent[local], "DD.MM.YYYY") : null
+            initialValue: counteragent ? (counteragent[local] ? moment(counteragent[local], "DD.MM.YYYY") : null) : null
           })(
             <DatePicker style={{ marginLeft: "10px", width: "95%" }} name={name} format={"DD.MM.YYYY"}/>
           )}
@@ -123,10 +123,11 @@ class AgentCreate extends Component {
       },
       panes: [
         {
-          title: "Организация", content: [
+          title: "Организация",
+          content: [
             {
               name: "legalForm",
-              local: "_organization",
+              local: "legalForm",
               label: "Организационно-правовая форма",
               type: "combobox"
             },
@@ -148,12 +149,73 @@ class AgentCreate extends Component {
               label: "Наименование краткое",
               type: "text"
             }
-          ], key: "7"
-        }
+          ],
+          key: "7"
+        },
+        {
+          title: "Индивидуальный предприниматель",
+          content: [
+            {
+              name: 'iin',
+              local: 'iin',
+              label: 'ИИН',
+              type: 'text',
+            },
+            {
+              name: 'firstName',
+              local: 'firstName',
+              label: 'Имя',
+              type: 'text',
+            },
+            {
+              name: 'lastName',
+              local: 'lastName',
+              label: 'Фамилия',
+              type: 'text',
+            },
+            {
+              name: 'patronymic',
+              local: 'patronymic',
+              label: 'Отчество',
+              type: 'text',
+            },
+            {
+              name: 'sex',
+              local: "sex",
+              label: 'Пол',
+              type: 'combobox',
+            },
+            {
+              name: 'birthdate',
+              local: "birthdate",
+              label: 'Дата рождения',
+              type: 'datePicker',
+            },
+           /* {
+              name: 'fio_genitive',
+              local: 'fio_genitive',
+              label: 'ФИО в родительном падеже',
+              type: 'text',
+            },
+            {
+              name: 'fiz_fio_genitive',
+              local: 'fiz_fio_genitive',
+              label: 'ФИО в родительном падеже',
+              type: 'text',
+            },
+            {
+              name: 'fiz_fio_genitive_initials',
+              local: 'fiz_fio_genitive_initials',
+              label: 'Фамилия и инициалы в родительном падеже',
+              type: 'text',
+            },*/
+          ],
+          key: "8"
+        },
       ],
       fizpane: {
         title: "Индивидуальный предприниматель", content: [
-          /* {
+           {
              name: 'fiz_surname',
              label: 'Вид идентификатора',
              type: 'combobox',
@@ -168,11 +230,12 @@ class AgentCreate extends Component {
              label: 'Отчество',
              type: 'text',
            },
-           {
-             name: 'gender',
+           /*{
+             name: 'sex',
+             lib: "sex",
              label: 'Пол',
              type: 'combobox',
-           },
+           },*/
            {
              name: 'fio_genitive',
              label: 'ФИО в родительном падеже',
@@ -187,28 +250,33 @@ class AgentCreate extends Component {
              name: 'fiz_fio_genitive_initials',
              label: 'Фамилия и инициалы в родительном падеже',
              type: 'text',
-           },*/
+           },
         ], key: "7"
       },
       orgpane: {
         title: "Организация", content: [
           {
-            name: "org_form",
+            name: "legalForm",
+            local: "legalForm",
+            lib: "legalForm",
             label: "Организационно-правовая форма",
-            type: "text"
+            type: "combobox"
           },
           {
             name: "name",
+            local: "name",
             label: "Наименование",
             type: "text"
           },
           {
             name: "fullName",
+            local: "fullName",
             label: "Наименование полное",
             type: "text"
           },
           {
             name: "shortName",
+            local: "shortName",
             label: "Наименование краткое",
             type: "text"
           }
@@ -1153,6 +1221,22 @@ class AgentCreate extends Component {
       payload: {
         "start": 0,
         "length": 1000,
+        "entity": "representativeType"
+      }
+    });
+    dispatch({
+      type: "universal2/getList",
+      payload: {
+        "start": 0,
+        "length": 1000,
+        "entity": "sex"
+      }
+    });
+    dispatch({
+      type: "universal2/getList",
+      payload: {
+        "start": 0,
+        "length": 1000,
         "entity": "bank"
       }
     });
@@ -1224,7 +1308,16 @@ class AgentCreate extends Component {
   };
 
   selecttypeagent = (e) => {
-
+      /*if(e.target.value==="fizpane"){
+        this.setState({
+          panes: [this.state.fizpane]
+        })
+      }
+      else  if(e.target.value==="orgpane"){
+        this.setState({
+          panes: [this.state.orgpane]
+        })
+      }*/
   };
 
   fieldOnChange = (filterItem, value) => {
@@ -1295,7 +1388,7 @@ class AgentCreate extends Component {
         "isRural": values.isRural ? true : false,
         "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY"): null,
         "dateEnd": values.dateEnd ? values.dateEnd.format("DD.MM.YYYY"): null,
-        "_organization": values.legalForm ? (this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []).filter((item) => {
+        "legalForm": values.legalForm ? (this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []).filter((item) => {
           return item.id === values.legalForm;
         }) : undefined
       }
@@ -1388,9 +1481,6 @@ class AgentCreate extends Component {
         return val;
       }) : undefined;
     }
-
-    console.log("attr");
-    console.log(attr);
     const { dispatch } = this.props;
     dispatch({
       type: "universal/saveobject",
@@ -1426,7 +1516,6 @@ class AgentCreate extends Component {
     const {
       form: { getFieldDecorator }
     } = this.props;
-    console.log(this.props.location.query.id)
     let  label = 'Форма создания субъекта здравоохранения'
     if (this.props.location.query.id) {
       label= 'Форма редактирование субъекта здравоохранения'
@@ -1447,6 +1536,31 @@ class AgentCreate extends Component {
         }
         ]}>
         <Form layout={"horizontal"}>
+          <Row>
+            <Col>
+              <div style={{ float: "left", margin: "0px 0px 10px 0" }}>
+                <Button
+                  size={"large"}
+                  onClick={(e) => {
+                    this.cancelform();
+                  }}
+                >
+                  Отменить
+                </Button>
+                <Button
+                  size={"large"}
+                  style={{ marginLeft: "5px" }}
+                  type='primary'
+                  onClick={(e) => {
+                    this.sendserver(e);
+                  }}
+                >
+                  Сохранить
+                </Button>
+
+              </div>
+            </Col>
+          </Row>
           <Row>
             <div>
               {/* {this.state.isNew &&
@@ -1578,6 +1692,7 @@ class AgentCreate extends Component {
                 defaultActiveKey="form"
                 tabPosition={"left"}>
                 {panes.map(pane => {
+                  if (pane.key==="7") {
                     return (
                       <TabPane tab={<span style={title}>{pane.title}</span>} key={pane.key}>
                         <Card style={{ margin: "20px" }}>
@@ -1593,13 +1708,38 @@ class AgentCreate extends Component {
                                   getFieldDecorator={getFieldDecorator}
                                   validatemessage={this.state.validatemessage}
                                   references={this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []}
-                                  counteragent={this.state.counteragent}
+                                  counteragent={this.state.counteragent && this.state.counteragent._organization}
                                 />
                               );
                             })}
                         </Card>
                       </TabPane>
                     );
+                  }
+                  else  if (pane.key==="8") {
+                    return (
+                      <TabPane tab={<span style={title}>{pane.title}</span>} key={pane.key}>
+                        <Card style={{ margin: "20px" }}>
+                          {
+                            pane.content.map((content) => {
+                              return (
+                                <RendetField
+                                  key={content.name}
+                                  name={content.name}
+                                  label={content.label}
+                                  local={content.local}
+                                  type={content.type}
+                                  getFieldDecorator={getFieldDecorator}
+                                  validatemessage={this.state.validatemessage}
+                                  references={this.props.universal2.references.sex && (this.props.universal2.references.sex.content ? this.props.universal2.references.sex.content : [])}
+                                  counteragent={this.state.counteragent.representatives && this.state.counteragent.representatives[0].person}
+                                />
+                              );
+                            })}
+                        </Card>
+                      </TabPane>
+                    );
+                  }
                   }
                 )}
 
@@ -1642,30 +1782,7 @@ class AgentCreate extends Component {
               style={{ margin: "16px 10px 0 0", height: "2px" }}
             />
           </Row>
-          <Row>
-            <Col>
-              <div style={{ float: "right", margin: "20px 20px 10px 0" }}>
-                <Button
-                  size={"large"}
-                  style={{ marginRight: "20px" }}
-                  type='primary'
-                  onClick={(e) => {
-                    this.sendserver(e);
-                  }}
-                >
-                  Сохранить
-                </Button>
-                <Button
-                  size={"large"}
-                  onClick={(e) => {
-                    this.cancelform();
-                  }}
-                >
-                  Отменить
-                </Button>
-              </div>
-            </Col>
-          </Row>
+
         </Form>
       </ContentLayout>
 
