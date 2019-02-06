@@ -1,0 +1,3 @@
+.contract_table_grid .ant-table-tbody .ant-table-row td {
+    min-width: auto !important;
+}

@@ -15,6 +15,7 @@ import {
   Input,
   DatePicker,
   Select,
+  Modal,
   Checkbox,
   Spin,
   Divider
@@ -28,6 +29,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import ContentLayout from "../../layouts/ContentLayout";
 import DropDownAction from "../../components/DropDownAction";
 import getTreeFormat from "../../utils/getTree";
+import numberFormat from "../../utils/numberFormat";
+import request from "../../utils/request";
+import Guid from "../../utils/Guid";
+import saveAs from "file-saver";
+import "./index.css";
 
 const dateFormat = "DD.MM.YYYY";
 const SubMenu = Menu.SubMenu;
@@ -44,6 +50,7 @@ class ContractTable extends Component {
         filterName: "division.id",
         displayField: "name",
         label: "Подразделение",
+        sort: "asc",
         type: "combobox"
       },
       {
@@ -51,6 +58,7 @@ class ContractTable extends Component {
         filterName: "periodYear.id",
         displayField: "year",
         label: "Учетный период: год",
+        sort: "desc",
         type: "combobox"
       },
       {
@@ -58,6 +66,7 @@ class ContractTable extends Component {
         displayField: "nameRu",
         filterName: "contractType.id",
         label: "Вид договора",
+        sort: "asc",
         type: "combobox"
       },
       {
@@ -211,57 +220,64 @@ class ContractTable extends Component {
     },
     columns: [
       {
+        order: 0,
         title: "Подразделение",
         dataIndex: "division.name",
         isVisible: true
       },
       {
+        order: 1,
         title: "Учетный период: год",
         dataIndex: "periodYear.year",
-        isVisible: true
+        isVisible: true,
+        width: 80
       },
       {
+        order: 3,
         title: "Контрагент",
         dataIndex: "contragent.shortName",
         isVisible: true,
         width: 360
       },
       {
+        order: 3,
         title: "Вид договора",
         dataIndex: "contractType.shortName",
         isVisible: true
       },
       {
+        order: 4,
         title: "Номер",
         dataIndex: "number",
         isVisible: true
       },
       {
+        order: 5,
         title: "Дата",
         dataIndex: "documentDate",
         isVisible: true
       },
       {
+        order: 6,
         title: "Дата начала",
         dataIndex: "dateBegin",
         isVisible: true
       },
       {
+        order: 7,
         title: "Дата окончания",
         dataIndex: "dateEnd",
         isVisible: true
       },
       {
-        title: "Сумма, т",
-        dataIndex: "documentSum",
-        isVisible: true
-      },
-      {
+        order: 9,
         title: "Статус",
-        dataIndex: "_currentStatusText",
+        dataIndex: "_currentStatus",
         isVisible: true
       },
       {
+        order: 10,
+        width: 70,
         title: "Файлы",
         dataIndex: "documentAttachmentsCount",
         isVisible: true
@@ -269,52 +285,63 @@ class ContractTable extends Component {
     ],
     fcolumn: [
       {
-        order: 12,
-        title: "Протокол распределения объемов",
-        dataIndex: "planProtocol",
+        order: 8,
+        title: "Сумма, т",
+        dataIndex: "documentSum",
         isVisible: true,
         render: (text, record) => {
-          if (record && record.planProtocol) {
-            return <span style={{
-              color: "#1890ff",
-              textDecoration: "underline",
-              cursor: "pointer"
-            }}>№{record.planProtocol.number} от {record.planProtocol.documentDate}</span>;
-          }
-        }
-      },
-      {
-        title: "Родительский договор",
-        order: 11,
-        dataIndex: "parentContract.number",
-        isVisible: true,
-        render: (text, record) => {
-          if (record && record.parentContract) {
-            return <span style={{
-              color: "#1890ff",
-              textDecoration: "underline",
-              cursor: "pointer"
-            }}>{record.parentContract.contractType.shortName} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
-          }
-          //***
-          ////<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>
-        }
-      },
-      {
-        title: "Заявка на объемы",
-        dataIndex: "proposal",
-        isVisible: true,
-        order: 13,
-        render: (text, record) => {
-          if (record && record.proposal) {
-            return <span style={{
-              color: "#1890ff",
-              textDecoration: "underline",
-              cursor: "pointer"
-            }}>№{record.proposal.number} от {record.proposal.documentDate}</span>;
+          if (text) {
+            return numberFormat(text);
           }
         }
       }
+      // {
+      //   order: 12,
+      //   title: "Протокол распределения объемов",
+      //   dataIndex: "planProtocol",
+      //   isVisible: true,
+      //   render: (text, record) => {
+      //     if (record && record.planProtocol) {
+      //       return <span style={{
+      //         color: "#1890ff",
+      //         textDecoration: "underline",
+      //         cursor: "pointer"
+      //       }}>№{record.planProtocol.number} от {record.planProtocol.documentDate}</span>;
+      //     }
+      //   }
+      // },
+      // {
+      //   title: "Родительский договор",
+      //   order: 11,
+      //   dataIndex: "parentContract.number",
+      //   isVisible: true,
+      //   render: (text, record) => {
+      //     if (record && record.parentContract) {
+      //       return <span style={{
+      //         color: "#1890ff",
+      //         textDecoration: "underline",
+      //         cursor: "pointer"
+      //       }}>{record.parentContract.contractType.shortName} №{record.parentContract.number} от {record.parentContract.documentDate}</span>;
+      //     }
+      //     //***
+      //     ////<parentContract.contractType> №<parentContract.number> от <parentContract.documentDate>
+      //   }
+      // },
+      // {
+      //   title: "Заявка на объемы",
+      //   dataIndex: "proposal",
+      //   isVisible: true,
+      //   order: 13,
+      //   render: (text, record) => {
+      //     if (record && record.proposal) {
+      //       return <span style={{
+      //         color: "#1890ff",
+      //         textDecoration: "underline",
+      //         cursor: "pointer"
+      //       }}>№{record.proposal.number} от {record.proposal.documentDate}</span>;
+      //     }
+      //   }
+      // }
     ],
     dataSource: [
       {
@@ -452,9 +479,56 @@ class ContractTable extends Component {
     });
   };
 
+  deleteContract = (id) => {
+    request("/api/uicommand/deleteObject",
+      {
+        method: "POST",
+        body: {
+          "entity": "contract",
+          "alias": null,
+          "id": id
+        },
+        getResponse: (response) => {
+          if (response.status === 200) {
+            Modal.info({
+              title: "Информация",
+              content: "Объект успешно удален"
+            });
+          } else if (response.status === 400) {
+            Modal.error({
+              title: "Ошибка",
+              content: response.data && response.data.Message
+            });
+          }
+        }
+      }
+    );
+  };
+
   componentDidMount() {
     this.loadMainGridData();
   }
+
+  exportToExcel = () => {
+    let columns = JSON.parse(localStorage.getItem("ContractMain"));
+
+    request("/api/refund/exportToExcel", {
+      method: "POST",
+      responseType: "blob",
+      body: {
+        "entityClass": "contract",
+        "fileName": "Договоры",
+        "filter": this.state.pagingConfig.filter,
+        "columns": columns.filter(x => (x.isVisible))
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), "Договоры");
+        }
+      }
+    });
+  };
 
   render = () => {
 
@@ -488,11 +562,17 @@ class ContractTable extends Component {
           Открыть
         </Menu.Item>
         <Menu.Item
+          onClick={() => {
+            this.deleteContract(this.state.selectedRowKeys[0]);
+          }}
+          disabled={this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
           key="3">
           Удалить
         </Menu.Item>
-        <SubMenu disabled={!subMenuChilds} key="9"
-                 title="Дополнительное соглашение">
+        <SubMenu
+          disabled={!subMenuChilds || this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
+          key="9"
+          title="Дополнительное соглашение">
           {subMenuChilds && subMenuChilds
             .filter((menuItem) => (menuItem.basicContractTypeCode === "2"))
             .map((menuItem) => (<Menu.Item
@@ -501,8 +581,10 @@ class ContractTable extends Component {
               }}
               key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
         </SubMenu>
-        <SubMenu disabled={!subMenuChilds} key="7"
-                 title=" Договор субподряда">
+        <SubMenu
+          disabled={!subMenuChilds || this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
+          key="7"
+          title=" Договор субподряда">
           {subMenuChilds && subMenuChilds
             .filter((menuItem) => (menuItem.basicContractTypeCode === "3"))
             .map((menuItem) => (<Menu.Item
@@ -636,43 +718,43 @@ class ContractTable extends Component {
             </Card>
           </Col>
           <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-            <SmartGridView
-              scroll={{ x: 2100 }}
-              name={"ContractMain"}
-              columns={this.state.columns}
-              showTotal={true}
-              selectedRowCheckBox={true}
-              selectedRowKeys={this.state.selectedRowKeys}
-              showExportBtn={true}
-              addonButtons={addonButtons}
-              actionColumns={[]}
-              actionExport={() => {
-                // console.log('export');
-              }}
-              dataSource={{
-                total: contracts ? contracts.totalElements : 0,
-                pageSize: this.state.gridParameters.length,
-                page: this.state.gridParameters.start + 1,
-                data: contracts ? contracts.content : []
-              }}
-              onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
-              onRefresh={() => {
-                this.loadMainGridData();
-              }}
-              onSearch={() => {
-                this.filterPanelState();
-              }}
-              onSelectRow={(record, index) => {
-                this.setState({
-                  selectedRecord: record
-                });
-              }}
-              onSelectCheckboxChange={(selectedRowKeys) => {
-                this.setState({
-                  selectedRowKeys: selectedRowKeys
-                });
-              }}
-            />
+            <div className={"contract_table_grid"}>
+              <SmartGridView
+                scroll={{ x: 2100 }}
+                name={"ContractMain"}
+                columns={this.state.columns}
+                showTotal={true}
+                selectedRowCheckBox={true}
+                selectedRowKeys={this.state.selectedRowKeys}
+                showExportBtn={true}
+                addonButtons={addonButtons}
+                actionColumns={this.state.fcolumn}
+                actionExport={() => this.exportToExcel()}
+                dataSource={{
+                  total: contracts ? contracts.totalElements : 0,
+                  pageSize: this.state.gridParameters.length,
+                  page: this.state.gridParameters.start + 1,
+                  data: contracts ? contracts.content : []
+                }}
+                onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
+                onRefresh={() => {
+                  this.loadMainGridData();
+                }}
+                onSearch={() => {
+                  this.filterPanelState();
+                }}
+                onSelectRow={(record, index) => {
+                  this.setState({
+                    selectedRecord: record
+                  });
+                }}
+                onSelectCheckboxChange={(selectedRowKeys) => {
+                  this.setState({
+                    selectedRowKeys: selectedRowKeys
+                  });
+                }}
+              />
+            </div>
             <br/>
           </Col>
         </Row>

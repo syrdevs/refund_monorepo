@@ -717,6 +717,8 @@ class GridFilter extends Component {
           params.value = [];
         }
 
+        let sortType = filterItem.sort ? filterItem.sort : "asc";
+
         let refData = [];
 
         if (references[filterItem.name] !== undefined && Array.isArray(references[filterItem.name])) {
@@ -741,7 +743,13 @@ class GridFilter extends Component {
             }}
           >
             <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
-            {refData.map((item) => {
+            {refData.sort((a, b) => {
+              if (a[filterItem.displayField ? filterItem.displayField : "nameRu"] < b[filterItem.displayField ? filterItem.displayField : "nameRu"])
+                return sortType === "desc" ? 1 : -1;
+              if (a[filterItem.displayField ? filterItem.displayField : "nameRu"] > b[filterItem.displayField ? filterItem.displayField : "nameRu"])
+                return sortType === "desc" ? -1 : 1;
+              return 0;
+            }).map((item) => {
               return <Select.Option
                 key={item.id}>{filterItem.displayField ? item[filterItem.displayField] : item.nameRu}</Select.Option>;
             })}

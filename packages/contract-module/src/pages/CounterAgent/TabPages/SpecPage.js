@@ -1089,7 +1089,7 @@ class SpecPage extends Component {
             //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
           }
 
-          return <span>{record.percentAdvance ? record.percentAdvance : 0}</span>;
+          return <span>{record.percentAdvance ? record.percentAdvance.toPrecision(2) : 0}</span>;
         }
       }].concat(extraColumns)
     }));
@@ -1109,6 +1109,21 @@ class SpecPage extends Component {
   componentDidMount() {
 
     this.renderMonthColumns();
+
+    let monthKeysCollection = {
+      "10": "c838383d-36c0-469a-8e3d-8aefa5628be0",
+      "11": "70595496-9faf-4fe0-833c-09deed7488c8",
+      "12": "f4e8188b-64c9-408f-bd9f-34cc0ed70995",
+      "04": "ec16e8c2-191a-4b14-a21a-e5804c781582",
+      "07": "eb3628bf-d0b6-4760-bafe-64a85fcf817b",
+      "02": "b5c47f41-99d0-4cee-a83c-df21f28ebdb5",
+      "01": "f1f2ac96-f6f6-4bd1-90dd-85d1e274622c",
+      "05": "7b5daf7d-acf5-479b-81e1-3b0ee2e68e8a",
+      "06": "99d4c419-4bd5-4741-9bd8-1a9b7f8ddc46",
+      "03": "f18680f6-6387-42e1-940d-62d0a5ce0900",
+      "08": "7dbcf2de-4193-4d8c-8d0f-e7529e236ed7",
+      "09": "e86fa194-bbae-4897-8110-0e66ce52a3e4"
+    };
 
     this.props.eventManager.subscribe("onSpecFormSubmit", () => {
 
@@ -1169,8 +1184,9 @@ class SpecPage extends Component {
               let monthItem = item.contractTimeItem[monthKey];
               let contractTimeTablesItem = {
                 periodSection: {
-                  search: true,
-                  index: monthKey
+                  id: monthKeysCollection[monthKey]
+                  //   search: true,
+                  //   index: monthKey
                 }
               };
 
@@ -1300,8 +1316,7 @@ class SpecPage extends Component {
 
     });
 
-
-    return result;
+    return result.toPrecision(2);
 
   };
 
@@ -1320,12 +1335,15 @@ class SpecPage extends Component {
 
           if (item.contractTimeItem[monthIndex].valueSection)
             contractTimeIndexKeys[monthIndex].valueSection += parseFloat(item.contractTimeItem[monthIndex].valueSection);
+          contractTimeIndexKeys[monthIndex].valueSection = parseFloat(contractTimeIndexKeys[monthIndex].valueSection).toPrecision(2)
 
           if (item.contractTimeItem[monthIndex].sumSection)
             contractTimeIndexKeys[monthIndex].sumSection += parseFloat(item.contractTimeItem[monthIndex].sumSection);
+          contractTimeIndexKeys[monthIndex].sumSection = parseFloat(contractTimeIndexKeys[monthIndex].sumSection).toPrecision(2)
 
           if (item.contractTimeItem[monthIndex].sumAdvanceTakeout)
             contractTimeIndexKeys[monthIndex].sumAdvanceTakeout += parseFloat(item.contractTimeItem[monthIndex].sumAdvanceTakeout);
+          contractTimeIndexKeys[monthIndex].sumAdvanceTakeout = parseFloat(contractTimeIndexKeys[monthIndex].sumAdvanceTakeout).toPrecision(2)
 
         });
       }

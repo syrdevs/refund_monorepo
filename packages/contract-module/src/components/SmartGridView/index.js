@@ -63,7 +63,7 @@ const SmartColumnsSelect = props => {
           <Menu.Item key={index.toString()}>
             <Checkbox
               onChange={() => {
-                props.onSelectColumn(column.dataIndex);
+                props.onSelectColumn(column.dataIndex, column);
               }}
               checked={column.isVisible}>
               {column.title}
@@ -74,12 +74,15 @@ const SmartColumnsSelect = props => {
     </Menu>
   );
 
-  return (<Dropdown trigger={["click"]} onVisibleChange={(visible) => {
-    props.dropDownAction(visible);
-  }} visible={props.dropDownVisible} overlay={menu} placement="bottomRight">
-    <Button style={{ float: "right" }}><Icon><FontAwesomeIcon icon={faColumns}/></Icon>
-    </Button>
-  </Dropdown>);
+  return (
+    <Dropdown overlayStyle={{ overflowY: "scroll", border: "1px solid #cdcdcd", maxHeight: "400px" }}
+              trigger={["click"]}
+              onVisibleChange={(visible) => {
+                props.dropDownAction(visible);
+              }} visible={props.dropDownVisible} overlay={menu} placement="bottomRight">
+      <Button style={{ float: "right" }}><Icon><FontAwesomeIcon icon={faColumns}/></Icon>
+      </Button>
+    </Dropdown>);
 };
 
 const SmartGridHeader = props => {
@@ -118,6 +121,16 @@ const SmartGridHeader = props => {
   </div>);
 };
 
+function array_move(arr, old_index, new_index) {
+  if (new_index >= arr.length) {
+    var k = new_index - arr.length + 1;
+    while (k--) {
+      arr.push(undefined);
+    }
+  }
+  arr.splice(new_index, 0, arr.splice(old_index, 1)[0]);
+  return arr; // for testing
+};
 
 class BodyCell extends Component {
   render() {
@@ -142,7 +155,7 @@ class SmartGridView extends Component {
 
   }
 
-  onSelectColumn = (columnIndex) => {
+  onSelectColumn = (columnIndex, column) => {
 
     const { onColumnsChange } = this.props;
     let payment = this.props;
@@ -151,9 +164,16 @@ class SmartGridView extends Component {
     let StorageColumns = local_helper.get(this.props.name);
 
     StorageColumns.forEach(function(item) {
-      if (item.dataIndex === columnIndex) {
-        item.isVisible = !item.isVisible;
+      if (column.actionColumn) {
+        if (item.title === column.title) {
+          item.isVisible = !item.isVisible;
+        }
+      } else {
+        if (item.dataIndex === columnIndex) {
+          item.isVisible = !item.isVisible;
+        }
       }
+
     });
 
     local_helper.set(this.props.name, StorageColumns, true);
@@ -162,7 +182,7 @@ class SmartGridView extends Component {
       isColumnChanged: !this.state.isColumnChanged
     });
 
-    if (onColumnsChange)
+    if (onColumnsChange && !column.actionColumn)
       onColumnsChange(!this.state.isColumnChanged, columnIndex);
 
   };
@@ -215,17 +235,55 @@ class SmartGridView extends Component {
     };
   }
 
+  getColumnsProperty = () => {
+    let columns = this.props.columns;
+
+    if (this.props.actionColumns) {
+      this.props.actionColumns.forEach((actionColumn, idx) => {
+
+        let columnIndex = columns.findIndex(x => x.title === actionColumn.title);
+
+        if (columnIndex === -1) {
+
+          console.log(actionColumn);
+
+          let extraProps = {};
+
+          if (actionColumn.dataIndex) {
+            extraProps.dataIndex = actionColumn.dataIndex;
+          }
+
+          columns.push({
+            key: actionColumn.key,
+            className: actionColumn.className,
+            actionColumn: true,
+            title: actionColumn.title,
+            order: actionColumn.order,
+            sorted: actionColumn.sorted,
+            //dataIndex: actionColumn.title,
+            isVisible: actionColumn.isVisible,
+            ...extraProps
+          });
+        }
+
+
+      });
+    }
+
+    return columns;
+  };
+
   render() {
 
     let local_helper = this.StorageHelper();
     let StorageColumns = local_helper.get(this.props.name);
+    let _storeColumns = this.getColumnsProperty();
 
-    if (this.props.columns && StorageColumns.length !== this.props.columns.length) {
-      local_helper.set(this.props.name, this.props.columns, true);
+    if (_storeColumns && StorageColumns.length !== _storeColumns.length) {
+      local_helper.set(this.props.name, _storeColumns, true);
     } else {
-      local_helper.set(this.props.name, this.props.columns, StorageColumns.length === 0 && this.props.columns.length !== 0);
+      local_helper.set(this.props.name, _storeColumns, StorageColumns.length === 0 && _storeColumns.length !== 0);
     }
-
 
     let _columns = local_helper.get(this.props.name);
 
@@ -270,7 +328,7 @@ class SmartGridView extends Component {
 
         if (this.props.sortedInfo) {
           column.sortOrder = this.props.sortedInfo.columnKey === column.dataIndex && this.props.sortedInfo.order;
-          column.sorter = true;
+          column.sorter = column.hasOwnProperty("sorted") && column.sorted === false ? false : true;
         }
 
         //(a, b, sortOrder) => {
@@ -297,15 +355,39 @@ class SmartGridView extends Component {
 
     // to do order column with actionColumns
     if (this.props.actionColumns && this.props.actionColumns.length > 0) {
-      this.props.actionColumns.filter(x => x.isVisible).map((actcol) => {
-        if (actcol.order != null) {
-          tableOptions.columns.splice(actcol.order, 0, actcol);
-        } else {
-          tableOptions.columns.splice(1, 0, actcol);
+      tableOptions.columns.forEach((column) => {
+        let actionColumn = this.props.actionColumns.find(x => x.title === column.title);
+
+        if (actionColumn && actionColumn.onCell) {
+          column.onCell = actionColumn.onCell;
+        }
+
+        if (actionColumn && actionColumn.render) {
+          column.render = actionColumn.render;
         }
       });
+      // tableOptions.columns.filter(x => x.isVisible).map((actcol) => {
+      //   if (actcol.order != null) {
+      //     tableOptions.columns.splice(actcol.order, 0, actcol);
+      //   } else {
+      //     tableOptions.columns.splice(1, 0, actcol);
+      //   }
+      // });
       //tableOptions.columns = this.props.actionColumns.filter(x => x.isVisible).concat(tableOptions.columns);
     }
+
+    // let sortedColumns = tableOptions.columns;
+    //
+    // tableOptions.columns.filter(x => x.isVisible).forEach(column => {
+    //   // if (column.order != null) {
+    //   //   sortedColumns.splice(column.order, 0, column);
+    //   // } else {
+    //   //   sortedColumns.splice(1, 0, column);
+    //   // }
+    //
+    // });
+    //
+    // tableOptions.columns = sortedColumns;
 
     if (this.props.rowSelection) {
       tableOptions.components = {
