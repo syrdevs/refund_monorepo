@@ -10,14 +10,26 @@ import {
   Table,
   Row,
   Col,
+  Icon,
   Tabs,
   Badge,
   Card,
+  Menu,
+  Dropdown,
   Modal,
   Spin
 } from "antd";
-import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage, AttachmentPage,ProductionBasePage } from "./TabPages";
+import {
+  ContragentsPage,
+  GraphicPage,
+  SpecPage,
+  InfoPage,
+  DogovorPage,
+  AttachmentPage,
+  ProductionBasePage
+} from "./TabPages";
 
+import request from "../../utils/request";
 import ContentLayout from "../../layouts/ContentLayout";
 import styles from "./CounterAgent.css";
 import moment from "moment";
@@ -202,6 +214,7 @@ class CounterAgentEdit extends Component {
       sendModel.data.contractParties =
         this.props.universal.getObjectData.contractParties.map((contractParty) => {
           return {
+            bankAccount: contractParty.bankAccount,
             contractRole: {
               id: contractParty.contractRole.id
             },
@@ -218,6 +231,7 @@ class CounterAgentEdit extends Component {
       sendModel.data.contractParties =
         this.props.universal.counterAgentData.contractParties.map((contractParty) => {
           return {
+            bankAccount: contractParty.bankAccount,
             contractRole: {
               id: contractParty.contractRole.id
             },
@@ -302,19 +316,36 @@ class CounterAgentEdit extends Component {
 
     }
 
-
-    dispatch({
-      type: "universal/saveobject",
-      payload: sendModel
-    }).then((res) => {
-      if (!this.props.universal.saveanswer.Message) {
-        Modal.info({
-          title: "Информация",
-          content: "Сведения сохранены"
-        });
-        // reduxRouter.push('/contract/contracts/table');
+    request("/api/uicommand/saveObject", {
+      method: "POST",
+      body: sendModel,
+      getResponse: (response) => {
+        if (response.status === 200) {
+          Modal.info({
+            title: "Информация",
+            content: "Сведения сохранены"
+          });
+        } else if (response.status === 400) {
+          Modal.error({
+            title: "Ошибка",
+            content: response.data && response.data.Message
+          });
+        }
       }
     });
+
+    // dispatch({
+    //   type: "universal/saveobject",
+    //   payload: sendModel
+    // }).then((res) => {
+    //   if (!this.props.universal.saveanswer.Message) {
+    //     Modal.info({
+    //       title: "Информация",
+    //       content: "Сведения сохранены"
+    //     });
+    //     // reduxRouter.push('/contract/contracts/table');
+    //   }
+    // });
 
   };
 
@@ -334,6 +365,32 @@ class CounterAgentEdit extends Component {
     //   });
     // });
 
+  };
+
+  deleteContract = () => {
+    request("/api/uicommand/deleteObject",
+      {
+        method: "POST",
+        body: {
+          "entity": "contract",
+          "alias": null,
+          "id": this.props.location.query.id
+        },
+        getResponse: (response) => {
+          if (response.status === 200) {
+            Modal.info({
+              title: "Информация",
+              content: "Объект успешно удален"
+            });
+          } else if (response.status === 400) {
+            Modal.error({
+              title: "Ошибка",
+              content: response.data && response.data.Message
+            });
+          }
+        }
+      }
+    );
   };
 
   setSpecData = (data) => {
@@ -398,9 +455,10 @@ class CounterAgentEdit extends Component {
           title={""}
           key={"edit_card"}
           className={"headPanel"}
-          extra={[<Button
-            key={"save_btn"}
-            htmlType="submit">Сохранить</Button>,
+          extra={[
+            <Button
+              key={"save_btn"}
+              htmlType="submit">Сохранить</Button>,
             <span key={"document_span"}>
                 {(documentStatus === null || documentStatus === 2) &&
                 <span key={"documentStatus_span"}>
@@ -434,7 +492,6 @@ class CounterAgentEdit extends Component {
                   </span>
                 }
               </span>,
-
             <Button
               key={"delete_btn"}
               style={{ marginLeft: "5px" }}
@@ -456,6 +513,42 @@ class CounterAgentEdit extends Component {
                 });
                 this.props.history.push("/contracts/v2/contracts/table");
               }}>Закрыть</Button>,
+            <Dropdown
+              key={"dropdown_action_menu"}
+              trigger={["click"]}
+              overlay={<Menu>
+                <Menu.Item
+                  onClick={() => {
+                    this.props.history.go(0);
+                    //this.props.history.push("/contracts/v2/contracts/edit" + this.props.location.search);
+                  }}
+                  key='1'>
+                  Обновить
+                </Menu.Item>
+                <Menu.Item
+                  onClick={() => {
+                    Modal.confirm({
+                      title: "Подтверждение",
+                      cancelText: "Нет",
+                      okText: "Да",
+                      content: "Вы действительно хотите удалить объект?",
+                      onOk: () => {
+                        this.deleteContract();
+                      },
+                      onCancel: () => {
+
+                      }
+                    });
+                  }}
+                  key="2">
+                  Удалить
+                </Menu.Item>
+              </Menu>}>
+              <Button
+                style={{ marginLeft: "5px" }}
+                key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
+                type="down"/></Button>
+            </Dropdown>,
             <DropDownAction
               key={"dropdown_action_btn"}
               contractId={this.props.location.query.id}
@@ -528,10 +621,13 @@ class CounterAgentEdit extends Component {
                   selectedData={this.props.location.state}/>
               </TabPane>
               <TabPane tab={"Производственная база"} key={"production_base"}>
-                  <ProductionBasePage/>
+                <ProductionBasePage
+                  dataSource={this.props.universal.getObjectData}
+                />
               </TabPane>
               <TabPane
-                tab={<Badge count={this.state.tabRecordsCount.documentsCount} style={{ backgroundColor: "#1990FF" }}>
+                tab={<Badge count={this.state.tabRecordsCount.documentsCount}
+                            style={{ backgroundColor: "#1990FF" }}>
                   <div><span style={{ paddingRight: "15px" }}> Приложения</span></div>
                 </Badge>} key="attachments">
                 <AttachmentPage
@@ -544,14 +640,16 @@ class CounterAgentEdit extends Component {
             </Tabs>
           </Row>
         </Card>
-      </Form>
-    </ContentLayout>);
+        <
+        /Form>
+    </ContentLayout>
+  );
   };
-}
+  }
 
-export default connect(({ universal, universal2, loading }) => ({
-  universal,
-  universal2,
-  saveLoadingData: loading.effects["universal/saveobject"],
-  getLoadingData: loading.effects["universal/getobject"]
-}))(CounterAgentEdit);
+  export default connect(({universal, universal2, loading}) => ({
+    universal,
+    universal2,
+    saveLoadingData: loading.effects["universal/saveobject"],
+    getLoadingData: loading.effects["universal/getobject"]
+  }))(CounterAgentEdit);

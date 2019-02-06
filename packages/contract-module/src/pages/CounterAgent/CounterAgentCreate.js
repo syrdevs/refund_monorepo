@@ -9,7 +9,7 @@ import connect from "../../Redux";
 import AttachmentPage from "./TabPages/AttachmentPage";
 import Guid from "../../utils/Guid";
 import ContentLayout from "../../layouts/ContentLayout";
-
+import request from "../../utils/request";
 
 ///warning
 // counteragent alu kerek
@@ -98,7 +98,7 @@ class CounterAgentCreate extends Component {
   getCounterAgentById = (id, year) => {
     const { dispatch } = this.props;
 
-    console.log(id,year)
+    console.log(id, year);
 
     // dispatch({
     //   type: "universal/getCounterAgentData",
@@ -126,7 +126,8 @@ class CounterAgentCreate extends Component {
       "entity": "contract",
       "alias": null,
       "data": {
-        "contractParties": this.props.universal.counterAgentData.contractParties,
+        "contractLocations": [],
+        "contractParties": [], //this.props.universal.counterAgentData.contractParties,
         "contractItems": SpecFormData
       }
     };
@@ -201,18 +202,37 @@ class CounterAgentCreate extends Component {
 
     }
 
-    dispatch({
-      type: "universal/saveobject",
-      payload: sendModel
-    }).then((res) => {
-      if (!this.props.universal.saveanswer.Message) {
-        // Modal.info({
-        //   title: 'Информация',
-        //   content: 'Договор успешно создан',
-        // });
-        this.props.history.push("/contracts/v2/contracts/table");
+    request("/api/uicommand/saveObject", {
+      method: "POST",
+      body: sendModel,
+      getResponse: (response) => {
+        if (response.status === 200) {
+          Modal.info({
+            title: "Информация",
+            content: "Сведения сохранены"
+          });
+          this.props.history.push("/contracts/v2/contracts/edit?id=" + response.data.id);
+        } else if (response.status === 400) {
+          Modal.error({
+            title: "Ошибка",
+            content: response.data && response.data.Message
+          });
+        }
       }
     });
+
+    // dispatch({
+    //   type: "universal/saveobject",
+    //   payload: sendModel
+    // }).then((res) => {
+    //   if (!this.props.universal.saveanswer.Message) {
+    //     // Modal.info({
+    //     //   title: 'Информация',
+    //     //   content: 'Договор успешно создан',
+    //     // });
+    //     this.props.history.push("/contracts/v2/contracts/table");
+    //   }
+    // });
 
   };
 

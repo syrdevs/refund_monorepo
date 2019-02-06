@@ -118,13 +118,19 @@ class InfoPage extends Component {
     return current && current < moment().year(2019);
   };
 
-  getReferenceValues = (code, propName) => {
+  getReferenceValues = (code, propName, sort) => {
     const { universal2 } = this.props;
 
     if (!universal2.references.hasOwnProperty(code)) return [];
 
     return universal2.references[code]
-      ? universal2.references[code].content.map((item) => (
+      ? universal2.references[code].content.sort((a, b) => {
+        if (a[propName] < b[propName])
+          return sort === "desc" ? 1 : -1;
+        if (a[propName] > b[propName])
+          return sort === "desc" ? -1 : 1;
+        return 0;
+      }).map((item) => (
         <Option value={item.id} prop={item} key={item.id}>{item[propName]}</Option>))
       : null;
   };
@@ -366,7 +372,7 @@ class InfoPage extends Component {
                 }
 
               }}>
-              {this.getReferenceValues("periodYear", "year")}
+              {this.getReferenceValues("periodYear", "year", "desc")}
             </Select>
           )}
         </Form.Item>
@@ -468,7 +474,7 @@ class InfoPage extends Component {
         {/*}*/}
         {/*</Form.Item>*/}
 
-        {(this.state.contractAlterationReason === "02" || contractTypeDataSource.findIndex(x => (x.key === this.props.location.query.contractTypeId && x.props.prop.code === "02")) !== -1) &&
+        {(["02", "10"].includes(this.state.contractAlterationReason) || contractTypeDataSource.findIndex(x => (x.key === this.props.location.query.contractTypeId && ["02", "10"].includes(x.props.prop.code))) !== -1) &&
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator("contractAlternation", {
             rules: [{ required: false, message: "не заполнено" }],
@@ -482,7 +488,7 @@ class InfoPage extends Component {
         }
 
         <Form.Item {...formItemLayout} label="Изменения к договору">
-          {getObjectData._subContracts  && getObjectData._subContracts.map(x => (
+          {getObjectData._subContracts && getObjectData._subContracts.map(x => (
             <span
               style={{
                 color: "#1890ff",
@@ -492,7 +498,7 @@ class InfoPage extends Component {
               onClick={() => {
 
               }}>
-              {`(${x.contractType.shortName}) №${x.number} от ${x.documentDate}`}
+              {`${x.contractType.shortName} №${x.number} от ${x.documentDate}`}
               <br/>
         </span>
           ))}
@@ -526,7 +532,7 @@ class InfoPage extends Component {
             initialValue: getObjectData.dateBegin ? [moment(getObjectData.dateBegin, "DD.MM.YYYY"), getObjectData.dateEnd ? moment(getObjectData.dateEnd, "DD.MM.YYYY") : null] : null
           })(
             <RangePicker
-              style={{ width: "50%" }}
+              style={{ width: "80%" }}
               format={"DD.MM.YYYY"}
               placeholder={[
                 formatMessage({ id: "datepicker.start.label" }),
@@ -555,7 +561,7 @@ class InfoPage extends Component {
           })(
             <Select
               placeholder="Подразделение">
-              {this.getReferenceValues("divisions", "name")}
+              {this.getReferenceValues("divisions", "name", "asc")}
             </Select>
           )}
         </Form.Item>

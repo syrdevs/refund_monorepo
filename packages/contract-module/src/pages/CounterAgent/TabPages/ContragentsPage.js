@@ -14,7 +14,7 @@ class ContragentsPage extends Component {
 
     columns: [{
       title: "Роль",
-      dataIndex: "contractRole",
+      dataIndex: "contractRole.name",
       isVisible: true
     }, {
       title: "БИН/ИИН",
