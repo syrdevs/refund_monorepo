@@ -1377,6 +1377,13 @@ class AgentCreate extends Component {
   };
 
   saveobject = (values) => {
+    let legals=[];
+    if (values.legalForm) {
+      legals = (this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []).filter((item) => {
+        return item.id === values.legalForm;
+      })
+    }
+
     let attr = {
       "entity": "clinic",
       "alias": null,
@@ -1388,9 +1395,7 @@ class AgentCreate extends Component {
         "isRural": values.isRural ? true : false,
         "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY"): null,
         "dateEnd": values.dateEnd ? values.dateEnd.format("DD.MM.YYYY"): null,
-        "legalForm": values.legalForm ? (this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []).filter((item) => {
-          return item.id === values.legalForm;
-        }) : undefined
+        "legalForm": legals.length ? legals[0] : undefined
       }
     };
     if (this.props.location.query.id) {
