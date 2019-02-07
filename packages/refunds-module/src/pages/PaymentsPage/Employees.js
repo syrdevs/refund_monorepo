@@ -282,7 +282,7 @@ class Employees extends Component {
           this.props.onSelectBin(this.state.selectedRecord.senderBin);
         }
       }}>
-      Карточка потребителя</Button>];
+      Карточка плательщика</Button>];
     // let extraButtons = [<span key={"total-count"} style={{
     //   color: "#002140",
     //   fontSize: "12px",

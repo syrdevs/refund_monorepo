@@ -19,3 +19,11 @@
 .attachment_file_list .ant-table-body {
     min-height: auto;
 }
+
+.ant-table-thead .all_total_values {
+    background: #f2f2f2;
+}
+
+.ant-table-thead .all_total_values_first {
+    background:#F8F8FF;
+}
