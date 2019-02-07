@@ -42,14 +42,29 @@ const RenderformItemLayout = {
     span: 17
   }
 };
+const smallRenderformItemLayout = {
+  labelCol: {
+    span: 4
+  },
+  wrapperCol: {
+    span: 20
+  }
+};
 
-
-const RendetField = ({ name, label, local, type, getFieldDecorator, validatemessage, references, counteragent }) => {
+const RendetField = ({ small, name, label, local, disabled, type, getFieldDecorator, validatemessage, references, counteragent }) => {
+  let renderstyle = {
+    ...RenderformItemLayout
+  }
+  if (small){
+     renderstyle = {
+       ...smallRenderformItemLayout
+    }
+  }
   switch (type) {
     case "combobox": {
       return (
         <FormItem
-          {...RenderformItemLayout}
+          {...renderstyle}
           style={{ marginBottom: "24px" }}
           label={label}
 
@@ -61,7 +76,7 @@ const RendetField = ({ name, label, local, type, getFieldDecorator, validatemess
             }],
             initialValue: counteragent ? (counteragent[local] ? counteragent[local].id : null) : null
           })(
-            <Select key={name} style={{ marginLeft: "10px", width: "95%" }} name={name}>
+            <Select key={name} style={{ marginLeft: "10px", width: "95%" }} name={name} disabled={disabled}>
               {references && references.map((item) => {
                 return <Select.Option key={item.id} value={item.id} prop={item}>{item.nameRu}</Select.Option>;
               })}
@@ -72,7 +87,7 @@ const RendetField = ({ name, label, local, type, getFieldDecorator, validatemess
     case "text": {
       return (
         <FormItem
-          {...RenderformItemLayout}
+          {...renderstyle}
           style={{ marginBottom: "24px" }}
           key={name}
           label={label}
@@ -84,14 +99,14 @@ const RendetField = ({ name, label, local, type, getFieldDecorator, validatemess
             }],
             initialValue: counteragent ? counteragent[local] : null
           })(
-            <Input key={name} style={{ marginLeft: "10px", width: "95%" }} name={name}/>)}
+            <Input key={name} style={{ marginLeft: "10px", width: "95%" }} name={name} disabled={disabled}/>)}
         </FormItem>
       );
     }
     case "datePicker": {
       return (
         <FormItem
-          {...RenderformItemLayout}
+          {...renderstyle}
           style={{ marginBottom: "24px" }}
           label={label}
         >
@@ -102,7 +117,7 @@ const RendetField = ({ name, label, local, type, getFieldDecorator, validatemess
             }],
             initialValue: counteragent ? (counteragent[local] ? moment(counteragent[local], "DD.MM.YYYY") : null) : null
           })(
-            <DatePicker style={{ marginLeft: "10px", width: "95%" }} name={name} format={"DD.MM.YYYY"}/>
+            <DatePicker style={{ marginLeft: "10px", width: "30%" }} name={name} format={"DD.MM.YYYY"} disabled={disabled}/>
           )}
         </FormItem>
       );
@@ -129,25 +144,29 @@ class AgentCreate extends Component {
               name: "legalForm",
               local: "legalForm",
               label: "Организационно-правовая форма",
-              type: "combobox"
+              type: "combobox",
+              disabled: false,
             },
             {
               name: "name",
               local: "name",
               label: "Наименование",
-              type: "text"
+              type: "text",
+              disabled: false,
             },
             {
               name: "fullName",
               local: "fullName",
               label: "Наименование полное",
-              type: "text"
+              type: "text",
+              disabled: false,
             },
             {
               name: "shortName",
               local: "shortName",
               label: "Наименование краткое",
-              type: "text"
+              type: "text",
+              disabled: false,
             }
           ],
           key: "7"
@@ -155,60 +174,48 @@ class AgentCreate extends Component {
         {
           title: "Индивидуальный предприниматель",
           content: [
-            {
+           /* {
               name: 'iin',
               local: 'iin',
               label: 'ИИН',
-              type: 'text',
-            },
+              type: 'iin',
+              disabled: false,
+            },*/
             {
               name: 'firstName',
               local: 'firstName',
               label: 'Имя',
               type: 'text',
+              disabled: true,
             },
             {
               name: 'lastName',
               local: 'lastName',
               label: 'Фамилия',
               type: 'text',
+              disabled: true,
             },
             {
               name: 'patronymic',
               local: 'patronymic',
               label: 'Отчество',
               type: 'text',
+              disabled: true,
             },
             {
               name: 'sex',
               local: "sex",
               label: 'Пол',
               type: 'combobox',
+              disabled: true,
             },
             {
               name: 'birthdate',
               local: "birthdate",
               label: 'Дата рождения',
               type: 'datePicker',
+              disabled: true,
             },
-           /* {
-              name: 'fio_genitive',
-              local: 'fio_genitive',
-              label: 'ФИО в родительном падеже',
-              type: 'text',
-            },
-            {
-              name: 'fiz_fio_genitive',
-              local: 'fiz_fio_genitive',
-              label: 'ФИО в родительном падеже',
-              type: 'text',
-            },
-            {
-              name: 'fiz_fio_genitive_initials',
-              local: 'fiz_fio_genitive_initials',
-              label: 'Фамилия и инициалы в родительном падеже',
-              type: 'text',
-            },*/
           ],
           key: "8"
         },
@@ -1143,7 +1150,9 @@ class AgentCreate extends Component {
           ]
         }
       ],
-      counteragent: {}
+      counteragent: {},
+      tabname: 'orgpane',
+      iin: ''
     };
   }
   /*identitiescount: 0,
@@ -1153,6 +1162,24 @@ class AgentCreate extends Component {
      responsescount: 0,
      RegistrerSZscount: 0,
      Industbasecount: 0,*/
+  /* {
+              name: 'fio_genitive',
+              local: 'fio_genitive',
+              label: 'ФИО в родительном падеже',
+              type: 'text',
+            },
+            {
+              name: 'fiz_fio_genitive',
+              local: 'fiz_fio_genitive',
+              label: 'ФИО в родительном падеже',
+              type: 'text',
+            },
+            {
+              name: 'fiz_fio_genitive_initials',
+              local: 'fiz_fio_genitive_initials',
+              label: 'Фамилия и инициалы в родительном падеже',
+              type: 'text',
+            },*/
 
   componentDidMount() {
     if (this.props.location.query.id){
@@ -1184,7 +1211,7 @@ class AgentCreate extends Component {
         });
     }
     this.getlibs();
-  }
+  };
 
   getlibs = () => {
     const { dispatch } = this.props;
@@ -1260,6 +1287,11 @@ class AgentCreate extends Component {
   };
 
   addmultifields = (data) => {
+    if (data.representatives) {
+      this.setState({
+        iin: data.representatives.person ? (data.representatives.person.iin ? data.representatives.person.iin: "") : ""
+      })
+    }
     let identities = data.idendifiers ? data.idendifiers.map((item, index) => {
       return {
         "identityname": item.value,
@@ -1303,11 +1335,13 @@ class AgentCreate extends Component {
       adresses: addresses,
       banks: bankAccounts,
       contacts: contacts
-    }, () => {
     });
   };
 
   selecttypeagent = (e) => {
+    this.setState({
+      tabname: e.target.value
+    })
       /*if(e.target.value==="fizpane"){
         this.setState({
           panes: [this.state.fizpane]
@@ -1395,9 +1429,29 @@ class AgentCreate extends Component {
         "isRural": values.isRural ? true : false,
         "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY"): null,
         "dateEnd": values.dateEnd ? values.dateEnd.format("DD.MM.YYYY"): null,
-        "legalForm": legals.length ? legals[0] : undefined
+        "legalForm": legals.length ? legals[0] : undefined,
+
       }
     };
+
+    if (values.firstName) {
+      attr.data.representatives= [
+        {
+          "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY"): undefined,
+          "person": {
+            "iin": this.state.iin ? this.state.iin : undefined,
+            "patronymic": values.patronymic ? values.patronymic : undefined,
+            "firstName": values.firstName ? values.firstName : undefined,
+            "lastName": values.lastName ? values.lastName : undefined,
+            "birthdate": values.birthdate ? values.birthdate.format("DD.MM.YYYY") : undefined,
+            "workPlace": "",
+            "sex": {
+              "id": values.sex ? values.sex : null
+            }
+          }
+        }
+      ]
+    }
     if (this.props.location.query.id) {
       attr.data.id = this.props.location.query.id;
     }
@@ -1512,6 +1566,109 @@ class AgentCreate extends Component {
     this.props.history.push("/contracts/v2/counteragent/main");
   };
 
+  ChangeText = (e) => {
+    const { dispatch } = this.props;
+    this.setState({
+      iin: e.target.value
+    },()=>{
+      if (this.state.iin.length ===12){
+        dispatch({
+          type: "universal2/getPersonByIIN",
+          payload: {
+            "iin": this.state.iin
+          }
+        })
+          .then((e) => {
+          if (this.state.counteragent.representatives) {
+            this.setState({
+              counteragent: {
+                ...this.state.counteragent,
+                representatives: [{
+                  ...this.state.counteragent.representatives[0],
+                  person: {
+                    ...e
+                  }
+                }]
+              }
+            },()=>{
+              this.setIINs(e);
+            })
+          }
+          else {
+           this.setState({
+              counteragent: {
+                ...this.state.counteragent,
+                representatives: [{
+                  person: {
+                    ...e
+                  }
+                }]
+              }
+            },()=>{
+             this.setIINs(e);
+           })
+          }
+        })
+          .catch((e) => {
+            this.clearIINs();
+            Modal.error({
+              content: "ИИН не найден!"
+            });
+          });
+      }
+      else {
+        /*this.props.form.validateFields(
+          (err, values) => {
+            if (values.firstName) {
+              this.clearIINs();
+
+            }
+          })*/
+        this.clearIINs();
+      }
+    })
+  };
+
+
+  clearIINs=()=>{
+    if (this.state.counteragent.representatives) {
+      this.setState({
+        counteragent: {
+          ...this.state.counteragent,
+          representatives: [{
+            ...this.state.counteragent.representatives[0],
+            person: {}
+          }]
+        }
+      }, ()=>{
+        this.props.form.resetFields(['firstName','patronymic','lastName','birthdate','sex'])
+      })
+    }
+    else {
+      this.setState({
+        counteragent: {
+          ...this.state.counteragent,
+          representatives: [{
+            person: {}
+          }]
+        }
+      }, ()=>{
+        this.props.form.resetFields(['firstName','patronymic','lastName','birthdate','sex'])
+      })
+    }
+  }
+
+
+  setIINs=(e)=>{
+    this.props.form.setFieldsValue({
+      firstName:e.firstName ? e.firstName : null,
+      patronymic:e.patronymic ? e.patronymic : null,
+      lastName:e.lastName ? e.lastName : null,
+      ///birthdate:e.birthdate ? e.birthdate : null,
+      sex: e.sex ? e.sex.id : null,
+    })
+  }
+
   render() {
     const { panes, smarttabs } = this.state;
     const dateFormat = "DD.MM.YYYY";
@@ -1545,15 +1702,13 @@ class AgentCreate extends Component {
             <Col>
               <div style={{ float: "left", margin: "0px 0px 10px 0" }}>
                 <Button
-                  size={"large"}
                   onClick={(e) => {
                     this.cancelform();
                   }}
                 >
-                  Отменить
+                  Закрыть
                 </Button>
                 <Button
-                  size={"large"}
                   style={{ marginLeft: "5px" }}
                   type='primary'
                   onClick={(e) => {
@@ -1610,7 +1765,7 @@ class AgentCreate extends Component {
                   rules: [{
                     required: false
                   }],
-                  initialValue: "orgpane"
+                  initialValue: this.state.tabname//"orgpane"
                 })(
                   <Radio.Group style={{ marginTop: "8px" }} onChange={this.selecttypeagent}>
                     <Radio value="orgpane">Организация</Radio>
@@ -1706,9 +1861,11 @@ class AgentCreate extends Component {
                               return (
                                 <RendetField
                                   key={content.name}
+                                  small={false}
                                   name={content.name}
                                   label={content.label}
                                   local={content.local}
+                                  disabled={content.disabled}
                                   type={content.type}
                                   getFieldDecorator={getFieldDecorator}
                                   validatemessage={this.state.validatemessage}
@@ -1725,14 +1882,23 @@ class AgentCreate extends Component {
                     return (
                       <TabPane tab={<span style={title}>{pane.title}</span>} key={pane.key}>
                         <Card style={{ margin: "20px" }}>
+                          <FormItem
+                            {...smallRenderformItemLayout}
+                            style={{ marginBottom: "24px" }}
+                            label={"ИИН"}
+                          >
+                            <Input key={"iin"} style={{ marginLeft: "10px", width: "30%" }} maxLength={12} value={this.state.iin} onChange={(e)=>{this.ChangeText(e)}} />
+                          </FormItem>
                           {
                             pane.content.map((content) => {
                               return (
                                 <RendetField
                                   key={content.name}
+                                  small={true}
                                   name={content.name}
                                   label={content.label}
                                   local={content.local}
+                                  disabled={content.disabled}
                                   type={content.type}
                                   getFieldDecorator={getFieldDecorator}
                                   validatemessage={this.state.validatemessage}
@@ -1796,9 +1962,10 @@ class AgentCreate extends Component {
 }
 
 
-export default connect(({ references, universal, loading }) => ({
+export default connect(({ references, universal, universal2, loading }) => ({
   references,
   universal,
+  universal2,
   loadingData: loading.effects["references/load"]
 }))(AgentCreate);
 

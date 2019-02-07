@@ -6,8 +6,8 @@ import {
   getReportsList,
   getReportParameters,
   getFormedReports,
-  getList, getObject, getPublish
-} from '../services/api';
+  getList, getObject, getPublish, getPersonByIIN
+} from "../services/api";
 
 export default {
   namespace: 'universal2',
@@ -18,7 +18,8 @@ export default {
     columns: [],
     contractData: {},
     references: {},
-    publish: {}
+    publish: {},
+    iindata: {}
   },
   effects: {
     * getContractById(payload, { call, put }) {
@@ -34,6 +35,15 @@ export default {
 
       yield put({
         type: 'getPublishReducer',
+        payload: response || {},
+      });
+    },
+
+    * getPersonByIIN(payload, { call, put }) {
+      const response = yield call(getPersonByIIN, payload);
+
+      yield put({
+        type: 'getPersonByIINReducer',
         payload: response || {},
       });
     },
@@ -127,6 +137,12 @@ export default {
       return {
         ...state,
         publish: payload,
+      };
+    },
+    getPersonByIINReducer(state, { payload }) {
+      return {
+        ...state,
+        iindata: payload,
       };
     },
     getListDataByContract(state, { payload }) {

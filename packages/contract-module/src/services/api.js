@@ -437,4 +437,8 @@ export async function getPublish(params) {
   return request("/api/contract/publishDocument?entity=contract&id="+params.payload.id);
 }
 
+export async function getPersonByIIN(params) {
+  return request("/api/contract/getPersonByIIN?iin="+params.payload.iin);
+}
+
 

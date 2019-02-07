@@ -141,41 +141,41 @@ class CounterAgentNew extends Component {
           ],key: '7' }
       ],
       fizpane: { title: 'Индивидуальный предприниматель', content:  [
-         /* {
-            name: 'fiz_surname',
-            label: 'Вид идентификатора',
-            type: 'combobox',
-          },
-          {
-            name: 'fiz_name',
-            label: 'Имя',
-            type: 'text',
-          },
-          {
-            name: 'fiz_patronic',
-            label: 'Отчество',
-            type: 'text',
-          },
-          {
-            name: 'gender',
-            label: 'Пол',
-            type: 'combobox',
-          },
-          {
-            name: 'fio_genitive',
-            label: 'ФИО в родительном падеже',
-            type: 'text',
-          },
-          {
-            name: 'fiz_fio_genitive',
-            label: 'ФИО в родительном падеже',
-            type: 'text',
-          },
-          {
-            name: 'fiz_fio_genitive_initials',
-            label: 'Фамилия и инициалы в родительном падеже',
-            type: 'text',
-          },*/
+          /* {
+             name: 'fiz_surname',
+             label: 'Вид идентификатора',
+             type: 'combobox',
+           },
+           {
+             name: 'fiz_name',
+             label: 'Имя',
+             type: 'text',
+           },
+           {
+             name: 'fiz_patronic',
+             label: 'Отчество',
+             type: 'text',
+           },
+           {
+             name: 'gender',
+             label: 'Пол',
+             type: 'combobox',
+           },
+           {
+             name: 'fio_genitive',
+             label: 'ФИО в родительном падеже',
+             type: 'text',
+           },
+           {
+             name: 'fiz_fio_genitive',
+             label: 'ФИО в родительном падеже',
+             type: 'text',
+           },
+           {
+             name: 'fiz_fio_genitive_initials',
+             label: 'Фамилия и инициалы в родительном падеже',
+             type: 'text',
+           },*/
         ],key: '7' },
       orgpane: { title: 'Организация', content:  [
           {
@@ -355,28 +355,28 @@ class CounterAgentNew extends Component {
                       /*<Input name={'adresstype'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'adresstype', "adresses")}}/>*/
 
                       <Select name={'adresstype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'adresstype', "adresses")}}>
-                          {this.props.universal2.references.addressType.content && this.props.universal2.references.addressType.content.map((item) => {
-                            return <Select.Option key={item.id}>{item.name}</Select.Option>;
-                          })}
+                        {this.props.universal2.references.addressType.content && this.props.universal2.references.addressType.content.map((item) => {
+                          return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                        })}
                       </Select>
 
                     )}
                   </FormItem>)
 
 
-/*
-                {this.props.form.getFieldDecorator('identitytype'+record.key, {
-                  rules: [{
-                    required: true,
-                    message: this.state.validatemessage,
-                  }],
-                })(
-                  <Select name={'identitytype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'identitytype', 'identities')}}>
-                    {this.props.universal.identifierType.content && this.props.universal.identifierType.content.map((item) => {
-                      return <Select.Option key={item.id}>{item.name}</Select.Option>;
-                    })}
-                  </Select>
-                )}*/
+                /*
+                                {this.props.form.getFieldDecorator('identitytype'+record.key, {
+                                  rules: [{
+                                    required: true,
+                                    message: this.state.validatemessage,
+                                  }],
+                                })(
+                                  <Select name={'identitytype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'identitytype', 'identities')}}>
+                                    {this.props.universal.identifierType.content && this.props.universal.identifierType.content.map((item) => {
+                                      return <Select.Option key={item.id}>{item.name}</Select.Option>;
+                                    })}
+                                  </Select>
+                                )}*/
               },
             },
             {
@@ -472,11 +472,11 @@ class CounterAgentNew extends Component {
                   })(
                     /*<Input name={'contacttype'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'contacttype', "contacts")}}/>)}*/
 
-                  <Select name={'contacttype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'contacttype', "contacts")}}>
-                    {this.props.universal2.references.contactType.content && this.props.universal2.references.contactType.content.map((item) => {
-                      return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
-                    })}
-                  </Select>
+                    <Select name={'contacttype'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'contacttype', "contacts")}}>
+                      {this.props.universal2.references.contactType.content && this.props.universal2.references.contactType.content.map((item) => {
+                        return <Select.Option key={item.id}>{item.nameRu}</Select.Option>;
+                      })}
+                    </Select>
                   )}
                 </FormItem>)
             },
@@ -594,32 +594,32 @@ class CounterAgentNew extends Component {
                     })(
                       /*<Input name={'bank'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'bank', "banks")}}/>)}*/
                       <Select name={'bank'+record.key} style={{ width: 250 }} onChange={(e)=>{this.identValue(e, record, 'bank', "banks")}}>
-                      {this.props.universal2.references.bank.content && this.props.universal2.references.bank.content.map((item) => {
-                        return <Select.Option key={item.id}>{item.bikCode+"  "+item.shortName}</Select.Option>;
-                      })}
+                        {this.props.universal2.references.bank.content && this.props.universal2.references.bank.content.map((item) => {
+                          return <Select.Option key={item.id}>{item.bikCode+"  "+item.shortName}</Select.Option>;
+                        })}
                       </Select>
-                      )}
+                    )}
                   </FormItem>)
               },
             },
-           /* {
-              dataIndex: 'bankname',
-              title: 'Наименование банка (краткое)',
-              width: '25%',
-              render: (text, record) => {
-                return (
-                  <FormItem
-                  >
-                    {this.props.form.getFieldDecorator('bankname'+record.key, {
-                      rules: [{
-                        required: true,
-                        message: this.state.validatemessage,
-                      }],
-                    })(
-                      <Input name={'bankname'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'bankname', "banks")}}/>)}
-                  </FormItem>)
-              },
-            },*/
+            /* {
+               dataIndex: 'bankname',
+               title: 'Наименование банка (краткое)',
+               width: '25%',
+               render: (text, record) => {
+                 return (
+                   <FormItem
+                   >
+                     {this.props.form.getFieldDecorator('bankname'+record.key, {
+                       rules: [{
+                         required: true,
+                         message: this.state.validatemessage,
+                       }],
+                     })(
+                       <Input name={'bankname'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'bankname', "banks")}}/>)}
+                   </FormItem>)
+               },
+             },*/
             {
               dataIndex: 'iik',
               title: 'Счет (ИИК)',
@@ -1021,7 +1021,8 @@ class CounterAgentNew extends Component {
             }
           ]
         },
-      ]
+      ],
+      tabname:'fizpane'
     };
   }
 
@@ -1083,6 +1084,9 @@ class CounterAgentNew extends Component {
   }
 
   selecttypeagent = (e) => {
+    this.setState({
+      tabname: e.target.value
+    });
     /*        console.log(e.target.value);
     this.setState({
       panes: [
@@ -1317,7 +1321,7 @@ class CounterAgentNew extends Component {
         <Form layout={'horizontal'}>
           <Row>
             <div>
-             {/* {this.state.isNew &&
+              {/* {this.state.isNew &&
               <div>
                 <FormItem
                   label={<span style={title}>Краткое наименование</span>}
@@ -1355,12 +1359,10 @@ class CounterAgentNew extends Component {
                 label={<span style={title}>Вид субъекта здравоохранения</span>}
                 {...formItemLayout}
               >
-                {getFieldDecorator('radio-button')(
-                <Radio.Group style={{marginTop: '8px'}} onChange={this.selecttypeagent}>
-                  <Radio value="orgpane">Организация</Radio>
-                  <Radio value="fizpane">Индивидуальный предприниматель</Radio>
-                </Radio.Group>
-                )}
+                  <Radio.Group defaultValue="fizpane" style={{marginTop: '8px'}} onChange={this.selecttypeagent}>
+                    <Radio value="fizpane">Индивидуальный предприниматель</Radio>
+                    <Radio value="orgpane">Организация</Radio>
+                  </Radio.Group>
               </FormItem>
               <FormItem
                 label={<span style={title}>СЗ районного значения и села</span>}
@@ -1387,7 +1389,7 @@ class CounterAgentNew extends Component {
                   <DatePicker style={{ width:'180px'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
                 )}
               </FormItem>
-             {/* {this.state.isNew &&
+              {/* {this.state.isNew &&
               <div>
                 <FormItem
                   label={<span style={title}>ОПФ</span>}
@@ -1413,15 +1415,15 @@ class CounterAgentNew extends Component {
               <Divider
                 style={{ marginBottom: '20px' }}
               />
-             {/* <Tabs
+              {/* <Tabs
                 tabPosition='top'
                 style={{marginBottom:'20px', minHeight: '550px'}}
               >*/}
-                <Tabs
-                  className={styles.stepFormText}
-                  type={"card"}
-                  defaultActiveKey="form"
-                  tabPosition={"left"}>
+              <Tabs
+                className={styles.stepFormText}
+                type={"card"}
+                defaultActiveKey="form"
+                tabPosition={"left"}>
                 { panes.map(pane =>{
                     return(
                       <TabPane tab={<span style={title}>{pane.title}</span>}  key={pane.key}>
@@ -1451,16 +1453,16 @@ class CounterAgentNew extends Component {
                       <div>
                         <Button onClick={()=>{
                           this.setState({
-                          [smarttab.name]: [
-                            ...this.state[smarttab.name],
-                            {
-                              ...smarttab.cols,
-                              key: this.state[smarttab.name+'count'],
-                            }
-                          ],
-                          [smarttab.name+'count']: this.state[smarttab.name+'count']+1
-                        },()=>{
-                        })}} type="primary" style={{ marginBottom: 16 }}>
+                            [smarttab.name]: [
+                              ...this.state[smarttab.name],
+                              {
+                                ...smarttab.cols,
+                                key: this.state[smarttab.name+'count'],
+                              }
+                            ],
+                            [smarttab.name+'count']: this.state[smarttab.name+'count']+1
+                          },()=>{
+                          })}} type="primary" style={{ marginBottom: 16 }}>
                           Добавить
                         </Button>
                         <Table bordered={false} dataSource={this.state[smarttab.name]} columns={this.state.smarttabs.find(x => x.name === smarttab.name).columns} />
