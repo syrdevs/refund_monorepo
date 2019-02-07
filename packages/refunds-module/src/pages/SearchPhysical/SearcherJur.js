@@ -17,6 +17,7 @@ import {
   Modal
 } from "antd";
 import connect from "../../Redux";
+import request from "../../utils/request";
 
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -41,7 +42,9 @@ class SearcherJur extends Component {
       },
       loading: false,
       payes: [],
-      yearDo: null
+      yearDo: null,
+
+      knpListData: []
     };
   }
 
@@ -108,11 +111,9 @@ class SearcherJur extends Component {
   };
 
   getPayersListData = () => {
-    const { dispatch } = this.props;
-
-    dispatch({
-      type: "universal2/getPayerList",
-      payload: {
+    request("/api/uicommand/getGroupsList", {
+      method: "POST",
+      body: {
         "entity": "mt102",
         "alias": null,
         "filter": {
@@ -132,8 +133,40 @@ class SearcherJur extends Component {
             "needSum": true
           }
         ]
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          this.setState({
+            knpListData: response.data
+          });
+        }
       }
     });
+
+    // dispatch({
+    //   type: "universal2/getPayerList",
+    //   payload: {
+    //     "entity": "mt102",
+    //     "alias": null,
+    //     "filter": {
+    //       "senderBin": this.state.bin
+    //     },
+    //     "sort": [
+    //       {
+    //         "field": "knp"
+    //       }
+    //     ],
+    //     "group": [
+    //       {
+    //         "field": "knp"
+    //       },
+    //       {
+    //         "field": "paymentsum",
+    //         "needSum": true
+    //       }
+    //     ]
+    //   }
+    // });
   };
 
   searchperson = (value) => {
@@ -224,7 +257,7 @@ class SearcherJur extends Component {
 
     let getPayerStoreData = [
       { key: "КОЛИЧЕСТВО ПЛАТЕЖЕЙ" },
-      { key: "СУММА ПЛАТЕЖЕЙ"  }
+      { key: "СУММА ПЛАТЕЖЕЙ" }
     ];
 
     let getPayerStoreColumns = [{
@@ -232,7 +265,7 @@ class SearcherJur extends Component {
       title: ""
     }];
 
-    let getPayerListData = this.props.universal2.getPayerList["mt102"];
+    let getPayerListData = this.state.knpListData;
 
     if (Array.isArray(getPayerListData)) {
       getPayerListData.forEach((item) => {
@@ -281,7 +314,7 @@ class SearcherJur extends Component {
         name: "РАЙОН",
         value: jur.raion
       },
-       {
+      {
         key: 6,
         name: "КОЛИЧЕСТВО ПОТРЕБИТЕЛЕЙ",
         value: jur.personCount
@@ -293,7 +326,7 @@ class SearcherJur extends Component {
         key: 8,
         name: "СУММА ВОЗВРАТОВ",
         value: jur.refundSum
-      },{
+      }, {
         key: 4,
         name: "КОЛИЧЕСТВО ПЛАТЕЖЕЙ",
         value: jur.paymentCount
@@ -302,7 +335,7 @@ class SearcherJur extends Component {
         key: 5,
         name: "СУММА ПЛАТЕЖЕЙ",
         value: jur.paymentSum
-      },
+      }
     ];
 
     return (<div>

@@ -131,13 +131,13 @@ export default [
           // }
         ]
       },*/
-      // {
-      //   path: "/refunds/options",
-      //   icon: "database",
-      //   name: "options",
-      //   component: "./Options/Options",
-      //   authority: ["ADMIN", "FSMS1", "FSMS2"]
-      // },
+      {
+        path: "/refunds/options",
+        icon: "database",
+        name: "options",
+        component: "./Options/Options",
+        authority: ["ADMIN", "FSMS1", "FSMS2"]
+      },
       {
         path: "/refunds/documents",
         icon: "database",

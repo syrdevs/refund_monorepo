@@ -33,7 +33,7 @@ class NumberInput extends Component {
   render() {
 
     let inputProps = {};
-    inputProps.step = 0.1;
+    inputProps.step = 1;
     inputProps.type = 'number';
     inputProps.style = {
       minWidth: 100,

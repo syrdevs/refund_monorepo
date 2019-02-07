@@ -41,6 +41,10 @@ const formRenderLayout = {
 };
 const Option = Select.Option;
 
+function numberCeil(x) {
+  return Math.ceil((x) * 100) / 100;
+}
+
 function momentDefine() {
   let suffixes = {
     0: "-ші",
@@ -305,11 +309,13 @@ class SpecPage extends Component {
         },
         {
           title: "Всего",
+          className: "all_total_values_first",
           children: [
             {
               title: "Количество",
               dataIndex: "value",
               width: "10%",
+              className: "all_total_values_first",
               render: (text, record) => {
 
                 let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
@@ -322,7 +328,7 @@ class SpecPage extends Component {
                 }
 
                 record["percentAdvance"] = this.calculateAllMonthValue(record);
-                record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+                record["sumAdvance"] = numberCeil(record["valueSum"] * record["percentAvance"] / 100);
 
                 return (<InputNumber
                   defaultValue={record.value ? record.value : 0}
@@ -336,7 +342,7 @@ class SpecPage extends Component {
                     let countValue = record.value ? record.value : 0;
 
                     record["valueSum"] = tariffValue * countValue;
-                    record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+                    record["sumAdvance"] = numberCeil(record["valueSum"] * record["percentAvance"] / 100);
 
                     this.setState(prevState => ({
                       smarttabDataSource: prevState.smarttabDataSource
@@ -363,6 +369,7 @@ class SpecPage extends Component {
               title: "Тариф (₸)",
               dataIndex: "tariffItem.name",
               isVisible: true,
+              className: "all_total_values_first",
               order: 2,
               width: "20%",
               key: "tariff",
@@ -396,6 +403,7 @@ class SpecPage extends Component {
               dataIndex: "valueSum",
               isVisible: true,
               order: 2,
+              className: "all_total_values_first",
               width: "20%",
               key: "summa",
               onCell: record => {
@@ -429,6 +437,7 @@ class SpecPage extends Component {
               title: "% Аванса",
               dataIndex: "percentAvance",
               isVisible: true,
+              className: "all_total_values_first",
               order: 2,
               width: "20%",
               key: "percentAvance",
@@ -445,13 +454,13 @@ class SpecPage extends Component {
                   return <Input disabled={true} value={record.percentAvanceTotal ? record.percentAvanceTotal : 0}/>;
                 }
 
-                record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+                record["sumAdvance"] = numberCeil(record["valueSum"] * record["percentAvance"] / 100);
 
                 return (<InputNumber
                   defaultValue={record["percentAvance"] ? record["percentAvance"] : 0}
                   onChange={(e) => {
                     record["percentAvance"] = e;
-                    record["sumAdvance"] = record["valueSum"] * record["percentAvance"] / 100;
+                    record["sumAdvance"] = numberCeil(record["valueSum"] * record["percentAvance"] / 100);
 
                     this.setState(prevState => ({
                       smarttabDataSource: prevState.smarttabDataSource
@@ -485,6 +494,7 @@ class SpecPage extends Component {
               dataIndex: "sumAdvance",
               isVisible: true,
               order: 2,
+              className: "all_total_values_first",
               width: "20%",
               key: "avans",
               onCell: record => {
@@ -593,7 +603,7 @@ class SpecPage extends Component {
 
       Object.keys(record.contractTimeItem).map((key) => {
         if (record.contractTimeItem[key].valueSection || record.contractTimeItem[key].valueSection === 0) {
-          allMonthSum += parseFloat(record.contractTimeItem[key].valueSection);
+          allMonthSum += parseInt(record.contractTimeItem[key].valueSection);
         }
       });
 
@@ -955,11 +965,13 @@ class SpecPage extends Component {
       })
       .forEach((recordItem) => {
         let monthColumn = {
+          className: parseInt(recordItem.periodSection.index) % 2 === 0 && "all_total_values",
           isHide: this.getHideState(),
           title: recordItem.periodSection.name,
           children: [
             {
               title: "Количество",
+              className: parseInt(recordItem.periodSection.index) % 2 === 0 && "all_total_values",
               key: `periodSection${recordItem.periodSection.index}.valueSection`,
               width: 200,
               render: (record) => {
@@ -1008,6 +1020,7 @@ class SpecPage extends Component {
             },
             {
               title: "Сумма, т",
+              className: parseInt(recordItem.periodSection.index) % 2 === 0 && "all_total_values",
               key: `periodSection${recordItem.periodSection.index}.sumSection`,
               width: 200,
               render: (record) => {
@@ -1023,6 +1036,7 @@ class SpecPage extends Component {
             },
             {
               title: "Сумма аванса, т",
+              className: parseInt(recordItem.periodSection.index) % 2 === 0 && "all_total_values",
               key: `periodSection${recordItem.periodSection.index}.sumAdvanceTakeout`,
               width: 200,
               render: (record) => {
@@ -1089,7 +1103,7 @@ class SpecPage extends Component {
             //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
           }
 
-          return <span>{record.percentAdvance ? record.percentAdvance.toPrecision(2) : 0}</span>;
+          return <span>{record.percentAdvance ? record.percentAdvance : 0}</span>;
         }
       }].concat(extraColumns)
     }));
@@ -1280,43 +1294,43 @@ class SpecPage extends Component {
 
       if (columnName === "tariff") {
         if (item.tariffItem && item.tariffItem.tariffValue) {
-          result += parseFloat(item.tariffItem.tariffValue);
+          result += numberCeil(parseFloat(item.tariffItem.tariffValue));
         }
       }
 
       if (columnName === "sumAdvance") {
         if (item.sumAdvance) {
-          result += parseFloat(item.sumAdvance);
+          result += numberCeil(parseFloat(item.sumAdvance));
         }
       }
 
       if (columnName === "valueSum") {
         if (item.valueSum) {
-          result += parseFloat(item.valueSum);
+          result += numberCeil(parseFloat(item.valueSum));
         }
       }
 
       if (columnName === "value") {
         if (item.value) {
-          result += parseFloat(item.value);
+          result += parseInt(item.value);
         }
       }
 
       if (columnName === "percentAdvance") {
         if (item.percentAdvance) {
-          result += parseFloat(item.percentAdvance);
+          result += parseInt(item.percentAdvance);
         }
       }
 
       if (columnName === "percentAvance") {
         if (item.percentAvance) {
-          result += parseFloat(item.percentAvance);
+          result += numberCeil(parseFloat(item.percentAvance));
         }
       }
 
     });
 
-    return result.toPrecision(2);
+    return result;
 
   };
 
@@ -1334,16 +1348,16 @@ class SpecPage extends Component {
             };
 
           if (item.contractTimeItem[monthIndex].valueSection)
-            contractTimeIndexKeys[monthIndex].valueSection += parseFloat(item.contractTimeItem[monthIndex].valueSection);
-          contractTimeIndexKeys[monthIndex].valueSection = parseFloat(contractTimeIndexKeys[monthIndex].valueSection).toPrecision(2)
+            contractTimeIndexKeys[monthIndex].valueSection += parseInt(item.contractTimeItem[monthIndex].valueSection);
+          contractTimeIndexKeys[monthIndex].valueSection = parseInt(contractTimeIndexKeys[monthIndex].valueSection);
 
           if (item.contractTimeItem[monthIndex].sumSection)
-            contractTimeIndexKeys[monthIndex].sumSection += parseFloat(item.contractTimeItem[monthIndex].sumSection);
-          contractTimeIndexKeys[monthIndex].sumSection = parseFloat(contractTimeIndexKeys[monthIndex].sumSection).toPrecision(2)
+            contractTimeIndexKeys[monthIndex].sumSection += numberCeil(parseFloat(item.contractTimeItem[monthIndex].sumSection));
+          contractTimeIndexKeys[monthIndex].sumSection = numberCeil(parseFloat(contractTimeIndexKeys[monthIndex].sumSection));
 
           if (item.contractTimeItem[monthIndex].sumAdvanceTakeout)
-            contractTimeIndexKeys[monthIndex].sumAdvanceTakeout += parseFloat(item.contractTimeItem[monthIndex].sumAdvanceTakeout);
-          contractTimeIndexKeys[monthIndex].sumAdvanceTakeout = parseFloat(contractTimeIndexKeys[monthIndex].sumAdvanceTakeout).toPrecision(2)
+            contractTimeIndexKeys[monthIndex].sumAdvanceTakeout += numberCeil(parseFloat(item.contractTimeItem[monthIndex].sumAdvanceTakeout));
+          contractTimeIndexKeys[monthIndex].sumAdvanceTakeout = numberCeil(parseFloat(contractTimeIndexKeys[monthIndex].sumAdvanceTakeout));
 
         });
       }
@@ -1374,16 +1388,17 @@ class SpecPage extends Component {
         activity: {
           code: "Итого:"
         },
-        tariffItemTotal: this.calculateMainSum("tariff"),
-        sumAdvanceTotal: this.calculateMainSum("sumAdvance"),
-        valueSumTotal: this.calculateMainSum("valueSum"),
+        tariffItemTotal: numberCeil(this.calculateMainSum("tariff")),
+        sumAdvanceTotal: numberCeil(this.calculateMainSum("sumAdvance")),
+        valueSumTotal: numberCeil(this.calculateMainSum("valueSum")),
         valueTotal: this.calculateMainSum("value"),
         percentAdvanceTotal: this.calculateMainSum("percentAdvance"),
-        percentAvanceTotal: this.calculateMainSum("percentAvance"),
+        percentAvanceTotal: numberCeil(this.calculateMainSum("percentAvance")),
         total: this.calculateSum(),
         contractTimeItem: this.state.smarttabcols.contractTimeItem
       }]);
     }
+
 
     return (
       <Card bodyStyle={{ padding: 5 }} style={{ marginLeft: "-10px" }}>
