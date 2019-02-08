@@ -225,8 +225,7 @@ class ModalChangeDate extends Component {
             {this.props.dataSource.value && <DatePicker
               allowClear={false}
               defaultValue={moment(this.props.dataSource.value, this.props.dateFormat)}
-              size="large"
-              style={{ marginBottom: "5px" }}
+              style={{ marginBottom: "5px", width: "195px" }}
               format={this.props.dateFormat}
               disabledDate={this.disabledDate}
               onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
@@ -234,8 +233,7 @@ class ModalChangeDate extends Component {
 
             {!this.props.dataSource.value && <DatePicker
               allowClear={false}
-              size="large"
-              style={{ marginBottom: "5px" }}
+              style={{ marginBottom: "5px", width: "195px" }}
               format={this.props.dateFormat}
               disabledDate={this.disabledDate}
               onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}

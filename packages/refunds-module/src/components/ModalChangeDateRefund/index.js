@@ -54,7 +54,7 @@ class ModalChangeDateRefund extends Component {
           <span>Дата:</span> <DatePicker
           allowClear={false}
           size="large"
-          style={{ marginBottom: '5px' }}
+          style={{ marginBottom: '5px', width: "195px" }}
           format={this.props.dateFormat}
           onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
         />

@@ -234,7 +234,7 @@ class ReportForm extends Component {
           <DatePicker
             {...params}
             style={{
-              width: "100%"
+              width: "195px"
             }}
             format="DD.MM.YYYY"
             onChange={(date, stringDate) => {

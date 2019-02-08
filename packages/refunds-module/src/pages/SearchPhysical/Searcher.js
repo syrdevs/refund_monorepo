@@ -822,7 +822,7 @@ class Searcher extends Component {
 
     let params = {
       style: {
-        width: "40%"
+        width: "195px"
       },
       format: dateFormat,
       onChange: (moment, dateString) => {
