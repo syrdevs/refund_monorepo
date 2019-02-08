@@ -533,7 +533,16 @@ class ContractTable extends Component {
   render = () => {
 
 
-    let subMenuChilds = this.state.selectedRecord && this.state.selectedRecord.contractType && this.state.selectedRecord.contractType._contractTypeChilds;
+    let subMenuChilds = null;// this.state.selectedRecord && this.state.selectedRecord.contractType && this.state.selectedRecord.contractType._contractTypeChilds;
+
+    if (this.state.selectedRowKeys.length === 1) {
+      //;
+      let record = this.props.universal2.references[this.state.gridParameters.entity] && this.props.universal2.references[this.state.gridParameters.entity].content && this.props.universal2.references[this.state.gridParameters.entity].content.find(x => x.id === this.state.selectedRowKeys[0]);
+      if (record) {
+        subMenuChilds = record && record.contractType && record.contractType._contractTypeChilds;
+      }
+
+    }
 
     const { universal2 } = this.props;
     const contracts = universal2.references[this.state.gridParameters.entity];
@@ -548,7 +557,7 @@ class ContractTable extends Component {
         {/*Новый*/}
         {/*</Menu.Item>*/}
         <Menu.Item
-          disabled={this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
+          disabled={this.state.selectedRowKeys.length !== 1}
           onClick={() => {
 
             let recordId = this.state.selectedRowKeys[0];
@@ -565,12 +574,12 @@ class ContractTable extends Component {
           onClick={() => {
             this.deleteContract(this.state.selectedRowKeys[0]);
           }}
-          disabled={this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
+          disabled={this.state.selectedRowKeys.length !== 1}
           key="3">
           Удалить
         </Menu.Item>
         <SubMenu
-          disabled={!subMenuChilds || this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
+          disabled={!subMenuChilds || this.state.selectedRowKeys.length !== 1}
           key="9"
           title="Дополнительное соглашение">
           {subMenuChilds && subMenuChilds
@@ -582,7 +591,7 @@ class ContractTable extends Component {
               key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
         </SubMenu>
         <SubMenu
-          disabled={!subMenuChilds || this.state.selectedRowKeys === null || this.state.selectedRowKeys.length !== 1}
+          disabled={!subMenuChilds || this.state.selectedRowKeys.length !== 1}
           key="7"
           title=" Договор субподряда">
           {subMenuChilds && subMenuChilds
@@ -595,7 +604,7 @@ class ContractTable extends Component {
         </SubMenu>
         <Menu.Item
           key='4'
-          disabled={this.state.selectedRowKeys.length === 0}
+          disabled={this.state.selectedRowKeys.length !== 1}
           onClick={() => {
             let isOne = true;
             contracts.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1).map((item, index, arr) => {

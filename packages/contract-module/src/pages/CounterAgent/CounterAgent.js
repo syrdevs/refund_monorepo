@@ -28,13 +28,16 @@ import { Animated } from "react-animated-css";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import GridFilter from "../../components/GridFilter";
+import request from "../../utils/request";
 
 const dateFormat = "YYYY/MM/DD";
+const SubMenu = Menu.SubMenu;
 
 class CounterAgent extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      subMenuChild: [],
       selectedRowKeys: [],
       isForm: false,
       columns: [
@@ -90,12 +93,12 @@ class CounterAgent extends Component {
         },
         {
           name: "nameSearch",
-          label: 'Наименование',
+          label: "Наименование",
           type: "text"
         },
         {
           name: "addressSearch",
-          label: 'Адрес',
+          label: "Адрес",
           type: "text"
         },
         {
@@ -118,7 +121,7 @@ class CounterAgent extends Component {
           name: "isRural",
           type: "checkbox"
         }
-      ],
+      ]
     };
   }
 
@@ -152,8 +155,30 @@ class CounterAgent extends Component {
     });
   };
 
+  getMenuActions = () => {
+    request("/api/uicommand/getList", {
+      method: "POST",
+      body: {
+        "start": 0,
+        "length": 20,
+        "entity": "contractType",
+        "filter": {
+          "basicContractType.code": "1"
+        }
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          this.setState({
+            subMenuChild: response.data.content && response.data.content
+          });
+        }
+      }
+    });
+  };
+
   componentDidMount() {
     this.loadMainGridData();
+    this.getMenuActions();
   }
 
   toggleItems() {
@@ -232,21 +257,17 @@ class CounterAgent extends Component {
           }}>
           Открыть
         </Menu.Item>
-        <Menu.Item
+        <SubMenu
           disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
-          key='register_document'
-          onClick={() => {
-            this.props.history.push("/contracts/v2/contracts/create?counterAgentId=" + this.state.selectedRecord.id);
-            // this.props.history.push({
-            //   pathname: "/contracts2/contracts/create",
-            //   state: {
-            //     data: this.state.selectedRecord
-            //     // data: counterData.content.filter(x => this.state.selectedRowKeys.findIndex(a => x.id === a) !== -1),
-            //   }
-            // });
-          }}>
-          Создать договор
-        </Menu.Item>
+          key="register_document"
+          title="Создать договор">
+          {this.state.subMenuChild && this.state.subMenuChild
+            .map((menuItem) => (<Menu.Item
+              onClick={() => {
+                this.props.history.push("/contracts/v2/contracts/create?counterAgentId=" + this.state.selectedRecord.id + "&contractTypeId=" + menuItem.id);
+              }}
+              key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
+        </SubMenu>
       </Menu>}>
         <Button
           key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
@@ -308,7 +329,7 @@ class CounterAgent extends Component {
               }}
               columns={this.state.columns}
               actionColumns={[
-                 {
+                {
                   title: "СЗ районного значения и села",
                   key: "sz_region",
                   order: 10,
@@ -316,11 +337,11 @@ class CounterAgent extends Component {
                   width: 200,
                   render: (item) => {
                     if (item.isRural) {
-                      return <Icon type="check" />;
+                      return <Icon type="check"/>;
                     }
                   }
                 }
-                ]}
+              ]}
               sorted={true}
               showTotal={true}
               dataSource={{

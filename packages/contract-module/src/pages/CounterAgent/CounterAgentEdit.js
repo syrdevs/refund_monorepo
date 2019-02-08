@@ -416,50 +416,49 @@ class CounterAgentEdit extends Component {
 
     const { dispatch } = this.props;
     const documentStatus = this.props.universal.getObjectData ? this.props.universal.getObjectData._documentStatus : undefined;
-    // console.log((documentStatus ? ((documentStatus!==null && documentStatus.result === 2) ? true : false ) :false));
-    // console.log(documentStatus);
-    //documentStatus !==null && _documentStatus.result === 2
+
     let contractName = "";
     if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractType) {
       let contractType = this.props.universal.getObjectData.contractType ? this.props.universal.getObjectData.contractType.shortName : "";
       contractName = contractType + " №" + this.props.universal.getObjectData.number + " от " + this.props.universal.getObjectData.documentDate;
     }
 
+
     return (<ContentLayout
-      contentName={contractName}
-      breadcrumbRoutes={[{
-        path: "/",
-        breadcrumbName: "Главная"
-      }, {
-        path: "/contracts/v2/contracts/table",
-        breadcrumbName: "Договоры"
-      }, {
-        path: "/contracts/v2/contracts/create",
-        breadcrumbName: "Редактирование"
-      }]}>
-      <Form
-        onSubmit={(e) => {
-          e.preventDefault();
+        contentName={contractName}
+        breadcrumbRoutes={[{
+          path: "/",
+          breadcrumbName: "Главная"
+        }, {
+          path: "/contracts/v2/contracts/table",
+          breadcrumbName: "Договоры"
+        }, {
+          path: "/contracts/v2/contracts/create",
+          breadcrumbName: "Редактирование"
+        }]}>
+        <Form
+          onSubmit={(e) => {
+            e.preventDefault();
 
-          this.props.form.validateFields((err, fieldsValue) => {
-            if (err) {
-              return;
-            }
-            this.sendForm(fieldsValue);
-          });
+            this.props.form.validateFields((err, fieldsValue) => {
+              if (err) {
+                return;
+              }
+              this.sendForm(fieldsValue);
+            });
 
-        }}
-        layout="horizontal" hideRequiredMark>
-        <Card
-          headStyle={{ padding: 0 }}
-          title={""}
-          key={"edit_card"}
-          className={"headPanel"}
-          extra={[
-            <Button
-              key={"save_btn"}
-              htmlType="submit">Сохранить</Button>,
-            <span key={"document_span"}>
+          }}
+          layout="horizontal" hideRequiredMark>
+          <Card
+            headStyle={{ padding: 0 }}
+            title={""}
+            key={"edit_card"}
+            className={"headPanel"}
+            extra={[
+              <Button
+                key={"save_btn"}
+                htmlType="submit">Сохранить</Button>,
+              <span key={"document_span"}>
                 {(documentStatus === null || documentStatus === 2) &&
                 <span key={"documentStatus_span"}>
                     {this.state.publish &&
@@ -492,164 +491,163 @@ class CounterAgentEdit extends Component {
                   </span>
                 }
               </span>,
-            <Button
-              key={"delete_btn"}
-              style={{ marginLeft: "5px" }}
-              onClick={() => {
-                const { dispatch } = this.props;
-                dispatch({
-                  type: "universal/clearData",
-                  payload: {
-                    typeName: "getObjectData",
-                    value: {}
-                  }
-                });
-                dispatch({
-                  type: "universal/clearData",
-                  payload: {
-                    typeName: "counterAgentData",
-                    value: {}
-                  }
-                });
-                this.props.history.push("/contracts/v2/contracts/table");
-              }}>Закрыть</Button>,
-            <Dropdown
-              key={"dropdown_action_menu"}
-              trigger={["click"]}
-              overlay={<Menu>
-                <Menu.Item
-                  onClick={() => {
-                    this.props.history.go(0);
-                    //this.props.history.push("/contracts/v2/contracts/edit" + this.props.location.search);
-                  }}
-                  key='1'>
-                  Обновить
-                </Menu.Item>
-                <Menu.Item
-                  onClick={() => {
-                    Modal.confirm({
-                      title: "Подтверждение",
-                      cancelText: "Нет",
-                      okText: "Да",
-                      content: "Вы действительно хотите удалить объект?",
-                      onOk: () => {
-                        this.deleteContract();
-                      },
-                      onCancel: () => {
-
-                      }
-                    });
-                  }}
-                  key="2">
-                  Удалить
-                </Menu.Item>
-              </Menu>}>
               <Button
+                key={"delete_btn"}
                 style={{ marginLeft: "5px" }}
-                key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
-                type="down"/></Button>
-            </Dropdown>,
-            <DropDownAction
-              key={"dropdown_action_btn"}
-              contractId={this.props.location.query.id}
-              entity={"contract"}
-              type={2}/>
-          ]}
-          bordered={false}
-          bodyStyle={{ padding: 0 }}>
-          <Row style={{ marginTop: "5px" }}>
-            <Tabs
-              tabBarStyle={{ textAlign: "left" }}
-              type={"card"}
-              className={"stepFormText"}
-              defaultActiveKey="main"
-              tabPosition={"left"}>
-              <TabPane tab={"Титульная часть"} key="main">
-                <InfoPage
-                  getSubContractById={this.getSubContractById}
-                  setSpecData={this.setSpecData}
-                  form={this.props.form}
-                  formData={this.props.universal.getObjectData}
-                  formItemLayout={formItemLayout}
-                  getCounterAgentById={this.getCounterAgentById}
-                />
-              </TabPane>
-              {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
-              {/*<DogovorPage/>*/}
-              {/*</TabPane>*/}
-              <TabPane forceRender={true} tab={<Badge count={this.state.tabRecordsCount.specCount}
-                                                      style={{ backgroundColor: "#1990FF" }}>
-                <div key={"badge_value"}><span style={{ paddingRight: "15px" }}> Спецификация</span></div>
-              </Badge>}
-                       key="specification">
-                {Object.keys(this.state.SpecData).length > 0 ?
-                  <SpecPage
-                    setTabCount={this.setTabCount}
-                    dataGuid={this.state.dataStoreGuid}
-                    setForceRender={() => {
-                      this.setState({
-                        SpecPageForceRendered: false,
-                        SpecData: []
+                onClick={() => {
+                  const { dispatch } = this.props;
+                  dispatch({
+                    type: "universal/clearData",
+                    payload: {
+                      typeName: "getObjectData",
+                      value: {}
+                    }
+                  });
+                  dispatch({
+                    type: "universal/clearData",
+                    payload: {
+                      typeName: "counterAgentData",
+                      value: {}
+                    }
+                  });
+                  this.props.history.push("/contracts/v2/contracts/table");
+                }}>Закрыть</Button>,
+              <Dropdown
+                key={"dropdown_action_menu"}
+                trigger={["click"]}
+                overlay={<Menu>
+                  <Menu.Item
+                    onClick={() => {
+                      this.props.history.go(0);
+                      //this.props.history.push("/contracts/v2/contracts/edit" + this.props.location.search);
+                    }}
+                    key='1'>
+                    Обновить
+                  </Menu.Item>
+                  <Menu.Item
+                    onClick={() => {
+                      Modal.confirm({
+                        title: "Подтверждение",
+                        cancelText: "Нет",
+                        okText: "Да",
+                        content: "Вы действительно хотите удалить объект?",
+                        onOk: () => {
+                          this.deleteContract();
+                        },
+                        onCancel: () => {
+
+                        }
                       });
                     }}
-                    forceRender={this.state.SpecPageForceRendered}
-                    eventManager={this.state.eventManager}
+                    key="2">
+                    Удалить
+                  </Menu.Item>
+                </Menu>}>
+                <Button
+                  style={{ marginLeft: "5px" }}
+                  key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
+                  type="down"/></Button>
+              </Dropdown>,
+              <DropDownAction
+                key={"dropdown_action_btn"}
+                contractId={this.props.location.query.id}
+                entity={"contract"}
+                type={2}/>
+            ]}
+            bordered={false}
+            bodyStyle={{ padding: 0 }}>
+            <Row style={{ marginTop: "5px" }}>
+              <Tabs
+                tabBarStyle={{ textAlign: "left" }}
+                type={"card"}
+                className={"stepFormText"}
+                defaultActiveKey="main"
+                tabPosition={"left"}>
+                <TabPane tab={"Титульная часть"} key="main">
+                  <InfoPage
+                    getSubContractById={this.getSubContractById}
+                    setSpecData={this.setSpecData}
                     form={this.props.form}
-                    gridData={this.state.SpecData}/>
-                  : <SpecPage
-                    setTabCount={this.setTabCount}
-                    dataGuid={this.state.dataStoreGuid}
-                    setForceRender={() => {
-                      this.setState({
-                        SpecPageForceRendered: false,
-                        SpecData: []
-                      });
-                    }}
-                    eventManager={this.state.eventManager}
-                    form={this.props.form}
-                    gridData={this.props.universal.getObjectData}
-                  />}
+                    formData={this.props.universal.getObjectData}
+                    formItemLayout={formItemLayout}
+                    getCounterAgentById={this.getCounterAgentById}
+                  />
+                </TabPane>
+                {/*<TabPane tab="Род-кий договор" key="rod_dogovor">*/}
+                {/*<DogovorPage/>*/}
+                {/*</TabPane>*/}
+                <TabPane forceRender={true} tab={<Badge count={this.state.tabRecordsCount.specCount}
+                                                        style={{ backgroundColor: "#1990FF" }}>
+                  <div key={"badge_value"}><span style={{ paddingRight: "15px" }}> Спецификация</span></div>
+                </Badge>}
+                         key="specification">
+                  {Object.keys(this.state.SpecData).length > 0 ?
+                    <SpecPage
+                      setTabCount={this.setTabCount}
+                      dataGuid={this.state.dataStoreGuid}
+                      setForceRender={() => {
+                        this.setState({
+                          SpecPageForceRendered: false,
+                          SpecData: []
+                        });
+                      }}
+                      forceRender={this.state.SpecPageForceRendered}
+                      eventManager={this.state.eventManager}
+                      form={this.props.form}
+                      gridData={this.state.SpecData}/>
+                    : <SpecPage
+                      setTabCount={this.setTabCount}
+                      dataGuid={this.state.dataStoreGuid}
+                      setForceRender={() => {
+                        this.setState({
+                          SpecPageForceRendered: false,
+                          SpecData: []
+                        });
+                      }}
+                      eventManager={this.state.eventManager}
+                      form={this.props.form}
+                      gridData={this.props.universal.getObjectData}
+                    />}
 
 
-              </TabPane>
-              <TabPane tab={<Badge count={this.state.tabRecordsCount.counterAgentsCount}
-                                   style={{ backgroundColor: "#1990FF" }}>
-                <div><span style={{ paddingRight: "15px" }}> Контрагенты</span></div>
-              </Badge>} key="counteragents">
-                <ContragentsPage
-                  gridData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}
-                  selectedData={this.props.location.state}/>
-              </TabPane>
-              <TabPane tab={"Производственная база"} key={"production_base"}>
-                <ProductionBasePage
-                  dataSource={this.props.universal.getObjectData}
-                />
-              </TabPane>
-              <TabPane
-                tab={<Badge count={this.state.tabRecordsCount.documentsCount}
-                            style={{ backgroundColor: "#1990FF" }}>
-                  <div><span style={{ paddingRight: "15px" }}> Приложения</span></div>
-                </Badge>} key="attachments">
-                <AttachmentPage
-                  getContractData={this.getContractData}
-                  filesData={this.props.universal.getObjectData}
-                  contractId={this.props.location.query.id}
-                  formItemLayout={formItemLayout}
-                />
-              </TabPane>
-            </Tabs>
-          </Row>
-        </Card>
-        <
-        /Form>
-    </ContentLayout>
-  );
+                </TabPane>
+                <TabPane tab={<Badge count={this.state.tabRecordsCount.counterAgentsCount}
+                                     style={{ backgroundColor: "#1990FF" }}>
+                  <div><span style={{ paddingRight: "15px" }}> Контрагенты</span></div>
+                </Badge>} key="counteragents">
+                  <ContragentsPage
+                    gridData={Object.keys(this.props.universal.counterAgentData).length > 0 ? this.props.universal.counterAgentData : this.props.universal.getObjectData}
+                    selectedData={this.props.location.state}/>
+                </TabPane>
+                <TabPane tab={"Производственная база"} key={"production_base"}>
+                  <ProductionBasePage
+                    dataSource={this.props.universal.getObjectData}
+                  />
+                </TabPane>
+                <TabPane
+                  tab={<Badge count={this.state.tabRecordsCount.documentsCount}
+                              style={{ backgroundColor: "#1990FF" }}>
+                    <div><span style={{ paddingRight: "15px" }}> Приложения</span></div>
+                  </Badge>} key="attachments">
+                  <AttachmentPage
+                    getContractData={this.getContractData}
+                    filesData={this.props.universal.getObjectData}
+                    contractId={this.props.location.query.id}
+                    formItemLayout={formItemLayout}
+                  />
+                </TabPane>
+              </Tabs>
+            </Row>
+          </Card>
+        </Form>
+      </ContentLayout>
+    );
   };
-  }
+}
 
-  export default connect(({universal, universal2, loading}) => ({
-    universal,
-    universal2,
-    saveLoadingData: loading.effects["universal/saveobject"],
-    getLoadingData: loading.effects["universal/getobject"]
-  }))(CounterAgentEdit);
+export default connect(({ universal, universal2, loading }) => ({
+  universal,
+  universal2,
+  saveLoadingData: loading.effects["universal/saveobject"],
+  getLoadingData: loading.effects["universal/getobject"]
+}))(CounterAgentEdit);

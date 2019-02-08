@@ -9,11 +9,15 @@ import Guid from "../../utils/Guid";
 
 class ModalChangeDate extends Component {
 
+  constructor(props) {
+    super(props);
 
-  state = {
-    test: "",
-    changeDateValue: null
-  };
+    this.state = {
+      test: "",
+      changeDateValue: props && props.dataSource && props.dataSource.value || null
+    };
+
+  }
 
   handleOk = () => {
 
@@ -48,7 +52,7 @@ class ModalChangeDate extends Component {
 
   uploadFile = (data) => {
     const { dispatch, dataSource } = this.props;
-   // if (data.file.status === "done") {
+    // if (data.file.status === "done") {
     //data.file.status = 'uploading';
     dispatch({
       type: "universal/setfile",
@@ -57,7 +61,7 @@ class ModalChangeDate extends Component {
         id: dataSource.id
       }
     }).then(() => this.getFileList());
-   // }
+    // }
 
     return false;
   };
@@ -103,7 +107,7 @@ class ModalChangeDate extends Component {
       }
     }).then((e) => {
       this.setState({ test: "test" });
-    })
+    });
   };
 
 
@@ -221,37 +225,37 @@ class ModalChangeDate extends Component {
       >
 
 
-          <Row>
-            {this.props.dataSource.value && <DatePicker
-              allowClear={false}
-              defaultValue={moment(this.props.dataSource.value, this.props.dateFormat)}
-              style={{ marginBottom: "5px", width: "195px" }}
-              format={this.props.dateFormat}
-              disabledDate={this.disabledDate}
-              onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
-            />}
+        <Row>
+          {this.props.dataSource.value && <DatePicker
+            allowClear={false}
+            defaultValue={moment(this.props.dataSource.value, this.props.dateFormat)}
+            style={{ marginBottom: "5px", width: "195px" }}
+            format={this.props.dateFormat}
+            disabledDate={this.disabledDate}
+            onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
+          />}
 
-            {!this.props.dataSource.value && <DatePicker
-              allowClear={false}
-              style={{ marginBottom: "5px", width: "195px" }}
-              format={this.props.dateFormat}
-              disabledDate={this.disabledDate}
-              onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
-            />}
-          </Row>
-          {this.props.coltype !== "appEndDate" &&
-          <Row style={{ marginTop: "15px" }}>
-            {this.props.loadingFiles === false ?
-              <Upload
-                {...uploadProps}>
-                <Button size="large">
-                  <Icon type="upload"/>{formatMessage({ id: "system.load" })}
-                </Button>
-              </Upload> : <Button size="large">
+          {!this.props.dataSource.value && <DatePicker
+            allowClear={false}
+            style={{ marginBottom: "5px", width: "195px" }}
+            format={this.props.dateFormat}
+            disabledDate={this.disabledDate}
+            onChange={(date, dateString) => this.setState({ changeDateValue: dateString })}
+          />}
+        </Row>
+        {this.props.coltype !== "appEndDate" &&
+        <Row style={{ marginTop: "15px" }}>
+          {this.props.loadingFiles === false ?
+            <Upload
+              {...uploadProps}>
+              <Button size="large">
                 <Icon type="upload"/>{formatMessage({ id: "system.load" })}
               </Button>
-            }
-          </Row>}
+            </Upload> : <Button size="large">
+              <Icon type="upload"/>{formatMessage({ id: "system.load" })}
+            </Button>
+          }
+        </Row>}
       </Modal>
     );
   }

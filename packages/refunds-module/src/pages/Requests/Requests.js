@@ -61,7 +61,7 @@ class Requests extends Component {
             </Button>
           )
         }*/
-        ],
+      ],
       searchercont: 0,
       tablecont: 24,
       isSearcher: false,
@@ -502,7 +502,7 @@ class Requests extends Component {
           ...column,
           order: 2,
           render: (text, row) => {
-            if (!text.receiptAppdateToFsms) {
+            if (row && row.hasOwnProperty("receiptAppdateToFsms") && !row.receiptAppdateToFsms) {
               return (<a
                 onClick={() => {
                   this.setState({
@@ -526,11 +526,11 @@ class Requests extends Component {
                     ModalData: {
                       id: row.id,
                       key: column.dataIndex,
-                      value: text.receiptAppdateToFsms
+                      value: row.receiptAppdateToFsms
                     }
                   });
                 }}
-              >{text.receiptAppdateToFsms}</a>);
+              >{row.receiptAppdateToFsms}</a>);
             }
           }
         });
@@ -540,7 +540,7 @@ class Requests extends Component {
           ...column,
           order: 3,
           render: (text, row) => {
-            if (!text.appEndDate) {
+            if (row && row.hasOwnProperty("appEndDate") && !row.appEndDate) {
               return (<a
                 onClick={(e) => {
                   this.setState({
@@ -564,11 +564,11 @@ class Requests extends Component {
                     ModalData: {
                       id: row.id,
                       key: column.dataIndex,
-                      value: text.appEndDate
+                      value: row.appEndDate
                     }
                   });
                 }}
-              >{text.appEndDate}</a>);
+              >{row.appEndDate}</a>);
             }
           }
         });
