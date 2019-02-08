@@ -98,7 +98,7 @@ const RendetField =({name, label, type, getFieldDecorator, validatemessage, refe
             }],
             initialValue: ''
           })(
-            <DatePicker style={{marginLeft:'10px', width:'95%'}} name={name} format={'DD.MM.YYYY'}/>
+            <DatePicker style={{marginLeft:'10px', width: "195px" }} name={name} format={'DD.MM.YYYY'}/>
           )}
         </FormItem>
       )}
@@ -290,7 +290,7 @@ class CounterAgentNew extends Component {
                         message: this.state.validatemessage,
                       }],
                     })(
-                      <DatePicker style={{width:'100%'}} name={'identitybeginDate'+record.key}  format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'identitybeginDate', 'identities')}}/>)}
+                      <DatePicker style={{width: "195px"}} name={'identitybeginDate'+record.key}  format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'identitybeginDate', 'identities')}}/>)}
                   </FormItem>
                 )
               },
@@ -309,7 +309,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'identityendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'identityendDate', 'identities')}}/>)}
+                    <DatePicker style={{width: "195px"}} name={'identityendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'identityendDate', 'identities')}}/>)}
                 </FormItem>)
               },
             },
@@ -410,7 +410,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'adressbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'adressbeginDate', "adresses")}}/>)}
+                    <DatePicker style={{width: "195px"}} name={'adressbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'adressbeginDate', "adresses")}}/>)}
                 </FormItem>)
               },
             },
@@ -427,7 +427,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'adressendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'adressendDate', "adresses")}}/>
+                    <DatePicker style={{width: "195px"}} name={'adressendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'adressendDate', "adresses")}}/>
                   )}
                 </FormItem>)
               },
@@ -530,7 +530,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'contactbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'contactbeginDate', "contacts")}}/>
+                    <DatePicker style={{width: "195px"}} name={'contactbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'contactbeginDate', "contacts")}}/>
                   )}
                 </FormItem>)
               },
@@ -548,7 +548,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'contactendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'contactendDate', "contacts")}}/>
+                    <DatePicker style={{width: "195px"}} name={'contactendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'contactendDate', "contacts")}}/>
                   )}
                 </FormItem>)
               },
@@ -674,7 +674,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'bankbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'bankbeginDate', "banks")}}/>
+                    <DatePicker style={{width: "195px"}} name={'bankbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'bankbeginDate', "banks")}}/>
                   )}
                 </FormItem>)
               },
@@ -692,7 +692,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'bankendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'bankendDate', "banks")}}/>
+                    <DatePicker style={{width: "195px"}} name={'bankendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'bankendDate', "banks")}}/>
                   )}
                 </FormItem>)
               },
@@ -983,7 +983,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'indusbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'indusbeginDate', "Industbase")}}/>
+                    <DatePicker style={{width: "195px"}} name={'indusbeginDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'indusbeginDate', "Industbase")}}/>
                   )}
                 </FormItem>)
               },
@@ -1001,7 +1001,7 @@ class CounterAgentNew extends Component {
                       message: this.state.validatemessage,
                     }],
                   })(
-                    <DatePicker style={{width:'100%'}} name={'indusendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'indusendDate', "Industbase")}}/>
+                    <DatePicker style={{width: "195px"}} name={'indusendDate'+record.key} format={'DD.MM.YYYY'} onChange={(e)=>{this.identValue(e, record, 'indusendDate', "Industbase")}}/>
                   )}
                 </FormItem>)
               },
@@ -1378,7 +1378,7 @@ class CounterAgentNew extends Component {
               >
 
                 {getFieldDecorator('dateBegin')(
-                  <DatePicker style={{ width:'180px'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
+                  <DatePicker style={{width: "195px"}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
                 )}
               </FormItem>
               <FormItem
@@ -1386,7 +1386,7 @@ class CounterAgentNew extends Component {
                 {...formItemLayout}
               >
                 {getFieldDecorator('dateEnd')(
-                  <DatePicker style={{ width:'180px'}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
+                  <DatePicker style={{width: "195px"}} name={"dateBegin"} format={'DD.MM.YYYY'}/>
                 )}
               </FormItem>
               {/* {this.state.isNew &&

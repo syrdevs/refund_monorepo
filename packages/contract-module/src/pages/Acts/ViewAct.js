@@ -879,7 +879,7 @@ class ViewAct extends Component {
                           })(
                             <DatePicker
                               format={"DD.MM.YYYY"}
-                              style={{ width: "50%" }}
+                              style={{width: "195px"}}
                               placeholder="Выберите дату"
                             />
                           )}

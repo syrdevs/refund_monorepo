@@ -117,7 +117,7 @@ const RendetField = ({ small, name, label, local, disabled, type, getFieldDecora
             }],
             initialValue: counteragent ? (counteragent[local] ? moment(counteragent[local], "DD.MM.YYYY") : null) : null
           })(
-            <DatePicker style={{ marginLeft: "10px", width: "30%" }} name={name} format={"DD.MM.YYYY"} disabled={disabled}/>
+            <DatePicker style={{ marginLeft: "10px", width: "195px" }} name={name} format={"DD.MM.YYYY"} disabled={disabled}/>
           )}
         </FormItem>
       );
@@ -378,7 +378,7 @@ class AgentCreate extends Component {
                       }],
                       initialValue: this.state.identities[record.key] ? (this.state.identities[record.key].identitybeginDate ? moment(this.state.identities[record.key].identitybeginDate, "DD.MM.YYYY") : null) : null
                     })(
-                      <DatePicker style={{ width: "100%" }}
+                      <DatePicker style={{width: "195px"}}
                                   key={"identitybeginDate" + record.key}
                                   name={"identitybeginDate" + record.key}
                                   format={"DD.MM.YYYY"}
@@ -403,7 +403,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.identities[record.key] ? (this.state.identities[record.key].identityendDate ? moment(this.state.identities[record.key].identityendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{ width: "100%" }}
+                    <DatePicker style={{width: "195px"}}
                                 key={"identityendDate" + record.key}
                                 name={"identityendDate" + record.key}
                                 format={"DD.MM.YYYY"}
@@ -495,7 +495,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.adresses[record.key] ? (this.state.adresses[record.key].adressbeginDate ? moment(this.state.adresses[record.key].adressbeginDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{ width: "100%" }} name={"adressbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{width: "195px"}} name={"adressbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "adressbeginDate", "adresses");
                                 }}/>)}
@@ -516,7 +516,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.adresses[record.key] ? (this.state.adresses[record.key].adressendDate ? moment(this.state.adresses[record.key].adressendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{ width: "100%" }} name={"adressendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{width: "195px"}} name={"adressendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "adressendDate", "adresses");
                                 }}/>
@@ -625,7 +625,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.contacts[record.key] ? (this.state.contacts[record.key].contactbeginDate ? moment(this.state.contacts[record.key].contactbeginDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{ width: "100%" }} name={"contactbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{width: "195px"}} name={"contactbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "contactbeginDate", "contacts");
                                 }}/>
@@ -647,7 +647,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.contacts[record.key] ? (this.state.contacts[record.key].contactendDate ? moment(this.state.contacts[record.key].contactendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{ width: "100%" }} name={"contactendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{width: "195px"}} name={"contactendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "contactendDate", "contacts");
                                 }}/>
@@ -781,7 +781,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.banks[record.key] ? (this.state.banks[record.key].bankbeginDate ? moment(this.state.banks[record.key].bankbeginDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{ width: "100%" }} name={"bankbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{width: "195px"}} name={"bankbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "bankbeginDate", "banks");
                                 }}/>
@@ -803,7 +803,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.banks[record.key] ? (this.state.banks[record.key].bankendDate ? moment(this.state.banks[record.key].bankendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{ width: "100%" }} name={"bankendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{width: "195px"}} name={"bankendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "bankendDate", "banks");
                                 }}/>
@@ -1105,7 +1105,7 @@ class AgentCreate extends Component {
                       message: this.state.validatemessage
                     }]
                   })(
-                    <DatePicker style={{ width: "100%" }} name={"indusbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{width: "195px"}} name={"indusbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "indusbeginDate", "Industbase");
                                 }}/>
@@ -1126,7 +1126,7 @@ class AgentCreate extends Component {
                       message: this.state.validatemessage
                     }]
                   })(
-                    <DatePicker style={{ width: "100%" }} name={"indusendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{width: "195px"}} name={"indusendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "indusendDate", "Industbase");
                                 }}/>
@@ -1799,7 +1799,7 @@ class AgentCreate extends Component {
                   initialValue: this.state.counteragent.dateBegin ? moment(this.state.counteragent.dateBegin, "DD.MM.YYYY") : null
                 })
                 (
-                  <DatePicker style={{ width: "180px" }} name={"dateBegin"} format={"DD.MM.YYYY"}/>
+                  <DatePicker style={{width: "195px"}} name={"dateBegin"} format={"DD.MM.YYYY"}/>
                 )}
               </FormItem>
               <FormItem
@@ -1813,7 +1813,7 @@ class AgentCreate extends Component {
                   initialValue: this.state.counteragent.dateEnd ? moment(this.state.counteragent.dateEnd, "DD.MM.YYYY") : null
                 })
                 (
-                  <DatePicker style={{ width: "180px" }} name={"dateBegin"} format={"DD.MM.YYYY"}/>
+                  <DatePicker style={{width: "195px"}} name={"dateBegin"} format={"DD.MM.YYYY"}/>
                 )}
               </FormItem>
               {/* {this.state.isNew &&

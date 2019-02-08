@@ -514,7 +514,7 @@ class InfoPage extends Component {
             <DatePicker
               format={"DD.MM.YYYY"}
               value={null}
-              style={{ width: "50%" }}
+              style={{ width: "195px" }}
               placeholder="Выберите дату"/>
           )}
         </Form.Item>
