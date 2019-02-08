@@ -15,9 +15,7 @@ class BetweenMonthPicker extends React.Component {
     super(props);
 
     this.state = {
-
       isCalendarOpen: null,
-
       checkboxCheck: false,
       disableCalendar: false,
       calendarValue: null,
@@ -51,9 +49,13 @@ class BetweenMonthPicker extends React.Component {
     }
 
     let selectedPanelCount = 0;
+    let rangesize = 22;
+    if (this.props.filterItem.nullCalendar) {
+      rangesize = 16
+    }
 
     return (<Row>
-      <Col md={22}>
+      <Col md={rangesize}>
         <RangePicker  {...this.props.RangeDateProps}
                       format={dateFormat}
                       placeholder={[
@@ -85,7 +87,9 @@ class BetweenMonthPicker extends React.Component {
 
                       }}
                       disabled={this.state.disableCalendar}
-                      {...CalendarProps}/>
+                      {...CalendarProps}
+        />
+
       </Col>
       {this.props.filterItem.nullBtn &&
       <Col md={2}>
@@ -104,6 +108,22 @@ class BetweenMonthPicker extends React.Component {
         </div>
       </Col>
       }
+      {this.props.filterItem.nullCalendar &&
+      <Col md={8}>
+      <Button
+        style={{
+        marginLeft:'5px'
+        }}
+        onClick={()=>{
+          this.setState({
+            calendarMomentValue: [],
+            calendarValue: null
+          },()=>{
+            this.props.onChange(this.state.calendarValue);
+          });
+        }}
+      >Очистить</Button>
+      </Col>}
 
     </Row>);
   }

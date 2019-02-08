@@ -872,6 +872,9 @@ class Searcher extends Component {
                       <Row>
                         <Col span={14}>
                           <Input style={{ width: "100%" }} value={this.state.parameters.filter.iin} maxLength={12}
+                                 onPressEnter={() => {
+                                   this.applyFilter();
+                                 }}
                                  onChange={(e) => {
                                    this.fieldOnChange("iin", e.target.value);
                                  }}/>
@@ -897,18 +900,27 @@ class Searcher extends Component {
                   <div style={mBottom}>Фамилия:
                     <Input style={{ width: "100%" }}
                            value={this.state.parameters.filter.lastName ? this.state.parameters.filter.lastName.toUpperCase() : ""}
+                           onPressEnter={() => {
+                             this.applyFilter();
+                           }}
                            onChange={(e) => {
                              this.fieldOnChange("lastName", e.target.value);
                            }}/></div>}
                   {this.state.visibleFilter && <div style={mBottom}>Имя:
                     <Input style={{ width: "100%" }}
                            value={this.state.parameters.filter.firstName ? this.state.parameters.filter.firstName.toUpperCase() : ""}
+                           onPressEnter={() => {
+                             this.applyFilter();
+                           }}
                            onChange={(e) => {
                              this.fieldOnChange("firstName", e.target.value);
                            }}/></div>}
                   {this.state.visibleFilter && <div style={mBottom}>Отчество:
                     <Input style={{ width: "100%" }}
                            value={this.state.parameters.filter.patronymic ? this.state.parameters.filter.patronymic.toUpperCase() : ""}
+                           onPressEnter={() => {
+                             this.applyFilter();
+                           }}
                            onChange={(e) => {
                              this.fieldOnChange("patronymic", e.target.value);
                            }}/></div>}

@@ -332,21 +332,35 @@ class Employees extends Component {
                   RangeDateProps={{
                     format: "MM.YYYY"
                   }}
-                  filterItem={{}}
+                  filterItem={{
+                    nullCalendar:true
+                  }}
                   field={{}}
                   onChange={(value) => {
-                    this.setState({
-                      parameters: {
-                        ...this.state.parameters,
-                        filter: {
-                          ...this.state.parameters.filter,
-                          paymentperiod: {
-                            from: "01." + value[0],
-                            to: "01." + value[1]
+                    if (value){
+                      this.setState({
+                        parameters: {
+                          ...this.state.parameters,
+                          filter: {
+                            ...this.state.parameters.filter,
+                            paymentperiod: {
+                              from: "01." + value[0],
+                              to: "01." + value[1]
+                            }
                           }
                         }
-                      }
-                    });
+                      });
+                    }
+                    else {
+                      this.setState({
+                        parameters: {
+                          ...this.state.parameters,
+                          filter: {
+                            iin: this.state.parameters.filter.iin,
+                          }
+                        }
+                      });
+                    }
                   }}/>
               </div>
               <Button style={{ margin: "5px", marginLeft: "-20px" }} onClick={() => {
@@ -359,7 +373,6 @@ class Employees extends Component {
         </Row>
       </Card>
       <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
-
         <SmartGridView
           name={"EmployessPageColumns"}
           // scroll={{ x: "auto" }}
@@ -448,7 +461,6 @@ class Employees extends Component {
           //   });
           // }}
         />
-
       </Col>
     </Row>);
   };

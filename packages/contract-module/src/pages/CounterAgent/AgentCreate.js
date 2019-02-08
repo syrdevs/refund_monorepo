@@ -76,7 +76,7 @@ const RendetField = ({ small, name, label, local, disabled, type, getFieldDecora
             }],
             initialValue: counteragent ? (counteragent[local] ? counteragent[local].id : null) : null
           })(
-            <Select key={name} style={{ marginLeft: "10px", width: "95%" }} name={name} disabled={disabled}>
+            <Select key={name} style={{ marginLeft: "10px", width: "95%"}} name={name} disabled={disabled}>
               {references && references.map((item) => {
                 return <Select.Option key={item.id} value={item.id} prop={item}>{item.nameRu}</Select.Option>;
               })}
@@ -126,7 +126,6 @@ const RendetField = ({ small, name, label, local, disabled, type, getFieldDecora
       break;
   }
 };
-
 
 @Form.create()
 class AgentCreate extends Component {
@@ -306,6 +305,7 @@ class AgentCreate extends Component {
       responses: [],
       RegistrerSZs: [],
       Industbase: [],
+      clinicRegisters: [],
       smarttabs: [
         {
           name: "identities",
@@ -1069,7 +1069,7 @@ class AgentCreate extends Component {
             {
               dataIndex: "indusadress",
               title: "Адрес",
-              width: "50%",
+              width: "35%",
               render: (text, record) => {
                 return (
                   <FormItem
@@ -1080,7 +1080,7 @@ class AgentCreate extends Component {
                         message: this.state.validatemessage
                       }]
                     })(
-                      <Select name={"bank" + record.key} style={{ width: '90%' }} onChange={(e) => {
+                      <Select name={"bank" + record.key} style={{ width: '90%', maxWidth: '500px' }} onChange={(e) => {
                         this.identValue(e, record, "bank", "banks");
                       }}>
                         {this.state.adresses && this.state.adresses.map((item) => {
@@ -1095,7 +1095,7 @@ class AgentCreate extends Component {
             {
               dataIndex: "indusbeginDate",
               title: "Дата начала",
-              width: "15%",
+              width: "20%",
               render: (text, record) => {
                 return (<FormItem
                 >
@@ -1116,7 +1116,7 @@ class AgentCreate extends Component {
             {
               dataIndex: "indusendDate",
               title: "Дата окончания",
-              width: "15%",
+              width: "20%",
               render: (text, record) => {
                 return (<FormItem
                 >
@@ -1137,12 +1137,99 @@ class AgentCreate extends Component {
             {
               title: "Действие",
               dataIndex: "operation",
-              width: "10%",
+              width: "25%",
               render: (text, record) => {
                 const { editable } = record;
                 return (
                   <div style={{ marginTop: "-20px" }}>
                     <a onClick={() => this.remove("Industbase", record.key)}>Удалить</a>
+                  </div>
+                );
+              }
+            }
+          ]
+        },
+        {
+          name: "clinicRegisters",
+          title: "Включение в БДСЗ",
+          columns: [
+            {
+              dataIndex: "clinicRegistersbeginDate",
+              title: "Дата включения в БДСЗ",
+              width: "25%",
+              render: (text, record) => {
+                return (<FormItem
+                >
+                  {this.props.form.getFieldDecorator("clinicRegistersbeginDate" + record.key, {
+                    rules: [{
+                      required: false,
+                      message: this.state.validatemessage
+                    }],
+                    initialValue: this.state.clinicRegisters[record.key] ?
+                      (this.state.clinicRegisters[record.key].clinicRegistersbeginDate ? moment(this.state.clinicRegisters[record.key].clinicRegistersbeginDate, "DD.MM.YYYY") : null) : null
+                  })(
+                    <DatePicker style={{width: "195px"}} name={"clinicRegistersbeginDate" + record.key} format={"DD.MM.YYYY"}
+                                onChange={(e) => {
+                                  this.identValue(e, record, "clinicRegistersbeginDate", "clinicRegisters");
+                                }}/>
+                  )}
+                </FormItem>);
+              }
+            },
+            {
+              dataIndex: "clinicRegistersendDate",
+              title: "Дата исключения из БДСЗ",
+              width: "25%",
+              render: (text, record) => {
+                return (<FormItem
+                >
+                  {this.props.form.getFieldDecorator("clinicRegistersendDate" + record.key, {
+                    rules: [{
+                      required: false,
+                      message: this.state.validatemessage
+                    }],
+                    initialValue: this.state.clinicRegisters[record.key] ?
+                      (this.state.clinicRegisters[record.key].clinicRegistersendDate ? moment(this.state.clinicRegisters[record.key].clinicRegistersendDate, "DD.MM.YYYY") : null) : null
+                  })(
+                    <DatePicker style={{width: "195px"}} name={"clinicRegistersendDate" + record.key} format={"DD.MM.YYYY"}
+                                onChange={(e) => {
+                                  this.identValue(e, record, "clinicRegistersendDate", "clinicRegisters");
+                                }}/>
+                  )}
+                </FormItem>);
+              }
+            },
+            {
+              dataIndex: "clinicRegistersreason",
+              title: "Причина исключения",
+              width: "40%",
+              render: (text, record) => {
+                return (
+                  <FormItem
+                  >
+                    {this.props.form.getFieldDecorator("clinicRegistersreason" + record.key, {
+                      rules: [{
+                        required: false,
+                        message: this.state.validatemessage
+                      }],
+                      initialValue: this.state.clinicRegisters[record.key] ? this.state.clinicRegisters[record.key].clinicRegistersreason : ""
+                    })(
+                      <Input name={"clinicRegistersreason" + record.key} onChange={(e) => {
+                        this.identValue(e.target.value, record, "clinicRegistersreason", "clinicRegisters");
+                      }}/>)}
+                  </FormItem>);
+              }
+            },
+
+            {
+              title: "Действие",
+              dataIndex: "operation",
+              width: "10%",
+              render: (text, record) => {
+                const { editable } = record;
+                return (
+                  <div style={{ marginTop: "-20px" }}>
+                    <a onClick={() => this.remove("clinicRegisters", record.key)}>Удалить</a>
                   </div>
                 );
               }
@@ -1180,7 +1267,6 @@ class AgentCreate extends Component {
               label: 'Фамилия и инициалы в родительном падеже',
               type: 'text',
             },*/
-
   componentDidMount() {
     if (this.props.location.query.id){
       const { dispatch } = this.props;
@@ -1212,7 +1298,6 @@ class AgentCreate extends Component {
     }
     this.getlibs();
   };
-
   getlibs = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -1285,7 +1370,6 @@ class AgentCreate extends Component {
       }
     });
   };
-
   addmultifields = (data) => {
     if (data.representatives) {
       this.setState({
@@ -1330,14 +1414,22 @@ class AgentCreate extends Component {
         "key": index
       };
     }) : [];
+
+    let clinicRegisters = data.clinicRegisters ? data.clinicRegisters.map((item, index) => {
+      return {
+        "clinicRegistersbeginDate": item.dateBegin ? moment(item.dateBegin, "DD.MM.YYYY") : null,
+        "clinicRegistersendDate": item.dateEnd ? moment(item.dateEnd, "DD.MM.YYYY") : null,
+        "key": index
+      };
+    }) : [];
     this.setState({
       identities: identities,
       adresses: addresses,
       banks: bankAccounts,
-      contacts: contacts
+      contacts: contacts,
+      clinicRegisters: clinicRegisters
     });
   };
-
   selecttypeagent = (e) => {
     this.setState({
       tabname: e.target.value
@@ -1353,7 +1445,6 @@ class AgentCreate extends Component {
         })
       }*/
   };
-
   fieldOnChange = (filterItem, value) => {
     this.setState({
       data: {
@@ -1362,7 +1453,6 @@ class AgentCreate extends Component {
       }
     });
   };
-
   identValue = (e, record, name, arrname) => {
     let findItemIdx = this.state[arrname].findIndex((value) => value.key === record.key);
     let _dataSource = this.state[arrname];
@@ -1375,7 +1465,6 @@ class AgentCreate extends Component {
     }, () => {
     });
   };
-
   remove(table, key) {
     let findItemIdx = this.state[table].findIndex((value) => value.key === key);
     let _dataSource = this.state[table].filter((x, i) => (i !== findItemIdx));
@@ -1386,7 +1475,6 @@ class AgentCreate extends Component {
       })
     });
   }
-
   mainfiels = (e) => {
     this.setState({
       data: {
@@ -1395,7 +1483,6 @@ class AgentCreate extends Component {
       }
     });
   };
-
   sendserver = (e) => {
     this.props.form.validateFields(
       (err, values) => {
@@ -1409,7 +1496,6 @@ class AgentCreate extends Component {
       }
     );
   };
-
   saveobject = (values) => {
     let legals=[];
     if (values.legalForm) {
@@ -1540,6 +1626,18 @@ class AgentCreate extends Component {
         return val;
       }) : undefined;
     }
+    if (this.state.clinicRegisters) {
+      attr.data.clinicRegisters = this.state.clinicRegisters ? this.state.clinicRegisters.map((item) => {
+
+        let val =  {
+          /*"id": "2709b845-1b7c-43e6-abc3-985c57600870",*/
+          "dateBegin": item.clinicRegistersbeginDate ? item.clinicRegistersbeginDate.format("DD.MM.YYYY") : null,
+          "dateEnd": item.clinicRegistersendDate ? item.clinicRegistersendDate.format("DD.MM.YYYY") : null,
+          "clinicRole": 0
+        };
+        return val;
+      }) : undefined;
+    }
     const { dispatch } = this.props;
     dispatch({
       type: "universal/saveobject",
@@ -1561,11 +1659,9 @@ class AgentCreate extends Component {
         });
       });
   };
-
   cancelform = () => {
     this.props.history.push("/contracts/v2/counteragent/main");
   };
-
   ChangeText = (e) => {
     const { dispatch } = this.props;
     this.setState({
@@ -1628,8 +1724,6 @@ class AgentCreate extends Component {
       }
     })
   };
-
-
   clearIINs=()=>{
     if (this.state.counteragent.representatives) {
       this.setState({
@@ -1657,8 +1751,6 @@ class AgentCreate extends Component {
       })
     }
   }
-
-
   setIINs=(e)=>{
     this.props.form.setFieldsValue({
       firstName:e.firstName ? e.firstName : null,
