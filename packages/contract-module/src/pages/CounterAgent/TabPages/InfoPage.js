@@ -532,7 +532,8 @@ class InfoPage extends Component {
             initialValue: getObjectData.dateBegin ? [moment(getObjectData.dateBegin, "DD.MM.YYYY"), getObjectData.dateEnd ? moment(getObjectData.dateEnd, "DD.MM.YYYY") : null] : null
           })(
             <RangePicker
-              style={{ width: "80%" }}
+              //style={{ width: "80%" }}
+              style={{ width: "230px" }}
               format={"DD.MM.YYYY"}
               placeholder={[
                 formatMessage({ id: "datepicker.start.label" }),

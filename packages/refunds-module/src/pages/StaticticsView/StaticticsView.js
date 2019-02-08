@@ -117,6 +117,7 @@ class StaticticsView extends Component {
                     defaultValue={[moment(dt, 'DD.MM.YYYY'), moment(dt, 'DD.MM.YYYY')]}
                     placeholder={[formatMessage({id: 'datepicker.start.label'}), formatMessage({id: 'datepicker.end.label'})]}
                     format={'DD.MM.YYYY'}
+                    style={{ width: "230px" }}
                     onChange={(date, dateString) => {
                       this.setState((prevState) => ({
                         filters: {

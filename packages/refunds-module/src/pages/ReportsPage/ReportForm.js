@@ -260,6 +260,7 @@ class ReportForm extends Component {
         return (<div key={_index + "_"} style={{ margin: "5px" }}>{formItem.label}:
           <RangePicker
             {...params}
+            style={{ width: "230px" }}
             format="DD.MM.YYYY"
             onChange={(date, stringDate) => {
               this.setFilterValue({
@@ -284,6 +285,7 @@ class ReportForm extends Component {
         return (<div key={_index + "_"} style={{ margin: "5px" }}>{formItem.label}:
           <RangePicker
             {...params}
+            style={{ width: "230px" }}
             onOpenChange={(status) => {
               this.setFilterValue({
                 open: status,

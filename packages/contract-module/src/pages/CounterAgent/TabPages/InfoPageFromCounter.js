@@ -518,8 +518,6 @@ class InfoPage extends Component {
               placeholder="Выберите дату"/>
           )}
         </Form.Item>
-
-
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator("period", {
             rules: [{ required: false, message: "не заполнено" }],
