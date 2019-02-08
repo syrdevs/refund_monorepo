@@ -89,12 +89,14 @@ function momentDefine() {
 
 }
 
-class InfoPage extends Component {
+class InfoPageFromCounter extends Component {
   state = {
 
+    documentDateId: null,
     counterAgentId: null,
-    yearSectionId: null,
-    dogovorId: null,
+    yearSectionId: parseInt(moment().format("MM")) === 12 ? parseInt(moment().format("YYYY")) + 1 : moment().format("YYYY"),
+    contractTypeId: null,
+
 
     CounterAgentsModal: {
       record: null,
@@ -118,13 +120,19 @@ class InfoPage extends Component {
     return current && current < moment().year(2019);
   };
 
-  getReferenceValues = (code, propName) => {
+  getReferenceValues = (code, propName, sort) => {
     const { universal2 } = this.props;
 
     if (!universal2.references.hasOwnProperty(code)) return [];
 
     return universal2.references[code]
-      ? universal2.references[code].content.map((item) => (
+      ? universal2.references[code].content.sort((a, b) => {
+        if (a[propName] < b[propName])
+          return sort === "desc" ? 1 : -1;
+        if (a[propName] > b[propName])
+          return sort === "desc" ? -1 : 1;
+        return 0;
+      }).map((item) => (
         <Option value={item.id} prop={item} key={item.id}>{item[propName]}</Option>))
       : null;
   };
@@ -163,12 +171,9 @@ class InfoPage extends Component {
         "entity": "periodYear"
       }
     });
-  };
 
-  clearSpecifications = () => {
-    if (this.props.setSpecData) {
-      this.props.setSpecData({ clear: true });
-    }
+
+    this.props.eventManager.subscribe("GetInfoPageValues", () => this.getContractValues());
   };
 
   getSpecifications = (id) => {
@@ -189,49 +194,21 @@ class InfoPage extends Component {
   };
 
 
+  getContractValues = () => {
+    return {
+      documentDateId: this.props.form.getFieldValue("documentDate") && this.props.form.getFieldValue("documentDate").format("DD.MM.YYYY"),
+      counterAgentId: this.props.form.getFieldValue("counterAgent") && this.props.form.getFieldValue("counterAgent").value && this.props.form.getFieldValue("counterAgent").value.id,
+      yearSectionId: this.state.yearSectionId,
+      contractTypeId: this.props.form.getFieldValue("contractType")
+    };
+  };
+
   render = () => {
 
-    /// params to info page
-    /// formData
-    /// formItemLayout
-    /// form
     let contractTypeDataSource = this.getReferenceValues("contractType", "nameRu");
-
-    if (this.props.form.getFieldValue("parentContract") && this.props.form.getFieldValue("parentContract").hasOwnProperty("value") && this.props.form.getFieldValue("parentContract").value !== null) {
-      contractTypeDataSource = contractTypeDataSource.filter(x => x.props.prop.code !== "1");
-    }
-
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
-    let getObjectData = this.props.formData ? { ...this.props.formData } : {};
+    let getObjectData = this.props.formData;
 
-    if (this.state.contractAlterationReason === null && getObjectData.contractType && getObjectData.contractType.code === "2") {
-      this.setState({
-        contractAlterationReason: getObjectData.contractType.code
-      });
-    }
-
-    if (this.state.counterAgentId === null
-      && this.state.yearSectionId === null
-      && getObjectData._contragent) {
-
-      if (getObjectData.periodYear) {
-        this.setState({
-          counterAgentId: getObjectData._contragent.id,
-          yearSectionId: getObjectData.periodYear
-        });
-      } else {
-        this.setState({
-          counterAgentId: getObjectData._contragent.id
-        });
-      }
-    }
-
-
-    if (!getObjectData.hasOwnProperty("_contragent") && this.state.yearSectionId === null && getObjectData.periodYear) {
-      this.setState({
-        yearSectionId: getObjectData.periodYear
-      });
-    }
 
     return (<Card style={{ marginLeft: "-10px" }}>
 
@@ -244,9 +221,9 @@ class InfoPage extends Component {
           //   // this.props.getCounterAgentById(record.id);
           // }
 
-          if (this.state.yearSectionId) {
-            this.props.getCounterAgentById(record.id, this.state.yearSectionId.year);
-          }
+          // if (this.state.yearSectionId) {
+          //   this.props.getCounterAgentById(record.id, this.state.yearSectionId.year);
+          // }
 
           this.setState({ counterAgentId: record.id, CounterAgentsModal: { visible: false, record: record } });
         }}
@@ -277,16 +254,10 @@ class InfoPage extends Component {
 
 
       <div style={{ margin: "0px 15px", maxWidth: "70%" }}>
-
-        {/*{getObjectData._contragent && <Form.Item {...formItemLayout} label="Контрагент">*/}
-        {/*<span*/}
-        {/*className="ant-form-text">{getObjectData._contragent.bin} {getObjectData._contragent.shortName}</span>*/}
-        {/*</Form.Item>}*/}
-
         <Form.Item {...formItemLayout} label="Контрагент">
           {getFieldDecorator("counterAgent", {
             initialValue: {
-              value: getObjectData._contragent ? getObjectData._contragent : null
+              value: this.state.CounterAgentsModal.record ? this.state.CounterAgentsModal.record : getObjectData.counterAgent
             },
             rules: [{
               required: false//, message: 'не заполнено',
@@ -307,9 +278,9 @@ class InfoPage extends Component {
               labelFormatter={(record) => {
 
                 if (!record._organization) {
-                  return `${record.bin} ${record.name}`;
+                  return `${record.hasOwnProperty("bin") ? record.bin : ""} ${record.name}`;
                 } else if (record) {
-                  return `${record._organization.bin} ${record._organization.name}`;
+                  return `${record._organization.hasOwnProperty("bin") ? record._organization.bin : ""} ${record._organization.name}`;
                 }
 
                 return "";
@@ -351,22 +322,15 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Учетный период">
           {getFieldDecorator("periodYear", {
             rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : this.state.yearSectionId ? this.state.yearSectionId.id : null
+            initialValue: getObjectData.periodYear && getObjectData.periodYear.id ? getObjectData.periodYear.id : this.state.yearSectionId
           })(
             <Select
               placeholder="Учетный период"
-              style={{ width: "50%" }}
+              style={{ width: "30%" }}
               onChange={(value, option) => {
-                this.setState({
-                  yearSectionId: option.props.prop
-                });
-
-                if (this.state.counterAgentId !== 0 && this.state.counterAgentId !== null) {
-                  this.props.getCounterAgentById(this.state.counterAgentId, option.props.prop.year);
-                }
-
+                this.setState({ yearSectionId: option.props.prop.year });
               }}>
-              {this.getReferenceValues("periodYear", "year")}
+              {this.getReferenceValues("periodYear", "year", "desc")}
             </Select>
           )}
         </Form.Item>
@@ -374,17 +338,11 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Вид договора">
           {getFieldDecorator("contractType", {
             rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.contractType ? getObjectData.contractType.id : this.props.location.query.contractTypeId || null
+            initialValue: this.props.location.query && this.props.location.query.contractTypeId
           })(
             <Select placeholder="Вид договора"
                     onChange={(value, option) => {
                       this.setState({ contractAlterationReason: option.props.prop.code });
-
-                      let parentContract = this.props.form.getFieldValue("parentContract").value;
-
-                      if ((option.props.prop.code === "3" || option.props.prop.code === "2") && parentContract !== null) {
-                        this.props.getSubContractById(parentContract.id, value);
-                      }
                     }}>
               {contractTypeDataSource}
             </Select>
@@ -393,7 +351,7 @@ class InfoPage extends Component {
 
         <Form.Item {...formItemLayout} label="Основной договор">
           {getFieldDecorator("parentContract", {
-            initialValue: { value: getObjectData.parentContract ? getObjectData.parentContract : null },
+            initialValue: { value: null },
             rules: [{
               required: false//, message: 'не заполнено',
               // validator: (rule, value, callback) => {
@@ -468,21 +426,20 @@ class InfoPage extends Component {
         {/*}*/}
         {/*</Form.Item>*/}
 
-        {(this.state.contractAlterationReason === "02" || contractTypeDataSource.findIndex(x => (x.key === this.props.location.query.contractTypeId && x.props.prop.code === "02")) !== -1) &&
+        {(["02", "10"].includes(this.state.contractAlterationReason) || contractTypeDataSource.findIndex(x => (x.key === this.props.location.query.contractTypeId && ["02", "10"].includes(x.props.prop.code))) !== -1) &&
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator("contractAlternation", {
             rules: [{ required: false, message: "не заполнено" }],
-            initialValue: getObjectData.contractAlterationReasons ? getObjectData.contractAlterationReasons[0].dictionaryBase.id : null
+            initialValue: getObjectData.contractAlterationReasons && getObjectData.contractAlterationReasons[0] && getObjectData.contractAlterationReasons[0].dictionaryBase ? getObjectData.contractAlterationReasons[0].dictionaryBase.id : null
           })(
             <Select placeholder="Причина">
               {this.getReferenceValues("contractAlterationReason", "nameRu")}
             </Select>
           )}
-        </Form.Item>
-        }
+        </Form.Item>}
 
         <Form.Item {...formItemLayout} label="Изменения к договору">
-          {getObjectData._subContracts  && getObjectData._subContracts.map(x => (
+          {getObjectData._subContracts && getObjectData._subContracts.map(x => (
             <span
               style={{
                 color: "#1890ff",
@@ -492,7 +449,7 @@ class InfoPage extends Component {
               onClick={() => {
 
               }}>
-              {`(${x.contractType.shortName}) №${x.number} от ${x.documentDate}`}
+              {`${x.contractType.shortName} №${x.number} от ${x.documentDate}`}
               <br/>
         </span>
           ))}
@@ -501,7 +458,7 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Номер">
           {getFieldDecorator("number", {
             rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.number ? getObjectData.number : null
+            initialValue: getObjectData.number && getObjectData.number
           })(<Input placeholder="Номер"/>)}
         </Form.Item>
 
@@ -509,7 +466,7 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Дата договора">
           {getFieldDecorator("documentDate", {
             rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.documentDate ? moment(getObjectData.documentDate, "DD.MM.YYYY") : null
+            initialValue: moment()
           })(
             <DatePicker
               format={"DD.MM.YYYY"}
@@ -518,13 +475,16 @@ class InfoPage extends Component {
               placeholder="Выберите дату"/>
           )}
         </Form.Item>
+
+
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator("period", {
             rules: [{ required: false, message: "не заполнено" }],
             initialValue: getObjectData.dateBegin ? [moment(getObjectData.dateBegin, "DD.MM.YYYY"), getObjectData.dateEnd ? moment(getObjectData.dateEnd, "DD.MM.YYYY") : null] : null
           })(
             <RangePicker
-              style={{ width: "50%" }}
+              //style={{ width: "80%" }}
+              style={{ width: "230px" }}
               format={"DD.MM.YYYY"}
               placeholder={[
                 formatMessage({ id: "datepicker.start.label" }),
@@ -537,7 +497,7 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Комментарий">
           {getFieldDecorator("descr", {
             rules: [{ required: false, message: "не заполнено" }],
-            initialValue: getObjectData.descr ? getObjectData.descr : null
+            initialValue: null
           })(
             <TextArea
               placeholder="Комментарий"
@@ -549,11 +509,11 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Подразделение">
           {getFieldDecorator("divisions", {
             rules: [{ required: false, message: "не заполнено" }],
-            initialValue: getObjectData.division ? getObjectData.division.id : null
+            initialValue: getObjectData.division && getObjectData.division.id ? getObjectData.division.id : null
           })(
             <Select
               placeholder="Подразделение">
-              {this.getReferenceValues("divisions", "name")}
+              {this.getReferenceValues("divisions", "name", "asc")}
             </Select>
           )}
         </Form.Item>
@@ -566,4 +526,4 @@ class InfoPage extends Component {
 
 export default connect(({ universal2 }) => ({
   universal2
-}))(InfoPage);
+}))(InfoPageFromCounter);

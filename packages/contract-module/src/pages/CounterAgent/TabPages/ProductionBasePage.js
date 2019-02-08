@@ -51,7 +51,10 @@ class ProductionBasePage extends Component {
     };
   }
 
+
+
   render = () => {
+    console.log(this.props.dataSource)
     return (<Card style={{ marginLeft: "-10px" }} bodyStyle={{ padding: 5 }}>
       <SmartGridView
         hidePagination={true}
@@ -63,7 +66,7 @@ class ProductionBasePage extends Component {
         hideRefreshBtn={true}
         columns={this.state.columns}
         addonButtons={[]}
-        dataSource={this.props.dataSource && this.props.dataSource.ContractLocations || []}
+        dataSource={this.props.dataSource && this.props.dataSource.contractLocations || []}
         actionExport={() => {
         }}
         onShowSizeChange={(pageNumber, pageSize) => {

@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import formatMessage from "../../utils/formatMessage";
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Modal, Spin } from "antd";
-import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage } from "./TabPages";
+import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage, InfoPageFromCounter } from "./TabPages";
 //import reduxRouter from 'umi/router';
 import "./CounterAgent.css";
 import moment from "moment";
@@ -10,6 +10,7 @@ import AttachmentPage from "./TabPages/AttachmentPage";
 import Guid from "../../utils/Guid";
 import ContentLayout from "../../layouts/ContentLayout";
 import request from "../../utils/request";
+
 
 ///warning
 // counteragent alu kerek
@@ -31,6 +32,13 @@ class CounterAgentCreate extends Component {
 
     createMode: null,
 
+
+    //if mode is counterAgent
+    counterAgentData: {
+      counterAgent: {},
+      contractItems: {}
+    },
+
     dataStoreGuid: Guid.newGuid(),
 
     SpecData: {},
@@ -38,10 +46,10 @@ class CounterAgentCreate extends Component {
 
     eventManager: {
       _events: {},
-      handleEvent: (evName) => {
+      handleEvent: (evName, params, cb) => {
         if (!this.state.eventManager._events[evName]) return [];//throw new Error('eventName not registered');
 
-        return this.state.eventManager._events[evName]();
+        return this.state.eventManager._events[evName](params, cb);
       },
       subscribe: (evName, fn) => {
         this.state.eventManager._events[evName] = fn;
@@ -51,19 +59,38 @@ class CounterAgentCreate extends Component {
   };
 
   findCounterAgentById = (id) => {
-    this.props.dispatch({
-      type: "universal2/getList",
-      payload: {
-        start: 0,
-        length: 1,
-        alias: "clinicList",
-        entity: "clinic",
-        filter: {
-          id: id
-        },
-        sort: []
+
+    request("/api/uicommand/getObject", {
+      method: "POST",
+      body: {
+        "entity": "clinic",
+        "alias": null,
+        id: id
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          this.setState({
+            counterAgentData: {
+              counterAgent: response.data
+            }
+          });
+        }
       }
     });
+
+    // this.props.dispatch({
+    //   type: "universal2/getList",
+    //   payload: {
+    //     start: 0,
+    //     length: 1,
+    //     alias: "clinicList",
+    //     entity: "clinic",
+    //     filter: {
+    //       id: id
+    //     },
+    //     sort: []
+    //   }
+    // });
   };
   findContractById = (id) => {
     this.props.dispatch({
@@ -95,10 +122,62 @@ class CounterAgentCreate extends Component {
     });
   };
 
-  getCounterAgentById = (id, year) => {
-    const { dispatch } = this.props;
+  getCounterAgentById = ({ id, contractTypeId, documentDate, yearId }) => {
 
-    console.log(id, year);
+    if (this.state.createMode !== "counterAgent") return;
+
+    request("/api/uicommand/createObject", {
+      method: "POST",
+      body: {
+        "entity": "contract",
+        "alias": null,
+        "dataAlias": "initialize",
+        "data": {
+          "documentDate": documentDate,
+          "periodYear": {
+            "search": [
+              "year"
+            ],
+            "year": yearId
+          },
+          "contractType": {
+            "id": contractTypeId
+          },
+          "contractPartys": [
+            {
+              "organization": {
+                "id": id
+              },
+              "contractRole": {
+                "search": [
+                  "code"
+                ],
+                "code": 2
+              }
+            }
+          ]
+        },
+        "parameters": {}
+      },
+      getResponse: (response) => {
+
+        if (response.status === 200) {
+          this.setState(prevState => ({
+            counterAgentData: {
+              ...prevState.counterAgentData,
+              ...response.data
+            }
+          }), () => {
+            this.state.eventManager.handleEvent("SpecPageRefreshState");
+          });
+        } else if (response.status === 400) {
+          Modal.error({
+            title: "Ошибка",
+            content: response.data && response.data.Message
+          });
+        }
+      }
+    });
 
     // dispatch({
     //   type: "universal/getCounterAgentData",
@@ -126,9 +205,9 @@ class CounterAgentCreate extends Component {
       "entity": "contract",
       "alias": null,
       "data": {
-        "contractLocations": [],
-        "contractParties": [], //this.props.universal.counterAgentData.contractParties,
-        "contractItems": SpecFormData
+        "contractLocations": this.state.createMode === "counterAgent" && this.state.counterAgentData.contractLocations ? this.state.counterAgentData.contractLocations : [],
+        "contractParties": this.state.createMode === "counterAgent" && this.state.counterAgentData.contractParties ? this.state.counterAgentData.contractParties : [],
+        "contractItems": SpecFormData.length === 0 ? (this.state.createMode === "counterAgent" && this.state.counterAgentData.contractItems ? this.state.counterAgentData.contractItems : SpecFormData) : SpecFormData
       }
     };
 
@@ -249,7 +328,7 @@ class CounterAgentCreate extends Component {
     const { dispatch, location, history } = this.props;
     let createMode = "";
 
-    if (location.query.hasOwnProperty("counterAgentId")) {
+    if (location.query.hasOwnProperty("counterAgentId") && location.query.hasOwnProperty("contractTypeId")) {
       createMode = "counterAgent";
       this.findCounterAgentById(location.query.counterAgentId);
     }
@@ -285,14 +364,14 @@ class CounterAgentCreate extends Component {
 
     let formData = {};
 
-    if (this.props.universal2.references.hasOwnProperty("clinic") && this.props.universal2.references.clinic.hasOwnProperty("content") && this.props.universal2.references.clinic.content.length > 0) {
-
-      formData = {
-        ...this.props.universal.counterAgentData,
-        _contragent: this.props.universal2.references.clinic.content[0]._organization
-      };
-
-    }
+    // if (this.props.universal2.references.hasOwnProperty("clinic") && this.props.universal2.references.clinic.hasOwnProperty("content") && this.props.universal2.references.clinic.content.length > 0) {
+    //
+    //   formData = {
+    //     ...this.props.universal.counterAgentData,
+    //     _contragent: this.props.universal2.references.clinic.content[0]
+    //   };
+    //
+    // }
 
     if (this.props.universal2.references.hasOwnProperty("contract") && this.props.universal2.references.contract.hasOwnProperty("content") && this.props.universal2.references.contract.content.length > 0) {
       formData.parentContract = this.props.universal2.references.contract.content[0];
@@ -355,7 +434,21 @@ class CounterAgentCreate extends Component {
                 style={{ marginLeft: "5px" }}
                 onClick={() => {
                   this.props.form.resetFields();
-                }}>Очистить</Button>]}
+                }}>Очистить</Button>,
+              this.state.createMode === "counterAgent" && <Button
+                key={"loader_btn"}
+                style={{ marginLeft: "5px" }}
+                onClick={() => {
+                  let infoPageValues = this.state.eventManager.handleEvent("GetInfoPageValues");
+                  if (!Object.values(infoPageValues).filter(x => (x === null)).length > 0) {
+                    this.getCounterAgentById({
+                      id: infoPageValues.counterAgentId,
+                      contractTypeId: infoPageValues.contractTypeId,
+                      documentDate: infoPageValues.documentDateId,
+                      yearId: infoPageValues.yearSectionId
+                    });
+                  }
+                }}>Загрузить</Button>]}
             bordered={false}
             bodyStyle={{ padding: 0 }}>
             <Row style={{ marginTop: "5px" }}>
@@ -366,14 +459,25 @@ class CounterAgentCreate extends Component {
                 defaultActiveKey="main"
                 tabPosition={"left"}>
                 <TabPane tab="Титульная часть" key="main">
-                  <InfoPage
+
+                  {this.state.createMode === "counterAgent" && <InfoPageFromCounter
+                    form={this.props.form}
+                    formData={this.state.counterAgentData}
+                    formItemLayout={formItemLayout}
+                    eventManager={this.state.eventManager}
+                  />}
+
+                  {this.state.createMode === "contract" && <InfoPage
                     getSubContractById={this.getSubContractById}
                     form={this.props.form}
                     formData={formData}
                     setSpecData={this.setSpecData}
+                    eventManager={this.state.eventManager}
                     formItemLayout={formItemLayout}
                     getCounterAgentById={this.getCounterAgentById}
-                  />
+                  />}
+
+
                 </TabPane>
                 <TabPane tab="Спецификация" key="specification">
                   {Object.keys(this.state.SpecData).length > 0 ?
@@ -399,11 +503,11 @@ class CounterAgentCreate extends Component {
                       dataGuid={this.state.dataStoreGuid}
                       eventManager={this.state.eventManager}
                       form={this.props.form}
-                      gridData={this.props.universal.getObjectData}/>}
+                      gridData={this.state.createMode === "counterAgent" ? this.state.counterAgentData : this.props.universal.getObjectData}/>}
                 </TabPane>
                 <TabPane tab="Контрагенты" key="counteragents">
                   <ContragentsPage
-                    gridData={this.props.universal.counterAgentData}
+                    gridData={this.state.createMode === "counterAgent" ? this.state.counterAgentData : this.props.universal.counterAgentData}
                     selectedData={this.props.location.state}/>
                 </TabPane>
               </Tabs>
