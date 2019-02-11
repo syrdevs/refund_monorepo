@@ -274,7 +274,7 @@ class CounterAgentEdit extends Component {
       sendModel.data.number = data.number;
     }
 
-    if (data.parentContract.value) {
+    if (data.parentContract && data.parentContract.value) {
       sendModel.data.parentContract = {
         id: data.parentContract.value.id
       };
@@ -306,13 +306,11 @@ class CounterAgentEdit extends Component {
       sendModel.data.documentDate = moment(data.documentDate).format("DD.MM.YYYY");
 
     if (data.contractAlternation) {
-      sendModel.data.contractAlterationReasons = [
-        {
-          "dictionaryBase": {
-            id: data.contractAlternation
-          }
+      sendModel.data.contractAlterationReasons = data.contractAlternation.map(x => ({
+        "dictionaryBase": {
+          id: x
         }
-      ];
+      }));
 
     }
 

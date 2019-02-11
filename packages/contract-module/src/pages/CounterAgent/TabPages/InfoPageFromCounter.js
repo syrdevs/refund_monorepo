@@ -96,6 +96,7 @@ class InfoPageFromCounter extends Component {
     counterAgentId: null,
     yearSectionId: parseInt(moment().format("MM")) === 12 ? parseInt(moment().format("YYYY")) + 1 : moment().format("YYYY"),
     contractTypeId: null,
+    parentContractVisible: false,
 
 
     CounterAgentsModal: {
@@ -205,10 +206,15 @@ class InfoPageFromCounter extends Component {
 
   render = () => {
 
+
+    //todo year selectFilter
     let contractTypeDataSource = this.getReferenceValues("contractType", "nameRu");
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
     let getObjectData = this.props.formData;
 
+    const parentContractVisible = this.state.parentContractVisible || contractTypeDataSource.filter(x => (this.props.location.query && this.props.location.query.contractTypeId && x.props.prop.id === this.props.location.query.contractTypeId && x.props.prop.basicContractType && x.props.prop.basicContractType.parentRequired && this.state.contractAlterationReason === null)).length > 0;
+
+    const yearSectionId = this.getReferenceValues("periodYear", "year").find(x => (x.props.prop.year.toString() === this.state.yearSectionId));
 
     return (<Card style={{ marginLeft: "-10px" }}>
 
@@ -311,7 +317,7 @@ class InfoPageFromCounter extends Component {
               onClick={() => {
 
               }}>
-              {`(${x.region.nameRu}) №${x.number} от ${x.documentDate}`}
+              {`Протокол  ${x.region && x.region.protocolType && x.region.protocolType.name} ${x.region && x.region.nameRu} №${x.number} от ${x.documentDate }`}
               <br/>
         </span>
           ))}
@@ -319,10 +325,11 @@ class InfoPageFromCounter extends Component {
 
         </Form.Item>
 
+
         <Form.Item {...formItemLayout} label="Учетный период">
           {getFieldDecorator("periodYear", {
             rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.periodYear && getObjectData.periodYear.id ? getObjectData.periodYear.id : this.state.yearSectionId
+            initialValue: getObjectData.periodYear && getObjectData.periodYear.id ? getObjectData.periodYear.id : (yearSectionId && yearSectionId.props.prop && yearSectionId.props.prop.id)
           })(
             <Select
               placeholder="Учетный период"
@@ -342,13 +349,17 @@ class InfoPageFromCounter extends Component {
           })(
             <Select placeholder="Вид договора"
                     onChange={(value, option) => {
-                      this.setState({ contractAlterationReason: option.props.prop.code });
+                      this.setState({
+                        parentContractVisible: option.props.prop.basicContractType && option.props.prop.basicContractType.parentRequired,
+                        contractAlterationReason: option.props.prop.basicContractType && option.props.prop.basicContractType.reasonRequired ? option.props.prop.code : null
+                      });
                     }}>
               {contractTypeDataSource}
             </Select>
           )}
         </Form.Item>
 
+        {parentContractVisible &&
         <Form.Item {...formItemLayout} label="Основной договор">
           {getFieldDecorator("parentContract", {
             initialValue: { value: null },
@@ -404,7 +415,7 @@ class InfoPageFromCounter extends Component {
                 this.setState({ DogovorModal: { visible: true } });
               }}>
             </LinkModal>)}
-        </Form.Item>
+        </Form.Item>}
 
 
         {/*<Form.Item {...formItemLayout} label="Протокол распределения объемов">*/}
@@ -430,9 +441,10 @@ class InfoPageFromCounter extends Component {
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator("contractAlternation", {
             rules: [{ required: false, message: "не заполнено" }],
-            initialValue: getObjectData.contractAlterationReasons && getObjectData.contractAlterationReasons[0] && getObjectData.contractAlterationReasons[0].dictionaryBase ? getObjectData.contractAlterationReasons[0].dictionaryBase.id : null
+            initialValue: getObjectData.contractAlterationReasons && getObjectData.contractAlterationReasons[0] && getObjectData.contractAlterationReasons[0].dictionaryBase ? getObjectData.contractAlterationReasons.map(x => (x.dictionaryBase.id)) : []
           })(
-            <Select placeholder="Причина">
+            <Select placeholder="Причина"
+                    mode="multiple">
               {this.getReferenceValues("contractAlterationReason", "nameRu")}
             </Select>
           )}
@@ -480,11 +492,13 @@ class InfoPageFromCounter extends Component {
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator("period", {
             rules: [{ required: false, message: "не заполнено" }],
-            initialValue: getObjectData.dateBegin ? [moment(getObjectData.dateBegin, "DD.MM.YYYY"), getObjectData.dateEnd ? moment(getObjectData.dateEnd, "DD.MM.YYYY") : null] : null
+            initialValue: [moment(getObjectData.dateBegin ? getObjectData.dateBegin : "01.01.2019", "DD.MM.YYYY"), moment(getObjectData.dateEnd ? getObjectData.dateEnd : "12.12.2019", "DD.MM.YYYY")]
+
+            //getObjectData.dateBegin ? [moment(getObjectData.dateBegin, "DD.MM.YYYY"), getObjectData.dateEnd ? moment(getObjectData.dateEnd, "DD.MM.YYYY") : null] : null
           })(
             <RangePicker
               //style={{ width: "80%" }}
-              style={{ width: "230px" }}
+              style={{ width: "280px" }}
               format={"DD.MM.YYYY"}
               placeholder={[
                 formatMessage({ id: "datepicker.start.label" }),

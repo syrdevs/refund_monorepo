@@ -210,10 +210,13 @@ class ShowPull extends Component {
         }, { "title": "Статус страхования", "dataIndex": "refund.medinsStatus" }, {
           "title": "Референс",
           "dataIndex": "refund.applicationId.reference"
-        }, { "title": "Причина отказа", "dataIndex": "refund.ddenyReasonId.nameRu" }, {
-          "title": "Отчет об отказе",
-          "dataIndex": "refund.refundStatus"
-        }, { "title": "Осталось дней", "dataIndex": "refund.daysLeft" }, {
+        }, { "title": "Причина отказа", "dataIndex": "refund.ddenyReasonId.nameRu" },
+        // {
+        //   "title": "Отчет об отказе",
+        //   "dataIndex": "refund.refundStatus"
+        // },
+
+        { "title": "Осталось дней", "dataIndex": "refund.daysLeft" }, {
           "title": "Дата изменения статуса заявки",
           "dataIndex": "refund.changeDate"
         },
