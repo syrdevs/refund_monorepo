@@ -150,11 +150,11 @@ class ImportModalGrid extends Component {
         width: 150
 
       },
-      {
-        "title": "Статус страхования",
-        width: 150,
-        "dataIndex": "medinsStatus"
-      },
+      // {
+      //   "title": "Статус страхования",
+      //   width: 150,
+      //   "dataIndex": "medinsStatus"
+      // },
       {
         "title": "Референс",
         width: 200,
@@ -166,12 +166,12 @@ class ImportModalGrid extends Component {
         width: 150,
         "dataIndex": "ddenyReasonId.nameRu"
       },
-      {
-        "title": "Отчет об отказе",
-        "dataIndex": "refundStatus",
-        width: 150
-
-      },
+      // {
+      //   "title": "Отчет об отказе",
+      //   "dataIndex": "refundStatus",
+      //   width: 150
+      //
+      // },
       {
         "title": "Осталось дней",
         width: 150,

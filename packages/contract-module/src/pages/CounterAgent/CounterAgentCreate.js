@@ -239,7 +239,7 @@ class CounterAgentCreate extends Component {
       sendModel.data.number = data.number;
     }
 
-    if (data.parentContract.value) {
+    if (data.parentContract && data.parentContract.value) {
       sendModel.data.parentContract = {
         id: data.parentContract.value.id
       };
@@ -271,13 +271,11 @@ class CounterAgentCreate extends Component {
       sendModel.data.documentDate = moment(data.documentDate).format("DD.MM.YYYY");
 
     if (data.contractAlternation) {
-      sendModel.data.contractAlterationReasons = [
-        {
-          "dictionaryBase": {
-            id: data.contractAlternation
-          }
+      sendModel.data.contractAlterationReasons = data.contractAlternation.map(x => ({
+        "dictionaryBase": {
+          id: x
         }
-      ];
+      }));
 
     }
 
@@ -437,6 +435,7 @@ class CounterAgentCreate extends Component {
                 }}>Очистить</Button>,
               this.state.createMode === "counterAgent" && <Button
                 key={"loader_btn"}
+                type="primary"
                 style={{ marginLeft: "5px" }}
                 onClick={() => {
                   let infoPageValues = this.state.eventManager.handleEvent("GetInfoPageValues");
@@ -448,7 +447,7 @@ class CounterAgentCreate extends Component {
                       yearId: infoPageValues.yearSectionId
                     });
                   }
-                }}>Загрузить</Button>]}
+                }}>Сформировать</Button>]}
             bordered={false}
             bodyStyle={{ padding: 0 }}>
             <Row style={{ marginTop: "5px" }}>

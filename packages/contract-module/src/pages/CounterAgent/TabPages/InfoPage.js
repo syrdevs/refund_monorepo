@@ -210,7 +210,9 @@ class InfoPage extends Component {
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
     let getObjectData = this.props.formData ? { ...this.props.formData } : {};
 
-    if (this.state.contractAlterationReason === null && getObjectData.contractType && getObjectData.contractType.code === "2") {
+    console.log(getObjectData.contractType && getObjectData.contractType.code);
+
+    if (this.state.contractAlterationReason === null && getObjectData.contractType && ["02", "10"].includes(getObjectData.contractType.code)) {
       this.setState({
         contractAlterationReason: getObjectData.contractType.code
       });
@@ -346,7 +348,7 @@ class InfoPage extends Component {
               onClick={() => {
 
               }}>
-              {`(${x.region.nameRu}) №${x.number} от ${x.documentDate}`}
+              {`Протокол  ${x.region && x.region.protocolType && x.region.protocolType.name} ${x.region && x.region.nameRu} №${x.number} от ${x.documentDate }`}
               <br/>
         </span>
           ))}
@@ -384,12 +386,15 @@ class InfoPage extends Component {
           })(
             <Select placeholder="Вид договора"
                     onChange={(value, option) => {
-                      this.setState({ contractAlterationReason: option.props.prop.code });
-
+                      //this.setState({ contractAlterationReason: option.props.prop.code });
+                      this.setState({
+                        parentContractVisible: option.props.prop.basicContractType && option.props.prop.basicContractType.parentRequired,
+                        contractAlterationReason: option.props.prop.basicContractType && option.props.prop.basicContractType.reasonRequired ? option.props.prop.code : null
+                      });
                       let parentContract = this.props.form.getFieldValue("parentContract").value;
 
                       if ((option.props.prop.code === "3" || option.props.prop.code === "2") && parentContract !== null) {
-                        this.props.getSubContractById(parentContract.id, value);
+                        //this.props.getSubContractById(parentContract.id, value);
                       }
                     }}>
               {contractTypeDataSource}
@@ -478,9 +483,10 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Причина">
           {getFieldDecorator("contractAlternation", {
             rules: [{ required: false, message: "не заполнено" }],
-            initialValue: getObjectData.contractAlterationReasons ? getObjectData.contractAlterationReasons[0].dictionaryBase.id : null
+            initialValue: getObjectData.contractAlterationReasons ? getObjectData.contractAlterationReasons.map(x => (x.dictionaryBase.id)) : []
           })(
-            <Select placeholder="Причина">
+            <Select placeholder="Причина"
+                    mode="multiple">
               {this.getReferenceValues("contractAlterationReason", "nameRu")}
             </Select>
           )}
@@ -520,7 +526,7 @@ class InfoPage extends Component {
             <DatePicker
               format={"DD.MM.YYYY"}
               value={null}
-              style={{width: "195px"}}
+              style={{ width: "195px" }}
               placeholder="Выберите дату"/>
           )}
         </Form.Item>
@@ -533,7 +539,7 @@ class InfoPage extends Component {
           })(
             <RangePicker
               //style={{ width: "80%" }}
-              style={{ width: "230px" }}
+              style={{ width: "280px" }}
               format={"DD.MM.YYYY"}
               placeholder={[
                 formatMessage({ id: "datepicker.start.label" }),
