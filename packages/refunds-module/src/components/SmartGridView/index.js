@@ -28,7 +28,8 @@ import { faCreditCard, faColumns } from "@fortawesome/free-solid-svg-icons/index
 import componentLocal from "../../locales/components/componentLocal";
 import formatMessage from "../../utils/formatMessage";
 import "./index.css";
-
+import numberWithSpaces from "../../utils/numberFormat";
+import intWithSpace from "../../utils/IntWithSpace";
 import ru_RU from "antd/lib/locale-provider/ru_RU";
 
 function getPropByName(obj, desc) {
@@ -111,7 +112,7 @@ const SmartGridHeader = props => {
 
             {props.showTotal &&
             <div
-              className={"total_label"}>{props.extraButtons !== undefined && props.extraButtons} {formatMessage({ id: "app.table.column.total" })}: {props.dataSource.total}</div>}
+              className={"total_label"}>{props.extraButtons !== undefined && props.extraButtons} {formatMessage({ id: "app.table.column.total" })}: {intWithSpace(props.dataSource.total)}</div>}
 
           </div>
         </div>

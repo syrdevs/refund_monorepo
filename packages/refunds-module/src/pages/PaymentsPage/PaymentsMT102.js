@@ -194,10 +194,6 @@ class PaymentsMT102 extends Component {
         "dataIndex": "birthdate",
         "isVisible": "true"
       }, {
-        "title": "ИИН",
-        "dataIndex": "iin",
-        "isVisible": "true"
-      }, {
         "title": "Плательщик (БИН/ИИН)",
         "dataIndex": "senderBin",
         "isVisible": "true"
@@ -237,7 +233,18 @@ class PaymentsMT102 extends Component {
 
         return "";
       }
-    }, {
+    },{
+      "title": "ИИН",
+      order: 5,
+      "dataIndex": "iin",
+      "isVisible": "true",
+      render: (value) => {
+        if (value) {
+          return <div onClick={()=>{this.props.onSelect(value)}}>{value}</div>;
+        }
+        return "";
+      }
+    },  {
       "title": "Сумма возвратов",
       "dataIndex": "refundTotalAmount",
       order: 6,
@@ -453,6 +460,7 @@ class PaymentsMT102 extends Component {
             filter: params
           }
         }), () => {
+          console.log(this.state.parameters)
           this.applyFilter(params);
         });
       } else {
@@ -481,7 +489,7 @@ class PaymentsMT102 extends Component {
       color: "#002140",
       fontSize: "12px",
       paddingLeft: "10px"
-    }}>{formatMessage({ id: "system.totalAmount" })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
+    }}>{formatMessage({ id: "system.totalAmount" })}: {numberWithSpaces(paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0)} /</span>];
 
     return (<Row>
       <Col sm={24} md={this.state.filterContainer}>

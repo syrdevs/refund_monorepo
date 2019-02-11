@@ -221,7 +221,10 @@ class Searcher extends Component {
   };
 
   monthCellRender2 = (value) => {
-    let result = (<div style={{ backgroundColor: "green", opacity: "0.1", height: "100%", width: "100%" }}></div>);
+    let result = (
+      <div style={{ backgroundColor: "green", opacity: "0.1", height: "100%", width: "100%" }} onClick={() => {
+        this.props.onSelectMonth({ iin: this.state.iin });
+      }}></div>);
     if (this.state.MonthHistory !== undefined && this.state.MonthHistory.length > 0) {
       this.state.MonthHistory.forEach((item) => {
         if (item.isDebt && item.payPeriod === value.format("MMYYYY")) {
@@ -229,8 +232,7 @@ class Searcher extends Component {
             <div
               style={{ backgroundColor: "rgba(255, 71, 65, 0.2)", height: "100%", width: "100%", padding: "10px" }} //
               onClick={() => {
-
-                this.props.onSelectMonth({iin:this.state.iin,paymentperiod:item.payPeriod});
+                this.props.onSelectMonth({ iin: this.state.iin, paymentperiod: item.payPeriod });
               }}
             >
               {/* <p>Сумма: {item.totalAmount}</p>
@@ -364,6 +366,7 @@ class Searcher extends Component {
             this.getpersonRPN();
             this.getpersonMED();
             this.payesSearcher(moment(new Date()).year());
+            this.props.eventManager.handleEvent("AppealsRefreshData", { iin: this.state.iin });
           });
         } else {
           Modal.info({
@@ -452,7 +455,7 @@ class Searcher extends Component {
         }
       });
       console.log(this.state.iin);
-      this.props.eventManager.handleEvent("employeesRefreshGuid", { });
+      this.props.eventManager.handleEvent("employeesRefreshGuid", {});
     });
 
     this.setState({
@@ -724,11 +727,13 @@ class Searcher extends Component {
     }
     ];
 
-    const secondData = [{
+    const secondData = [
+      /*{
       key: 9,
       name: "СТАТУС СТРАХОВАНИЯ",
       value: personMED.clinic ? (personMED.status ? formatMessage({ id: "report.param.medinsstattrue" }).toUpperCase() : formatMessage({ id: "report.param.medinsstatfalse" }).toUpperCase()) : ""
-    }, {
+    }, */
+      {
       key: 10,
       name: "ЛЬГОТНАЯ КАТЕГОРИЯ",
       value: personMED.pref_categories !== undefined ? personMED.pref_categories.map((category) =>
@@ -1084,7 +1089,7 @@ class Searcher extends Component {
                   // });
 
                   this.props.eventManager.handleEvent("paymentSelectTab", bin, () => {
-                    this.props.eventManager.handleEvent("onSelectFilterByBin",  bin);
+                    this.props.eventManager.handleEvent("onSelectFilterByBin", bin);
                   });
                 }}
                 onSearch={this.state.iin}
@@ -1102,26 +1107,26 @@ class Searcher extends Component {
                     type="inner"
                   >
                     <Col span={12}>
-                    <Calendar
-                      onPanelChange={this.onPanelChange}
-                      mode='year'
-                      className={historystyle}
-                      monthCellRender={this.monthCellRender2}
-                      fullscreen
-                      defaultValue={moment("2018-02-27T10:00:00")}
-                      validRange={[moment("2018-02-27T10:00:00"), moment("2018-02-27T10:00:00")]}
-                    />
+                      <Calendar
+                        onPanelChange={this.onPanelChange}
+                        mode='year'
+                        className={historystyle}
+                        monthCellRender={this.monthCellRender2}
+                        fullscreen
+                        defaultValue={moment("2018-02-27T10:00:00")}
+                        validRange={[moment("2018-02-27T10:00:00"), moment("2018-02-27T10:00:00")]}
+                      />
                     </Col>
                     <Col span={12}>
-                    <Calendar
-                      onPanelChange={this.onPanelChange}
-                      mode='year'
-                      className={historystyle}
-                      monthCellRender={this.monthCellRender2}
-                      fullscreen
-                      defaultValue={moment("2019-02-27T10:00:00")}
-                      validRange={[moment("2019-02-27T10:00:00"), moment("2019-02-27T10:00:00")]}
-                    /></Col>
+                      <Calendar
+                        onPanelChange={this.onPanelChange}
+                        mode='year'
+                        className={historystyle}
+                        monthCellRender={this.monthCellRender2}
+                        fullscreen
+                        defaultValue={moment("2019-02-27T10:00:00")}
+                        validRange={[moment("2019-02-27T10:00:00"), moment("2019-02-27T10:00:00")]}
+                      /></Col>
                   </Card>
                 </Col>
               </Row>
@@ -1132,6 +1137,7 @@ class Searcher extends Component {
               disabled={!personRPN.iin}
             >
               <Appeals
+                eventManager={this.props.eventManager}
                 onSearch={this.state.iin}/>
             </TabPane>
 

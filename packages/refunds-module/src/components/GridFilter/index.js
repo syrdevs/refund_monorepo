@@ -777,13 +777,17 @@ class GridFilter extends Component {
 
         let params = {};
 
+        if (this.props.formFilter && this.props.formFilter.hasOwnProperty(filterItem.name)) {
+          params.checked = this.props.formFilter[filterItem.name];
+        }
         if (isClearFilter) {
           params.checked = false;
         }
 
         return (<div key={_index} style={mBottom}><Checkbox {...params} onChange={(e) => {
           this.fieldOnChange(filterItem, { value: e.target.checked });
-        }}/> : {filterItem.label}</div>);
+        }}
+        /> : {filterItem.label}</div>);
       }
 
       default:

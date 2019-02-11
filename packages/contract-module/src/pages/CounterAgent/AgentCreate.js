@@ -22,6 +22,7 @@ import connect from "../../Redux";
 import ContentLayout from "../../layouts/ContentLayout";
 import styles from "../Acts/style.css";
 import moment from "moment";
+import Guid from "../../utils/Guid";
 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
@@ -450,7 +451,7 @@ class AgentCreate extends Component {
                       /*<Input name={'adresstype'+record.key} onChange={(e)=>{this.identValue(e.target.value, record, 'adresstype', "adresses")}}/>*/
 
                       <Select name={"adresstype" + record.key} style={{ width: 250 }} onChange={(e) => {
-                        this.identValue(e, record, "adresstype", "adresses");
+                        this.identValueAdress(e, record, "adresstype", "adresses");
                       }}>
                         {this.props.universal2.references.addressType.content && this.props.universal2.references.addressType.content.map((item) => {
                           return <Select.Option value={item.id} key={item.id}>{item.name}</Select.Option>;
@@ -1078,13 +1079,14 @@ class AgentCreate extends Component {
                       rules: [{
                         required: false,
                         message: this.state.validatemessage
-                      }]
+                      }],
+                      initialValue: this.state.Industbase[record.key] ? (this.state.Industbase[record.key].id ? this.state.Industbase[record.key].id : null) : null
                     })(
                       <Select name={"bank" + record.key} style={{ width: '90%', maxWidth: '500px' }} onChange={(e) => {
-                        this.identValue(e, record, "bank", "banks");
+                        this.identValue(e, record, "id", "Industbase");
                       }}>
                         {this.state.adresses && this.state.adresses.map((item) => {
-                          return <Select.Option value={item.adressname}
+                          return <Select.Option value={item.id}
                                                 key={item.adressname}>{item.adressname}</Select.Option>;
                         })}
                       </Select>
@@ -1103,7 +1105,8 @@ class AgentCreate extends Component {
                     rules: [{
                       required: false,
                       message: this.state.validatemessage
-                    }]
+                    }],
+                    initialValue: this.state.Industbase[record.key] ? (this.state.Industbase[record.key].indusbeginDate ? moment(this.state.Industbase[record.key].indusbeginDate, "DD.MM.YYYY") : null) : null
                   })(
                     <DatePicker style={{width: "195px"}} name={"indusbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
@@ -1124,7 +1127,8 @@ class AgentCreate extends Component {
                     rules: [{
                       required: false,
                       message: this.state.validatemessage
-                    }]
+                    }],
+                    initialValue: this.state.Industbase[record.key] ? (this.state.Industbase[record.key].indusendDate ? moment(this.state.Industbase[record.key].indusendDate, "DD.MM.YYYY") : null) : null
                   })(
                     <DatePicker style={{width: "195px"}} name={"indusendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
@@ -1397,6 +1401,7 @@ class AgentCreate extends Component {
     }) : [];
     let addresses = data.addresses ? data.addresses.map((item, index) => {
       return {
+        "id": item.id,
         "adressname": item.addressText,
         "adressbeginDate": item.dateBegin ? moment(item.dateBegin, "DD.MM.YYYY") : null,
         "adressendDate": item.dateEnd ? moment(item.dateEnd, "DD.MM.YYYY") : null,
@@ -1415,6 +1420,16 @@ class AgentCreate extends Component {
       };
     }) : [];
 
+    let locations = data.locations ? data.locations.map((item, index) => {
+      return {
+        "id": item.address ? item.address.id : "",
+        "indusadress": item.address ? item.address.addressText : "",
+        "indusbeginDate": item.dateBegin ? moment(item.dateBegin, "DD.MM.YYYY") : null,
+        "indusendDate": item.dateEnd ? moment(item.dateEnd, "DD.MM.YYYY") : null,
+        "key": index
+      };
+    }) : [];
+
     let clinicRegisters = data.clinicRegisters ? data.clinicRegisters.map((item, index) => {
       return {
         "clinicRegistersbeginDate": item.dateBegin ? moment(item.dateBegin, "DD.MM.YYYY") : null,
@@ -1427,7 +1442,8 @@ class AgentCreate extends Component {
       adresses: addresses,
       banks: bankAccounts,
       contacts: contacts,
-      clinicRegisters: clinicRegisters
+      clinicRegisters: clinicRegisters,
+      Industbase: locations
     });
   };
   selecttypeagent = (e) => {
@@ -1458,6 +1474,19 @@ class AgentCreate extends Component {
     let _dataSource = this.state[arrname];
     _dataSource[findItemIdx] = {
       ...record,
+      [name]: e
+    };
+    this.setState({
+      [arrname]: _dataSource
+    }, () => {
+    });
+  };
+  identValueAdress = (e, record, name, arrname) => {
+    let findItemIdx = this.state[arrname].findIndex((value) => value.key === record.key);
+    let _dataSource = this.state[arrname];
+    _dataSource[findItemIdx] = {
+      ...record,
+      id: Guid.newGuid(),
       [name]: e
     };
     this.setState({
@@ -1593,6 +1622,7 @@ class AgentCreate extends Component {
           "addressText": item.adressname,
           "dateBegin": item.adressbeginDate ? item.adressbeginDate.format("DD.MM.YYYY") : null,
           "dateEnd": item.adressendDate ? item.adressendDate.format("DD.MM.YYYY") : null,
+          "id": item.id ? item.id : null,
         };
         if (item.adresstype) {
           val = {
@@ -1630,11 +1660,28 @@ class AgentCreate extends Component {
       attr.data.clinicRegisters = this.state.clinicRegisters ? this.state.clinicRegisters.map((item) => {
 
         let val =  {
-          /*"id": "2709b845-1b7c-43e6-abc3-985c57600870",*/
           "dateBegin": item.clinicRegistersbeginDate ? item.clinicRegistersbeginDate.format("DD.MM.YYYY") : null,
           "dateEnd": item.clinicRegistersendDate ? item.clinicRegistersendDate.format("DD.MM.YYYY") : null,
           "clinicRole": 0
         };
+        return val;
+      }) : undefined;
+    }
+    if (this.state.Industbase) {
+      attr.data.locations = this.state.Industbase ? this.state.Industbase.map((item) => {
+
+        let val =  {
+          "dateBegin": item.indusbeginDate ? item.indusbeginDate.format("DD.MM.YYYY") : null,
+          "dateEnd": item.indusendDate ? item.indusendDate.format("DD.MM.YYYY") : null,
+        };
+        if (item.id) {
+          val = {
+            ...val,
+            "address": {
+              "id": item.id
+            }
+          }
+        }
         return val;
       }) : undefined;
     }

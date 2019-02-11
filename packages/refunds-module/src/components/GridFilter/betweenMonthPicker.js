@@ -108,6 +108,21 @@ class BetweenMonthPicker extends React.Component {
         </div>
       </Col>
       }
+      {this.props.filterItem.clearBtn &&
+      <Col md={2}>
+        <div style={{ margin: "5px" }}
+             onClick={()=>{
+               this.setState({
+                 calendarMomentValue: [],
+                 calendarValue: null
+               },()=>{
+                 this.props.onChange(this.state.calendarValue);
+               });
+             }}>
+          <Icon type="delete" />
+        </div>
+      </Col>
+      }
       {this.props.filterItem.nullCalendar &&
       <Col md={8}>
       <Button

@@ -637,6 +637,13 @@ class PaymentsPage extends Component {
                   this.state.eventManager.handleEvent("onSelectFilter", { senderBin: bin });
                 });
               }}
+              searchbyrefund={(bin) => {
+                this.setState({
+                  activeKey: "mt102"
+                }, () => {
+                  this.state.eventManager.handleEvent("onSelectFilter", { senderBin: bin, isRefunded: true });
+                });
+              }}
               persontitle={"report.param.personinformJur"}
               item={"Juridic"}
             />

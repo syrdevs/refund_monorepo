@@ -54,7 +54,7 @@ class Consumer extends Component {
       length: 15,
       entity: "specialList",
       filter: {},
-      sort: []
+      sort: [{field: "createDateTime", 'desc': true}]
     },
     filterForm: [
 

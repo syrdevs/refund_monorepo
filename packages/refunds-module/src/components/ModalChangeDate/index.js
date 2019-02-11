@@ -51,9 +51,8 @@ class ModalChangeDate extends Component {
   };
 
   uploadFile = (data) => {
+    console.log("uploading");
     const { dispatch, dataSource } = this.props;
-    // if (data.file.status === "done") {
-    //data.file.status = 'uploading';
     dispatch({
       type: "universal/setfile",
       payload: {
@@ -245,16 +244,15 @@ class ModalChangeDate extends Component {
         </Row>
         {this.props.coltype !== "appEndDate" &&
         <Row style={{ marginTop: "15px" }}>
-          {this.props.loadingFiles === false ?
             <Upload
               {...uploadProps}>
               <Button size="large">
                 <Icon type="upload"/>{formatMessage({ id: "system.load" })}
               </Button>
-            </Upload> : <Button size="large">
+            </Upload>
+            {/*<Button size="large">
               <Icon type="upload"/>{formatMessage({ id: "system.load" })}
-            </Button>
-          }
+            </Button>*/}
         </Row>}
       </Modal>
     );

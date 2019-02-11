@@ -63,19 +63,19 @@ class Appeals extends Component {
         name: "iIN",
         type: "text",
         withMax: 12
-      },{
+      }, {
         label: "Фамилия",
         name: "person.lastName",
-        type: "text",
-      },{
+        type: "text"
+      }, {
         label: "Имя",
         name: "person.firstName",
-        type: "text",
-      },{
+        type: "text"
+      }, {
         label: "Отчество",
         name: "person.patronymic",
-        type: "text",
-      },  {
+        type: "text"
+      }, {
         label: "Дата обращения",
         name: "requestDate",
         type: "listbetweenDate"
@@ -83,7 +83,7 @@ class Appeals extends Component {
         label: "Номер обращения",
         name: "requestNumber",
         type: "text"
-      },{
+      }, {
         label: "Дата ответа на обращение",
         name: "responceDate",
         type: "listbetweenDate"
@@ -96,7 +96,7 @@ class Appeals extends Component {
         label: "Краткое содержание",
         name: "descr",
         type: "text"
-      },
+      }
 
     ],
     sortedInfo: {},
@@ -105,7 +105,7 @@ class Appeals extends Component {
     visibleModal: false,
     filterContainer: 0,
     columns: [
-    {
+      {
         "title": "Фамилия",
         "dataIndex": "person.lastName",
         "isVisible": "true"
@@ -117,7 +117,7 @@ class Appeals extends Component {
         "title": "Отчество",
         "dataIndex": "person.patronymic",
         "isVisible": "true"
-      },{
+      }, {
         "title": "Дата обращения",
         "dataIndex": "requestDate",
         "isVisible": "true"
@@ -133,11 +133,15 @@ class Appeals extends Component {
         "title": "Номер ответа на обращение",
         "dataIndex": "responceNumber",
         "isVisible": "true"
-      },{
+      }, {
         "title": "Краткое содержание",
         "dataIndex": "descr",
         "isVisible": "true"
-      },
+      }, {
+        "title": "Медицинская организация",
+        "dataIndex": "clinic.name",
+        "isVisible": "true"
+      }
     ]
   };
 
@@ -252,6 +256,18 @@ class Appeals extends Component {
   };
 
   componentDidMount() {
+
+    this.props.eventManager.subscribe("AppealsRefreshData", (params) => {
+      this.setState(prevState => ({
+        parameters: {
+          ...prevState.parameters,
+          filter: params
+        }
+      }), () => {
+        this.loadGridData();
+      });
+    });
+
     this.loadGridData();
   }
 
@@ -286,8 +302,7 @@ class Appeals extends Component {
         "entityClass": "personRequest",
         "fileName": "Обращения",
         "filter": this.state.parameters.filter,
-        "columns": [
-        ].concat(columns.filter(column => column.isVisible))
+        "columns": [].concat(columns.filter(column => column.isVisible))
       },
       getResponse: (response) => {
         if (response.status === 200) {
@@ -369,7 +384,7 @@ class Appeals extends Component {
           message.warning(response.data.Message);
         }
         if (response.status === 200) {
-          console.log(response)
+          console.log(response);
           message.info("Загружено: " + response.data.loadNewCount + " из: " + response.data.allItemCount);
         }
       }
@@ -443,7 +458,6 @@ class Appeals extends Component {
     };
 
     let paymentsData = this.props.universal2.references[this.state.parameters.entity] ? this.props.universal2.references[this.state.parameters.entity] : {};
-
 
 
     const CardHeight = { height: "auto", marginBottom: "10px" };

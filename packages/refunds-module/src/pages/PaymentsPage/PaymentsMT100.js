@@ -432,7 +432,7 @@ class PaymentsMT100 extends Component {
       color: "#002140",
       fontSize: "12px",
       paddingLeft: "10px"
-    }}>{formatMessage({ id: "system.totalAmount" })}: {paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0} /</span>];
+    }}>{formatMessage({ id: "system.totalAmount" })}: {numberWithSpaces(paymentsData.totalSum ? paymentsData.totalSum.totalAmount ? paymentsData.totalSum.totalAmount : paymentsData.totalSum.paymentsum : 0)} /</span>];
 
     return (<Row>
       <Col sm={24} md={this.state.filterContainer}>

@@ -18,6 +18,7 @@ import {
 } from "antd";
 import connect from "../../Redux";
 import request from "../../utils/request";
+import intWithSpace from "../../utils/IntWithSpace";
 
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -317,24 +318,24 @@ class SearcherJur extends Component {
       {
         key: 6,
         name: "КОЛИЧЕСТВО ПОТРЕБИТЕЛЕЙ",
-        value: jur.personCount
+        value: intWithSpace(jur.personCount)
       }, {
         key: 7,
         name: "КОЛИЧЕСТВО ВОЗВРАТОВ",
-        value: jur.refundCount
+        value: intWithSpace(jur.refundCount)
       }, {
         key: 8,
         name: "СУММА ВОЗВРАТОВ",
-        value: jur.refundSum
+        value: intWithSpace(jur.refundSum)
       }, {
         key: 4,
         name: "КОЛИЧЕСТВО ПЛАТЕЖЕЙ",
-        value: jur.paymentCount
+        value: intWithSpace(jur.paymentCount)
       },
       {
         key: 5,
         name: "СУММА ПЛАТЕЖЕЙ",
-        value: jur.paymentSum
+        value: intWithSpace(jur.paymentSum)
       }
     ];
 
@@ -350,7 +351,7 @@ class SearcherJur extends Component {
                 title={formatMessage({ id: "report.param.searcher" })}
               >
                 <div style={{ display: "block" }}>
-                  <div style={{ float: "left", width: this.state.jur.senderBin ? "60%" : "60%" }}>
+                  <div style={{ float: "left", width: this.state.jur.senderBin ? "55%" : "55%" }}>
                     <Search
                       placeholder="Введите БИН/ИИН"
                       enterButton={formatMessage({ id: "system.search" })}
@@ -359,16 +360,27 @@ class SearcherJur extends Component {
                       onSearch={value => this.searchperson(value)}
                     />
                   </div>
-                  {this.state.jur.senderBin && <div
-                    style={{ float: "left", width: "40%", paddingLeft: "10px" }}>
-                    <Button
-                      //size={"large"}
-                      onClick={() => {
-                        if (this.state.bin) {
-                          this.props.searchbybin(this.state.bin);
-                        }
-                      }}
-                    >Просмотр платежей</Button>
+                  {this.state.jur.senderBin && <div style={{ float: "left", width:'45%'}}>
+                      <div
+                      style={{ float: "left", width: "60%", paddingLeft: "10px" }}>
+                      <Button
+                        onClick={() => {
+                          if (this.state.bin) {
+                            this.props.searchbybin(this.state.bin);
+                          }
+                        }}
+                      >Просмотр платежей</Button>
+                    </div>
+                      <div
+                      style={{ float: "left", width: "40%", paddingLeft: "5px" }}>
+                      <Button
+                        onClick={() => {
+                          if (this.state.bin) {
+                            this.props.searchbyrefund(this.state.bin);
+                          }
+                        }}
+                      >Возврат</Button>
+                    </div>
                   </div>}
 
                 </div>

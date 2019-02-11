@@ -66,7 +66,8 @@ class Debutors extends Component {
     return [{
       name: "_deptPeriods",
       label: "Период",
-      type: "betweenMonthPicker"
+      type: "betweenMonthPicker",
+      clearBtn: true
     }, {
       name: "iin",
       label: "ИИН",
