@@ -131,11 +131,11 @@ class PaymentsMT100 extends Component {
         name: "_createdOn",
         type: "listbetweenDate"
       },
-      {
+      /*{
         label: "БИН отправителя",
         name: "getPaymentMT102ByBin",
         type: "text"
-      }
+      }*/
       /* {
          label: "ID",
          name: "id",

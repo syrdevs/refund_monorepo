@@ -218,8 +218,10 @@ class PaymentsMT102 extends Component {
         "title": "Перенесенный период",
         "dataIndex": "paymentPeriodTransfer",
 
+      }, {
+        "title": "Платежи MT102",
+        "dataIndex": "refundsCount",
       }
-
     ],
     actionColumns: [{
       "title": "Сумма",

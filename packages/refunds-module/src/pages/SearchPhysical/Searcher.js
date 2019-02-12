@@ -929,7 +929,7 @@ class Searcher extends Component {
                            onChange={(e) => {
                              this.fieldOnChange("patronymic", e.target.value);
                            }}/></div>}
-                  {this.state.visibleFilter && <div style={mBottom}>День рождения: <div style={{ width: "100%" }}>
+                  {this.state.visibleFilter && <div style={mBottom}>Дата рождения: <div style={{ width: "100%" }}>
                     <DatePicker  {...params}
                                  format={"DD.MM.YYYY"}/></div></div>}
                   {/*<Spin tip="Загрузка..." spinning={count.length > 0 ? this.props.loadingData : false}>*/}
