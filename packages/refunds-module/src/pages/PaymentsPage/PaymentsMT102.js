@@ -216,11 +216,11 @@ class PaymentsMT102 extends Component {
         "dataIndex": "stornDate"
       }, {
         "title": "Перенесенный период",
-        "dataIndex": "paymentPeriodTransfer",
+        "dataIndex": "paymentPeriodTransfer"
 
       }, {
         "title": "Платежи MT102",
-        "dataIndex": "refundsCount",
+        "dataIndex": "refundsCount"
       }
     ],
     actionColumns: [{
@@ -235,18 +235,20 @@ class PaymentsMT102 extends Component {
 
         return "";
       }
-    },{
+    }, {
       "title": "ИИН",
       order: 5,
       "dataIndex": "iin",
       "isVisible": "true",
       render: (value) => {
         if (value) {
-          return <a onClick={()=>{this.props.onSelect(value)}}>{value}</a>;
+          return <a onClick={() => {
+            this.props.onSelect(value);
+          }}>{value}</a>;
         }
         return "";
       }
-    },  {
+    }, {
       "title": "Сумма возвратов",
       "dataIndex": "refundTotalAmount",
       order: 6,
@@ -441,8 +443,8 @@ class PaymentsMT102 extends Component {
           parameters: {
             ...this.state.parameters,
             //filter: { ...this.state.parameters.filter, params }
-           // filter: {iin:params.iin,paymentperiod:params.paymentperiod}
-            filter: {...params.record}
+            // filter: {iin:params.iin,paymentperiod:params.paymentperiod}
+            filter: { ...params.record }
           }
         }), () => {
           this.applyFilter(params.record);
@@ -462,7 +464,6 @@ class PaymentsMT102 extends Component {
             filter: params
           }
         }), () => {
-          console.log(this.state.parameters)
           this.applyFilter(params);
         });
       } else {
@@ -475,6 +476,8 @@ class PaymentsMT102 extends Component {
 
 
   render = () => {
+
+    //todo filter action form
 
     const paymentsData = this.props.universal.paymentsData[this.state.parameters.entity];
 
@@ -529,7 +532,7 @@ class PaymentsMT102 extends Component {
           loading={this.props.loadingData}
           fixedHeader={true}
           rowSelection={false}
-          rowClassName={(record,index) => {
+          rowClassName={(record, index) => {
 
             if (record.isRefunded) {
               return "redRow";
@@ -537,7 +540,7 @@ class PaymentsMT102 extends Component {
             if (record.stornDate) {
               return "grayRow";
             }
-            if(record){
+            if (record) {
               return this.state.selectedIndex === index ? "active" : "";
             }
           }
