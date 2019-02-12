@@ -199,7 +199,7 @@ class GridFilter extends Component {
 
   }
 
-  fieldOnChange = (filterItem, value) => {
+  fieldOnChange = (filterItem, value, cb) => {
 
     const { formFilters } = this.state;
 
@@ -208,6 +208,8 @@ class GridFilter extends Component {
         ...formFilters,
         [filterItem.name]: value
       }
+    }, () => {
+      if (cb) cb();
     });
 
   };
@@ -225,9 +227,15 @@ class GridFilter extends Component {
   };
 
   applyFilters = (callPropFunc) => {
-    const { fields, formFilters } = this.state;
+    let { fields, formFilters } = this.state;
     const { applyFilter, miniForm } = this.props;
 
+
+    if (this.props.formFilter && Object.keys(this.props.formFilter).length > 0)
+      formFilters = {
+        ...this.props.formFilter,
+        ...this.state.formFilters
+      };
 
     let filterData = {};
     Object.keys(fields).forEach((field) => {
@@ -460,6 +468,11 @@ class GridFilter extends Component {
           },
           format: dateFormat,
           onChange: (moment, dateString) => {
+
+            if (this.props.formFilter && dateString.length === 0) {
+              delete this.props.formFilter[filterItem.name];
+            }
+
             this.fieldOnChange(filterItem, dateString.toString().length <= 1 ? null : dateString.replace(".", ""));
           }
         };
@@ -467,7 +480,6 @@ class GridFilter extends Component {
         if (isClearFilter) {
           params.value = null;
         }
-
 
         if (this.props.formFilter && this.props.formFilter.hasOwnProperty(filterItem.name)) {
 
@@ -477,9 +489,20 @@ class GridFilter extends Component {
             let year = this.props.formFilter[filterItem.name].substring(2, 6);
 
             params.value = moment(month + "." + year, "MM.YYYY");
+
           }
         }
 
+        if (this.props.formFilter[filterItem.name] === undefined && !formFilters[filterItem.name]) {
+          params.value = null;
+        }
+
+        if (formFilters[filterItem.name] && formFilters[filterItem.name].length > 0) {
+          let month = formFilters[filterItem.name].substring(0, 2);
+          let year = formFilters[filterItem.name].substring(2, 6);
+
+          params.value = moment(month + "." + year, "MM.YYYY");
+        }
 
         return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Row>
@@ -818,12 +841,11 @@ class GridFilter extends Component {
   render() {
 
     const { fields, isClearFilter } = this.state;
-    const { filterForm } = this.props;
+    const { filterForm, formFilter } = this.props;
 
     let count = this.props.filterForm.map((filterItem) => {
       return filterItem.type === "multibox" || filterItem.type === "combobox";
     }).filter((f) => f);
-
 
     return (
       <div>
