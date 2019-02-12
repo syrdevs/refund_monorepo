@@ -356,12 +356,26 @@ class Consumer extends Component {
           // message.info("Загружено: " + response.data.loadNewCount + " из: " + response.data.allItemCount);
           Modal.info({
             title: "Внимание",
+            width: 900,
             content: <div>
               <div>Загружено: {response.data.loadNewCount} из: {response.data.allItemCount}</div>
-              {response.data.errorItems && <div>Ошибочные: {
-                response.data.errorItems ? response.data.errorItems.map((item)=>{
-                  return <span>{item}, </span>;
-                }) : null
+              {(response.data.errorItems.length !== 0) && <div>Информация о следующих потребителях имеет ошибки: {
+                response.data.errorItems && response.data.errorItems.map((item, i)=>{
+                  if (response.data.errorItems.length === i + 1) {
+                    return <span>{item}</span>;
+                  } else {
+                    return <span>{item}, </span>;
+                  }
+                })
+              }</div>}
+              {(response.data.notfoundItems.length !== 0) && <div>Информация о следующих потребителях не найдена: {
+                response.data.notfoundItems && response.data.notfoundItems.map((item, i)=>{
+                  if (response.data.notfoundItems.length === i + 1) {
+                    return <span>{item}</span>;
+                  } else {
+                    return <span>{item}, </span>;
+                  }
+                })
               }</div>}
 
             </div>
