@@ -7,7 +7,9 @@ import {
   Button,
   Icon,
   Col,
+  Dropdown,
   Card,
+  Menu,
   Row,
   Select,
   Input,
@@ -23,7 +25,11 @@ import ContentLayout from "../../layouts/ContentLayout";
 import styles from "../Acts/style.css";
 import moment from "moment";
 import Guid from "../../utils/Guid";
+import request from "../../utils/request";
+import hasRole from "../../utils/hasRole";
+import formatMessage from "../../utils/formatMessage";
 
+const SubMenu = Menu.SubMenu;
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
 const formItemLayout = {
@@ -55,11 +61,11 @@ const smallRenderformItemLayout = {
 const RendetField = ({ small, name, label, local, disabled, type, getFieldDecorator, validatemessage, references, counteragent }) => {
   let renderstyle = {
     ...RenderformItemLayout
-  }
-  if (small){
-     renderstyle = {
-       ...smallRenderformItemLayout
-    }
+  };
+  if (small) {
+    renderstyle = {
+      ...smallRenderformItemLayout
+    };
   }
   switch (type) {
     case "combobox": {
@@ -77,7 +83,7 @@ const RendetField = ({ small, name, label, local, disabled, type, getFieldDecora
             }],
             initialValue: counteragent ? (counteragent[local] ? counteragent[local].id : null) : null
           })(
-            <Select key={name} style={{ marginLeft: "10px", width: "95%"}} name={name} disabled={disabled}>
+            <Select key={name} style={{ marginLeft: "10px", width: "95%" }} name={name} disabled={disabled}>
               {references && references.map((item) => {
                 return <Select.Option key={item.id} value={item.id} prop={item}>{item.nameRu}</Select.Option>;
               })}
@@ -118,7 +124,8 @@ const RendetField = ({ small, name, label, local, disabled, type, getFieldDecora
             }],
             initialValue: counteragent ? (counteragent[local] ? moment(counteragent[local], "DD.MM.YYYY") : null) : null
           })(
-            <DatePicker style={{ marginLeft: "10px", width: "195px" }} name={name} format={"DD.MM.YYYY"} disabled={disabled}/>
+            <DatePicker style={{ marginLeft: "10px", width: "195px" }} name={name} format={"DD.MM.YYYY"}
+                        disabled={disabled}/>
           )}
         </FormItem>
       );
@@ -133,6 +140,8 @@ class AgentCreate extends Component {
   constructor(props) {
     super(props);
     this.state = {
+
+      subMenuChild: [],
       data: {
         codeagent: null
       },
@@ -145,28 +154,28 @@ class AgentCreate extends Component {
               local: "legalForm",
               label: "Организационно-правовая форма",
               type: "combobox",
-              disabled: false,
+              disabled: false
             },
             {
               name: "name",
               local: "name",
               label: "Наименование",
               type: "text",
-              disabled: false,
+              disabled: false
             },
             {
               name: "fullName",
               local: "fullName",
               label: "Наименование полное",
               type: "text",
-              disabled: false,
+              disabled: false
             },
             {
               name: "shortName",
               local: "shortName",
               label: "Наименование краткое",
               type: "text",
-              disabled: false,
+              disabled: false
             }
           ],
           key: "7"
@@ -174,90 +183,90 @@ class AgentCreate extends Component {
         {
           title: "Индивидуальный предприниматель",
           content: [
-           /* {
-              name: 'iin',
-              local: 'iin',
-              label: 'ИИН',
-              type: 'iin',
-              disabled: false,
-            },*/
+            /* {
+               name: 'iin',
+               local: 'iin',
+               label: 'ИИН',
+               type: 'iin',
+               disabled: false,
+             },*/
             {
-              name: 'firstName',
-              local: 'firstName',
-              label: 'Имя',
-              type: 'text',
-              disabled: true,
+              name: "firstName",
+              local: "firstName",
+              label: "Имя",
+              type: "text",
+              disabled: true
             },
             {
-              name: 'lastName',
-              local: 'lastName',
-              label: 'Фамилия',
-              type: 'text',
-              disabled: true,
+              name: "lastName",
+              local: "lastName",
+              label: "Фамилия",
+              type: "text",
+              disabled: true
             },
             {
-              name: 'patronymic',
-              local: 'patronymic',
-              label: 'Отчество',
-              type: 'text',
-              disabled: true,
+              name: "patronymic",
+              local: "patronymic",
+              label: "Отчество",
+              type: "text",
+              disabled: true
             },
             {
-              name: 'sex',
+              name: "sex",
               local: "sex",
-              label: 'Пол',
-              type: 'combobox',
-              disabled: true,
+              label: "Пол",
+              type: "combobox",
+              disabled: true
             },
             {
-              name: 'birthdate',
+              name: "birthdate",
               local: "birthdate",
-              label: 'Дата рождения',
-              type: 'datePicker',
-              disabled: true,
-            },
+              label: "Дата рождения",
+              type: "datePicker",
+              disabled: true
+            }
           ],
           key: "8"
-        },
+        }
       ],
       fizpane: {
         title: "Индивидуальный предприниматель", content: [
-           {
-             name: 'fiz_surname',
-             label: 'Вид идентификатора',
-             type: 'combobox',
-           },
-           {
-             name: 'fiz_name',
-             label: 'Имя',
-             type: 'text',
-           },
-           {
-             name: 'fiz_patronic',
-             label: 'Отчество',
-             type: 'text',
-           },
-           /*{
-             name: 'sex',
-             lib: "sex",
-             label: 'Пол',
-             type: 'combobox',
-           },*/
-           {
-             name: 'fio_genitive',
-             label: 'ФИО в родительном падеже',
-             type: 'text',
-           },
-           {
-             name: 'fiz_fio_genitive',
-             label: 'ФИО в родительном падеже',
-             type: 'text',
-           },
-           {
-             name: 'fiz_fio_genitive_initials',
-             label: 'Фамилия и инициалы в родительном падеже',
-             type: 'text',
-           },
+          {
+            name: "fiz_surname",
+            label: "Вид идентификатора",
+            type: "combobox"
+          },
+          {
+            name: "fiz_name",
+            label: "Имя",
+            type: "text"
+          },
+          {
+            name: "fiz_patronic",
+            label: "Отчество",
+            type: "text"
+          },
+          /*{
+            name: 'sex',
+            lib: "sex",
+            label: 'Пол',
+            type: 'combobox',
+          },*/
+          {
+            name: "fio_genitive",
+            label: "ФИО в родительном падеже",
+            type: "text"
+          },
+          {
+            name: "fiz_fio_genitive",
+            label: "ФИО в родительном падеже",
+            type: "text"
+          },
+          {
+            name: "fiz_fio_genitive_initials",
+            label: "Фамилия и инициалы в родительном падеже",
+            type: "text"
+          }
         ], key: "7"
       },
       orgpane: {
@@ -295,6 +304,7 @@ class AgentCreate extends Component {
       idents: [],
       identitiesarr: [],
       adressesarr: [],
+
       contactsarr: [],
       banksarr: [],
       responsesarr: [],
@@ -379,7 +389,7 @@ class AgentCreate extends Component {
                       }],
                       initialValue: this.state.identities[record.key] ? (this.state.identities[record.key].identitybeginDate ? moment(this.state.identities[record.key].identitybeginDate, "DD.MM.YYYY") : null) : null
                     })(
-                      <DatePicker style={{width: "195px"}}
+                      <DatePicker style={{ width: "195px" }}
                                   key={"identitybeginDate" + record.key}
                                   name={"identitybeginDate" + record.key}
                                   format={"DD.MM.YYYY"}
@@ -404,7 +414,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.identities[record.key] ? (this.state.identities[record.key].identityendDate ? moment(this.state.identities[record.key].identityendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}}
+                    <DatePicker style={{ width: "195px" }}
                                 key={"identityendDate" + record.key}
                                 name={"identityendDate" + record.key}
                                 format={"DD.MM.YYYY"}
@@ -496,7 +506,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.adresses[record.key] ? (this.state.adresses[record.key].adressbeginDate ? moment(this.state.adresses[record.key].adressbeginDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"adressbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"adressbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "adressbeginDate", "adresses");
                                 }}/>)}
@@ -517,7 +527,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.adresses[record.key] ? (this.state.adresses[record.key].adressendDate ? moment(this.state.adresses[record.key].adressendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"adressendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"adressendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "adressendDate", "adresses");
                                 }}/>
@@ -626,7 +636,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.contacts[record.key] ? (this.state.contacts[record.key].contactbeginDate ? moment(this.state.contacts[record.key].contactbeginDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"contactbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"contactbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "contactbeginDate", "contacts");
                                 }}/>
@@ -648,7 +658,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.contacts[record.key] ? (this.state.contacts[record.key].contactendDate ? moment(this.state.contacts[record.key].contactendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"contactendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"contactendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "contactendDate", "contacts");
                                 }}/>
@@ -782,7 +792,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.banks[record.key] ? (this.state.banks[record.key].bankbeginDate ? moment(this.state.banks[record.key].bankbeginDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"bankbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"bankbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "bankbeginDate", "banks");
                                 }}/>
@@ -804,7 +814,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.banks[record.key] ? (this.state.banks[record.key].bankendDate ? moment(this.state.banks[record.key].bankendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"bankendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"bankendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "bankendDate", "banks");
                                 }}/>
@@ -1082,7 +1092,7 @@ class AgentCreate extends Component {
                       }],
                       initialValue: this.state.Industbase[record.key] ? (this.state.Industbase[record.key].id ? this.state.Industbase[record.key].id : null) : null
                     })(
-                      <Select name={"bank" + record.key} style={{ width: '90%', maxWidth: '500px' }} onChange={(e) => {
+                      <Select name={"bank" + record.key} style={{ width: "90%", maxWidth: "500px" }} onChange={(e) => {
                         this.identValue(e, record, "id", "Industbase");
                       }}>
                         {this.state.adresses && this.state.adresses.map((item) => {
@@ -1108,7 +1118,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.Industbase[record.key] ? (this.state.Industbase[record.key].indusbeginDate ? moment(this.state.Industbase[record.key].indusbeginDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"indusbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"indusbeginDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "indusbeginDate", "Industbase");
                                 }}/>
@@ -1130,7 +1140,7 @@ class AgentCreate extends Component {
                     }],
                     initialValue: this.state.Industbase[record.key] ? (this.state.Industbase[record.key].indusendDate ? moment(this.state.Industbase[record.key].indusendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"indusendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"indusendDate" + record.key} format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "indusendDate", "Industbase");
                                 }}/>
@@ -1172,7 +1182,8 @@ class AgentCreate extends Component {
                     initialValue: this.state.clinicRegisters[record.key] ?
                       (this.state.clinicRegisters[record.key].clinicRegistersbeginDate ? moment(this.state.clinicRegisters[record.key].clinicRegistersbeginDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"clinicRegistersbeginDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"clinicRegistersbeginDate" + record.key}
+                                format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "clinicRegistersbeginDate", "clinicRegisters");
                                 }}/>
@@ -1195,7 +1206,8 @@ class AgentCreate extends Component {
                     initialValue: this.state.clinicRegisters[record.key] ?
                       (this.state.clinicRegisters[record.key].clinicRegistersendDate ? moment(this.state.clinicRegisters[record.key].clinicRegistersendDate, "DD.MM.YYYY") : null) : null
                   })(
-                    <DatePicker style={{width: "195px"}} name={"clinicRegistersendDate" + record.key} format={"DD.MM.YYYY"}
+                    <DatePicker style={{ width: "195px" }} name={"clinicRegistersendDate" + record.key}
+                                format={"DD.MM.YYYY"}
                                 onChange={(e) => {
                                   this.identValue(e, record, "clinicRegistersendDate", "clinicRegisters");
                                 }}/>
@@ -1242,10 +1254,11 @@ class AgentCreate extends Component {
         }
       ],
       counteragent: {},
-      tabname: 'orgpane',
-      iin: ''
+      tabname: "orgpane",
+      iin: ""
     };
   }
+
   /*identitiescount: 0,
      adressescount: 0,
      contactscount: 0,
@@ -1253,6 +1266,7 @@ class AgentCreate extends Component {
      responsescount: 0,
      RegistrerSZscount: 0,
      Industbasecount: 0,*/
+
   /* {
               name: 'fio_genitive',
               local: 'fio_genitive',
@@ -1272,7 +1286,8 @@ class AgentCreate extends Component {
               type: 'text',
             },*/
   componentDidMount() {
-    if (this.props.location.query.id){
+    this.getMenuActions();
+    if (this.props.location.query.id) {
       const { dispatch } = this.props;
       dispatch({
         type: "universal/getobject",
@@ -1302,6 +1317,7 @@ class AgentCreate extends Component {
     }
     this.getlibs();
   };
+
   getlibs = () => {
     const { dispatch } = this.props;
     dispatch({
@@ -1370,15 +1386,15 @@ class AgentCreate extends Component {
         "start": 0,
         "length": 1000,
         "entity": "legalForm",
-        sort: [{field: "nameRu", 'asc': true}],
+        sort: [{ field: "nameRu", "asc": true }]
       }
     });
   };
   addmultifields = (data) => {
     if (data.representatives) {
       this.setState({
-        iin: data.representatives.person ? (data.representatives.person.iin ? data.representatives.person.iin: "") : ""
-      })
+        iin: data.representatives.person ? (data.representatives.person.iin ? data.representatives.person.iin : "") : ""
+      });
     }
     let identities = data.idendifiers ? data.idendifiers.map((item, index) => {
       return {
@@ -1449,17 +1465,17 @@ class AgentCreate extends Component {
   selecttypeagent = (e) => {
     this.setState({
       tabname: e.target.value
-    })
-      /*if(e.target.value==="fizpane"){
-        this.setState({
-          panes: [this.state.fizpane]
-        })
-      }
-      else  if(e.target.value==="orgpane"){
-        this.setState({
-          panes: [this.state.orgpane]
-        })
-      }*/
+    });
+    /*if(e.target.value==="fizpane"){
+      this.setState({
+        panes: [this.state.fizpane]
+      })
+    }
+    else  if(e.target.value==="orgpane"){
+      this.setState({
+        panes: [this.state.orgpane]
+      })
+    }*/
   };
   fieldOnChange = (filterItem, value) => {
     this.setState({
@@ -1494,6 +1510,7 @@ class AgentCreate extends Component {
     }, () => {
     });
   };
+
   remove(table, key) {
     let findItemIdx = this.state[table].findIndex((value) => value.key === key);
     let _dataSource = this.state[table].filter((x, i) => (i !== findItemIdx));
@@ -1504,6 +1521,7 @@ class AgentCreate extends Component {
       })
     });
   }
+
   mainfiels = (e) => {
     this.setState({
       data: {
@@ -1526,11 +1544,11 @@ class AgentCreate extends Component {
     );
   };
   saveobject = (values) => {
-    let legals=[];
+    let legals = [];
     if (values.legalForm) {
       legals = (this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []).filter((item) => {
         return item.id === values.legalForm;
-      })
+      });
     }
 
     let attr = {
@@ -1542,17 +1560,17 @@ class AgentCreate extends Component {
         "code": "1",
         "name": values.name ? values.name : "",
         "isRural": values.isRural ? true : false,
-        "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY"): null,
-        "dateEnd": values.dateEnd ? values.dateEnd.format("DD.MM.YYYY"): null,
-        "legalForm": legals.length ? legals[0] : undefined,
+        "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY") : null,
+        "dateEnd": values.dateEnd ? values.dateEnd.format("DD.MM.YYYY") : null,
+        "legalForm": legals.length ? legals[0] : undefined
 
       }
     };
 
     if (values.firstName) {
-      attr.data.representatives= [
+      attr.data.representatives = [
         {
-          "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY"): undefined,
+          "dateBegin": values.dateBegin ? values.dateBegin.format("DD.MM.YYYY") : undefined,
           "person": {
             "iin": this.state.iin ? this.state.iin : undefined,
             "patronymic": values.patronymic ? values.patronymic : undefined,
@@ -1565,7 +1583,7 @@ class AgentCreate extends Component {
             }
           }
         }
-      ]
+      ];
     }
     if (this.props.location.query.id) {
       attr.data.id = this.props.location.query.id;
@@ -1576,7 +1594,7 @@ class AgentCreate extends Component {
         let val = {
           "value": item.identityname ? item.identityname : null,
           "dateBegin": item.identitybeginDate ? item.identitybeginDate.format("DD.MM.YYYY") : null,
-          "dateEnd": item.identityendDate ? item.identityendDate.format("DD.MM.YYYY") : null,
+          "dateEnd": item.identityendDate ? item.identityendDate.format("DD.MM.YYYY") : null
         };
         if (item.identitytype) {
           val = {
@@ -1584,26 +1602,26 @@ class AgentCreate extends Component {
             "idendifierType": {
               "id": item.identitytype
             }
-          }
+          };
         }
         return val;
       }) : undefined;
     }
     if (this.state.banks) {
       attr.data.bankAccounts = this.state.banks ? this.state.banks.map((item) => {
-       let val = {
-         "accountNumber": item.iik ? item.iik : '',
-         "dateBegin": item.bankbeginDate ? item.bankbeginDate.format("DD.MM.YYYY") : null,
-         "dateEnd": item.bankendDate ? item.bankendDate.format("DD.MM.YYYY") : null,
-       }
+        let val = {
+          "accountNumber": item.iik ? item.iik : "",
+          "dateBegin": item.bankbeginDate ? item.bankbeginDate.format("DD.MM.YYYY") : null,
+          "dateEnd": item.bankendDate ? item.bankendDate.format("DD.MM.YYYY") : null
+        };
 
         if (item.bank) {
           val = {
             ...val,
             "bank": {
               "id": item.bank ? item.bank : undefined
-            },
-          }
+            }
+          };
         }
         if (item.currency) {
           val = {
@@ -1611,18 +1629,18 @@ class AgentCreate extends Component {
             "currencyType": {
               "id": item.currency ? item.currency : undefined
             }
-          }
+          };
         }
         return val;
       }) : undefined;
     }
     if (this.state.adresses) {
       attr.data.addresses = this.state.adresses ? this.state.adresses.map((item) => {
-        let val =  {
+        let val = {
           "addressText": item.adressname,
           "dateBegin": item.adressbeginDate ? item.adressbeginDate.format("DD.MM.YYYY") : null,
           "dateEnd": item.adressendDate ? item.adressendDate.format("DD.MM.YYYY") : null,
-          "id": item.id ? item.id : null,
+          "id": item.id ? item.id : null
         };
         if (item.adresstype) {
           val = {
@@ -1630,7 +1648,7 @@ class AgentCreate extends Component {
             "addressType": {
               "id": item.adresstype
             }
-          }
+          };
         }
         return val;
       }) : undefined;
@@ -1638,11 +1656,11 @@ class AgentCreate extends Component {
     if (this.state.contacts) {
       attr.data.contacts = this.state.contacts ? this.state.contacts.map((item) => {
 
-        let val =  {
+        let val = {
           "comment": item.contactnote,
           "value": item.contactname,
           "dateBegin": item.contactbeginDate ? item.contactbeginDate.format("DD.MM.YYYY") : null,
-          "dateEnd": item.contactendDate ? item.contactendDate.format("DD.MM.YYYY") : null,
+          "dateEnd": item.contactendDate ? item.contactendDate.format("DD.MM.YYYY") : null
         };
 
         if (item.contacttype) {
@@ -1651,7 +1669,7 @@ class AgentCreate extends Component {
             "contactType": {
               "id": item.contacttype
             }
-          }
+          };
         }
         return val;
       }) : undefined;
@@ -1659,7 +1677,7 @@ class AgentCreate extends Component {
     if (this.state.clinicRegisters) {
       attr.data.clinicRegisters = this.state.clinicRegisters ? this.state.clinicRegisters.map((item) => {
 
-        let val =  {
+        let val = {
           "dateBegin": item.clinicRegistersbeginDate ? item.clinicRegistersbeginDate.format("DD.MM.YYYY") : null,
           "dateEnd": item.clinicRegistersendDate ? item.clinicRegistersendDate.format("DD.MM.YYYY") : null,
           "clinicRole": 0
@@ -1670,9 +1688,9 @@ class AgentCreate extends Component {
     if (this.state.Industbase) {
       attr.data.locations = this.state.Industbase ? this.state.Industbase.map((item) => {
 
-        let val =  {
+        let val = {
           "dateBegin": item.indusbeginDate ? item.indusbeginDate.format("DD.MM.YYYY") : null,
-          "dateEnd": item.indusendDate ? item.indusendDate.format("DD.MM.YYYY") : null,
+          "dateEnd": item.indusendDate ? item.indusendDate.format("DD.MM.YYYY") : null
         };
         if (item.id) {
           val = {
@@ -1680,7 +1698,7 @@ class AgentCreate extends Component {
             "address": {
               "id": item.id
             }
-          }
+          };
         }
         return val;
       }) : undefined;
@@ -1693,7 +1711,7 @@ class AgentCreate extends Component {
       .then((e) => {
         Modal.success({
           title: "Успешно сохранен",
-          content:  e.id ? "ID субьекта: "+e.id : "",
+          content: e.id ? "ID субьекта: " + e.id : "",
           onOk: () => {
             this.props.history.push("/contracts/v2/counteragent/main");
           }
@@ -1713,8 +1731,8 @@ class AgentCreate extends Component {
     const { dispatch } = this.props;
     this.setState({
       iin: e.target.value
-    },()=>{
-      if (this.state.iin.length ===12){
+    }, () => {
+      if (this.state.iin.length === 12) {
         dispatch({
           type: "universal2/getPersonByIIN",
           payload: {
@@ -1722,36 +1740,36 @@ class AgentCreate extends Component {
           }
         })
           .then((e) => {
-          if (this.state.counteragent.representatives) {
-            this.setState({
-              counteragent: {
-                ...this.state.counteragent,
-                representatives: [{
-                  ...this.state.counteragent.representatives[0],
-                  person: {
-                    ...e
-                  }
-                }]
-              }
-            },()=>{
-              this.setIINs(e);
-            })
-          }
-          else {
-           this.setState({
-              counteragent: {
-                ...this.state.counteragent,
-                representatives: [{
-                  person: {
-                    ...e
-                  }
-                }]
-              }
-            },()=>{
-             this.setIINs(e);
-           })
-          }
-        })
+            if (this.state.counteragent.representatives) {
+              this.setState({
+                counteragent: {
+                  ...this.state.counteragent,
+                  representatives: [{
+                    ...this.state.counteragent.representatives[0],
+                    person: {
+                      ...e
+                    }
+                  }]
+                }
+              }, () => {
+                this.setIINs(e);
+              });
+            }
+            else {
+              this.setState({
+                counteragent: {
+                  ...this.state.counteragent,
+                  representatives: [{
+                    person: {
+                      ...e
+                    }
+                  }]
+                }
+              }, () => {
+                this.setIINs(e);
+              });
+            }
+          })
           .catch((e) => {
             this.clearIINs();
             Modal.error({
@@ -1769,9 +1787,9 @@ class AgentCreate extends Component {
           })*/
         this.clearIINs();
       }
-    })
+    });
   };
-  clearIINs=()=>{
+  clearIINs = () => {
     if (this.state.counteragent.representatives) {
       this.setState({
         counteragent: {
@@ -1781,9 +1799,9 @@ class AgentCreate extends Component {
             person: {}
           }]
         }
-      }, ()=>{
-        this.props.form.resetFields(['firstName','patronymic','lastName','birthdate','sex'])
-      })
+      }, () => {
+        this.props.form.resetFields(["firstName", "patronymic", "lastName", "birthdate", "sex"]);
+      });
     }
     else {
       this.setState({
@@ -1793,20 +1811,41 @@ class AgentCreate extends Component {
             person: {}
           }]
         }
-      }, ()=>{
-        this.props.form.resetFields(['firstName','patronymic','lastName','birthdate','sex'])
-      })
+      }, () => {
+        this.props.form.resetFields(["firstName", "patronymic", "lastName", "birthdate", "sex"]);
+      });
     }
-  }
-  setIINs=(e)=>{
+  };
+  setIINs = (e) => {
     this.props.form.setFieldsValue({
-      firstName:e.firstName ? e.firstName : null,
-      patronymic:e.patronymic ? e.patronymic : null,
-      lastName:e.lastName ? e.lastName : null,
+      firstName: e.firstName ? e.firstName : null,
+      patronymic: e.patronymic ? e.patronymic : null,
+      lastName: e.lastName ? e.lastName : null,
       ///birthdate:e.birthdate ? e.birthdate : null,
-      sex: e.sex ? e.sex.id : null,
-    })
-  }
+      sex: e.sex ? e.sex.id : null
+    });
+  };
+
+  getMenuActions = () => {
+    request("/api/uicommand/getList", {
+      method: "POST",
+      body: {
+        "start": 0,
+        "length": 20,
+        "entity": "contractType",
+        "filter": {
+          "basicContractType.code": "1"
+        }
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          this.setState({
+            subMenuChild: response.data.content && response.data.content
+          });
+        }
+      }
+    });
+  };
 
   render() {
     const { panes, smarttabs } = this.state;
@@ -1817,9 +1856,9 @@ class AgentCreate extends Component {
     const {
       form: { getFieldDecorator }
     } = this.props;
-    let  label = 'Форма создания субъекта здравоохранения'
+    let label = "Форма создания субъекта здравоохранения";
     if (this.props.location.query.id) {
-      label= 'Форма редактирование субъекта здравоохранения'
+      label = "Форма редактирование субъекта здравоохранения";
     }
 
     return (
@@ -1856,7 +1895,24 @@ class AgentCreate extends Component {
                 >
                   Сохранить
                 </Button>
-
+                <Dropdown key={"dropdown"} trigger={["click"]} overlay={<Menu>
+                  <SubMenu
+                    disabled={hasRole(["ADMIN"])}
+                    key="register_document"
+                    title="Создать договор">
+                    {this.state.subMenuChild && this.state.subMenuChild
+                      .map((menuItem) => (<Menu.Item
+                        onClick={() => {
+                          this.props.history.push("/contracts/v2/contracts/create?counterAgentId=" + this.props.location.query.id + "&contractTypeId=" + menuItem.id);
+                        }}
+                        key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
+                  </SubMenu>
+                </Menu>}>
+                  <Button
+                    style={{ marginLeft: "5px" }}
+                    key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
+                    type="down"/></Button>
+                </Dropdown>
               </div>
             </Col>
           </Row>
@@ -1938,7 +1994,7 @@ class AgentCreate extends Component {
                   initialValue: this.state.counteragent.dateBegin ? moment(this.state.counteragent.dateBegin, "DD.MM.YYYY") : null
                 })
                 (
-                  <DatePicker style={{width: "195px"}} name={"dateBegin"} format={"DD.MM.YYYY"}/>
+                  <DatePicker style={{ width: "195px" }} name={"dateBegin"} format={"DD.MM.YYYY"}/>
                 )}
               </FormItem>
               <FormItem
@@ -1952,7 +2008,7 @@ class AgentCreate extends Component {
                   initialValue: this.state.counteragent.dateEnd ? moment(this.state.counteragent.dateEnd, "DD.MM.YYYY") : null
                 })
                 (
-                  <DatePicker style={{width: "195px"}} name={"dateBegin"} format={"DD.MM.YYYY"}/>
+                  <DatePicker style={{ width: "195px" }} name={"dateBegin"} format={"DD.MM.YYYY"}/>
                 )}
               </FormItem>
               {/* {this.state.isNew &&
@@ -1991,65 +2047,68 @@ class AgentCreate extends Component {
                 defaultActiveKey="form"
                 tabPosition={"left"}>
                 {panes.map(pane => {
-                  if (pane.key==="7") {
-                    return (
-                      <TabPane tab={<span style={title}>{pane.title}</span>} key={pane.key}>
-                        <Card style={{ margin: "20px" }}>
-                          {
-                            pane.content.map((content) => {
-                              return (
-                                <RendetField
-                                  key={content.name}
-                                  small={false}
-                                  name={content.name}
-                                  label={content.label}
-                                  local={content.local}
-                                  disabled={content.disabled}
-                                  type={content.type}
-                                  getFieldDecorator={getFieldDecorator}
-                                  validatemessage={this.state.validatemessage}
-                                  references={this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []}
-                                  counteragent={this.state.counteragent && this.state.counteragent._organization}
-                                />
-                              );
-                            })}
-                        </Card>
-                      </TabPane>
-                    );
-                  }
-                  else  if (pane.key==="8") {
-                    return (
-                      <TabPane tab={<span style={title}>{pane.title}</span>} key={pane.key}>
-                        <Card style={{ margin: "20px" }}>
-                          <FormItem
-                            {...smallRenderformItemLayout}
-                            style={{ marginBottom: "24px" }}
-                            label={"ИИН"}
-                          >
-                            <Input key={"iin"} style={{ marginLeft: "10px", width: "30%" }} maxLength={12} value={this.state.iin} onChange={(e)=>{this.ChangeText(e)}} />
-                          </FormItem>
-                          {
-                            pane.content.map((content) => {
-                              return (
-                                <RendetField
-                                  key={content.name}
-                                  small={true}
-                                  name={content.name}
-                                  label={content.label}
-                                  local={content.local}
-                                  disabled={content.disabled}
-                                  type={content.type}
-                                  getFieldDecorator={getFieldDecorator}
-                                  validatemessage={this.state.validatemessage}
-                                  references={this.props.universal2.references.sex && (this.props.universal2.references.sex.content ? this.props.universal2.references.sex.content : [])}
-                                  counteragent={this.state.counteragent.representatives && this.state.counteragent.representatives[0].person}
-                                />
-                              );
-                            })}
-                        </Card>
-                      </TabPane>
-                    );
-                  }
+                    if (pane.key === "7") {
+                      return (
+                        <TabPane tab={<span style={title}>{pane.title}</span>} key={pane.key}>
+                          <Card style={{ margin: "20px" }}>
+                            {
+                              pane.content.map((content) => {
+                                return (
+                                  <RendetField
+                                    key={content.name}
+                                    small={false}
+                                    name={content.name}
+                                    label={content.label}
+                                    local={content.local}
+                                    disabled={content.disabled}
+                                    type={content.type}
+                                    getFieldDecorator={getFieldDecorator}
+                                    validatemessage={this.state.validatemessage}
+                                    references={this.props.universal.legalForm.content ? this.props.universal.legalForm.content : []}
+                                    counteragent={this.state.counteragent && this.state.counteragent._organization}
+                                  />
+                                );
+                              })}
+                          </Card>
+                        </TabPane>
+                      );
+                    }
+                    else if (pane.key === "8") {
+                      return (
+                        <TabPane tab={<span style={title}>{pane.title}</span>} key={pane.key}>
+                          <Card style={{ margin: "20px" }}>
+                            <FormItem
+                              {...smallRenderformItemLayout}
+                              style={{ marginBottom: "24px" }}
+                              label={"ИИН"}
+                            >
+                              <Input key={"iin"} style={{ marginLeft: "10px", width: "30%" }} maxLength={12}
+                                     value={this.state.iin} onChange={(e) => {
+                                this.ChangeText(e);
+                              }}/>
+                            </FormItem>
+                            {
+                              pane.content.map((content) => {
+                                return (
+                                  <RendetField
+                                    key={content.name}
+                                    small={true}
+                                    name={content.name}
+                                    label={content.label}
+                                    local={content.local}
+                                    disabled={content.disabled}
+                                    type={content.type}
+                                    getFieldDecorator={getFieldDecorator}
+                                    validatemessage={this.state.validatemessage}
+                                    references={this.props.universal2.references.sex && (this.props.universal2.references.sex.content ? this.props.universal2.references.sex.content : [])}
+                                    counteragent={this.state.counteragent.representatives && this.state.counteragent.representatives[0].person}
+                                  />
+                                );
+                              })}
+                          </Card>
+                        </TabPane>
+                      );
+                    }
                   }
                 )}
 
@@ -2057,7 +2116,8 @@ class AgentCreate extends Component {
                 {smarttabs.map(smarttab => {
                   return (
                     <TabPane tab={
-                      <Badge count={this.state[smarttab.name].length} style={{ backgroundColor: "#1990FF", marginLeft:'5px'}}>
+                      <Badge count={this.state[smarttab.name].length}
+                             style={{ backgroundColor: "#1990FF", marginLeft: "5px" }}>
                         <div><span style={title}>{smarttab.title}</span></div>
                       </Badge>} key={smarttab.name}>
                       <div>

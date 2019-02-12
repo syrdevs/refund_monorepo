@@ -738,8 +738,8 @@ class GridFilter extends Component {
               }
               return -1;
             }}
-            onChange={(value) => {
-              this.fieldOnChange(filterItem, value);
+            onChange={(value, option) => {
+              this.fieldOnChange(filterItem, filterItem.valueField && value !== "null" ? option.props.item[filterItem.valueField] : value);
             }}
           >
             <Select.Option key={null}>{<div style={{ height: 20 }}></div>}</Select.Option>
@@ -751,6 +751,7 @@ class GridFilter extends Component {
               return 0;
             }).map((item) => {
               return <Select.Option
+                item={item}
                 key={item.id}>{filterItem.displayField ? item[filterItem.displayField] : item.nameRu}</Select.Option>;
             })}
           </Select>
@@ -780,9 +781,9 @@ class GridFilter extends Component {
           params.checked = false;
         }
 
-        return (<div key={_index} style={mBottom}><Checkbox {...params} onChange={(e) => {
+        return (<div key={_index} style={{ ...mBottom, marginTop: "10px" }}><Checkbox {...params} onChange={(e) => {
           this.fieldOnChange(filterItem, e.target.checked);
-        }}/> : {filterItem.label}</div>);
+        }}/> {filterItem.label}</div>);
       }
 
       default:

@@ -281,6 +281,7 @@ class InfoPageFromCounter extends Component {
             }]
           })(
             <LinkModal
+              hideDelete={true}
               labelFormatter={(record) => {
 
                 if (!record._organization) {
@@ -293,7 +294,7 @@ class InfoPageFromCounter extends Component {
               }}
               data={this.state.CounterAgentsModal.record}
               onTarget={(record) => {
-
+                window.open("/contracts/v2/counteragent/edit?id=" + record.id);
               }}
               onDelete={() => {
                 this.setState({ counterAgentId: 0, CounterAgentsModal: { visible: false, record: null } });
@@ -317,7 +318,7 @@ class InfoPageFromCounter extends Component {
               onClick={() => {
 
               }}>
-              {`Протокол  ${x.region && x.region.protocolType && x.region.protocolType.name} ${x.region && x.region.nameRu} №${x.number} от ${x.documentDate }`}
+              {`Протокол  ${x.protocolType && x.protocolType.name ? x.protocolType.name : ""} ${x.region && x.region.nameRu ? x.region.nameRu : ""} №${x.number ? x.number : ""} от ${x.documentDate ? x.documentDate : "" }`}
               <br/>
         </span>
           ))}
@@ -333,7 +334,7 @@ class InfoPageFromCounter extends Component {
           })(
             <Select
               placeholder="Учетный период"
-              style={{ width: "30%" }}
+              style={{ width: "75px" }}
               onChange={(value, option) => {
                 this.setState({ yearSectionId: option.props.prop.year });
               }}>
@@ -387,7 +388,7 @@ class InfoPageFromCounter extends Component {
               }}
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
-                window.open("view?id=" + record.id);
+                window.open("edit?id=" + record.id);
               }}
               onDelete={() => {
                 this.setState({ DogovorModal: { visible: false, record: null } });
@@ -468,10 +469,11 @@ class InfoPageFromCounter extends Component {
         </Form.Item>
 
         <Form.Item {...formItemLayout} label="Номер">
-          {getFieldDecorator("number", {
-            rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.number && getObjectData.number
-          })(<Input placeholder="Номер"/>)}
+          {/*{getFieldDecorator("number", {*/}
+            {/*rules: [{ required: true, message: "не заполнено" }],*/}
+            {/*initialValue: getObjectData.number && getObjectData.number*/}
+          {/*})(<Input placeholder="Номер"/>)}*/}
+          Создается автоматически
         </Form.Item>
 
 
@@ -483,7 +485,7 @@ class InfoPageFromCounter extends Component {
             <DatePicker
               format={"DD.MM.YYYY"}
               value={null}
-              style={{ width: "195px" }}
+              style={{ width: "125px" }}
               placeholder="Выберите дату"/>
           )}
         </Form.Item>

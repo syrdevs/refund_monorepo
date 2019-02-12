@@ -253,26 +253,23 @@ class ContractTable extends Component {
       },
       {
         order: 5,
+        width: 110,
         title: "Дата",
         dataIndex: "documentDate",
         isVisible: true
       },
       {
         order: 6,
+        width: 110,
         title: "Дата начала",
         dataIndex: "dateBegin",
         isVisible: true
       },
       {
         order: 7,
+        width: 110,
         title: "Дата окончания",
         dataIndex: "dateEnd",
-        isVisible: true
-      },
-      {
-        order: 9,
-        title: "Статус",
-        dataIndex: "_currentStatus",
         isVisible: true
       },
       {
@@ -291,10 +288,32 @@ class ContractTable extends Component {
         isVisible: true,
         render: (text, record) => {
           if (text) {
-            return numberFormat(text);
+            return <div style={{ textAlign: "right" }}>{numberFormat(text)}</div>;
           }
         }
-      }
+      }, {
+        order: 10,
+        width: 70,
+        title: "Файлы",
+        dataIndex: "documentAttachmentsCount",
+        isVisible: true,
+        render: (text, record) => {
+          if (text) {
+            return text;
+          }
+        }
+      },
+      {
+        order: 9,
+        title: "Статус",
+        dataIndex: "_documentStatus",
+        isVisible: true,
+        render: (text, record) => {
+          if (text) {
+            return text.statusName;
+          }
+        }
+      },//
       // {
       //   order: 12,
       //   title: "Протокол распределения объемов",
@@ -586,7 +605,7 @@ class ContractTable extends Component {
             .filter((menuItem) => (menuItem.basicContractTypeCode === "2"))
             .map((menuItem) => (<Menu.Item
               onClick={() => {
-                this.props.history.push("/contracts/v2/contracts/create?contractId=" + this.state.selectedRecord.id + "&contractTypeId=" + menuItem.id);
+                this.props.history.push("/contracts/v2/contracts/create?contractId=" + this.state.selectedRowKeys[0] + "&contractTypeId=" + menuItem.id);
               }}
               key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
         </SubMenu>
@@ -598,7 +617,7 @@ class ContractTable extends Component {
             .filter((menuItem) => (menuItem.basicContractTypeCode === "3"))
             .map((menuItem) => (<Menu.Item
               onClick={() => {
-                this.props.history.push("/contracts/v2/contracts/create?contractId=" + this.state.selectedRecord.id + "&contractTypeId=" + menuItem.id);
+                this.props.history.push("/contracts/v2/contracts/create?contractId=" + this.state.selectedRowKeys[0]+ "&contractTypeId=" + menuItem.id);
               }}
               key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
         </SubMenu>

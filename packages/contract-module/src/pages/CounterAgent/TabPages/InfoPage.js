@@ -312,6 +312,7 @@ class InfoPage extends Component {
             }]
           })(
             <LinkModal
+              hideDelete={true}
               labelFormatter={(record) => {
 
                 if (!record._organization) {
@@ -324,7 +325,7 @@ class InfoPage extends Component {
               }}
               data={this.state.CounterAgentsModal.record}
               onTarget={(record) => {
-
+                window.open("/contracts/v2/counteragent/edit?id=" + record.id);
               }}
               onDelete={() => {
                 this.setState({ counterAgentId: 0, CounterAgentsModal: { visible: false, record: null } });
@@ -363,7 +364,7 @@ class InfoPage extends Component {
           })(
             <Select
               placeholder="Учетный период"
-              style={{ width: "30%" }}
+              style={{ width: "75px" }}
               onChange={(value, option) => {
                 this.setState({
                   yearSectionId: option.props.prop
@@ -385,6 +386,7 @@ class InfoPage extends Component {
             initialValue: getObjectData.contractType ? getObjectData.contractType.id : this.props.location.query.contractTypeId || null
           })(
             <Select placeholder="Вид договора"
+                    disabled={true}
                     onChange={(value, option) => {
                       //this.setState({ contractAlterationReason: option.props.prop.code });
                       this.setState({
@@ -429,7 +431,7 @@ class InfoPage extends Component {
               }}
               data={this.state.DogovorModal.record}
               onTarget={(record) => {
-                window.open("view?id=" + record.id);
+                window.open("edit?id=" + record.id);
               }}
               onDelete={() => {
                 this.setState({ DogovorModal: { visible: false, record: null } });
@@ -511,10 +513,11 @@ class InfoPage extends Component {
         </Form.Item>
 
         <Form.Item {...formItemLayout} label="Номер">
-          {getFieldDecorator("number", {
-            rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.number ? getObjectData.number : null
-          })(<Input placeholder="Номер"/>)}
+          {/*{getFieldDecorator("number", {*/}
+          {/*rules: [{ required: true, message: "не заполнено" }],*/}
+          {/*initialValue: getObjectData.number ? getObjectData.number : null*/}
+          {/*})(<Input placeholder="Номер"/>)}*/}
+          {getObjectData.number ? getObjectData.number : null}
         </Form.Item>
 
 
@@ -526,7 +529,7 @@ class InfoPage extends Component {
             <DatePicker
               format={"DD.MM.YYYY"}
               value={null}
-              style={{ width: "195px" }}
+              style={{ width: "125px" }}
               placeholder="Выберите дату"/>
           )}
         </Form.Item>

@@ -101,7 +101,7 @@ import { Form, Input, Button, Select, Divider, DatePicker, Icon, Table, Row, Col
             textDecoration: 'underline',
             fontSize: '14px',
           }}>Изменить</span>
-        <span
+        {!this.props.hideDelete && <span
           onClick={() => {
             this.handleChange(null);
             this.props.onDelete();
@@ -112,7 +112,7 @@ import { Form, Input, Button, Select, Divider, DatePicker, Icon, Table, Row, Col
             color: 'red',
             textDecoration: 'underline',
             fontSize: '14px',
-          }}>Удалить</span>
+          }}>Удалить</span>}
 
       </div>}
     </div>);

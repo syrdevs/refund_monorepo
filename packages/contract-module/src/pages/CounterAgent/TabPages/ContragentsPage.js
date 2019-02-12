@@ -25,6 +25,10 @@ class ContragentsPage extends Component {
       dataIndex: "organization.name",
       isVisible: true
     }, {
+      title: "Адрес",
+      dataIndex: "organization._address.addressText",
+      isVisible: true
+    }, {
       title: "БИК",
       dataIndex: "bankAccount.bank.bikCode",
       isVisible: true
@@ -98,9 +102,12 @@ class ContragentsPage extends Component {
     * */
 
     const addonButtons = [
-      <Button disabled={true} onClick={()=>{}}>Обновить</Button>,
-      <Button disabled={true} onClick={()=>{}}>Выбрать</Button>,
-      <Button disabled={true} onClick={()=>{}}>Указать другой счет</Button>,
+      <Button disabled={true} onClick={() => {
+      }}>Обновить</Button>,
+      <Button disabled={true} onClick={() => {
+      }}>Выбрать</Button>,
+      <Button disabled={true} onClick={() => {
+      }}>Указать другой счет</Button>
     ];
 
     // if (this.state.dataSource.length > 0) {
@@ -112,7 +119,6 @@ class ContragentsPage extends Component {
     //     Очистить
     //   </Button>);
     // }
-
 
 
     return <Card style={{ marginLeft: "-10px" }} bodyStyle={{ padding: 5 }}>

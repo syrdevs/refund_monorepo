@@ -28,6 +28,7 @@ import { faTrash } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TabPageStyle from "./TabPages.less";
 import InputNumber from "../../../components/NumberInput";
+import numberFormat from "../../../utils/numberFormat";
 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
@@ -365,39 +366,39 @@ class SpecPage extends Component {
                 //   </FormItem>);
               }
             },
-            {
-              title: "Тариф (₸)",
-              dataIndex: "tariffItem.name",
-              isVisible: true,
-              className: "all_total_values_first",
-              order: 2,
-              width: "20%",
-              key: "tariff",
-              onCell: record => {
-                return {
-                  onClick: () => {
-
-                  }
-                };
-              },
-              render: (text, record) => {
-
-                if (record.key === "total" && record.hasOwnProperty("tariffItemTotal")) {
-                  return <span>{record.tariffItemTotal}</span>;
-                }
-
-                return <span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>;
-
-                // return <FormItem>
-                //   {this.props.form.getFieldDecorator('spespage.tariff' + record.key, {
-                //     rules: [{
-                //       required: false,
-                //       message: this.state.validatemessage,
-                //     }],
-                //   })(<span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>)}
-                // </FormItem>;
-              }
-            },
+            // {
+            //   title: "Тариф (₸)",
+            //   dataIndex: "tariffItem.name",
+            //   isVisible: true,
+            //   className: "all_total_values_first",
+            //   order: 2,
+            //   width: "20%",
+            //   key: "tariff",
+            //   onCell: record => {
+            //     return {
+            //       onClick: () => {
+            //
+            //       }
+            //     };
+            //   },
+            //   render: (text, record) => {
+            //
+            //     if (record.key === "total" && record.hasOwnProperty("tariffItemTotal")) {
+            //       return <span>{numberFormat(record.tariffItemTotal ? record.tariffItemTotal : 0)}</span>;
+            //     }
+            //
+            //     return <span>{numberFormat(record.tariffItem ? record.tariffItem.tariffValue : 0)}</span>;
+            //
+            //     // return <FormItem>
+            //     //   {this.props.form.getFieldDecorator('spespage.tariff' + record.key, {
+            //     //     rules: [{
+            //     //       required: false,
+            //     //       message: this.state.validatemessage,
+            //     //     }],
+            //     //   })(<span>{record.tariffItem ? record.tariffItem.tariffValue : 0}</span>)}
+            //     // </FormItem>;
+            //   }
+            // },
             {
               title: "Сумма (₸)",
               dataIndex: "valueSum",
@@ -416,10 +417,10 @@ class SpecPage extends Component {
               render: (text, record) => {
 
                 if (record.key === "total" && record.hasOwnProperty("valueSumTotal")) {
-                  return <span>{record.valueSumTotal}</span>;
+                  return <span>{numberFormat(record.valueSumTotal ? record.valueSumTotal : 0)}</span>;
                 }
 
-                return <span>{record.valueSum ? record.valueSum : 0}</span>;
+                return <span>{numberFormat(record.valueSum ? record.valueSum : 0)}</span>;
 
                 // return <FormItem>
                 //   {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
@@ -1026,12 +1027,12 @@ class SpecPage extends Component {
               render: (record) => {
 
                 if (record.key === "total" && record.hasOwnProperty("total")) {
-                  return record.total[recordItem.periodSection.index] ? record.total[recordItem.periodSection.index].sumSection : "0";
+                  return record.total[recordItem.periodSection.index] ? numberFormat(record.total[recordItem.periodSection.index].sumSection) : "0";
                 }
 
                 let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
 
-                return <span>{defaultValue && defaultValue.hasOwnProperty("valueSection") ? defaultValue.sumSection : 0}</span>;
+                return <span>{defaultValue && defaultValue.hasOwnProperty("valueSection") ? numberFormat(defaultValue.sumSection) : 0}</span>;
               }
             },
             {
@@ -1397,7 +1398,7 @@ class SpecPage extends Component {
         activity: {
           code: "Итого:"
         },
-        tariffItemTotal: numberCeil(this.calculateMainSum("tariff")),
+       // tariffItemTotal: numberCeil(this.calculateMainSum("tariff")),
         sumAdvanceTotal: numberCeil(this.calculateMainSum("sumAdvance")),
         valueSumTotal: numberCeil(this.calculateMainSum("valueSum")),
         valueTotal: this.calculateMainSum("value"),

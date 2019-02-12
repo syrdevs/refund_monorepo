@@ -468,6 +468,19 @@ class GridFilter extends Component {
           params.value = null;
         }
 
+
+        if (this.props.formFilter && this.props.formFilter.hasOwnProperty(filterItem.name)) {
+
+          if (this.props.formFilter[filterItem.name].length > 5) {
+
+            let month = this.props.formFilter[filterItem.name].substring(0, 2);
+            let year = this.props.formFilter[filterItem.name].substring(2, 6);
+
+            params.value = moment(month + "." + year, "MM.YYYY");
+          }
+        }
+
+
         return (<div key={_index} style={mBottom}>{filterItem.label}:
           <Row>
             <Col md={24}>
@@ -784,10 +797,10 @@ class GridFilter extends Component {
           params.checked = false;
         }
 
-        return (<div key={_index} style={mBottom}><Checkbox {...params} onChange={(e) => {
+        return (<div key={_index} style={{ ...mBottom, marginTop: "10px" }}><Checkbox {...params} onChange={(e) => {
           this.fieldOnChange(filterItem, { value: e.target.checked });
         }}
-        /> : {filterItem.label}</div>);
+        /> {filterItem.label}</div>);
       }
 
       default:

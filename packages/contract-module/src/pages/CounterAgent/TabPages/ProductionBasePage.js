@@ -53,7 +53,10 @@ class ProductionBasePage extends Component {
 
 
   render = () => {
-    console.log(this.props.dataSource);
+
+
+    const dataSource = this.props.dataSource.contractLocations ? this.props.dataSource.contractLocations : [];
+
     return (<Card style={{ marginLeft: "-10px" }} bodyStyle={{ padding: 5 }}>
       <SmartGridView
         hidePagination={true}
@@ -69,7 +72,7 @@ class ProductionBasePage extends Component {
           data: dataSource,
           pageSize: dataSource.length,
           page: 1,
-          total: dataSource.length,
+          total: dataSource.length
         }}
         actionExport={() => {
         }}

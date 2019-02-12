@@ -223,10 +223,15 @@ class Searcher extends Component {
   };
 
   monthCellRender2 = (value) => {
+
+    let month = value.format("MM");
+    let year = value.format("YYYY");
+    const periodValue = month + "" + year;
+
     let result = (
       <div style={{ backgroundColor: "green", opacity: "0.1", height: "100%", width: "100%" }} onClick={() => {
-        this.props.onSelectMonth({ iin: this.state.iin });
-      }}></div>);
+        this.props.onSelectMonth({ iin: this.state.iin, paymentperiod: periodValue });
+      }}/>);
     if (this.state.MonthHistory !== undefined && this.state.MonthHistory.length > 0) {
       this.state.MonthHistory.forEach((item) => {
         if (item.isDebt && item.payPeriod === value.format("MMYYYY")) {
@@ -234,7 +239,7 @@ class Searcher extends Component {
             <div
               style={{ backgroundColor: "rgba(255, 71, 65, 0.2)", height: "100%", width: "100%", padding: "10px" }} //
               onClick={() => {
-                this.props.onSelectMonth({ iin: this.state.iin, paymentperiod: item.payPeriod });
+                this.props.onSelectMonth({ iin: this.state.iin, paymentperiod: periodValue });
               }}
             >
               {/* <p>Сумма: {item.totalAmount}</p>
@@ -253,7 +258,8 @@ class Searcher extends Component {
         title: "Платежи в разрезе КНП за " + date.format("MMMM"),
         content: (
           <div>
-            {value.map(item => (<p>{item.knp}. Сумма: {numberWithSpaces(item.amount)}, кол-во: {intWithSpace(item.count)}</p>))}
+            {value.map(item => (
+              <p>{item.knp}. Сумма: {numberWithSpaces(item.amount)}, кол-во: {intWithSpace(item.count)}</p>))}
           </div>
         ),
         onOk() {
@@ -736,31 +742,31 @@ class Searcher extends Component {
       value: personMED.clinic ? (personMED.status ? formatMessage({ id: "report.param.medinsstattrue" }).toUpperCase() : formatMessage({ id: "report.param.medinsstatfalse" }).toUpperCase()) : ""
     }, */
       {
-      key: 10,
-      name: "ЛЬГОТНАЯ КАТЕГОРИЯ",
-      value: personMED.pref_categories !== undefined ? personMED.pref_categories.map((category) =>
-        <div>
-          <div style={{ width: "80%", wordWrap: "break-word" }}
-               color="blue">{category.name ? category.name.toUpperCase() : ""}</div>
-          <br></br>
-        </div>) : ""
-    }, {
-      key: 11,
-      name: "Медицинская организация".toUpperCase(),
-      value: personMED.clinic ? personMED.clinic.toUpperCase() : personMED.clinic
-    }, {
-      key: 12,
-      name: "Дата прикрепления".toUpperCase(),
-      value: personMED.clinic_date ? personMED.clinic_date.toUpperCase() : personMED.clinic_date
-    }, {
-      key: 13,
-      name: "Категория потребителя".toUpperCase(),
-      value: personMED.categories ? personMED.categories.toUpperCase() : ""
-    }, {
-      key: 14,
-      name: "ПАКЕТ СТРАХОВАНИЯ",
-      value: personMED.insurancePackage && personMED.insurancePackage.nameRu ? personMED.insurancePackage.nameRu.toUpperCase() : ""
-    }];
+        key: 10,
+        name: "ЛЬГОТНАЯ КАТЕГОРИЯ",
+        value: personMED.pref_categories !== undefined ? personMED.pref_categories.map((category) =>
+          <div>
+            <div style={{ width: "80%", wordWrap: "break-word" }}
+                 color="blue">{category.name ? category.name.toUpperCase() : ""}</div>
+            <br></br>
+          </div>) : ""
+      }, {
+        key: 11,
+        name: "Медицинская организация".toUpperCase(),
+        value: personMED.clinic ? personMED.clinic.toUpperCase() : personMED.clinic
+      }, {
+        key: 12,
+        name: "Дата прикрепления".toUpperCase(),
+        value: personMED.clinic_date ? personMED.clinic_date.toUpperCase() : personMED.clinic_date
+      }, {
+        key: 13,
+        name: "Категория потребителя".toUpperCase(),
+        value: personMED.categories ? personMED.categories.toUpperCase() : ""
+      }, {
+        key: 14,
+        name: "ПАКЕТ СТРАХОВАНИЯ",
+        value: personMED.insurancePackage && personMED.insurancePackage.nameRu ? personMED.insurancePackage.nameRu.toUpperCase() : ""
+      }];
 
 
     /**/

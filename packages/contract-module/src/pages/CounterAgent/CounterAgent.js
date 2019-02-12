@@ -117,8 +117,32 @@ class CounterAgent extends Component {
           type: "listbetweenDate"
         },
         {
+          label: "Наличие договора",
+          name: "periodYear",
+          filterName: "_contractYears.year",
+          sort: "desc",
+          displayField: "year",
+          valueField: "year",
+          type: "combobox"
+        },
+        {
           label: "СЗ районного значения и села",
           name: "isRural",
+          type: "checkbox"
+        },
+        {
+          label: "Частная организация",
+          name: "_organization.legalForm.isPrivate",
+          type: "checkbox"
+        },
+        {
+          label: "Роль СЗ (Поставщик)",
+          name: "postavwik_1",
+          type: "checkbox"
+        },
+        {
+          label: "Роль СЗ (Соисполнитель)",
+          name: "postavwik_2",
           type: "checkbox"
         }
       ]
@@ -207,6 +231,21 @@ class CounterAgent extends Component {
   };
 //test
   applyFilter = (filter) => {
+
+    if (filter.postavwik_1) {
+      filter["clinicRegister.clinicBitWiseOR"] = "1";
+    }
+
+    if (filter.postavwik_2) {
+      filter["clinicRegister.clinicBitWiseOR"] = "2";
+    }
+
+    if (filter.postavwik_1 && filter.postavwik_2)
+      filter["clinicRegister.clinicBitWiseOR"] = "3";
+
+    delete filter["postavwik_1"];
+    delete filter["postavwik_2"];
+
     this.setState({
       sortedInfo: {},
       gridParameters: {

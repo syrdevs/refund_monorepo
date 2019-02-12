@@ -191,12 +191,19 @@ export default function request(url, option) {
       //   //router.push('/exception/404');
       // }
 
+      if (e.response && e.response.status && e.response.status === 401) {
+        window.location.replace("/login");
+
+        return;
+      }
+
       if (newOptions.getResponse && e.response) {
         newOptions.getResponse(e.response);
       }
 
+
       return {
-        getResponseValue:()=>{
+        getResponseValue: () => {
           return e.response;
         },
         error: true,
