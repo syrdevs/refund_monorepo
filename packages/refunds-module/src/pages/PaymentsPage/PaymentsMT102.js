@@ -242,7 +242,7 @@ class PaymentsMT102 extends Component {
       "isVisible": "true",
       render: (value) => {
         if (value) {
-          return <div onClick={()=>{this.props.onSelect(value)}}>{value}</div>;
+          return <a onClick={()=>{this.props.onSelect(value)}}>{value}</a>;
         }
         return "";
       }

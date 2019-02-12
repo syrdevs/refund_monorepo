@@ -27,6 +27,8 @@ import Appeals from "../PaymentsPage/Appeals";
 import GridFilter from "../../components/GridFilter";
 import Medicine from "../PaymentsPage/Medicine";
 import PaymentsMT102 from "../PaymentsPage/PaymentsMT102";
+import intWithSpace from "../../utils/IntWithSpace";
+import numberWithSpaces from "../../utils/numberFormat";
 
 const dateFormat = "DD.MM.YYYY";
 const FormItem = Form.Item;
@@ -210,8 +212,8 @@ class Searcher extends Component {
                 this.ShowDetailofMonth(item.detailList, value);
               }}
             >
-              <p>Сумма: {item.totalAmount}</p>
-              <p>Кол-во: {item.totalElements}</p>
+              <p>Сумма: {numberWithSpaces(item.totalAmount)}</p>
+              <p>Кол-во: {intWithSpace(item.totalElements)}</p>
             </div>
           );
         }
@@ -251,7 +253,7 @@ class Searcher extends Component {
         title: "Платежи в разрезе КНП за " + date.format("MMMM"),
         content: (
           <div>
-            {value.map(item => (<p>{item.knp}. Сумма: {item.amount}, кол-во: {item.count}</p>))}
+            {value.map(item => (<p>{item.knp}. Сумма: {numberWithSpaces(item.amount)}, кол-во: {intWithSpace(item.count)}</p>))}
           </div>
         ),
         onOk() {
@@ -687,19 +689,19 @@ class Searcher extends Component {
     }, {
       key: 2,
       name: "ФАМИЛИЯ",
-      value: person.lastname ? person.lastname.toUpperCase() : person.lastname
+      value: person.lastname && person.lastname.toUpperCase()
     }, {
       key: 3,
       name: "ИМЯ",
-      value: person.firstname ? person.firstname.toUpperCase() : person.firstname
+      value: person.firstname && person.firstname.toUpperCase()
     }, {
       key: 4,
       name: "ОТЧЕСТВО",
-      value: person.secondname ? person.secondname.toUpperCase() : person.secondname
+      value: person.secondname && person.secondname.toUpperCase()
     }, {
       key: 5,
       name: "ДАТА РОЖДЕНИЯ",
-      value: person.birthdate ? person.birthdate.toUpperCase() : person.birthdate
+      value: person.birthdate && person.birthdate.toUpperCase()
     }, {
       key: 6,
       name: "ПОЛ",

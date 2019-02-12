@@ -19,6 +19,7 @@ import {
 import connect from "../../Redux";
 import request from "../../utils/request";
 import intWithSpace from "../../utils/IntWithSpace";
+import numberWithSpaces from "../../utils/numberFormat";
 
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -70,8 +71,8 @@ class SearcherJur extends Component {
               this.ShowDetailofMonth(item.detailList, value);
             }}
           >
-            <p>Сумма: {item.totalAmount}</p>
-            <p>Кол-во: {item.totalElements}</p>
+            <p>Сумма: {numberWithSpaces(item.totalAmount)}</p>
+            <p>Кол-во: {intWithSpace(item.totalElements)}</p>
           </div>
         );
       }
@@ -102,7 +103,7 @@ class SearcherJur extends Component {
         title: "Платежи в разрезе КНП за " + date.format("MMMM"),
         content: (
           <div>
-            {value.map(item => (<p>{item.knp}. Сумма: {item.amount}, кол-во: {item.count}</p>))}
+            {value.map(item => (<p>{item.knp}. Сумма: {numberWithSpaces(item.amount)}, кол-во: {intWithSpace(item.count)}</p>))}
           </div>
         ),
         onOk() {
@@ -275,8 +276,8 @@ class SearcherJur extends Component {
           title: item.knp
         });
 
-        getPayerStoreData[0]["column_" + item.knp] = item._groupCount;
-        getPayerStoreData[1]["column_" + item.knp] = item.paymentsum;
+        getPayerStoreData[0]["column_" + item.knp] = intWithSpace(item._groupCount);
+        getPayerStoreData[1]["column_" + item.knp] = numberWithSpaces(item.paymentsum);
       });
 
 
@@ -326,7 +327,7 @@ class SearcherJur extends Component {
       }, {
         key: 8,
         name: "СУММА ВОЗВРАТОВ",
-        value: intWithSpace(jur.refundSum)
+        value: numberWithSpaces(jur.refundSum)
       }, {
         key: 4,
         name: "КОЛИЧЕСТВО ПЛАТЕЖЕЙ",
@@ -335,7 +336,7 @@ class SearcherJur extends Component {
       {
         key: 5,
         name: "СУММА ПЛАТЕЖЕЙ",
-        value: intWithSpace(jur.paymentSum)
+        value: numberWithSpaces(jur.paymentSum)
       }
     ];
 

@@ -34,6 +34,8 @@ import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 import saveAs from "file-saver";
 import ListBetWeenMonth from "../../components/GridFilter/betweenMonthPicker";
+import intWithSpace from "../../utils/IntWithSpace";
+import numberWithSpaces from "../../utils/numberFormat";
 
 
 const FormItem = Form.Item;
@@ -98,10 +100,6 @@ class Employees extends Component {
       }, {
         "title": "КНП",
         "dataIndex": "knp",
-        "isVisible": "true"
-      }, {
-        "title": "Сумма",
-        "dataIndex": "paymentsum",
         "isVisible": "true"
       }
     ]
@@ -378,7 +376,17 @@ class Employees extends Component {
           // scroll={{ x: "auto" }}
           fixedBody={true}
           hideFilterBtn={true}
-          actionColumns={[]}
+          actionColumns={[
+            {
+              title: "Сумма",
+              order: 3,
+              key: "paymentsum",
+              isVisible: true,
+              render: (item) => {
+                return (numberWithSpaces(item));
+              }
+            }
+          ]}
           showTotal={true}
           // selectedRowCheckBox={true}
           // searchButton={false}
