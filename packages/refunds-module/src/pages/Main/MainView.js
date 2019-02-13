@@ -150,18 +150,19 @@ class MainView extends Component {
             href="#"> <span><Badge
             status={this.setBadgeStatus(value.isRefundConfirm)}/></span> {value.dappRefundStatusId ? value.dappRefundStatusId.nameRu : null}
           </a>
-        }, {
+        },
+        {
           "title": "Сумма возврата",
           "isVisible": true,
           order: 6,
           "dataIndex": "refundPayAmount",
-          // render: (value) => {
-          //   if (value.refundPayAmount) {
-          //     return numberWithSpaces(value.refundPayAmount);
-          //   }else{
-          //     return "";
-          //   }
-          // }
+           render: (value) => {
+             if (value) {
+               return numberWithSpaces(value);
+             }else{
+               return "";
+             }
+           }
         },
         {
           "title": "Сумма отчислений/взносов",

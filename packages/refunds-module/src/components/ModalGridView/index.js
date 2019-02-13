@@ -6,6 +6,7 @@ import saveAs from "file-saver";
 import connect from "../../Redux";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
+import numberWithSpaces from "../../utils/numberFormat";
 
 
 const TabPane = Tabs.TabPane;
@@ -31,19 +32,35 @@ class ModalGridView extends Component {
           render: (item) => {
             return item.personSurname + " " + item.personFirstname + " " + item.personPatronname;
           }
-        }
+        },
+        {
+          "title": "Сумма возврата",
+          "isVisible": true,
+          order: 6,
+          width: 150,
+          "dataIndex": "refundPayAmount",
+          render: (value) => {
+            if (value) {
+              return numberWithSpaces(value);
+            }else{
+              return "";
+            }
+          }
+        },
       ],
       columns: [{
         "title": "Номер заявки",
         width: 120,
         "isVisible": true,
         "dataIndex": "applicationId.appNumber"
-      }, {
+      },
+        {
         "title": "Сумма возврата",
         width: 150,
         "isVisible": true,
         "dataIndex": "refundPayAmount"
-      }, {
+      },
+        {
         "title": "ИИН Потребителя",
         "isVisible": true,
         width: 120,
@@ -51,6 +68,7 @@ class ModalGridView extends Component {
       }, {
         "title": "КНП",
         "isVisible": true,
+        width: 120,
         "dataIndex": "applicationId.dknpId.code"
       }, {
         "title": "Период",
@@ -207,7 +225,6 @@ class ModalGridView extends Component {
           saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
       }
     });
-
     // let authToken = localStorage.getItem('AUTH_TOKEN');
     //
     // this.setState({
@@ -290,7 +307,7 @@ class ModalGridView extends Component {
   render() {
     const { visible, universal } = this.props;
     return (<Modal
-      width={1000}
+      width={1300}
       centered
       onCancel={this.handleCancel}
       footer={[<Button loading={this.state.downloadBtn102Loading} key={"savemt"} onClick={this.handleSave}>Скачать
@@ -320,7 +337,7 @@ class ModalGridView extends Component {
                 <div key={"total_amount"} style={{
                   paddingTop: 15,
                   display: "inline-block"
-                }}>{formatMessage({ id: "system.totalAmount" })}: {tabItem.totalAmount}</div>]}
+                }}>{formatMessage({ id: "system.totalAmount" })}: {numberWithSpaces(tabItem.totalAmount)}</div>]}
               onShowSizeChange={(pageNumber, pageSize) => {
                 this.onShowSizeChange(pageNumber, pageSize);
               }}

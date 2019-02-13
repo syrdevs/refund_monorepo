@@ -26,6 +26,7 @@ import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
 import { Animated } from "react-animated-css";
 import { setAcceptToRefund } from "../../services/api";
+import numberWithSpaces from "../../utils/numberFormat";
 
 
 class ShowPull extends Component {
@@ -103,6 +104,24 @@ class ShowPull extends Component {
              status={this.setBadgeStatus(value.refund.isRefundConfirm)}/></span> {value.refund.dappRefundStatusId ? value.refund.dappRefundStatusId.nameRu : null}
            </a>
          },
+          {
+            "title": "Сумма возврата",
+            "isVisible": true,
+            "dataIndex": "refund.refundPayAmount",
+            order: 8,
+            render: (value) => {
+              return numberWithSpaces(value);
+            }
+          },
+          {
+            "title": "Сумма отчислений",
+            "isVisible": true,
+            "dataIndex": "refund.payAmount",
+            order: 9,
+            render: (value) => {
+              return numberWithSpaces(value);
+            }
+          },
         /* {
            title: "Файлы",
            order: 51,
@@ -163,12 +182,6 @@ class ShowPull extends Component {
           "dataIndex": "refund.appEndDate"
         },
         {
-          "title": "Сумма возврата",
-          "isVisible": true,
-          "dataIndex": "refund.refundPayAmount"
-
-        },
-        {
           "title": "Референс ГК",
           "isVisible": true,
           "dataIndex": "refund.gcvpReference"
@@ -196,7 +209,7 @@ class ShowPull extends Component {
           "title": "Дата платежного поручения",
           "dataIndex": "refund.applicationId.payOrderDate"
         },
-        { "title": "Сумма отчислений", "dataIndex": "refund.payAmount" },
+
         {
           "title": "Дата последнего взноса",
           "dataIndex": "refund.lastPayDate"

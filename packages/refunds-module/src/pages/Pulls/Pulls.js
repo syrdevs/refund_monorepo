@@ -45,6 +45,7 @@ import { setAcceptToRefund } from "../../services/api";
 import { faUpload } from "@fortawesome/free-solid-svg-icons/index";
 import Guid from "../../utils/Guid";
 import EmployeesModal from "../Options/EmployeesModal";
+import numberWithSpaces from "../../utils/numberFormat";
 
 
 const { TextArea } = Input;
@@ -195,18 +196,25 @@ class Pulls extends Component {
               })}
             </div>
           )
-        }, {
+        },
+        {
           "title": "Сумма возврата",
           "isVisible": true,
           "dataIndex": "refund.refundPayAmount",
           order: 7,
           render: (value) => {
-            if (value.refund && value.refund.refundTotalAmount) {
-              return numberWithSpaces(value.refund.refundTotalAmount);
-            }
-            return "";
+              return numberWithSpaces(value);
           }
-        }
+        },
+        {
+          "title": "Сумма отчислений",
+          "isVisible": true,
+          "dataIndex": "refund.payAmount",
+          order: 8,
+          render: (value) => {
+            return numberWithSpaces(value);
+          }
+        },
       ],
       columns: [
         {
@@ -262,7 +270,8 @@ class Pulls extends Component {
         }, {
           "title": "Дата платежного поручения",
           "dataIndex": "refund.applicationId.payOrderDate"
-        }, { "title": "Сумма отчислений", "dataIndex": "refund.payAmount" }, {
+        },
+        {
           "title": "Дата последнего взноса",
           "dataIndex": "refund.lastPayDate"
         }, {

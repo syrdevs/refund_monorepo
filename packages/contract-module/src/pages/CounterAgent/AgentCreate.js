@@ -1895,6 +1895,7 @@ class AgentCreate extends Component {
                 >
                   Сохранить
                 </Button>
+                { this.props.location.query && this.props.location.query.id &&
                 <Dropdown key={"dropdown"} trigger={["click"]} overlay={<Menu>
                   <SubMenu
                     disabled={hasRole(["ADMIN"])}
@@ -1912,7 +1913,7 @@ class AgentCreate extends Component {
                     style={{ marginLeft: "5px" }}
                     key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon
                     type="down"/></Button>
-                </Dropdown>
+                </Dropdown>}
               </div>
             </Col>
           </Row>
