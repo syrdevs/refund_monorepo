@@ -27,6 +27,9 @@ import GridFilter from "../../components/GridFilter";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons/index";
 import DropDownAction from "../../components/DropDownAction";
+import request from "../../utils/request";
+import saveAs from "file-saver";
+import Guid from "../../utils/Guid";
 
 const dateFormat = "DD.MM.YYYY";
 
@@ -206,8 +209,27 @@ class Debutors extends Component {
   };
 
   exportToExcel = () => {
+console.log("test")
+    let authToken = localStorage.getItem("AUTH_TOKEN");
+    let columns = JSON.parse(localStorage.getItem("Refunds.Payments.Debutors"));
 
-  };
+    request("/api/refund/exportToExcel", {
+      method: "POST",
+      responseType: "blob",
+      body: {
+        "entityClass": "debtorsIinList",
+        "fileName": "Реестр должников",
+        "filter": this.state.pagingConfig.filter,
+        "columns": [].concat(columns.filter(column => column.isVisible))
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        }
+      }
+    });
+  }
 
   render = () => {
 
@@ -252,6 +274,7 @@ class Debutors extends Component {
           fixedBody={true}
           actionColumns={[]}
           showTotal={true}
+          showExportBtn={true}
           selectedRowCheckBox={true}
           searchButton={false}
           selectedRowKeys={this.state.selectedRowKeys}
@@ -262,7 +285,7 @@ class Debutors extends Component {
           columns={this.state.mainGridColumns}
           sorted={true}
           sortedInfo={this.state.sortedInfo}
-          showExportBtn={false}
+          actionExport={() =>{this.exportToExcel()}}
           dataSource={{
             total: storeData.totalElements,
             pageSize: this.state.pagingConfig.length,

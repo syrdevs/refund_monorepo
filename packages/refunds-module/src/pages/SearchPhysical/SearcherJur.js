@@ -62,11 +62,12 @@ class SearcherJur extends Component {
 
   monthCellRender = (value) => {
     let result = (<div style={{ backgroundColor: "red", opacity: "0.1", height: "100%", width: "100%" }}></div>);
+    let color = "#EEF9E9";
     (Array.isArray(this.state.payes) ? this.state.payes : []).forEach((item) => {
       if (item.period === value.format("MMYYYY")) {
         result = (
           <div
-            style={{ backgroundColor: "#EEF9E9", height: "100%", width: "100%", padding: "10px" }}
+            style={{ backgroundColor: color, height: "100%", width: "100%", padding: "10px" }}
             onClick={() => {
               this.ShowDetailofMonth(item.detailList, value);
             }}
@@ -75,6 +76,7 @@ class SearcherJur extends Component {
             <p>Кол-во: {intWithSpace(item.totalElements)}</p>
           </div>
         );
+        //
       }
     });
     return result;

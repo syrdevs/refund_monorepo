@@ -1398,6 +1398,7 @@ class AgentCreate extends Component {
     }
     let identities = data.idendifiers ? data.idendifiers.map((item, index) => {
       return {
+        "id": item.id,
         "identityname": item.value,
         "identitybeginDate": item.dateBegin ? moment(item.dateBegin, "DD.MM.YYYY") : null,
         "identityendDate": item.dateEnd ? moment(item.dateEnd, "DD.MM.YYYY") : null,
@@ -1407,6 +1408,7 @@ class AgentCreate extends Component {
     }) : [];
     let bankAccounts = data.bankAccounts ? data.bankAccounts.map((item, index) => {
       return {
+        "id": item.id,
         "iik": item.accountNumber,
         "bankbeginDate": item.dateBegin ? moment(item.dateBegin, "DD.MM.YYYY") : null,
         "bankendDate": item.dateEnd ? moment(item.dateEnd, "DD.MM.YYYY") : null,
@@ -1427,6 +1429,7 @@ class AgentCreate extends Component {
     }) : [];
     let contacts = data.contacts ? data.contacts.map((item, index) => {
       return {
+        "id": item.id,
         "contactnote": item.comment,
         "contactname": item.value,
         "contactbeginDate": item.dateBegin ? moment(item.dateBegin, "DD.MM.YYYY") : null,
@@ -1435,7 +1438,6 @@ class AgentCreate extends Component {
         "key": index
       };
     }) : [];
-
     let locations = data.locations ? data.locations.map((item, index) => {
       return {
         "id": item.address ? item.address.id : "",
@@ -1445,9 +1447,9 @@ class AgentCreate extends Component {
         "key": index
       };
     }) : [];
-
     let clinicRegisters = data.clinicRegisters ? data.clinicRegisters.map((item, index) => {
       return {
+        "id": item.id,
         "clinicRegistersbeginDate": item.dateBegin ? moment(item.dateBegin, "DD.MM.YYYY") : null,
         "clinicRegistersendDate": item.dateEnd ? moment(item.dateEnd, "DD.MM.YYYY") : null,
         "key": index
@@ -1604,6 +1606,12 @@ class AgentCreate extends Component {
             }
           };
         }
+        if (item.id) {
+          val = {
+            ...val,
+            "id": item.id
+          }
+        }
         return val;
       }) : undefined;
     }
@@ -1631,6 +1639,12 @@ class AgentCreate extends Component {
             }
           };
         }
+        if (item.id) {
+          val = {
+            ...val,
+            "id": item.id
+          }
+        }
         return val;
       }) : undefined;
     }
@@ -1649,6 +1663,12 @@ class AgentCreate extends Component {
               "id": item.adresstype
             }
           };
+        }
+        if (item.id) {
+          val = {
+            ...val,
+            "id": item.id
+          }
         }
         return val;
       }) : undefined;
@@ -1671,6 +1691,12 @@ class AgentCreate extends Component {
             }
           };
         }
+        if (item.id) {
+          val = {
+            ...val,
+            "id": item.id
+          }
+        }
         return val;
       }) : undefined;
     }
@@ -1682,6 +1708,12 @@ class AgentCreate extends Component {
           "dateEnd": item.clinicRegistersendDate ? item.clinicRegistersendDate.format("DD.MM.YYYY") : null,
           "clinicRole": 0
         };
+        if (item.id) {
+          val = {
+            ...val,
+            "id": item.id
+          }
+        }
         return val;
       }) : undefined;
     }
@@ -1699,6 +1731,12 @@ class AgentCreate extends Component {
               "id": item.id
             }
           };
+        }
+        if (item.id) {
+          val = {
+            ...val,
+            "id": item.id
+          }
         }
         return val;
       }) : undefined;

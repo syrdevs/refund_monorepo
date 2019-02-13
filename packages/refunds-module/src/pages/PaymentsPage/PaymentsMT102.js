@@ -217,9 +217,8 @@ class PaymentsMT102 extends Component {
       }, {
         "title": "Перенесенный период",
         "dataIndex": "paymentPeriodTransfer"
-
       }, {
-        "title": "Платежи MT102",
+        "title": "Количество возвратов",
         "dataIndex": "refundsCount"
       }
     ],
@@ -254,8 +253,8 @@ class PaymentsMT102 extends Component {
       order: 6,
       "isVisible": "true",
       render: (value) => {
-        if (value ? value.refundTotalAmount : false) {
-          return numberWithSpaces(value.refundTotalAmount);
+        if (value) {
+          return numberWithSpaces(value);
         }
         return "";
       }
