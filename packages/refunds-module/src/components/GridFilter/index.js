@@ -31,6 +31,7 @@ import { Animated } from "react-animated-css";
 import ButtonGroup from "./ButtonGroup";
 import ListBetweenDate from "./listbetweenDate";
 import ListBetWeenMonth from "./betweenMonthPicker";
+import NumericInput from "./NumericInput";
 
 const FormItem = Form.Item;
 const { RangePicker, MonthPicker } = DatePicker;
@@ -120,6 +121,8 @@ class GridFilter extends Component {
     super(props);
 
     this.state = {
+      disableApplyBtn: false,
+
       isClearFilter: false,
       formFilters: {},
       disableFields: {},
@@ -365,6 +368,7 @@ class GridFilter extends Component {
     });
 
     this.setState({
+      disableApplyBtn: false,
       formFilters: {},
       isClearFilter: true
     });
@@ -604,6 +608,55 @@ class GridFilter extends Component {
         </div>);
       }
 
+      case "numberInput": {
+        let params = {
+          style: {
+            width: "100%"
+          }
+        };
+
+        if (isClearFilter) {
+          params.value = null;
+        }
+
+        if (formFilters[filterItem.name] && formFilters[filterItem.name].length < 12) {
+          params.style = {
+            ...params.style,
+            border: "1px solid red"
+          };
+
+          if (!this.state.disableApplyBtn) {
+            this.setState({
+              disableApplyBtn: true
+            });
+          }
+        }
+
+
+        if (formFilters[filterItem.name] !== undefined && formFilters[filterItem.name].length === 0) {
+          if (this.state.disableApplyBtn)
+            this.setState({
+              disableApplyBtn: false
+            });
+        }
+
+        if (formFilters[filterItem.name] && formFilters[filterItem.name].length === 12) {
+          if (this.state.disableApplyBtn)
+            this.setState({
+              disableApplyBtn: false
+            });
+        }
+
+        return (<div key={_index} style={mBottom}>{filterItem.label}:
+          <NumericInput
+            {...params}
+            value={formFilters[filterItem.name]}
+            onChange={(e) => {
+              this.fieldOnChange(filterItem, e);
+            }}/>
+        </div>);
+      }
+
       case "listbetweenDateTime": {
 
         let RangeDateProps = {
@@ -833,7 +886,7 @@ class GridFilter extends Component {
   };
 
   onKeyPress = (e) => {
-    if (e.keyCode === 13) {
+    if (e.keyCode === 13 && !this.state.disableApplyBtn) {
       this.applyFilters();
     }
   };
@@ -853,8 +906,9 @@ class GridFilter extends Component {
         <Form layout={"vertical"}>
           {Object.keys(fields).length > 0 && filterForm.map((filterItem, idx) => this.renderFilter(filterItem, idx))}
           {this.props.miniForm !== true && <Divider style={{ margin: "16px 10px 0 0" }}/>}
-          {this.props.miniForm !== true && < Button style={{ margin: "10px 0 0 0px" }} type='primary'
-                                                    onClick={this.applyFilters}>
+          {this.props.miniForm !== true &&
+          < Button disabled={this.state.disableApplyBtn} style={{ margin: "10px 0 0 0px" }} type='primary'
+                   onClick={this.applyFilters}>
             {formatMessage({ id: "system.search" })}
           </Button>}
           {this.props.miniForm !== true && <Button style={{ margin: "10px 0 0 5px" }}

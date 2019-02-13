@@ -647,7 +647,7 @@ class MainView extends Component {
       {
         name: "personIin",
         label: formatMessage({ id: "menu.filter.iin" }),
-        type: "text",
+        type: "numberInput",
         withMax: 12
       },
       {
