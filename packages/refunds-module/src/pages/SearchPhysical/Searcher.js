@@ -162,7 +162,8 @@ class Searcher extends Component {
       loading1: false,
       loading2: false,
       payes: [],
-      loading: false
+      loading: false,
+      year: new Date().getFullYear()
     };
   }
 
@@ -179,14 +180,35 @@ class Searcher extends Component {
           }
         }), () => {
           this.applyFilter(params);
+          /*
+            let year = new Date().getFullYear();
+            if (this.state.year) {
+                year = this.state.year
+            }
+            if (params.iin) {
+                console.log(year);
+                const { dispatch } = this.props;
+                dispatch({
+                  type: "universal/SearcherCalendar",
+                  payload: {
+                    iin: params.iin,
+                    year: year
+                  }
+                }).then((e) => {
+                  console.log(this.props.universal.searchercalendar);
+                  console.log(e);
+                  this.setState({
+                    payes: this.props.universal.searchercalendar,
+                  });
+                });
+              }
+          */
         });
-      } else {
       }
     });
 
 
   }
-
 
   componentDidUpdate() {
 
@@ -199,15 +221,20 @@ class Searcher extends Component {
     }
   }
 
-
   monthCellRender = (value) => {
+    console.log("monthCellRender");
     let result = (<div style={{ backgroundColor: "red", opacity: "0.1", height: "100%", width: "100%" }}></div>);
+    let color = "#EEF9E9";
     if (this.state.payes !== undefined && this.state.payes.length > 0) {
       this.state.payes.forEach((item) => {
         if (item.period === value.format("MMYYYY")) {
+          console.log(item.refundCount);
+          if (item.refundCount>0){
+            color = "#F9F69C";
+          }
           result = (
             <div
-              style={{ backgroundColor: "#EEF9E9", height: "100%", width: "100%", padding: "10px" }}
+              style={{ backgroundColor: color, height: "100%", width: "100%", padding: "10px" }}
               onClick={() => {
                 this.ShowDetailofMonth(item.detailList, value);
               }}
@@ -472,6 +499,7 @@ class Searcher extends Component {
   };
 
   onPanelChange = (value, mode) => {
+    console.log("test");
     this.payesSearcher(value.year());
   };
 
@@ -616,20 +644,26 @@ class Searcher extends Component {
   };
 
   payesSearcher = (year) => {
-    const { dispatch } = this.props;
-    dispatch({
-      type: "universal/SearcherCalendar",
-      payload: {
-        iin: this.state.iin,
-        year: year
-      }
-    }).then(() => {
-      this.setState({
-        payes: this.props.universal.searchercalendar,
-        loading: false
+    this.setState({
+      year: year
+    },()=>{
+
+      const { dispatch } = this.props;
+      dispatch({
+        type: "universal/SearcherCalendar",
+        payload: {
+          iin: this.state.iin,
+          year: year
+        }
+      }).then(() => {
+        this.setState({
+          payes: this.props.universal.searchercalendar,
+          loading: false
+        });
       });
-    });
-    this.history();
+      this.history();
+
+    })
   };
   history = () => {
     const { dispatch } = this.props;
@@ -650,7 +684,6 @@ class Searcher extends Component {
         ]
       }
     }).then((response) => {
-      console.log(response);
       this.setState({
         MonthHistory: response
       });
@@ -681,7 +714,8 @@ class Searcher extends Component {
         style={{ color: "black", background: "#efefef", padding: "10px", textAlign: "right" }}>{text}</div>,
       width: 100
 
-    }, {
+    },
+      {
       title: "Значения",
       dataIndex: "value",
       key: "value",
@@ -734,13 +768,12 @@ class Searcher extends Component {
       value: ""
     }
     ];
-
     const secondData = [
-      /*{
-      key: 9,
-      name: "СТАТУС СТРАХОВАНИЯ",
-      value: personMED.clinic ? (personMED.status ? formatMessage({ id: "report.param.medinsstattrue" }).toUpperCase() : formatMessage({ id: "report.param.medinsstatfalse" }).toUpperCase()) : ""
-    }, */
+      {
+        key: 9,
+        name: "СТАТУС СТРАХОВАНИЯ",
+        value: personMED.clinic ? (personMED.status ? formatMessage({ id: "report.param.medinsstattrue" }).toUpperCase() : formatMessage({ id: "report.param.medinsstatfalse" }).toUpperCase()) : ""
+      },
       {
         key: 10,
         name: "ЛЬГОТНАЯ КАТЕГОРИЯ",
@@ -762,14 +795,12 @@ class Searcher extends Component {
         key: 13,
         name: "Категория потребителя".toUpperCase(),
         value: personMED.categories ? personMED.categories.toUpperCase() : ""
-      }, {
+      },
+      {
         key: 14,
         name: "ПАКЕТ СТРАХОВАНИЯ",
         value: personMED.insurancePackage && personMED.insurancePackage.nameRu ? personMED.insurancePackage.nameRu.toUpperCase() : ""
       }];
-
-
-    /**/
     const dataRPM = [{
       key: 14,
       name: "ИИН",
@@ -846,14 +877,7 @@ class Searcher extends Component {
       params.value = null;
     }
     return (<div>
-        {/*<Modal*/}
-        {/*title=""*/}
-        {/*visible={this.state.visibleModal}*/}
-        {/*// onCancel={this.handleCancelModal}*/}
-        {/*onOk={this.handleCancelModal}*/}
-        {/*>*/}
-        {/*<p>Информация о потребителе не найдена</p>*/}
-        {/*</Modal>*/}
+
         <Modal
           title=""
           visible={this.state.visible}
@@ -864,21 +888,16 @@ class Searcher extends Component {
             this.searchperson(selectedRows.iin);
           }} columns={columnsTable}
                  dataSource={this.props.universal2.references[this.state.parameters.entity] ? this.props.universal2.references[this.state.parameters.entity].content ? this.props.universal2.references[this.state.parameters.entity].content : [] : []}/>
-
         </Modal>
-        {/*<Spin tip="" spinning={this.state.loading && this.state.loading1 && this.state.loading2}>*/}
         <Row style={{ marginBottom: "10px" }}>
           <Row>
             <div style={CardHeight}>
-
-
               <Card
                 style={{ marginBottom: "10px" }}
                 type="inner"
                 bodyStyle={{ padding: 25 }}
                 title={formatMessage({ id: "report.param.searcher" })}
               >
-
                 <Col span={12}>
                   <div style={mBottom}>ИИН:
                     <div style={{ width: "100%" }}>
@@ -1067,6 +1086,7 @@ class Searcher extends Component {
                     <Calendar
                       onPanelChange={this.onPanelChange}
                       mode='year'
+                      value={moment(this.state.year+"0101", "YYYYMMDD")}
                       className={historystyle.customCalendar}
                       monthCellRender={this.monthCellRender}
                       fullscreen
@@ -1096,6 +1116,8 @@ class Searcher extends Component {
                   //    this.props.eventManager.handleEvent("onSelectFilterByBin",  bin.senderBin );
                   // });
 
+                  console.log(bin);
+                  console.log("bin");
                   this.props.eventManager.handleEvent("paymentSelectTab", bin, () => {
                     this.props.eventManager.handleEvent("onSelectFilterByBin", bin);
                   });

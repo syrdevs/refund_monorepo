@@ -220,7 +220,9 @@ class ShowPull extends Component {
         }, {
           "title": "Кол-во отчислений и (или) взносов за последние 12 календарных месяцев",
           "dataIndex": "refund.lastMedcarePayCount"
-        }, { "title": "Статус страхования", "dataIndex": "refund.medinsStatus" }, {
+        },
+        /*{ "title": "Статус страхования", "dataIndex": "refund.medinsStatus" }, */
+        {
           "title": "Референс",
           "dataIndex": "refund.applicationId.reference"
         }, { "title": "Причина отказа", "dataIndex": "refund.ddenyReasonId.nameRu" },
@@ -228,7 +230,6 @@ class ShowPull extends Component {
         //   "title": "Отчет об отказе",
         //   "dataIndex": "refund.refundStatus"
         // },
-
         { "title": "Осталось дней", "dataIndex": "refund.daysLeft" }, {
           "title": "Дата изменения статуса заявки",
           "dataIndex": "refund.changeDate"
@@ -334,7 +335,7 @@ class ShowPull extends Component {
           <Row>
             <Col sm={24} md={this.state.tablecont}>
               <SmartGridView
-                name={"PullPage"}
+                name={"ShowPull"}
                 scroll={{ x: this.state.xsize }}
                 //selectedRowCheckBox={true}
                 searchButton={this.state.searchButton}

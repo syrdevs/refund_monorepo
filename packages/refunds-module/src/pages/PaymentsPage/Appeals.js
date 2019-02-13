@@ -58,7 +58,7 @@ class Appeals extends Component {
     },
     filterForm: [
 
-      {
+      /*{
         label: "ИИН Заявителя",
         name: "iIN",
         type: "text",
@@ -75,7 +75,8 @@ class Appeals extends Component {
         label: "Отчество",
         name: "person.patronymic",
         type: "text"
-      }, {
+      }, */
+      {
         label: "Дата обращения",
         name: "requestDate",
         type: "listbetweenDate"

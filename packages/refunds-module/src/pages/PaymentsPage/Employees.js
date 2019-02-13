@@ -89,11 +89,7 @@ class Employees extends Component {
         "title": "Период",
         "dataIndex": "paymentperiod",
         "isVisible": "true"
-      }, {
-        "title": "Плательщик (БИН/ИИН)",
-        "dataIndex": "senderBin",
-        "isVisible": "true"
-      }, {
+      },  {
         "title": "Плательщик (Наименование/ФИО)",
         "dataIndex": "senderName",
         "isVisible": "true"
@@ -381,11 +377,23 @@ class Employees extends Component {
               title: "Сумма",
               order: 3,
               key: "paymentsum",
+              "dataIndex": "paymentsum",
               isVisible: true,
               render: (item) => {
                 return (numberWithSpaces(item));
               }
-            }
+            },
+            {
+              "title": "Плательщик (БИН/ИИН)",
+              order: 4,
+              "isVisible": "true",
+              "dataIndex": "senderBin",
+              render: (item) => {
+                return <a onClick={()=>{
+                  this.props.onSelectBin(item);
+                }}>{item}</a>;
+              }
+            },
           ]}
           showTotal={true}
           // selectedRowCheckBox={true}
