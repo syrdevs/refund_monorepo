@@ -22,8 +22,10 @@
 
 .ant-table-thead .all_total_values {
     background: #f2f2f2;
+    min-width: 160px;
 }
 
 .ant-table-thead .all_total_values_first {
-    background:#F8F8FF;
+    background: #F8F8FF;
+    min-width: 160px;
 }

@@ -29,6 +29,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import TabPageStyle from "./TabPages.less";
 import InputNumber from "../../../components/NumberInput";
 import numberFormat from "../../../utils/numberFormat";
+import intWithSpace from "../../../utils/IntWithSpace";
 
 const TabPane = Tabs.TabPane;
 const FormItem = Form.Item;
@@ -325,11 +326,11 @@ class SpecPage extends Component {
                 //record["valueSum"] = tariffValue * countValue;
 
                 if (record.key === "total" && record.hasOwnProperty("valueTotal")) {
-                  return <Input disabled={true} value={record.valueTotal}/>;
+                  return <Input disabled={true} value={intWithSpace(record.valueTotal)}/>;
                 }
 
-                record["percentAdvance"] = this.calculateAllMonthValue(record);
-                record["sumAdvance"] = numberCeil((record["valueSum"] ? record["valueSum"] : 0) * (record["percentAvance"] ? record["percentAvance"] : 0) / 100);
+                record["percentAvance"] = this.calculateAllMonthValue(record);
+                // record["sumAdvance"] = numberCeil((record["valueSum"] ? record["valueSum"] : 0) * (record["percentAvance"] ? record["percentAvance"] : 0) / 100);
 
                 return (<InputNumber
                   defaultValue={record.value ? record.value : 0}
@@ -337,13 +338,13 @@ class SpecPage extends Component {
                   name={"amount" + record.key}
                   onChange={(e) => {
                     record["value"] = e;
-                    record["percentAdvance"] = this.calculateAllMonthValue(record);
+                    record["percentAvance"] = this.calculateAllMonthValue(record);
 
                     let tariffValue = record.tariffItem ? record.tariffItem.tariffValue : 0;
                     let countValue = record.value ? record.value : 0;
 
                     //record["valueSum"] = tariffValue * countValue;
-                    record["sumAdvance"] = numberCeil((record["valueSum"] ? record["valueSum"] : 0) * (record["percentAvance"] ? record["percentAvance"] : 0) / 100);
+                    //record["sumAdvance"] = numberCeil((record["valueSum"] ? record["valueSum"] : 0) * (record["percentAvance"] ? record["percentAvance"] : 0) / 100);
 
                     this.setState(prevState => ({
                       smarttabDataSource: prevState.smarttabDataSource
@@ -436,12 +437,12 @@ class SpecPage extends Component {
             },
             {
               title: "% Аванса",
-              dataIndex: "percentAvance",
+              dataIndex: "percentAdvance",
               isVisible: true,
               className: "all_total_values_first",
               order: 2,
               width: "20%",
-              key: "percentAvance",
+              key: "percentAdvance",
               onCell: record => {
                 return {
                   onClick: () => {
@@ -452,17 +453,17 @@ class SpecPage extends Component {
               render: (text, record) => {
 
                 if (record.key === "total") {
-                  return <Input disabled={true} value={record.percentAvanceTotal ? record.percentAvanceTotal : 0}/>;
+                  return <Input disabled={true} value={record.percentAdvanceTotal ? record.percentAdvanceTotal : 0}/>;
                 }
 
 
-                record["sumAdvance"] = numberCeil((record["valueSum"] ? record["valueSum"] : 0) * (record["percentAvance"] ? record["percentAvance"] : 0) / 100);
+                //record["sumAdvance"] = numberCeil((record["valueSum"] ? record["valueSum"] : 0) * (record["percentAvance"] ? record["percentAvance"] : 0) / 100);
 
                 return (<InputNumber
-                  defaultValue={record["percentAvance"] ? record["percentAvance"] : 0}
+                  defaultValue={record["percentAdvance"] ? record["percentAdvance"] : 0}
                   onChange={(e) => {
-                    record["percentAvance"] = e;
-                    record["sumAdvance"] = numberCeil((record["valueSum"] ? record["valueSum"] : 0) * (record["percentAvance"] ? record["percentAvance"] : 0) / 100);
+                    record["percentAdvance"] = e;
+                    record["sumAdvance"] = numberCeil((record["valueSum"] ? record["valueSum"] : 0) * (record["percentAdvance"] ? record["percentAdvance"] : 0) / 100);
 
                     this.setState(prevState => ({
                       smarttabDataSource: prevState.smarttabDataSource
@@ -509,11 +510,11 @@ class SpecPage extends Component {
               render: (text, record) => {
 
                 if (record.key === "total" && record.hasOwnProperty("sumAdvanceTotal")) {
-                  return <span>{record.sumAdvanceTotal ? record.sumAdvanceTotal : 0}</span>;
+                  return <span>{numberFormat(record.sumAdvanceTotal ? record.sumAdvanceTotal : 0)}</span>;
                   //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
                 }
 
-                return <span>{record.sumAdvance ? record.sumAdvance : 0}</span>;
+                return <span>{numberFormat(record.sumAdvance ? record.sumAdvance : 0)}</span>;
                 {/*<FormItem>*/
                 }
                 {/*{this.props.form.getFieldDecorator('spespage.avans' + record.key, {*/
@@ -554,41 +555,52 @@ class SpecPage extends Component {
             }]
         }, {
           title: "Нераспределенный остаток",
+          className: "all_total_values",
           children: [{
+            className: "all_total_values",
             title: "Количество",
             key: "unallocated_value",
             render: (record) => {
 
               if (record.key === "total" && record.hasOwnProperty("unallocated_value_total")) {
-                return numberCeil(record["unallocated_value_total"] ? record["unallocated_value_total"] : 0);
+                return intWithSpace(numberCeil(record["unallocated_value_total"] ? record["unallocated_value_total"] : 0));
               }
 
               record["unallocated_value"] = !isNaN(this.calculateAllMonthValue(record)) ? this.calculateAllMonthValue(record) : 0;
-              return record["unallocated_value"];
+              return intWithSpace(record["unallocated_value"]);
             }
           }, {
             title: "Сумма",
+            className: "all_total_values",
             key: "unallocated_summa",
             render: (record) => {
 
               if (record.key === "total" && record.hasOwnProperty("unallocated_summa_total")) {
-                return numberCeil(record["unallocated_summa_total"] ? record["unallocated_summa_total"] : 0);
+
+                let value = this.calculateMainSum("unallocated_summa");
+
+                return numberFormat(numberCeil(value));
               }
 
               record["unallocated_summa"] = !isNaN(this.calculateAllMonthValueSum(record)) ? this.calculateAllMonthValueSum(record) : 0;
-              return !isNaN(this.calculateAllMonthValueSum(record)) ? this.calculateAllMonthValueSum(record) : 0;
+              return numberFormat(!isNaN(this.calculateAllMonthValueSum(record)) ? this.calculateAllMonthValueSum(record) : 0);
             }
           }, {
             title: "Сумма аванса",
+            className: "all_total_values",
             key: "unallocated_avance",
             render: (record) => {
 
               if (record.key === "total" && record.hasOwnProperty("unallocated_avance_total")) {
-                return numberCeil(record["unallocated_avance_total"] ? record["unallocated_avance_total"] : 0);
+                // return numberCeil(record["unallocated_avance_total"] ? record["unallocated_avance_total"] : 0);
+
+                let value = this.calculateMainSum("unallocated_avance");
+
+                return numberFormat(numberCeil(value));
               }
 
               record["unallocated_avance"] = !isNaN(this.calculateAllMonthValueSumAdvance(record)) ? this.calculateAllMonthValueSumAdvance(record) : 0;
-              return !isNaN(this.calculateAllMonthValueSumAdvance(record)) ? this.calculateAllMonthValueSumAdvance(record) : 0;
+              return numberFormat(!isNaN(this.calculateAllMonthValueSumAdvance(record)) ? this.calculateAllMonthValueSumAdvance(record) : 0);
             }
           }]
         }
@@ -1055,17 +1067,17 @@ class SpecPage extends Component {
                 if (record.key === "total" && record.hasOwnProperty("total")) {
                   let value = record.total[recordItem.periodSection.index] ? record.total[recordItem.periodSection.index].valueSection : "0";
 
-                  return <Input disabled={true} value={value}/>;
+                  return <Input disabled={true} value={intWithSpace(value)}/>;
 
                 }
 
 
                 let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
                 //
-                // if (record) {
-                //   let percentAdvance = this.calculateAllMonthValue(record);
-                //   record['percentAdvance'] = isNaN(percentAdvance) ? 0 : percentAdvance;
-                // }
+                if (record) {
+                  let percentAdvance = this.calculateAllMonthValue(record);
+                  record["percentAvance"] = isNaN(percentAdvance) ? 0 : percentAdvance;
+                }
 
                 return <InputNumber
                   defaultValue={defaultValue && defaultValue.hasOwnProperty("valueSection") ? defaultValue.valueSection : 0}
@@ -1082,7 +1094,7 @@ class SpecPage extends Component {
 
                     let percentAdvance = this.calculateAllMonthValue(record);
 
-                    record["percentAdvance"] = isNaN(percentAdvance) ? 0 : percentAdvance;
+                    record["percentAvance"] = isNaN(percentAdvance) ? 0 : percentAdvance;
 
                     this.setState(prevState => ({
                       smarttabDataSource: prevState.smarttabDataSource
@@ -1142,7 +1154,7 @@ class SpecPage extends Component {
                 if (record.key === "total" && record.hasOwnProperty("total")) {
                   let value = record.total[recordItem.periodSection.index] ? record.total[recordItem.periodSection.index].sumAdvanceTakeout : "0";
 
-                  return <Input disabled={true} value={value}/>;
+                  return <Input disabled={true} value={numberFormat(value)}/>;
                 }
 
                 let defaultValue = record.contractTimeItem ? record.contractTimeItem[recordItem.periodSection.index] : {};
@@ -1192,17 +1204,17 @@ class SpecPage extends Component {
       },
       columns: [...prevState.baseColumns, {
         title: "Остаток",
-        dataIndex: "percentAdvance",
+        dataIndex: "percentAvance",
         width: "20%",
         isHide: this.getHideState(),
         render: (text, record) => {
 
-          if (record.key === "total" && record.hasOwnProperty("percentAdvanceTotal")) {
-            return <span>{record.percentAdvanceTotal ? record.percentAdvanceTotal : 0}</span>;
+          if (record.key === "total" && record.hasOwnProperty("percentAvanceTotal")) {
+            return <span>{intWithSpace(record.percentAvanceTotal ? record.percentAvanceTotal : 0)}</span>;
             //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
           }
 
-          return <span>{record.percentAdvance ? record.percentAdvance : 0}</span>;
+          return <span>{intWithSpace(record.percentAvance ? record.percentAvance : 0)}</span>;
         }
       }].concat(extraColumns)
     }));
