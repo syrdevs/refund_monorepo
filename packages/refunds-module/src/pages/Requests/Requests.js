@@ -641,25 +641,26 @@ class Requests extends Component {
                 onShowSizeChange={(pageNumber, pageSize) => {
                   this.onShowSizeChange(pageNumber, pageSize);
                 }}
-                addonButtons={[
-                  <Dropdown key={"dropdown"} trigger={["click"]} overlay={
-                    <Menu>
-
-                      <Menu.Item key="4" onClick={() => {
-
-                        this.getservicenote();
-                      }}>
-                        {formatMessage({ id: "menu.requests.servicenote" })}
-                      </Menu.Item>
-                    </Menu>}>
-                    <Button
-                      key='action'
-                    >{formatMessage({ id: "menu.mainview.actionBtn" })}
-                      <Icon
-                        type="down"/>
-                    </Button>
-                  </Dropdown>
-                ]}
+                addonButtons={[]}
+                // addonButtons={[
+                //   <Dropdown key={"dropdown"} trigger={["click"]} overlay={
+                //     <Menu>
+                //
+                //       <Menu.Item key="4" onClick={() => {
+                //
+                //         this.getservicenote();
+                //       }}>
+                //         {formatMessage({ id: "menu.requests.servicenote" })}
+                //       </Menu.Item>
+                //     </Menu>}>
+                //     <Button
+                //       key='action'
+                //     >{formatMessage({ id: "menu.mainview.actionBtn" })}
+                //       <Icon
+                //         type="down"/>
+                //     </Button>
+                //   </Dropdown>
+                // ]}
                 onSort={(column) => {
 
                   if (Object.keys(column).length === 0) {

@@ -645,12 +645,6 @@ class MainView extends Component {
         type: "text"
       },
       {
-        name: "personIin",
-        label: formatMessage({ id: "menu.filter.iin" }),
-        type: "numberInput",
-        withMax: 12
-      },
-      {
         name: "dappRefundStatus",
         label: formatMessage({ id: "menu.filter.refundstatus" }),
         type: "multibox"
@@ -687,6 +681,12 @@ class MainView extends Component {
         label: formatMessage({ id: "menu.filter.knp" }),
         type: "multibox",
         hint: true
+      },
+      {
+        name: "personIin",
+        label: formatMessage({ id: "menu.filter.iin" }),
+        type: "numberInput",
+        withMax: 12
       },
       {
         name: "drefundReason",
