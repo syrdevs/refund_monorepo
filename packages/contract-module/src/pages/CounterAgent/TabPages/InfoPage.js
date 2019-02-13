@@ -210,7 +210,6 @@ class InfoPage extends Component {
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
     let getObjectData = this.props.formData ? { ...this.props.formData } : {};
 
-    console.log(getObjectData.contractType && getObjectData.contractType.code);
 
     if (this.state.contractAlterationReason === null && getObjectData.contractType && ["02", "10"].includes(getObjectData.contractType.code)) {
       this.setState({
@@ -364,7 +363,7 @@ class InfoPage extends Component {
           })(
             <Select
               placeholder="Учетный период"
-              style={{ width: "75px" }}
+              style={{ width: "100px" }}
               onChange={(value, option) => {
                 this.setState({
                   yearSectionId: option.props.prop

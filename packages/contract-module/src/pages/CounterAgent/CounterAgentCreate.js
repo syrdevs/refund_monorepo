@@ -1,7 +1,15 @@
 import React, { Component } from "react";
 import formatMessage from "../../utils/formatMessage";
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Row, Col, Tabs, Card, Modal, Spin } from "antd";
-import { ContragentsPage, GraphicPage, SpecPage, InfoPage, DogovorPage, InfoPageFromCounter } from "./TabPages";
+import {
+  ContragentsPage,
+  GraphicPage,
+  SpecPage,
+  InfoPage,
+  DogovorPage,
+  InfoPageFromCounter,
+  ProductionBasePage
+} from "./TabPages";
 //import reduxRouter from 'umi/router';
 import "./CounterAgent.css";
 import moment from "moment";
@@ -508,6 +516,11 @@ class CounterAgentCreate extends Component {
                   <ContragentsPage
                     gridData={this.state.createMode === "counterAgent" ? this.state.counterAgentData : this.props.universal.counterAgentData}
                     selectedData={this.props.location.state}/>
+                </TabPane>
+                <TabPane tab={"Производственная база"} key={"production_base"}>
+                  <ProductionBasePage
+                    dataSource={this.state.counterAgentData }
+                  />
                 </TabPane>
               </Tabs>
             </Row>

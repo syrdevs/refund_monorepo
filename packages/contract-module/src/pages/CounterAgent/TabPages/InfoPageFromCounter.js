@@ -334,7 +334,7 @@ class InfoPageFromCounter extends Component {
           })(
             <Select
               placeholder="Учетный период"
-              style={{ width: "75px" }}
+              style={{ width: "100px" }}
               onChange={(value, option) => {
                 this.setState({ yearSectionId: option.props.prop.year });
               }}>
