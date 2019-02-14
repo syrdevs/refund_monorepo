@@ -772,7 +772,7 @@ class Searcher extends Component {
       {
         key: 9,
         name: "СТАТУС СТРАХОВАНИЯ",
-        value: personMED.clinic ? (personMED.status ? formatMessage({ id: "report.param.medinsstattrue" }).toUpperCase() : formatMessage({ id: "report.param.medinsstatfalse" }).toUpperCase()) : ""
+        value: personMED.status ? formatMessage({ id: "report.param.medinsstattrue" }).toUpperCase() : formatMessage({ id: "report.param.medinsstatfalse" }).toUpperCase()
       },
       {
         key: 10,
