@@ -816,7 +816,7 @@ class Searcher extends Component {
     }, {
       key: 17,
       name: "ОТЧЕСТВО",
-      value: personRPN.secondname ? person.secondname.toUpperCase() : person.secondname
+      value: personRPN.secondname && person.secondname.toUpperCase()
     }, {
       key: 18,
       name: "ДАТА РОЖДЕНИЯ",
