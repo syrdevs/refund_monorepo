@@ -233,15 +233,15 @@ class CounterAgent extends Component {
   applyFilter = (filter) => {
 
     if (filter.postavwik_1) {
-      filter["clinicRegister.clinicBitWiseOR"] = "1";
+      filter["clinicRegister.clinicRoleBitWiseOR"] = "1";
     }
 
     if (filter.postavwik_2) {
-      filter["clinicRegister.clinicBitWiseOR"] = "2";
+      filter["clinicRegister.clinicRoleBitWiseOR"] = "2";
     }
 
     if (filter.postavwik_1 && filter.postavwik_2)
-      filter["clinicRegister.clinicBitWiseOR"] = "3";
+      filter["clinicRegister.clinicRoleBitWiseOR"] = "3";
 
     delete filter["postavwik_1"];
     delete filter["postavwik_2"];

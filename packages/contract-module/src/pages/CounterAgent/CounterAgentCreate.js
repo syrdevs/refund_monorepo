@@ -213,7 +213,7 @@ class CounterAgentCreate extends Component {
       "entity": "contract",
       "alias": null,
       "data": {
-        "_documentSources": this.state.createMode === "counterAgent" && this.state.counterAgentData._documentSources ? this.state.counterAgentData._documentSources : null,
+        "documentSources": this.state.createMode === "counterAgent" && this.state.counterAgentData.documentSources ? this.state.counterAgentData.documentSources : null,
         "contractLocations": this.state.createMode === "counterAgent" && this.state.counterAgentData.contractLocations ? this.state.counterAgentData.contractLocations : [],
         "contractParties": this.state.createMode === "counterAgent" && this.state.counterAgentData.contractParties ? this.state.counterAgentData.contractParties : [],
         "contractItems": SpecFormData.length === 0 ? (this.state.createMode === "counterAgent" && this.state.counterAgentData.contractItems ? this.state.counterAgentData.contractItems : SpecFormData) : SpecFormData

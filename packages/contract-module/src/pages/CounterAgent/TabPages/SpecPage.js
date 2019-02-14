@@ -326,7 +326,8 @@ class SpecPage extends Component {
                 //record["valueSum"] = tariffValue * countValue;
 
                 if (record.key === "total" && record.hasOwnProperty("valueTotal")) {
-                  return <Input disabled={true} value={intWithSpace(record.valueTotal)}/>;
+                  return "";
+                  //return <Input disabled={true} value={intWithSpace(record.valueTotal)}/>;
                 }
 
                 record["percentAvance"] = this.calculateAllMonthValue(record);
@@ -563,7 +564,7 @@ class SpecPage extends Component {
             render: (record) => {
 
               if (record.key === "total" && record.hasOwnProperty("unallocated_value_total")) {
-                return intWithSpace(numberCeil(record["unallocated_value_total"] ? record["unallocated_value_total"] : 0));
+                return "";//intWithSpace(numberCeil(record["unallocated_value_total"] ? record["unallocated_value_total"] : 0));
               }
 
               record["unallocated_value"] = !isNaN(this.calculateAllMonthValue(record)) ? this.calculateAllMonthValue(record) : 0;
@@ -583,7 +584,7 @@ class SpecPage extends Component {
               }
 
               record["unallocated_summa"] = !isNaN(this.calculateAllMonthValueSum(record)) ? this.calculateAllMonthValueSum(record) : 0;
-              return numberFormat(!isNaN(this.calculateAllMonthValueSum(record)) ? this.calculateAllMonthValueSum(record) : 0);
+              return numberFormat(!isNaN(this.calculateAllMonthValueSum(record)) ? numberCeil(this.calculateAllMonthValueSum(record)) : 0);
             }
           }, {
             title: "Сумма аванса",
@@ -600,7 +601,7 @@ class SpecPage extends Component {
               }
 
               record["unallocated_avance"] = !isNaN(this.calculateAllMonthValueSumAdvance(record)) ? this.calculateAllMonthValueSumAdvance(record) : 0;
-              return numberFormat(!isNaN(this.calculateAllMonthValueSumAdvance(record)) ? this.calculateAllMonthValueSumAdvance(record) : 0);
+              return numberFormat(!isNaN(this.calculateAllMonthValueSumAdvance(record)) ? numberCeil(this.calculateAllMonthValueSumAdvance(record)) : 0);
             }
           }]
         }
@@ -657,7 +658,7 @@ class SpecPage extends Component {
       Object.keys(record.contractTimeItem).map((key) => {
         if (record.contractTimeItem[key].sumAdvanceTakeout || record.contractTimeItem[key].sumAdvanceTakeout === 0) {
           if (!isNaN(record.contractTimeItem[key].sumAdvanceTakeout))
-            allMonthSum += parseInt(record.contractTimeItem[key].sumAdvanceTakeout);
+            allMonthSum += parseFloat(record.contractTimeItem[key].sumAdvanceTakeout);
         }
       });
 
@@ -674,7 +675,7 @@ class SpecPage extends Component {
       Object.keys(record.contractTimeItem).map((key) => {
         if (record.contractTimeItem[key].sumSection || record.contractTimeItem[key].sumSection === 0) {
           if (!isNaN(record.contractTimeItem[key].sumSection))
-            allMonthSum += parseInt(record.contractTimeItem[key].sumSection);
+            allMonthSum += parseFloat(record.contractTimeItem[key].sumSection);
         }
       });
 
@@ -1067,7 +1068,8 @@ class SpecPage extends Component {
                 if (record.key === "total" && record.hasOwnProperty("total")) {
                   let value = record.total[recordItem.periodSection.index] ? record.total[recordItem.periodSection.index].valueSection : "0";
 
-                  return <Input disabled={true} value={intWithSpace(value)}/>;
+                  return "";
+                  //return <Input disabled={true} value={intWithSpace(value)}/>;
 
                 }
 
