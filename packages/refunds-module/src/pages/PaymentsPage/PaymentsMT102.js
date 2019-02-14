@@ -139,6 +139,11 @@ class PaymentsMT102 extends Component {
         label: "Возвращенные ",
         name: "isRefunded",
         type: "checkbox"
+      },
+      {
+        label: "Плательщики ЕСП ",
+        name: "esp",
+        type: "checkbox"
       }
       //
       /*{

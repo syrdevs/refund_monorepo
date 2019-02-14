@@ -130,11 +130,6 @@ class PaymentsMT100 extends Component {
         label: "Дата поступления информации",
         name: "_createdOn",
         type: "listbetweenDate"
-      },
-      {
-        label: "Плательщики ЕСП ",
-        name: "esp",
-        type: "checkbox"
       }
       /*{
         label: "БИН отправителя",
