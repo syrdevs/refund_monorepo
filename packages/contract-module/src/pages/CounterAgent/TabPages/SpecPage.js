@@ -649,7 +649,7 @@ class SpecPage extends Component {
 
   calculateAllMonthValueSumAdvance = (record) => {
 
-    let value = record["value"] ? record["value"] : 0;
+    let value = record["sumAdvance"] ? record["sumAdvance"] : 0;
     let allMonthSum = 0;
 
     if (record.contractTimeItem)
@@ -1196,27 +1196,30 @@ class SpecPage extends Component {
       };
     });
 
+    /*
+    *  {
+            title: "Остаток",
+            dataIndex: "percentAvance",
+            width: "20%",
+            isHide: this.getHideState(),
+            render: (text, record) => {
+
+              if (record.key === "total" && record.hasOwnProperty("percentAvanceTotal")) {
+                return <span>{intWithSpace(record.percentAvanceTotal ? record.percentAvanceTotal : 0)}</span>;
+                //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
+              }
+
+              return <span>{intWithSpace(record.percentAvance ? record.percentAvance : 0)}</span>;
+            }
+          }
+    * */
 
     this.setState(prevState => ({
       smarttabcols: {
         ...prevState.smarttabcols,
         contractTimeItem: smartdataColumns
       },
-      columns: [...prevState.baseColumns, {
-        title: "Остаток",
-        dataIndex: "percentAvance",
-        width: "20%",
-        isHide: this.getHideState(),
-        render: (text, record) => {
-
-          if (record.key === "total" && record.hasOwnProperty("percentAvanceTotal")) {
-            return <span>{intWithSpace(record.percentAvanceTotal ? record.percentAvanceTotal : 0)}</span>;
-            //return <Input disabled={true} value={record.sumAdvanceTotal}/>;
-          }
-
-          return <span>{intWithSpace(record.percentAvance ? record.percentAvance : 0)}</span>;
-        }
-      }].concat(extraColumns)
+      columns: [...prevState.baseColumns].concat(extraColumns)
     }));
   };
 
@@ -1295,7 +1298,8 @@ class SpecPage extends Component {
 
           contractItemValue.value = item.value ? item.value.toString() : 0;
           contractItemValue.sumAdvance = item.sumAdvance ? item.sumAdvance.toString().replace(".", ",") : 0;
-
+          contractItemValue.percentAdvance = item.percentAdvance ? item.percentAdvance.toString().replace(".", ",") : 0;
+          contractItemValue.valueSum = item.valueSum ? item.valueSum.toString().replace(".", ",") : 0;
 
           if (item.contractTimeItem) {
 
