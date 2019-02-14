@@ -348,7 +348,7 @@ class InfoPage extends Component {
               onClick={() => {
 
               }}>
-              {`Протокол  ${x.region && x.region.protocolType && x.region.protocolType.name} ${x.region && x.region.nameRu} №${x.number} от ${x.documentDate }`}
+              {`Протокол  ${x.protocolType && x.protocolType.name ? x.protocolType.name : ""} ${x.region && x.region.nameRu ? x.region.nameRu : ""} №${x.number ? x.number : ""} от ${x.documentDate ? x.documentDate : "" }`}
               <br/>
         </span>
           ))}

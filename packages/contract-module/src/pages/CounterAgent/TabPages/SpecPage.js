@@ -666,7 +666,7 @@ class SpecPage extends Component {
 
   calculateAllMonthValueSum = (record) => {
 
-    let value = record["value"] ? record["value"] : 0;
+    let value = record["valueSum"] ? record["valueSum"] : 0;
     let allMonthSum = 0;
 
     if (record.contractTimeItem)

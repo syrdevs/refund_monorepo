@@ -213,6 +213,7 @@ class CounterAgentCreate extends Component {
       "entity": "contract",
       "alias": null,
       "data": {
+        "_documentSources": this.state.createMode === "counterAgent" && this.state.counterAgentData._documentSources ? this.state.counterAgentData._documentSources : null,
         "contractLocations": this.state.createMode === "counterAgent" && this.state.counterAgentData.contractLocations ? this.state.counterAgentData.contractLocations : [],
         "contractParties": this.state.createMode === "counterAgent" && this.state.counterAgentData.contractParties ? this.state.counterAgentData.contractParties : [],
         "contractItems": SpecFormData.length === 0 ? (this.state.createMode === "counterAgent" && this.state.counterAgentData.contractItems ? this.state.counterAgentData.contractItems : SpecFormData) : SpecFormData
@@ -286,6 +287,7 @@ class CounterAgentCreate extends Component {
       }));
 
     }
+
 
     request("/api/uicommand/saveObject", {
       method: "POST",
@@ -519,7 +521,7 @@ class CounterAgentCreate extends Component {
                 </TabPane>
                 <TabPane tab={"Производственная база"} key={"production_base"}>
                   <ProductionBasePage
-                    dataSource={this.state.counterAgentData }
+                    dataSource={this.state.counterAgentData}
                   />
                 </TabPane>
               </Tabs>
