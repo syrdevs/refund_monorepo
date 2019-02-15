@@ -662,6 +662,13 @@ class PaymentsPage extends Component {
           </TabPane>
           <TabPane forceRender tab={formatMessage({ id: "menu.payments.payment102" })} key="mt102">
             <PaymentsMT102 eventManager={this.state.eventManager}
+                           onSelectJur={(bin) => {
+                             this.setState({
+                               activeKey: "searcherJur"
+                             }, () => {
+                               this.state.eventManager.handleEvent("onSelectFilterByBin", bin);
+                             });
+                           }}
                            onSelect={(iin) => {
                              //console.log(iin);
                              this.setState({

@@ -229,7 +229,7 @@ class Searcher extends Component {
       this.state.payes.forEach((item) => {
         if (item.period === value.format("MMYYYY")) {
           console.log(item.refundCount);
-          if (item.refundCount>0){
+          if (item.refundCount > 0) {
             color = "#F9F69C";
           }
           result = (
@@ -646,7 +646,7 @@ class Searcher extends Component {
   payesSearcher = (year) => {
     this.setState({
       year: year
-    },()=>{
+    }, () => {
 
       const { dispatch } = this.props;
       dispatch({
@@ -663,7 +663,7 @@ class Searcher extends Component {
       });
       this.history();
 
-    })
+    });
   };
   history = () => {
     const { dispatch } = this.props;
@@ -716,11 +716,11 @@ class Searcher extends Component {
 
     },
       {
-      title: "Значения",
-      dataIndex: "value",
-      key: "value",
-      width: 150
-    }
+        title: "Значения",
+        dataIndex: "value",
+        key: "value",
+        width: 150
+      }
     ];
     const data = [{
       key: 1,
@@ -1083,10 +1083,30 @@ class Searcher extends Component {
                     title={formatMessage({ id: "report.param.monthpay" })}
                     type="inner"
                   >
+                    <table>
+                      <tr>
+                        <td>
+                          <div style={{ width: 60, height: 15, backgroundColor: "green", opacity: "0.1" }}/>
+                        </td>
+                        <td>- за период имеются платежи</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div style={{ width: 60, height: 15, backgroundColor: "rgba(255, 71, 65, 0.2)" }}/>
+                        </td>
+                        <td>- за период не имеется платежей</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div style={{ width: 60, height: 15, backgroundColor: "#F9F69C" }}/>
+                        </td>
+                        <td>- за период были осуществлены возвраты</td>
+                      </tr>
+                    </table>
                     <Calendar
                       onPanelChange={this.onPanelChange}
                       mode='year'
-                      value={moment(this.state.year+"0101", "YYYYMMDD")}
+                      value={moment(this.state.year + "0101", "YYYYMMDD")}
                       className={historystyle.customCalendar}
                       monthCellRender={this.monthCellRender}
                       fullscreen
@@ -1136,6 +1156,20 @@ class Searcher extends Component {
                     title={formatMessage({ id: "Информация о задолженности" })}
                     type="inner"
                   >
+                    <table>
+                      <tr>
+                        <td>
+                          <div style={{ width: 60, height: 15, backgroundColor: "green", opacity: "0.1" }}/>
+                        </td>
+                        <td>- период без задолженности</td>
+                      </tr>
+                      <tr>
+                        <td>
+                          <div style={{ width: 60, height: 15, backgroundColor: "rgba(255, 71, 65, 0.2)" }}/>
+                        </td>
+                        <td>- период с имеющейся задолженностью</td>
+                      </tr>
+                    </table>
                     <Col span={12}>
                       <Calendar
                         onPanelChange={this.onPanelChange}

@@ -53,7 +53,12 @@ class SearcherJur extends Component {
   componentDidMount() {
     this.props.eventManager.subscribe("onSelectFilterByBin", (params) => {
       if (Object.keys(params).length > 0) {
-        this.searchperson(params);
+        this.setState(prevState => ({
+          jur: {
+            ...prevState.jur,
+            senderBin: params
+          }
+        }), () => this.searchperson(params));
       }
       else {
       }
@@ -105,7 +110,8 @@ class SearcherJur extends Component {
         title: "Платежи в разрезе КНП за " + date.format("MMMM"),
         content: (
           <div>
-            {value.map(item => (<p>{item.knp}. Сумма: {numberWithSpaces(item.amount)}, кол-во: {intWithSpace(item.count)}</p>))}
+            {value.map(item => (
+              <p>{item.knp}. Сумма: {numberWithSpaces(item.amount)}, кол-во: {intWithSpace(item.count)}</p>))}
           </div>
         ),
         onOk() {
@@ -356,6 +362,7 @@ class SearcherJur extends Component {
                 <div style={{ display: "block" }}>
                   <div style={{ float: "left", width: this.state.jur.senderBin ? "55%" : "55%" }}>
                     <Search
+                      value={this.state.jur.senderBin}
                       placeholder="Введите БИН/ИИН"
                       enterButton={formatMessage({ id: "system.search" })}
                       //size="large"
@@ -363,8 +370,8 @@ class SearcherJur extends Component {
                       onSearch={value => this.searchperson(value)}
                     />
                   </div>
-                  {this.state.jur.senderBin && <div style={{ float: "left", width:'45%'}}>
-                      <div
+                  {this.state.jur.senderBin && <div style={{ float: "left", width: "45%" }}>
+                    <div
                       style={{ float: "left", width: "60%", paddingLeft: "10px" }}>
                       <Button
                         onClick={() => {
@@ -374,7 +381,7 @@ class SearcherJur extends Component {
                         }}
                       >Просмотр платежей</Button>
                     </div>
-                      <div
+                    <div
                       style={{ float: "left", width: "40%", paddingLeft: "5px" }}>
                       <Button
                         onClick={() => {

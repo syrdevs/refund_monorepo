@@ -199,10 +199,6 @@ class PaymentsMT102 extends Component {
         "dataIndex": "birthdate",
         "isVisible": "true"
       }, {
-        "title": "Плательщик (БИН/ИИН)",
-        "dataIndex": "senderBin",
-        "isVisible": "true"
-      }, {
         "title": "Плательщик (Наименование)",
         "dataIndex": "senderName",
         "isVisible": "true"
@@ -227,43 +223,58 @@ class PaymentsMT102 extends Component {
         "dataIndex": "refundsCount"
       }
     ],
-    actionColumns: [{
-      "title": "Сумма",
-      order: 5,
-      "dataIndex": "paymentsum",
-      "isVisible": "true",
-      render: (value) => {
-        if (value) {
-          return numberWithSpaces(value);
+    actionColumns: [
+      {
+        order: 6,
+        "title": "Плательщик (БИН/ИИН)",
+        "dataIndex": "senderBin",
+        "isVisible": "true",
+        render: (value) => {
+          if (value) {
+            return <a onClick={() => {
+              this.props.onSelectJur(value);
+            }}>{value}</a>;
+          }
+          return "";
         }
+      },
+      {
+        "title": "Сумма",
+        order: 5,
+        "dataIndex": "paymentsum",
+        "isVisible": "true",
+        render: (value) => {
+          if (value) {
+            return numberWithSpaces(value);
+          }
 
-        return "";
-      }
-    }, {
-      "title": "ИИН",
-      order: 5,
-      "dataIndex": "iin",
-      "isVisible": "true",
-      render: (value) => {
-        if (value) {
-          return <a onClick={() => {
-            this.props.onSelect(value);
-          }}>{value}</a>;
+          return "";
         }
-        return "";
-      }
-    }, {
-      "title": "Сумма возвратов",
-      "dataIndex": "refundTotalAmount",
-      order: 6,
-      "isVisible": "true",
-      render: (value) => {
-        if (value) {
-          return numberWithSpaces(value);
+      }, {
+        "title": "ИИН",
+        order: 5,
+        "dataIndex": "iin",
+        "isVisible": "true",
+        render: (value) => {
+          if (value) {
+            return <a onClick={() => {
+              this.props.onSelect(value);
+            }}>{value}</a>;
+          }
+          return "";
         }
-        return "";
-      }
-    }]
+      }, {
+        "title": "Сумма возвратов",
+        "dataIndex": "refundTotalAmount",
+        order: 6,
+        "isVisible": "true",
+        render: (value) => {
+          if (value) {
+            return numberWithSpaces(value);
+          }
+          return "";
+        }
+      }]
   };
 
   clearFilter = () => {
