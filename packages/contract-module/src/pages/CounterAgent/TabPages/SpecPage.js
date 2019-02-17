@@ -1257,8 +1257,9 @@ class SpecPage extends Component {
         "09": "e86fa194-bbae-4897-8110-0e66ce52a3e4"
       };
 
-      specifyData.forEach((item) => {
 
+
+      specifyData.forEach((item) => {
         if (item.key === "total") return;
 
         if (!specifyKeys[item.activity.id]) {
@@ -1266,6 +1267,7 @@ class SpecPage extends Component {
             // 'parentContractItem': {
             //   'id': item.activity.prop.parentActivity ? item.activity.prop.parentActivity.id : null,
             // },
+            "id": item.id ? item.id : undefined,
             "activity": {
               "id": item.activity ? item.activity.id : null
             },
@@ -1297,7 +1299,7 @@ class SpecPage extends Component {
               id: item.tariffItem ? item.tariffItem.id : null
             };
           }
-
+          //contractItemValue.id = specifyKeys[item.activity.id] && specifyKeys[item.activity.id].contractItemValues && specifyKeys[item.activity.id].contractItemValues[0].id;
           contractItemValue.value = item.value ? item.value.toString() : 0;
           contractItemValue.sumAdvance = item.sumAdvance ? item.sumAdvance.toString().replace(".", ",") : 0;
           contractItemValue.percentAdvance = item.percentAdvance ? item.percentAdvance.toString().replace(".", ",") : 0;

@@ -192,11 +192,9 @@ class CounterAgentEdit extends Component {
   };
 
   sendForm = (data) => {
-
     const { dispatch } = this.props;
 
     let SpecFormData = this.state.eventManager.handleEvent("onSpecFormSubmit");
-
 
     //todo check model
     let sendModel = {
@@ -209,6 +207,19 @@ class CounterAgentEdit extends Component {
       sendModel.data.contractItems = SpecFormData;
     }
 
+    SpecFormData.forEach((item, index) => {
+      if (this.props.universal.getObjectData.contractItems) {
+        this.props.universal.getObjectData.contractItems.forEach((olditem)=>{
+          if (item.id === olditem.id){
+            SpecFormData[index].contractItemValues[0] ={
+              ...SpecFormData[index].contractItemValues[0],
+              "id": olditem.contractItemValues[0].id
+            }
+          }
+        })
+      }
+    })
+
     if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractParties) {
 
       sendModel.data.contractParties =
@@ -220,7 +231,8 @@ class CounterAgentEdit extends Component {
             },
             organization: {
               id: contractParty.organization.id
-            }
+            },
+            id: contractParty.id
           };
         });
 
@@ -344,7 +356,6 @@ class CounterAgentEdit extends Component {
     //     // reduxRouter.push('/contract/contracts/table');
     //   }
     // });
-
   };
 
   getCounterAgentById = (id, year) => {

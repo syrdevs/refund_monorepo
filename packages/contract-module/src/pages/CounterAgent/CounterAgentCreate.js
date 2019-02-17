@@ -131,8 +131,7 @@ class CounterAgentCreate extends Component {
   };
 
   getCounterAgentById = ({ id, contractTypeId, documentDate, yearId }) => {
-
-    if (this.state.createMode !== "counterAgent") return;
+    /*if (this.state.createMode !== "counterAgent") return;*/
 
     request("/api/uicommand/createObject", {
       method: "POST",
@@ -443,21 +442,37 @@ class CounterAgentCreate extends Component {
                 onClick={() => {
                   this.props.form.resetFields();
                 }}>Очистить</Button>,
-              this.state.createMode === "counterAgent" && <Button
+               <Button
                 key={"loader_btn"}
                 type="primary"
                 style={{ marginLeft: "5px" }}
                 onClick={() => {
-                  let infoPageValues = this.state.eventManager.handleEvent("GetInfoPageValues");
-                  if (!Object.values(infoPageValues).filter(x => (x === null)).length > 0) {
-                    this.getCounterAgentById({
-                      id: infoPageValues.counterAgentId,
-                      contractTypeId: infoPageValues.contractTypeId,
-                      documentDate: infoPageValues.documentDateId,
-                      yearId: infoPageValues.yearSectionId
-                    });
+                  if (this.state.createMode === "counterAgent") {
+                    let infoPageValues = this.state.eventManager.handleEvent("GetInfoPageValues");
+                    if (!Object.values(infoPageValues).filter(x => (x === null)).length > 0) {
+                      this.getCounterAgentById({
+                        id: infoPageValues.counterAgentId,
+                        contractTypeId: infoPageValues.contractTypeId,
+                        documentDate: infoPageValues.documentDateId,
+                        yearId: infoPageValues.yearSectionId
+                      });
+                    }
                   }
-                }}>Сформировать</Button>]}
+                  else if (this.props.location.query.hasOwnProperty("contractId")) {
+                        //console.log(this.props.location.query.contractId);
+
+                        if (this.props.universal2.references.contract) {
+                          this.getCounterAgentById({
+                            id: this.props.universal2.references.contract.content[0].id,
+                            contractTypeId: this.props.universal2.references.contract.content[0].contractType ? this.props.universal2.references.contract.content[0].contractType.id : undefined,
+                            documentDate: this.props.universal2.references.contract.content[0].documentDate ? this.props.universal2.references.contract.content[0].documentDate : undefined,
+                            yearId: this.props.universal2.references.contract.content[0].periodYear ?  this.props.universal2.references.contract.content[0].periodYear.year : undefined,
+                          });
+                        }
+                  }
+                }
+                }>Сформировать</Button>]}
+            //this.state.createMode === "counterAgent" &&
             bordered={false}
             bodyStyle={{ padding: 0 }}>
             <Row style={{ marginTop: "5px" }}>
