@@ -199,11 +199,14 @@ class InfoPage extends Component {
   };
 
   getContractValues = () => {
+
+    let getObjectData = this.props.formData ? { ...this.props.formData } : {};
+
     return {
       documentDateId: this.props.form.getFieldValue("documentDate") && this.props.form.getFieldValue("documentDate").format("DD.MM.YYYY"),
       counterAgentId: this.props.form.getFieldValue("counterAgent") && this.props.form.getFieldValue("counterAgent").value && this.props.form.getFieldValue("counterAgent").value.id,
       contractTypeId: this.props.form.getFieldValue("contractType"),
-      parentContractId: this.props.form.getFieldValue("parentContract").value
+      parentContractId: this.props.form.getFieldValue("parentContract") ? this.props.form.getFieldValue("parentContract").value : getObjectData.parentContract
     };
   };
 
