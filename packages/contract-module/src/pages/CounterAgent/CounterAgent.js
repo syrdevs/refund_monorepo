@@ -307,6 +307,17 @@ class CounterAgent extends Component {
               }}
               key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
         </SubMenu>
+        <SubMenu
+          disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
+          key="register_document_1"
+          title="Создать договор без проведения закупа ">
+          {this.state.subMenuChild && this.state.subMenuChild
+            .map((menuItem) => (<Menu.Item
+              onClick={() => {
+                this.props.history.push("/contracts/v2/contracts/create?counterAgentId=" + this.state.selectedRecord.id + "&contractTypeId=" + menuItem.id + "&manual=true");
+              }}
+              key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
+        </SubMenu>
       </Menu>}>
         <Button
           key={"action"}>{formatMessage({ id: "menu.mainview.actionBtn" })} <Icon

@@ -38,6 +38,9 @@ const formItemLayout = {
 class CounterAgentCreate extends Component {
   state = {
 
+
+    isFormedForm: false,
+
     createMode: null,
 
 
@@ -46,6 +49,8 @@ class CounterAgentCreate extends Component {
       counterAgent: {},
       contractItems: {}
     },
+
+    contractData: {},
 
     dataStoreGuid: Guid.newGuid(),
 
@@ -130,42 +135,101 @@ class CounterAgentCreate extends Component {
     });
   };
 
-  getCounterAgentById = ({ id, contractTypeId, documentDate, yearId }) => {
-    /*if (this.state.createMode !== "counterAgent") return;*/
+  getContractByParams = ({ documentDate, contractTypeId, parentContractId, counterAgentId }) => {
+
+    let inputParams = {
+      "entity": "contract",
+      "alias": null,
+      "dataAlias": "initialize",
+      "data": {
+        "contractType": {
+          "id": contractTypeId
+        }
+      },
+      "parameters": {}
+    };
+
+
+    if (parentContractId) {
+      inputParams.data["parentContract"] = parentContractId;
+    }
+
+    if (documentDate) {
+      inputParams.data["documentDate"] = documentDate;
+    }
+
+    // if (counterAgentId) {
+    //   inputParams.data["contragent"] = {
+    //     id: counterAgentId
+    //   };
+    // }
 
     request("/api/uicommand/createObject", {
       method: "POST",
-      body: {
-        "entity": "contract",
-        "alias": null,
-        "dataAlias": "initialize",
-        "data": {
-          "documentDate": documentDate,
-          "periodYear": {
-            "search": [
-              "year"
-            ],
-            "year": yearId
-          },
-          "contractType": {
-            "id": contractTypeId
-          },
-          "contractPartys": [
-            {
-              "organization": {
-                "id": id
-              },
-              "contractRole": {
-                "search": [
-                  "code"
-                ],
-                "code": 2
-              }
+      body: inputParams,
+      getResponse: (response) => {
+        if (response.status === 200) {
+          this.setState(prevState => ({
+            contractData: {
+              ...prevState.contractData,
+              ...response.data
             }
-          ]
+          }), () => {
+            this.state.eventManager.handleEvent("SpecPageRefreshState");
+          })
+          ;
+        } else if (response.status === 400) {
+          Modal.error({
+            title: "Ошибка",
+            content: response.data && response.data.Message
+          });
+        }
+      }
+    });
+  };
+
+  getCounterAgentById = ({ id, contractTypeId, documentDate, yearId }) => {
+    /*if (this.state.createMode !== "counterAgent") return;*/
+
+    let inputParams = {
+      "entity": "contract",
+      "alias": null,
+      "dataAlias": "initialize",
+      "data": {
+        "documentDate": documentDate,
+        "periodYear": {
+          "search": [
+            "year"
+          ],
+          "year": yearId
         },
-        "parameters": {}
+        "contractType": {
+          "id": contractTypeId
+        },
+        "contractPartys": [
+          {
+            "organization": {
+              "id": id
+            },
+            "contractRole": {
+              "search": [
+                "code"
+              ],
+              "code": 2
+            }
+          }
+        ]
       },
+      "parameters": {}
+    };
+
+    if (this.props.location && this.props.location.query && this.props.location.query.manual) {
+      inputParams.parameters = { "manual": true };
+    }
+
+    request("/api/uicommand/createObject", {
+      method: "POST",
+      body: inputParams,
       getResponse: (response) => {
 
         if (response.status === 200) {
@@ -207,15 +271,52 @@ class CounterAgentCreate extends Component {
 
     let SpecFormData = this.state.eventManager.handleEvent("onSpecFormSubmit");
 
+    let documentSources = [];
+    let contractLocations = [];
+    let contractParties = [];
+    let contractItems = [];
+
+    if (this.state.createMode === "counterAgent") {
+      if (this.state.counterAgentData.documentSources)
+        documentSources = this.state.counterAgentData.documentSources;
+
+      if (this.state.counterAgentData.contractLocations)
+        contractLocations = this.state.counterAgentData.contractLocations;
+
+      if (this.state.counterAgentData.contractParties)
+        contractParties = this.state.counterAgentData.contractParties;
+
+      if (this.state.counterAgentData.contractItems)
+        contractItems = this.state.counterAgentData.contractItems;
+      else
+        contractItems = SpecFormData;
+    }
+
+    if (this.state.createMode === "contract") {
+      if (this.state.contractData.documentSources)
+        documentSources = this.state.contractData.documentSources;
+
+      if (this.state.contractData.contractLocations)
+        contractLocations = this.state.contractData.contractLocations;
+
+      if (this.state.contractData.contractParties)
+        contractParties = this.state.contractData.contractParties;
+
+      if (this.state.contractData.contractItems)
+        contractItems = this.state.contractData.contractItems;
+      else
+        contractItems = SpecFormData;
+    }
+
     //todo check model
     let sendModel = {
       "entity": "contract",
       "alias": null,
       "data": {
-        "documentSources": this.state.createMode === "counterAgent" && this.state.counterAgentData.documentSources ? this.state.counterAgentData.documentSources : null,
-        "contractLocations": this.state.createMode === "counterAgent" && this.state.counterAgentData.contractLocations ? this.state.counterAgentData.contractLocations : [],
-        "contractParties": this.state.createMode === "counterAgent" && this.state.counterAgentData.contractParties ? this.state.counterAgentData.contractParties : [],
-        "contractItems": SpecFormData.length === 0 ? (this.state.createMode === "counterAgent" && this.state.counterAgentData.contractItems ? this.state.counterAgentData.contractItems : SpecFormData) : SpecFormData
+        "documentSources": documentSources,
+        "contractLocations": contractLocations,
+        "contractParties": contractParties,
+        "contractItems": SpecFormData.length === 0 ? contractItems : SpecFormData
       }
     };
 
@@ -370,6 +471,19 @@ class CounterAgentCreate extends Component {
   render = () => {
 
     let formData = {};
+    let SpesPageData = this.props.universal.getObjectData;
+    let objStoreData = {};
+
+    if (this.state.createMode === "counterAgent") {
+      SpesPageData = this.state.counterAgentData;
+      objStoreData = this.state.counterAgentData;
+    }
+
+    if (this.state.createMode === "contract") {
+      SpesPageData = this.state.contractData;
+      formData = this.state.contractData;
+      objStoreData = this.state.contractData;
+    }
 
     // if (this.props.universal2.references.hasOwnProperty("clinic") && this.props.universal2.references.clinic.hasOwnProperty("content") && this.props.universal2.references.clinic.content.length > 0) {
     //
@@ -442,7 +556,7 @@ class CounterAgentCreate extends Component {
                 onClick={() => {
                   this.props.form.resetFields();
                 }}>Очистить</Button>,
-               <Button
+              <Button
                 key={"loader_btn"}
                 type="primary"
                 style={{ marginLeft: "5px" }}
@@ -458,17 +572,27 @@ class CounterAgentCreate extends Component {
                       });
                     }
                   }
-                  else if (this.props.location.query.hasOwnProperty("contractId")) {
-                        //console.log(this.props.location.query.contractId);
+                  else if (this.state.createMode === "contract" && this.props.location.query.contractTypeId) {
+                    let infoPageValues = this.state.eventManager.handleEvent("GetInfoPageValuesOne");
+                    this.getContractByParams({
+                      documentDate: infoPageValues.documentDateId,
+                      contractTypeId: infoPageValues.contractTypeId,
+                      parentContractId: infoPageValues.parentContractId,
+                      counterAgentId: infoPageValues.counterAgentId
+                    });
+                    this.setState({
+                      isFormedForm: true
+                    });
+                    //console.log(this.props.location.query.contractId);
 
-                        if (this.props.universal2.references.contract) {
-                          this.getCounterAgentById({
-                            id: this.props.universal2.references.contract.content[0].id,
-                            contractTypeId: this.props.universal2.references.contract.content[0].contractType ? this.props.universal2.references.contract.content[0].contractType.id : undefined,
-                            documentDate: this.props.universal2.references.contract.content[0].documentDate ? this.props.universal2.references.contract.content[0].documentDate : undefined,
-                            yearId: this.props.universal2.references.contract.content[0].periodYear ?  this.props.universal2.references.contract.content[0].periodYear.year : undefined,
-                          });
-                        }
+                    // if (this.props.universal2.references.contract) {
+                    //   this.getCounterAgentById({
+                    //     id: this.props.universal2.references.contract.content[0].id,
+                    //     contractTypeId: this.props.universal2.references.contract.content[0].contractType ? this.props.universal2.references.contract.content[0].contractType.id : undefined,
+                    //     documentDate: this.props.universal2.references.contract.content[0].documentDate ? this.props.universal2.references.contract.content[0].documentDate : undefined,
+                    //     yearId: this.props.universal2.references.contract.content[0].periodYear ? this.props.universal2.references.contract.content[0].periodYear.year : undefined
+                    //   });
+                    // }
                   }
                 }
                 }>Сформировать</Button>]}
@@ -495,6 +619,7 @@ class CounterAgentCreate extends Component {
                     getSubContractById={this.getSubContractById}
                     form={this.props.form}
                     formData={formData}
+                    isFormedForm={this.state.isFormedForm}
                     setSpecData={this.setSpecData}
                     eventManager={this.state.eventManager}
                     formItemLayout={formItemLayout}
@@ -527,16 +652,16 @@ class CounterAgentCreate extends Component {
                       dataGuid={this.state.dataStoreGuid}
                       eventManager={this.state.eventManager}
                       form={this.props.form}
-                      gridData={this.state.createMode === "counterAgent" ? this.state.counterAgentData : this.props.universal.getObjectData}/>}
+                      gridData={SpesPageData}/>}
                 </TabPane>
                 <TabPane tab="Контрагенты" key="counteragents">
                   <ContragentsPage
-                    gridData={this.state.createMode === "counterAgent" ? this.state.counterAgentData : this.props.universal.counterAgentData}
+                    gridData={objStoreData}
                     selectedData={this.props.location.state}/>
                 </TabPane>
                 <TabPane tab={"Производственная база"} key={"production_base"}>
                   <ProductionBasePage
-                    dataSource={this.state.counterAgentData}
+                    dataSource={objStoreData}
                   />
                 </TabPane>
               </Tabs>

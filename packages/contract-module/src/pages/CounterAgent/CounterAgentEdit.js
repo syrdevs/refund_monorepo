@@ -195,13 +195,23 @@ class CounterAgentEdit extends Component {
     const { dispatch } = this.props;
 
     let SpecFormData = this.state.eventManager.handleEvent("onSpecFormSubmit");
+    let documentSources = this.props.universal.getObjectData && this.props.universal.getObjectData.documentSources ? this.props.universal.getObjectData.documentSources : [];;
+    let contractLocations = this.props.universal.getObjectData && this.props.universal.getObjectData.contractLocations ? this.props.universal.getObjectData.contractLocations : [];
+    let contractParties = this.props.universal.getObjectData && this.props.universal.getObjectData.contractParties ? this.props.universal.getObjectData.contractParties : [];
+    let contractItems = [];
+
 
     //todo check model
     let sendModel = {
       "entity": "contract",
       "alias": null,
-      "data": {}
+      "data": {
+        "documentSources": documentSources,
+        "contractLocations": contractLocations,
+        "contractParties": contractParties
+      }
     };
+
 
     if (SpecFormData.length > 0) {
       sendModel.data.contractItems = SpecFormData;
@@ -209,16 +219,16 @@ class CounterAgentEdit extends Component {
 
     SpecFormData.forEach((item, index) => {
       if (this.props.universal.getObjectData.contractItems) {
-        this.props.universal.getObjectData.contractItems.forEach((olditem)=>{
-          if (item.id === olditem.id){
-            SpecFormData[index].contractItemValues[0] ={
+        this.props.universal.getObjectData.contractItems.forEach((olditem) => {
+          if (item.id === olditem.id) {
+            SpecFormData[index].contractItemValues[0] = {
               ...SpecFormData[index].contractItemValues[0],
               "id": olditem.contractItemValues[0].id
-            }
+            };
           }
-        })
+        });
       }
-    })
+    });
 
     if (this.props.universal.getObjectData && this.props.universal.getObjectData.contractParties) {
 
@@ -574,6 +584,7 @@ class CounterAgentEdit extends Component {
                 tabPosition={"left"}>
                 <TabPane tab={"Титульная часть"} key="main">
                   <InfoPage
+                    eventManager={this.state.eventManager}
                     getSubContractById={this.getSubContractById}
                     setSpecData={this.setSpecData}
                     form={this.props.form}

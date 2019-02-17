@@ -710,7 +710,7 @@ class SpecPage extends Component {
         "entity": "activityMeasureUnit",
         "alias": "activityWithMeasureUnits",
         "filter": {
-          "activity.Id": contractId
+          "activity.id": contractId
         }
       }
     }).then(() => {
@@ -1589,7 +1589,7 @@ class SpecPage extends Component {
           onClick={() => {
             this.changeContractType(this.state.activity_type);
           }} style={{ marginBottom: 16 }}>
-          Загрузить
+          Добавить
         </Button>
         <Button
           disabled={this.state.selectedRowKeys.length === 0}

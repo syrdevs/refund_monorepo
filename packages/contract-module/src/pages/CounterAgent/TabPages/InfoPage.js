@@ -169,6 +169,8 @@ class InfoPage extends Component {
         "entity": "periodYear"
       }
     });
+
+    this.props.eventManager.subscribe("GetInfoPageValuesOne", () => this.getContractValues());
   };
 
   clearSpecifications = () => {
@@ -194,6 +196,15 @@ class InfoPage extends Component {
     });
   };
 
+  getContractValues = () => {
+    return {
+      documentDateId: this.props.form.getFieldValue("documentDate") && this.props.form.getFieldValue("documentDate").format("DD.MM.YYYY"),
+      counterAgentId: this.props.form.getFieldValue("counterAgent") && this.props.form.getFieldValue("counterAgent").value && this.props.form.getFieldValue("counterAgent").value.id,
+      contractTypeId: this.props.form.getFieldValue("contractType"),
+      parentContractId: this.props.form.getFieldValue("parentContract").value
+    };
+  };
+
 
   render = () => {
 
@@ -210,39 +221,30 @@ class InfoPage extends Component {
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
     let getObjectData = this.props.formData ? { ...this.props.formData } : {};
 
-
     if (this.state.contractAlterationReason === null && getObjectData.contractType && ["02", "10"].includes(getObjectData.contractType.code)) {
       this.setState({
         contractAlterationReason: getObjectData.contractType.code
       });
     }
 
-    if (this.state.counterAgentId === null
-      && this.state.yearSectionId === null
-      && getObjectData._contragent) {
+    let yearField = getObjectData.periodYear ? getObjectData.periodYear.id : this.state.yearSectionId ? this.state.yearSectionId.id : null;
+    let counterAgentField = getObjectData._contragent ? getObjectData._contragent : null;
 
-      if (getObjectData.periodYear) {
-        this.setState({
-          counterAgentId: getObjectData._contragent.id,
-          yearSectionId: getObjectData.periodYear
-        });
-      } else {
-        this.setState({
-          counterAgentId: getObjectData._contragent.id
-        });
+    if (this.props.hasOwnProperty("isFormedForm") && this.props.isFormedForm === false && getObjectData.parentContract) {
+
+      if (getObjectData.parentContract.periodYear) {
+        yearField = getObjectData.parentContract.periodYear.id;
       }
-    }
 
-
-    if (!getObjectData.hasOwnProperty("_contragent") && this.state.yearSectionId === null && getObjectData.periodYear) {
-      this.setState({
-        yearSectionId: getObjectData.periodYear
-      });
+      if (getObjectData.parentContract.contragent) {
+        counterAgentField = getObjectData.parentContract.contragent;
+      }
     }
 
     return (<Card style={{ marginLeft: "-10px" }}>
 
-      {this.state.CounterAgentsModal.visible && <CounterAgentModal
+      {this.state.CounterAgentsModal.visible &&
+      <CounterAgentModal
         onSelect={(record) => {
           // if (this.props.getCounterAgentById) {
           //   this.setState({
@@ -251,9 +253,9 @@ class InfoPage extends Component {
           //   // this.props.getCounterAgentById(record.id);
           // }
 
-          if (this.state.yearSectionId) {
-            this.props.getCounterAgentById(record.id, this.state.yearSectionId.year);
-          }
+          // if (this.state.yearSectionId) {
+          //   this.props.getCounterAgentById(record.id, this.state.yearSectionId.year);
+          // }
 
           this.setState({ counterAgentId: record.id, CounterAgentsModal: { visible: false, record: record } });
         }}
@@ -293,7 +295,7 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Контрагент">
           {getFieldDecorator("counterAgent", {
             initialValue: {
-              value: getObjectData._contragent ? getObjectData._contragent : null
+              value: counterAgentField
             },
             rules: [{
               required: false//, message: 'не заполнено',
@@ -315,9 +317,9 @@ class InfoPage extends Component {
               labelFormatter={(record) => {
 
                 if (!record._organization) {
-                  return `${record.bin} ${record.name}`;
+                  return `${record.hasOwnProperty("bin") ? record.bin : ""} ${record.name}`;
                 } else if (record) {
-                  return `${record._organization.bin} ${record._organization.name}`;
+                  return `${record._organization.hasOwnProperty("bin") ? record._organization.bin : ""} ${record._organization.name}`;
                 }
 
                 return "";
@@ -359,19 +361,19 @@ class InfoPage extends Component {
         <Form.Item {...formItemLayout} label="Учетный период">
           {getFieldDecorator("periodYear", {
             rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.periodYear ? getObjectData.periodYear.id : this.state.yearSectionId ? this.state.yearSectionId.id : null
+            initialValue: yearField
           })(
             <Select
               placeholder="Учетный период"
               style={{ width: "100px" }}
               onChange={(value, option) => {
-                this.setState({
-                  yearSectionId: option.props.prop
-                });
+                // this.setState({
+                //   yearSectionId: option.props.prop
+                // });
 
-                if (this.state.counterAgentId !== 0 && this.state.counterAgentId !== null) {
-                  this.props.getCounterAgentById(this.state.counterAgentId, option.props.prop.year);
-                }
+                // if (this.state.counterAgentId !== 0 && this.state.counterAgentId !== null) {
+                //   this.props.getCounterAgentById(this.state.counterAgentId, option.props.prop.year);
+                // }
 
               }}>
               {this.getReferenceValues("periodYear", "year", "desc")}
@@ -516,14 +518,13 @@ class InfoPage extends Component {
           {/*rules: [{ required: true, message: "не заполнено" }],*/}
           {/*initialValue: getObjectData.number ? getObjectData.number : null*/}
           {/*})(<Input placeholder="Номер"/>)}*/}
-          {getObjectData.number ? getObjectData.number : null}
+          {getObjectData.number ? getObjectData.number : "Создается автоматически"}
         </Form.Item>
-
 
         <Form.Item {...formItemLayout} label="Дата договора">
           {getFieldDecorator("documentDate", {
             rules: [{ required: true, message: "не заполнено" }],
-            initialValue: getObjectData.documentDate ? moment(getObjectData.documentDate, "DD.MM.YYYY") : null
+            initialValue: moment()
           })(
             <DatePicker
               format={"DD.MM.YYYY"}
