@@ -92,6 +92,8 @@ function momentDefine() {
 class InfoPage extends Component {
   state = {
 
+    parentContractVisible: false,
+
     counterAgentId: null,
     yearSectionId: null,
     dogovorId: null,
@@ -221,11 +223,14 @@ class InfoPage extends Component {
     const { form: { getFieldDecorator, validateFields }, formItemLayout } = this.props;
     let getObjectData = this.props.formData ? { ...this.props.formData } : {};
 
+
     if (this.state.contractAlterationReason === null && getObjectData.contractType && ["02", "10"].includes(getObjectData.contractType.code)) {
       this.setState({
         contractAlterationReason: getObjectData.contractType.code
       });
     }
+
+    const parentContractVisible = this.state.parentContractVisible || (getObjectData.contractType && getObjectData.contractType.basicContractType && getObjectData.contractType.basicContractType.parentRequired);
 
     let yearField = getObjectData.periodYear ? getObjectData.periodYear.id : this.state.yearSectionId ? this.state.yearSectionId.id : null;
     let counterAgentField = getObjectData._contragent ? getObjectData._contragent : null;
@@ -405,6 +410,7 @@ class InfoPage extends Component {
           )}
         </Form.Item>
 
+        {parentContractVisible &&
         <Form.Item {...formItemLayout} label="Основной договор">
           {getFieldDecorator("parentContract", {
             initialValue: { value: getObjectData.parentContract ? getObjectData.parentContract : null },
@@ -460,7 +466,7 @@ class InfoPage extends Component {
                 this.setState({ DogovorModal: { visible: true } });
               }}>
             </LinkModal>)}
-        </Form.Item>
+        </Form.Item>}
 
 
         {/*<Form.Item {...formItemLayout} label="Протокол распределения объемов">*/}

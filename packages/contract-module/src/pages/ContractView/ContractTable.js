@@ -513,6 +513,7 @@ class ContractTable extends Component {
               title: "Информация",
               content: "Объект успешно удален"
             });
+            this.loadMainGridData();
           } else if (response.status === 400) {
             Modal.error({
               title: "Ошибка",
