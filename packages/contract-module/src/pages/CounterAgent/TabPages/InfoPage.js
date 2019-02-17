@@ -356,7 +356,7 @@ class InfoPage extends Component {
                 cursor: "pointer"
               }}
               onClick={() => {
-
+                window.open("/contracts/zakup/protocols/"+x.id)
               }}>
               {`Протокол  ${x.protocolType && x.protocolType.name ? x.protocolType.name : ""} ${x.region && x.region.nameRu ? x.region.nameRu : ""} №${x.number ? x.number : ""} от ${x.documentDate ? x.documentDate : "" }`}
               <br/>

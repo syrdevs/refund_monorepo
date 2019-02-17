@@ -316,7 +316,7 @@ class InfoPageFromCounter extends Component {
                 cursor: "pointer"
               }}
               onClick={() => {
-
+                window.open("/contracts/zakup/protocols/"+x.id)
               }}>
               {`Протокол  ${x.protocolType && x.protocolType.name ? x.protocolType.name : ""} ${x.region && x.region.nameRu ? x.region.nameRu : ""} №${x.number ? x.number : ""} от ${x.documentDate ? x.documentDate : "" }`}
               <br/>
@@ -470,8 +470,8 @@ class InfoPageFromCounter extends Component {
 
         <Form.Item {...formItemLayout} label="Номер">
           {/*{getFieldDecorator("number", {*/}
-            {/*rules: [{ required: true, message: "не заполнено" }],*/}
-            {/*initialValue: getObjectData.number && getObjectData.number*/}
+          {/*rules: [{ required: true, message: "не заполнено" }],*/}
+          {/*initialValue: getObjectData.number && getObjectData.number*/}
           {/*})(<Input placeholder="Номер"/>)}*/}
           Создается автоматически
         </Form.Item>
