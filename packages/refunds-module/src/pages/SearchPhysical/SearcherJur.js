@@ -366,6 +366,15 @@ class SearcherJur extends Component {
                       placeholder="Введите БИН/ИИН"
                       enterButton={formatMessage({ id: "system.search" })}
                       //size="large"
+                      onChange={(e) => {
+                        this.setState({
+                          jur:{
+                            ...this.state.jur,
+                            senderBin: e.target.value
+                          }
+                        })
+                        //this.fieldOnChange("iin", e.target.value);
+                      }}
                       maxLength={12}
                       onSearch={value => this.searchperson(value)}
                     />
