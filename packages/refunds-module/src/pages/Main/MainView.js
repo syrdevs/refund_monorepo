@@ -545,7 +545,7 @@ class MainView extends Component {
     });
   }
 
-  toggleItems() {
+  toggleItems(recordid) {
     /*this.setState({
       searchButton: false,
       isHidden: false,
@@ -554,6 +554,8 @@ class MainView extends Component {
       showpull: false
     });*/
     const rpmuColumns = this.rpmuColumn();
+    const recordids=recordid
+    console.log(recordid)
     Modal.info({
       title: formatMessage({ id: "menu.mainview.rpmuLocale" }),
       width: 1200,
@@ -611,6 +613,7 @@ class MainView extends Component {
           rowSelection={false}
           rowClassName={(record) => {
             if (record.refundExist) {
+              if(recordids.payPeriod == record.paymentperiod)
               return "greenRow";
             }
           }

@@ -25,6 +25,7 @@ import formatMessage from "../../utils/formatMessage";
 import ImportModalGrid from "./ImportModalGrid";
 import connect from "../../Redux";
 import SmartGridView from "../../components/SmartGridView";
+import "./Main.css";
 
 const { TabPane } = Tabs;
 
@@ -38,7 +39,7 @@ class ImportXMLModal extends Component {
     cancelRefundList: [],
     pagingConfig: {
       "start": 0,
-      "length": 10,
+      "length": 10
     },
     fcolumn: [
       {
@@ -52,7 +53,7 @@ class ImportXMLModal extends Component {
         }
       },
       {
-        title: 'Номер платежного поручения',
+        title: "Номер платежного поручения",
         order: 0,
         key: "xmlpaynumber",
         isVisible: true,
@@ -82,34 +83,34 @@ class ImportXMLModal extends Component {
           status={this.setBadgeStatus(value.isRefundConfirm)}/></span> {value.dappRefundStatusId ? value.dappRefundStatusId.nameRu : null}
         </a>
       }
-      ],
-    datacolumns:[
+    ],
+    datacolumns: [
       {
-        title: 'Номер платежного поручения',
-        dataIndex: 'payOrderNum',
-        key: 'payOrderNum',
+        title: "Номер платежного поручения",
+        dataIndex: "payOrderNum",
+        key: "payOrderNum"
       }, {
-        title: 'Дата возврата',
-        dataIndex: 'refundDate',
-        key: 'refundDate',
+        title: "Дата возврата",
+        dataIndex: "refundDate",
+        key: "refundDate"
       },
       {
-        title: 'Сумма',
-        dataIndex: 'amount',
-        key: 'amount',
+        title: "Сумма",
+        dataIndex: "amount",
+        key: "amount"
       }, {
-        title: 'Количество возвратов',
-        dataIndex: 'refundsCount',
-        key: 'refundsCount',
+        title: "Количество возвратов",
+        dataIndex: "refundsCount",
+        key: "refundsCount"
       },
       {
-        title: 'Сумма возврата',
-        dataIndex: 'refundsAmount',
-        key: 'refundsAmount',
+        title: "Сумма возврата",
+        dataIndex: "refundsAmount",
+        key: "refundsAmount"
       }
     ],
-    statementData:[],
-    errorData:[],
+    statementData: [],
+    errorData: []
   };
   componentWillUnmount = () => {
 
@@ -118,25 +119,27 @@ class ImportXMLModal extends Component {
   componentDidMount = () => {
     this.setState({
       columns: [
-        ...this.props.columns,
+        ...this.props.columns
       ]
-    })
+    });
     let confirmRefundList = [];
     let cancelRefundList = [];
     let errors = [];
+
     this.props.xmldata.forEach((data) => {
+      // console.log(data)
       if (data.confirmRefundList != null) {
-        data.confirmRefundList.forEach((item)=>{
+        data.confirmRefundList.forEach((item) => {
           item.xmlpayOrderNum = data.payOrderNum;
-          item.xmlrefundDate = data.refundDate
-        })
+          item.xmlrefundDate = data.refundDate;
+        });
         confirmRefundList = confirmRefundList.concat(data.confirmRefundList);
       }
       if (data.cancelRefundList != null) {
-        data.cancelRefundList.forEach((item)=>{
+        data.cancelRefundList.forEach((item) => {
           item.xmlpayOrderNum = data.payOrderNum;
-          item.xmlrefundDate = data.refundDate
-        })
+          item.xmlrefundDate = data.refundDate;
+        });
         cancelRefundList = cancelRefundList.concat(data.cancelRefundList);
       }
       if (data.confirmRefundList === null && data.cancelRefundList === null) {
@@ -148,16 +151,23 @@ class ImportXMLModal extends Component {
       cancelRefundList: cancelRefundList,
       statementData: this.props.xmldata,
       errorData: errors
-    },()=>{
-      this.state.confirmRefundList.map((item)=>{
-        this.setState({
-          selectedRowKeys: [
-            ...this.state.selectedRowKeys,
-            item.id
-          ]
-        })
-      })
-    })
+    }, () => {
+      console.log(this.state.confirmRefundList);
+      let stateUpdates = [];
+      this.state.confirmRefundList.forEach((item) => {
+        console.log(item.id);
+        // this.setState({
+        //   selectedRowKeys: [
+        //     ...this.state.selectedRowKeys, item.id
+        // ]
+        // });
+        stateUpdates = stateUpdates.concat(item.id);
+      });
+      this.setState({
+        selectedRowKeys: stateUpdates
+      });
+      console.log(stateUpdates);
+    });
   };
   setColor = (value) => {
     return "#000000a6";
@@ -178,18 +188,18 @@ class ImportXMLModal extends Component {
     });
   };
   setDate = () => {
-    if(this.state.selectedRowKeys.length){
-        this.state.selectedRowKeys.forEach((item)=>{
+    if (this.state.selectedRowKeys.length) {
+      this.state.selectedRowKeys.forEach((item) => {
 
-          const { dispatch } = this.props;
-          dispatch({
-            type: 'universal/changeDateRefund',
-            payload: {
-              refundDate: this.state.confirmRefundList.find(i => i.id === item).xmlrefundDate,
-              refundList: this.state.selectedRowKeys.map((item) => ({ id: item })),
-            },
-          });
+        const { dispatch } = this.props;
+        dispatch({
+          type: "universal/changeDateRefund",
+          payload: {
+            refundDate: this.state.confirmRefundList.find(i => i.id === item).xmlrefundDate,
+            refundList: this.state.selectedRowKeys.map((item) => ({ id: item }))
+          }
         });
+      });
     }
     this.props.closeAction();
   };
@@ -225,12 +235,13 @@ class ImportXMLModal extends Component {
         }}>
         <Tabs defaultActiveKey="1">
           <TabPane tab="Успешные" key="1">
-            <Card bodyStyle={{ padding: 5, height: "500px", overflowY:'auto' }}>
-               <SmartGridView
+            <Card bodyStyle={{ padding: 5, height: "500px", overflowY: "auto" }}>
+              <SmartGridView
                 name={"importxmlTable"}
-                scroll={{ x: "auto"}}
+                scroll={{ x: "auto" }}
                 selectedRowCheckBox={true}
                 selectedRowKeys={this.state.selectedRowKeys}
+                // selectedRowKeys={true}
                 rowKey={"id"}
                 loading={this.props.loadingData}
                 actionColumns={this.state.fcolumn}
@@ -241,7 +252,7 @@ class ImportXMLModal extends Component {
                 hidePagination
                 dataSource={{
                   total: 1,
-                  pageSize:  this.state.confirmRefundList.length,
+                  pageSize: this.state.confirmRefundList.length,
                   page: 1,
                   data: this.state.confirmRefundList
                 }}
@@ -253,12 +264,13 @@ class ImportXMLModal extends Component {
                 }}
                 onSelectRow={(record) => {
                   //console.log(record);
+                  true;
                 }}
                 onFilter={(filters) => {
 
                 }}
                 onRefresh={() => {
-                 // this.loadMainGridData();
+                  // this.loadMainGridData();
                 }}
                 onSearch={() => {
                   //this.toggleSearcher();
@@ -266,14 +278,40 @@ class ImportXMLModal extends Component {
                 onSelectCheckboxChange={(selectedRowKeys) => {
                   this.checkSuccess(selectedRowKeys);
                 }}
+                // onSelectAll={true}
+
+                // rowClassName={(record) => {
+                //   console.log(record);
+                //   if (record.refundDate) {
+                //     if (record.refundDate != record.xmlrefundDate) {
+                //       return "redRow";
+                //     }
+                //   }
+                //
+                // }
+                // }
+
+                rowClassName={(record, index) => {
+                         console.log(index)
+                    if (record.refundDate) {
+                      if (record.refundDate != record.xmlrefundDate) {
+                        return "redRow";
+
+                      }
+                    }
+                  // if (record) {
+                  //   return this.state.selectedIndex === index ? "" : "";
+                  // }
+                }
+                }
               />
             </Card>
           </TabPane>
           <TabPane tab="Не найденные" key="2">
-            <Card bodyStyle={{ padding: 5, height: "500px", overflowY:'auto'  }}>
+            <Card bodyStyle={{ padding: 5, height: "500px", overflowY: "auto" }}>
               <SmartGridView
                 name={"importxmlcancelTable"}
-                scroll={{ x: "auto"}}
+                scroll={{ x: "auto" }}
                 rowKey={"id"}
                 loading={this.props.loadingData}
                 actionColumns={this.state.fcolumn}
@@ -284,7 +322,7 @@ class ImportXMLModal extends Component {
                 hidePagination
                 dataSource={{
                   total: 1,
-                  pageSize:  this.state.cancelRefundList.length,
+                  pageSize: this.state.cancelRefundList.length,
                   page: 1,
                   data: this.state.cancelRefundList
                 }}
@@ -310,12 +348,12 @@ class ImportXMLModal extends Component {
             </Card>
           </TabPane>
           <TabPane tab="Ошибочные" key="3">
-            <Card bodyStyle={{ padding: 5, height: "500px", overflowY:'auto'  }}>
+            <Card bodyStyle={{ padding: 5, height: "500px", overflowY: "auto" }}>
               <Table columns={this.state.datacolumns} dataSource={this.state.errorData} pagination={false}/>
             </Card>
           </TabPane>
           <TabPane tab="Выписка" key="4">
-            <Card bodyStyle={{ padding: 5, height: "500px", overflowY:'auto' }}>
+            <Card bodyStyle={{ padding: 5, height: "500px", overflowY: "auto" }}>
               <Table columns={this.state.datacolumns} dataSource={this.state.statementData} pagination={false}/>
             </Card>
           </TabPane>
@@ -326,5 +364,5 @@ class ImportXMLModal extends Component {
 }
 
 export default connect(({ universal }) => ({
-  universal,
+  universal
 }))(ImportXMLModal);

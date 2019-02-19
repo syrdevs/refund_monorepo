@@ -7,6 +7,8 @@ import connect from "../../Redux";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 import numberWithSpaces from "../../utils/numberFormat";
+// import moment from "../../pages/Home/Home";
+import moment from "moment/moment";
 
 
 const TabPane = Tabs.TabPane;
@@ -210,7 +212,7 @@ class ModalGridView extends Component {
 
   downloadFile() {
     console.log(this.state.filter);
-
+  let dt=moment(new Date()).format('DDMMYYYY');
     request("/api/refund/mt102GroupByKnp", {
       method: "POST",
       responseType: "blob",
@@ -222,7 +224,7 @@ class ModalGridView extends Component {
       },
       getResponse: (response) => {
         if (response.data && response.data.type)
-          saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+          saveAs(new Blob([response.data], { type: response.data.type }), "MT102_"+dt+"_"+Guid.newGuid());
       }
     });
     // let authToken = localStorage.getItem('AUTH_TOKEN');

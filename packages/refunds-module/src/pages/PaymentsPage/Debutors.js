@@ -217,6 +217,7 @@ console.log("test")
       method: "POST",
       responseType: "blob",
       body: {
+        "alias": "list",
         "entityClass": "debtorsIinList",
         "fileName": "Реестр должников",
         "filter": this.state.pagingConfig.filter,
