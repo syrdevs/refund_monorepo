@@ -220,60 +220,53 @@ class ContractTable extends Component {
     },
     columns: [
       {
-        order: 0,
+        // order: 0,
         title: "Подразделение",
         dataIndex: "division.name",
         isVisible: true
       },
       {
-        order: 1,
+        // order: 1,
         title: "Учетный период: год",
         dataIndex: "periodYear.year",
         isVisible: true,
         width: 80
       },
       {
-        order: 3,
         title: "Контрагент",
         dataIndex: "contragent.shortName",
         isVisible: true,
         width: 360
       },
       {
-        order: 3,
+        // order: 3,
         title: "Вид договора",
         dataIndex: "contractType.shortName",
         isVisible: true
       },
       {
-        order: 4,
-        title: "Номер",
-        dataIndex: "number",
-        isVisible: true
-      },
-      {
-        order: 5,
+        // order: 5,
         width: 110,
         title: "Дата",
         dataIndex: "documentDate",
         isVisible: true
       },
       {
-        order: 6,
+        // order: 6,
         width: 110,
         title: "Дата начала",
         dataIndex: "dateBegin",
         isVisible: true
       },
       {
-        order: 7,
+        // order: 7,
         width: 110,
         title: "Дата окончания",
         dataIndex: "dateEnd",
         isVisible: true
       },
       {
-        order: 10,
+        // order: 10,
         width: 70,
         title: "Файлы",
         dataIndex: "documentAttachmentsCount",
@@ -281,6 +274,20 @@ class ContractTable extends Component {
       }
     ],
     fcolumn: [
+
+      {
+        order: 4,
+        title: "Номер",
+        dataIndex: "number",
+        isVisible: true,
+        render: (text, record) => {
+          if (text) {
+            return <a onClick={() => {
+              this.props.history.push("/contracts/v2/contracts/edit?id=" + record.id);
+            }}>{text}</a>;
+          }
+        }
+      },
       {
         order: 8,
         title: "Сумма, т",
@@ -313,7 +320,7 @@ class ContractTable extends Component {
             return text.statusName;
           }
         }
-      },//
+      }//
       // {
       //   order: 12,
       //   title: "Протокол распределения объемов",
@@ -618,7 +625,7 @@ class ContractTable extends Component {
             .filter((menuItem) => (menuItem.basicContractTypeCode === "3"))
             .map((menuItem) => (<Menu.Item
               onClick={() => {
-                this.props.history.push("/contracts/v2/contracts/create?contractId=" + this.state.selectedRowKeys[0]+ "&contractTypeId=" + menuItem.id);
+                this.props.history.push("/contracts/v2/contracts/create?contractId=" + this.state.selectedRowKeys[0] + "&contractTypeId=" + menuItem.id);
               }}
               key={menuItem.id}>{menuItem.shortName}</Menu.Item>))}
         </SubMenu>

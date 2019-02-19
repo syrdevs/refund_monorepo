@@ -418,11 +418,31 @@ class SpecPage extends Component {
               },
               render: (text, record) => {
 
+                let isShowSumField = this.props.gridData && this.props.gridData._documentSources && Array.isArray(this.props.gridData._documentSources) && this.props.gridData._documentSources.length === 0;
+
+                if (Object.keys(this.props.gridData).length === 0 || Object.keys(this.props.gridData).length === 1) {
+                  isShowSumField = true;
+                }
+
                 if (record.key === "total" && record.hasOwnProperty("valueSumTotal")) {
                   return <span>{numberFormat(record.valueSumTotal ? record.valueSumTotal : 0)}</span>;
                 }
 
-                return <span>{numberFormat(record.valueSum ? record.valueSum : 0)}</span>;
+                if (isShowSumField) {
+                  return (<InputNumber
+                    defaultValue={record.valueSum ? record.valueSum : 0}
+                    style={{ width: 70 }}
+                    name={"all_total" + record.key}
+                    onChange={(e) => {
+                      record["valueSum"] = e;
+                      this.setState(prevState => ({
+                        smarttabDataSource: prevState.smarttabDataSource
+                      }));
+                    }}/>);
+                } else {
+                  return <span>{numberFormat(record.valueSum ? record.valueSum : 0)}</span>;
+                }
+
 
                 // return <FormItem>
                 //   {this.props.form.getFieldDecorator('spespage.summa' + record.key, {
@@ -1256,7 +1276,6 @@ class SpecPage extends Component {
         "08": "7dbcf2de-4193-4d8c-8d0f-e7529e236ed7",
         "09": "e86fa194-bbae-4897-8110-0e66ce52a3e4"
       };
-
 
 
       specifyData.forEach((item) => {

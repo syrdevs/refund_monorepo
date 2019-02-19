@@ -379,15 +379,49 @@ class SmartGridView extends Component {
     // let sortedColumns = tableOptions.columns;
     //
     // tableOptions.columns.filter(x => x.isVisible).forEach(column => {
-    //   // if (column.order != null) {
-    //   //   sortedColumns.splice(column.order, 0, column);
-    //   // } else {
-    //   //   sortedColumns.splice(1, 0, column);
-    //   // }
-    //
+    //   if (column.order != null) {
+    //     sortedColumns.splice(column.order, 0, column);
+    //   } else {
+    //     sortedColumns.splice(1, 0, column);
+    //   }
     // });
     //
     // tableOptions.columns = sortedColumns;
+
+    let unOrderedIndexes = [];
+    tableOptions.columns.filter(x => x.isVisible).forEach((column, idx) => {
+
+      let uniqueSortIndexes = tableOptions.columns.filter(x => (x.order || x.order === 0)).map(x => x.order);
+
+      if (unOrderedIndexes.length === 0)
+        for (let i = 0; i <= tableOptions.columns.length; i++) {
+          let findResultIdx = uniqueSortIndexes.findIndex(x => x === i);
+
+          if (findResultIdx === -1) {
+            unOrderedIndexes.push(i);
+          }
+        }
+
+      if (!column.hasOwnProperty("order") && unOrderedIndexes.length > 0) {
+        column.order = unOrderedIndexes[0];
+
+        var index = unOrderedIndexes.indexOf(unOrderedIndexes[0]);
+        if (index > -1) {
+          unOrderedIndexes.splice(index, 1);
+        }
+      }
+    });
+
+    //todo
+
+    tableOptions.columns = tableOptions.columns.sort((a, b) => {
+      if (a.order < b.order)
+        return -1;
+      if (a.order > b.order)
+        return 1;
+      return 0;
+    });
+
 
     if (this.props.rowSelection) {
       tableOptions.components = {

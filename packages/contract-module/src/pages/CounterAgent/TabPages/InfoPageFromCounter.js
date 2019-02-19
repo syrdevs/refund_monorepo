@@ -316,7 +316,7 @@ class InfoPageFromCounter extends Component {
                 cursor: "pointer"
               }}
               onClick={() => {
-                window.open("/contracts/zakup/protocols/"+x.id)
+                window.open("/contracts/zakup/protocols/" + x.id);
               }}>
               {`Протокол  ${x.protocolType && x.protocolType.name ? x.protocolType.name : ""} ${x.region && x.region.nameRu ? x.region.nameRu : ""} №${x.number ? x.number : ""} от ${x.documentDate ? x.documentDate : "" }`}
               <br/>
@@ -494,7 +494,8 @@ class InfoPageFromCounter extends Component {
         <Form.Item {...formItemLayout} label="Период">
           {getFieldDecorator("period", {
             rules: [{ required: false, message: "не заполнено" }],
-            initialValue: [moment(getObjectData.dateBegin ? getObjectData.dateBegin : "01.01.2019", "DD.MM.YYYY"), moment(getObjectData.dateEnd ? getObjectData.dateEnd : "12.12.2019", "DD.MM.YYYY")]
+            // initialValue: [moment(getObjectData.dateBegin ? getObjectData.dateBegin : "01.01.2019", "DD.MM.YYYY"), moment(getObjectData.dateEnd ? getObjectData.dateEnd : "12.12.2019", "DD.MM.YYYY")]
+            initialValue: [getObjectData.dateBegin ? moment(getObjectData.dateBegin, "DD.MM.YYYY") : null, getObjectData.dateEnd ? moment(getObjectData.dateEnd, "DD.MM.YYYY") : null]
 
             //getObjectData.dateBegin ? [moment(getObjectData.dateBegin, "DD.MM.YYYY"), getObjectData.dateEnd ? moment(getObjectData.dateEnd, "DD.MM.YYYY") : null] : null
           })(

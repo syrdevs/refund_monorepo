@@ -551,12 +551,6 @@ class CounterAgentCreate extends Component {
                   });
                 }}>Закрыть</Button>,
               <Button
-                key={"clear_btn"}
-                style={{ marginLeft: "5px" }}
-                onClick={() => {
-                  this.props.form.resetFields();
-                }}>Очистить</Button>,
-              <Button
                 key={"loader_btn"}
                 type="primary"
                 style={{ marginLeft: "5px" }}
