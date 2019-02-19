@@ -866,7 +866,7 @@ class GridFilter extends Component {
 
         let params = {};
 
-        if (this.props.formFilter && this.props.formFilter.hasOwnProperty(filterItem.name)) {
+        if (this.props.formFilter && this.props.formFilter.hasOwnProperty(filterItem.name) && !formFilters[filterItem.name]) {
           params.checked = this.props.formFilter[filterItem.name];
         }
         if (isClearFilter) {
