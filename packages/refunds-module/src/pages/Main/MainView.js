@@ -156,13 +156,13 @@ class MainView extends Component {
           "isVisible": true,
           order: 6,
           "dataIndex": "refundPayAmount",
-           render: (value) => {
-             if (value) {
-               return numberWithSpaces(value);
-             }else{
-               return "";
-             }
-           }
+          render: (value) => {
+            if (value) {
+              return numberWithSpaces(value);
+            }else{
+              return "";
+            }
+          }
         },
         {
           "title": "Сумма отчислений/взносов",
@@ -546,12 +546,87 @@ class MainView extends Component {
   }
 
   toggleItems() {
-    this.setState({
+    /*this.setState({
       searchButton: false,
       isHidden: false,
       searchercont: this.state.searchercont === 0 || this.state.searchercont === 7 ? 8 : this.state.searchercont,
       tablecont: this.state.searchercont === 0 || this.state.searchercont === 7 ? 16 : this.state.tablecont,
       showpull: false
+    });*/
+    const rpmuColumns = this.rpmuColumn();
+    Modal.info({
+      title: formatMessage({ id: "menu.mainview.rpmuLocale" }),
+      width: 1200,
+      icon: "",
+      okText: "Закрыть",
+      content: (
+        <SmartGridView
+          name={"RefundsRPMUColumns"}
+          rowKey={"id"}
+          showTotal
+          addonButtons={[]}
+          scroll={{ x: this.state.xsize }}
+          actionColumns={[
+            {
+              title: formatMessage({ id: "menu.mainview.rpmuName" }),
+              key: "lastname",
+              order: 0,
+              isVisible: true,
+              width: 200,
+              render: (text, record) => (<div>
+                  {text.lastname + " " + text.firstname + " " + text.secondname}
+                  <br/>
+                  {"(ИИН: " + text.iin + ", ДР: " + text.birthdate + ")"}
+                </div>
+              )
+            }]}
+          columns={rpmuColumns}
+          sorted={true}
+          sortedInfo={this.state.sortedInfo}
+          onSort={(column) => {
+            if (Object.keys(column).length === 0) {
+              this.setState(prevState => ({
+                sortedInfo: {},
+                pagingConfig: {
+                  ...prevState.pagingConfig,
+                  sort: []
+                }
+              }), () => {
+                this.loadMainGridData();
+              });
+              return;
+            }
+
+            this.setState(prevState => ({
+              sortedInfo: column,
+              pagingConfig: {
+                ...prevState.pagingConfig,
+                sort: [{ field: column.field, "desc": column.order === "descend" }]
+              }
+            }), () => {
+              this.loadMainGridData();
+            });
+
+          }}
+          rowSelection={false}
+          rowClassName={(record) => {
+            if (record.refundExist) {
+              return "greenRow";
+            }
+          }
+          }
+          hideFilterBtn={true}
+          hideRefreshBtn={true}
+          dataSource={{
+            total: this.props.universal.rpmu.totalElements,
+            pageSize: this.state.rpmu.pagingConfig.length,
+            page: this.state.rpmu.pagingConfig.start + 1,
+            data: this.props.universal.rpmu.content
+          }}
+        />
+      ),
+
+      onOk() {},
     });
   }
 
@@ -578,6 +653,8 @@ class MainView extends Component {
         });
       });
   };
+
+
 
   hideleft() {
     if (!this.state.isHidden) {
@@ -1353,99 +1430,7 @@ class MainView extends Component {
 
                 {([8, 12, 16].indexOf(this.state.searchercont) !== -1 && !this.state.showpull) &&
                 <Animated animationIn="bounceInLeft" animationOut="fadeOut" isVisible={true}>
-                  <Card
-                    style={{ margin: "0px 5px 10px 0px", borderRadius: "5px" }}
-                    bodyStyle={{ padding: 5 }}
-                    type="inner"
-                    title={formatMessage({ id: "menu.mainview.rpmuLocale" })}
-                    extra={[<Icon style={{ "cursor": "pointer" }} onClick={event => this.hideleft()}><FontAwesomeIcon
-                      icon={faTimes}/></Icon>]}
-                  >
-                    <LocaleProvider locale={componentLocal}>
-                      <SmartGridView
-                        name={"RefundsRPMUColumns"}
-                        rowKey={"id"}
-                        showTotal
-                        addonButtons={[<Radio.Group
-                          size={"default"}
-                          style={{
-                            display: "block",
-                            float: "left",
-                            margin: "5px 2px 8px"
-                          }}
-                          value={this.state.searchercont}
-                          onChange={(e) => {
-                            this.setState({
-                              searchercont: parseInt(e.target.value),
-                              tablecont: 24 - parseInt(e.target.value)
-                            });
-                          }}>
-                          <Radio.Button value={8}>30%</Radio.Button>
-                          <Radio.Button value={12}>50%</Radio.Button>
-                          <Radio.Button value={16}>70%</Radio.Button>
-                        </Radio.Group>]}
-                        scroll={{ x: this.state.xsize }}
-                        actionColumns={[
-                          {
-                            title: formatMessage({ id: "menu.mainview.rpmuName" }),
-                            key: "lastname",
-                            order: 0,
-                            isVisible: true,
-                            width: 200,
-                            render: (text, record) => (<div>
-                                {text.lastname + " " + text.firstname + " " + text.secondname}
-                                <br/>
-                                {"(ИИН: " + text.iin + ", ДР: " + text.birthdate + ")"}
-                              </div>
-                            )
-                          }]}
-                        columns={rpmuColumns}
-                        sorted={true}
-                        sortedInfo={this.state.sortedInfo}
-                        onSort={(column) => {
 
-                          if (Object.keys(column).length === 0) {
-                            this.setState(prevState => ({
-                              sortedInfo: {},
-                              pagingConfig: {
-                                ...prevState.pagingConfig,
-                                sort: []
-                              }
-                            }), () => {
-                              this.loadMainGridData();
-                            });
-                            return;
-                          }
-
-                          this.setState(prevState => ({
-                            sortedInfo: column,
-                            pagingConfig: {
-                              ...prevState.pagingConfig,
-                              sort: [{ field: column.field, "desc": column.order === "descend" }]
-                            }
-                          }), () => {
-                            this.loadMainGridData();
-                          });
-
-                        }}
-                        rowSelection={false}
-                        rowClassName={(record) => {
-                          if (record.refundExist) {
-                            return "greenRow";
-                          }
-                        }
-                        }
-                        hideFilterBtn={true}
-                        hideRefreshBtn={true}
-                        dataSource={{
-                          total: this.props.universal.rpmu.totalElements,
-                          pageSize: this.state.rpmu.pagingConfig.length,
-                          page: this.state.rpmu.pagingConfig.start + 1,
-                          data: this.props.universal.rpmu.content
-                        }}
-                      />
-                    </LocaleProvider>
-                  </Card>
                 </Animated>
                 }
               </div>
