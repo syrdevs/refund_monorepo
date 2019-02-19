@@ -940,14 +940,6 @@ class ContractRequestsadd extends Component {
               }}>
                 Закрыть
               </Button>
-              {this.state.ShowClear &&
-              <Button
-                key={"clear"}
-                style={{ margin: "0px 0px 10px 10px" }} onClick={() => {
-                this.props.form.resetFields();
-              }}>
-                Очистить
-              </Button>}
             </div>,
             <DropDownAction
               key={"report_action"}
