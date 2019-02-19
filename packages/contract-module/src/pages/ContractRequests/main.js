@@ -69,7 +69,7 @@ class ContractRequestsTable extends Component {
         label: "Дата",
         name: "documentDate",
         filterName: "documentDate",
-        type: "date"
+        type: "listbetweenDate"
       },
       {
         label: "Сумма",
@@ -129,13 +129,24 @@ class ContractRequestsTable extends Component {
       },
       {
         title: "Статус",
-        dataIndex: "documentStatus.statusName",
+        dataIndex: "_documentStatus.statusName",
         isVisible: true
       },
-      {
+      /*{
         title: "Файлы",
         dataIndex: "documentAttacmentsCount",
         isVisible: true
+      }*/
+    ],
+    fcolumns: [
+      {
+        title: "Файлы",
+        dataIndex: "documentAttacmentsCount",
+        order: 10,
+        isVisible: true,
+        render: (text, index) => {
+          return text ? text : '';
+        }
       }
     ],
     dataSource: [
@@ -353,9 +364,10 @@ class ContractRequestsTable extends Component {
           </Col>
           <Col sm={24} md={this.state.filterContainer !== 6 ? 24 : 18}>
             <SmartGridView
-              scroll={{ x: "auto" }}
+              scroll={{x: "auto"}}
               name={"ContractRequestMain"}
               columns={this.state.columns}
+              actionColumns={this.state.fcolumns}
               showTotal={true}
               selectedRowCheckBox={true}
               selectedRowKeys={this.state.selectedRowKeys}

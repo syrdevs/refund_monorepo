@@ -53,7 +53,7 @@ const ruTranslation = {
         _: 'Акты',
       },
       contractrequests: {
-        _: 'Заявки',
+        _: 'Заявки на оплату',
       },
       contracts: {
         _: 'Договоры',

@@ -356,6 +356,7 @@ class ShowPayment extends Component {
     });
 
   };
+
   calculateRow = (name, data) => {
     let count = 0;
     data.forEach((item) => {

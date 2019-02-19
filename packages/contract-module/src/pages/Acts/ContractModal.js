@@ -3,7 +3,7 @@ import formatMessage from "../../utils/formatMessage";
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Col, Tabs, Card, Spin } from "antd";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
-import style from "../CounterAgent/Modals/ContragentModalStyle.less";
+import style from "../Acts/ActModal.css";
 
 class ContractModal extends Component {
   state = {
@@ -176,7 +176,7 @@ class ContractModal extends Component {
       {/*<Spin spinning={this.props.loading}>*/}
         <div className={style.DogovorModal}>
           <SmartGridView
-            scroll={{ x: "auto", y: 280 }}
+            scroll={{ x: "auto" }}
             name={"ActModal"}
             actionColumns={this.state.fcolumn}
             columns={this.state.columns}

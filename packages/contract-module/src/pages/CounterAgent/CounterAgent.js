@@ -29,6 +29,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons";
 import GridFilter from "../../components/GridFilter";
 import request from "../../utils/request";
+import saveAs from "file-saver";
+import Guid from "@vitacore/refunds-module/src/utils/Guid";
 
 const dateFormat = "YYYY/MM/DD";
 const SubMenu = Menu.SubMenu;
@@ -266,6 +268,31 @@ class CounterAgent extends Component {
     });
   };
 
+  exportToExcel = () => {
+
+    let authToken = localStorage.getItem("AUTH_TOKEN");
+    let columns = JSON.parse(localStorage.getItem("RefundsPageColumns"));
+
+    request("/api/refund/exportToExcel", {
+      method: "POST",
+      responseType: "blob",
+      body: {
+        "entityClass": "clinic",
+        "alias": "clinicList",
+        "fileName": "Субьект_здравохранение",
+        "filter": this.state.gridParameters.filter,
+        "columns": [].concat(columns.filter(column => column.isVisible))
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        }
+      }
+    });
+
+  };
+
   render() {
     const { universal2 } = this.props;
     const counterData = universal2.references[this.state.gridParameters.entity];
@@ -288,14 +315,14 @@ class CounterAgent extends Component {
         {/*key='update'>*/}
         {/*Открыть/изменить*/}
         {/*</Menu.Item>*/}
-        <Menu.Item
+        {/*<Menu.Item
           disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
           key='change'
           onClick={() => {
             this.props.history.push("/contracts/v2/counteragent/edit?id=" + this.state.selectedRecord.id);
           }}>
           Открыть
-        </Menu.Item>
+        </Menu.Item>*/}
         <SubMenu
           disabled={hasRole(["ADMIN"]) || this.state.selectedRecord === null}
           key="register_document"
@@ -375,8 +402,7 @@ class CounterAgent extends Component {
               fixedHeader
               //rowSelection
               showExportBtn={true}
-              actionExport={() => {
-              }}
+              actionExport={() => this.exportToExcel()}
               columns={this.state.columns}
               actionColumns={[
                 {
@@ -409,6 +435,8 @@ class CounterAgent extends Component {
               onSelectRow={(record) => {
                 this.setState({
                   selectedRecord: record
+                },()=>{
+                  this.props.history.push("/contracts/v2/counteragent/edit?id=" + this.state.selectedRecord.id);
                 });
               }}
               onFilter={(filters) => {

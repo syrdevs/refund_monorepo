@@ -3,7 +3,7 @@ import formatMessage from "../../utils/formatMessage";
 import { Form, Input, Button, Select, Divider, DatePicker, Table, Modal, Row, Col, Tabs, Card, Spin } from "antd";
 import SmartGridView from "../../components/SmartGridView";
 import connect from "../../Redux";
-import "../CounterAgent/Modals/ContragentModalStyle.less";
+import styles from "./ActModal.css"
 
 
 class ActModal extends Component {
@@ -166,7 +166,7 @@ class ActModal extends Component {
       }}
       visible={true}>
       {/*<Spin spinning={this.props.loading}>*/}
-        <div className={style.DogovorModal}>
+        <div className={styles.DogovorModal}>
           <SmartGridView
             scroll={{ x: "auto", y: 280 }}
             name={"ActModal"}
