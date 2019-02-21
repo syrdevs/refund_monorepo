@@ -150,7 +150,7 @@ class ModalGridView extends Component {
             ...this.state.filter,
             filter: {
               ...this.state.filter.filter,
-              /*knpList: [{ id: this.props.universal.refundKnpList[0].id }]*/
+              knpList: [{ id: this.props.universal.refundKnpList[0].id }]
             }
           },
           dataColumn: this.props.universal.refundKnpList

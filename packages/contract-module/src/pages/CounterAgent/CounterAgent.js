@@ -53,12 +53,13 @@ class CounterAgent extends Component {
           dataIndex: "idendifier.identifiervalue",
           isVisible: true
         },
-        {
+        /*{
           title: "Наименование/Имя",
           dataIndex: "name",
           width: 360,
           isVisible: true
-        }, {
+        },*/
+        {
           title: "Адрес",
           dataIndex: "address",
           isVisible: true
@@ -406,6 +407,23 @@ class CounterAgent extends Component {
               columns={this.state.columns}
               actionColumns={[
                 {
+                  title: "Наименование/Имя",
+                  key: "names",
+                  dataIndex: "name",
+                  order: 0,
+                  isVisible: true,
+                  width: 300,
+                  render: (item, record) => {
+                    return <a onClick={()=>{
+                      this.setState({
+                        selectedRecord: record
+                      },()=>{
+                        this.props.history.push("/contracts/v2/counteragent/edit?id=" + record.id);
+                      })
+                    }}>{item}</a>
+                  }
+                },
+                {
                   title: "СЗ районного значения и села",
                   key: "sz_region",
                   order: 10,
@@ -433,11 +451,11 @@ class CounterAgent extends Component {
 
               }}
               onSelectRow={(record) => {
-                this.setState({
+                /*this.setState({
                   selectedRecord: record
                 },()=>{
                   this.props.history.push("/contracts/v2/counteragent/edit?id=" + this.state.selectedRecord.id);
-                });
+                });*/
               }}
               onFilter={(filters) => {
 
