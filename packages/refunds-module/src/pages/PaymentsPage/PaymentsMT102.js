@@ -106,7 +106,7 @@ class PaymentsMT102 extends Component {
       {
         label: "Плательщик (БИН/ИИН)",
         name: "senderBin",
-        type: "text",
+        type: "numberInput",
         withMax: 12
       },
       {
@@ -117,7 +117,7 @@ class PaymentsMT102 extends Component {
       {
         label: "ИИН",
         name: "iin",
-        type: "text",
+        type: "numberInput",
         withMax: 12
       }, {
         label: "Период",

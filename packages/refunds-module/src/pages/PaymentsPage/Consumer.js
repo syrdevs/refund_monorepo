@@ -61,7 +61,7 @@ class Consumer extends Component {
       {
         label: "ИИН",
         name: "iin",
-        type: "text",
+        type: "numberInput",
         withMax: 12
       }, {
         label: "Период",

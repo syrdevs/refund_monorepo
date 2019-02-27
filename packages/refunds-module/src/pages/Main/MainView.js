@@ -241,7 +241,16 @@ class MainView extends Component {
           "title": "Номер заявки",
           "isVisible": true,
           "dataIndex": "applicationId.appNumber"
-        }, {
+        },
+        {
+          "title": "Дата рождения",
+          "isVisible": true,
+          "dataIndex": "birthdate"
+        },{
+          "title": "Результат сверки с платежами",
+          "isVisible": true
+        },
+        {
           "title": "Дата заявления плательщика",
           "isVisible": true,
           "dataIndex": "appPayerDate"
@@ -1340,23 +1349,31 @@ class MainView extends Component {
                   {formatMessage({ id: "menu.mainview.verifyRPMUBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}
                 </Menu.Item>
                 <Menu.Item
-                  key="2" onClick={this.exportToExcel}>
+                  // disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.btnhide, this.state.selectedRowKeys.length === 0])}
+                  key="2"
+                  // onClick={this.AppRefundStatusAuto}
+                >
+                  {/*{formatMessage({ id: "menu.mainview.verifyRPMUBtn" })} {this.state.selectedRowKeys.length > 0 && `(${this.state.selectedRowKeys.length})`}*/}
+                  Сверить с ГБД ФЛ
+                </Menu.Item>
+                <Menu.Item
+                  key="3" onClick={this.exportToExcel}>
                   {formatMessage({ id: "menu.mainview.excelBtn" })}
                 </Menu.Item>
                 <Menu.Item
                   disabled={this.btnIsDisabled(hasRole(["FSMS2", "ADMIN"]), [this.state.selectedRowKeys.length === 0])}
-                  key="3"
+                  key="4"
                   onClick={() => {
                     this.setState({ ModalChangeDateRefund: true });
                   }}>
                   {formatMessage({ id: "menu.mainview.setDateBtn" })}
                 </Menu.Item>
-                <Menu.Item disabled={!hasRole(["ADMIN", "FSMS2"])} key="4" onClick={() => {
+                <Menu.Item disabled={!hasRole(["ADMIN", "FSMS2"])} key="5" onClick={() => {
                   this.showModal();
                 }}>
                   {formatMessage({ id: "menu.mainview.mt102Btn" })}
                 </Menu.Item>
-                <Menu.Item disabled={!hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="5" onClick={() => {
+                <Menu.Item disabled={!hasRole(["ADMIN", "FSMS1", "FSMS2"])} key="6" onClick={() => {
                 }}>
                   <Upload
                     showUploadList={false}

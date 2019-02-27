@@ -74,7 +74,8 @@ class Debutors extends Component {
     }, {
       name: "iin",
       label: "ИИН",
-      type: "text"
+      type: "numberInput",
+      withMax: 12
     }, {
       label: "Фамилия",
       name: "lastName",

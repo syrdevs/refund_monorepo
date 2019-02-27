@@ -29,6 +29,7 @@ import Medicine from "../PaymentsPage/Medicine";
 import PaymentsMT102 from "../PaymentsPage/PaymentsMT102";
 import intWithSpace from "../../utils/IntWithSpace";
 import numberWithSpaces from "../../utils/numberFormat";
+import NumericInput from "../../components/GridFilter/NumericInput";
 
 const dateFormat = "DD.MM.YYYY";
 const FormItem = Form.Item;
@@ -556,7 +557,7 @@ class Searcher extends Component {
   };
 
   fieldOnChange = (filterItem, value) => {
-
+    console.log(value)
     if (filterItem === "iin") {
       this.setState({
         parameters: {
@@ -903,12 +904,12 @@ class Searcher extends Component {
                     <div style={{ width: "100%" }}>
                       <Row>
                         <Col span={14}>
-                          <Input style={{ width: "100%" }} value={this.state.parameters.filter.iin} maxLength={12}
+                          <NumericInput  style={{ width: "100%" }} value={this.state.parameters.filter.iin} maxLength={12}
                                  onPressEnter={() => {
                                    this.applyFilter();
                                  }}
                                  onChange={(e) => {
-                                   this.fieldOnChange("iin", e.target.value);
+                                   this.fieldOnChange("iin", e);
                                  }}/>
                         </Col>
                         <Col span={8}>

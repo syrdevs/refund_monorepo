@@ -20,6 +20,7 @@ import connect from "../../Redux";
 import request from "../../utils/request";
 import intWithSpace from "../../utils/IntWithSpace";
 import numberWithSpaces from "../../utils/numberFormat";
+import NumericInput from "../../components/GridFilter/NumericInput";
 
 const FormItem = Form.Item;
 const Search = Input.Search;
@@ -361,7 +362,7 @@ class SearcherJur extends Component {
               >
                 <div style={{ display: "block" }}>
                   <div style={{ float: "left", width: this.state.jur.senderBin ? "55%" : "55%" }}>
-                    <Search
+                    <NumericInput
                       value={this.state.jur.senderBin}
                       placeholder="Введите БИН/ИИН"
                       enterButton={formatMessage({ id: "system.search" })}
@@ -370,7 +371,7 @@ class SearcherJur extends Component {
                         this.setState({
                           jur:{
                             ...this.state.jur,
-                            senderBin: e.target.value
+                            senderBin: e
                           }
                         })
                         //this.fieldOnChange("iin", e.target.value);
