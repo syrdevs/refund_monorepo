@@ -411,7 +411,7 @@ export default {
   "menu.contract": "Учет договоров",
   "menu.counteragent": "Контрагенты",
   "menu.contract.acts": "Акты",
-  "menu.contract.bills": "Счет реестр",
+  "menu.contract.bills": "Платежные документы",
   "menu.contract.contractrequests": "Заявки",
   "menu.contract.contracts": "Договоры",
   "menu.contract.acts.actadd": "Акт выполненных работ",

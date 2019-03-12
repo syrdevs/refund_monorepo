@@ -1121,7 +1121,7 @@ class Searcher extends Component {
               key="3"
               disabled={!personRPN.iin}
             >
-              <Medicine/>
+              <Medicine personiin={personRPN.iin}/>
             </TabPane>
             <TabPane
               tab={"Список плательщиков"}

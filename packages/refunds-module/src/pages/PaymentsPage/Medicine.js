@@ -30,44 +30,45 @@ class Medicine extends Component {
     super(props);
 
     this.state = {
-      sortedInfo: {},
+      personiin:{},
+      sortedInfo: {},      
       fcolumn: [
       ],
       columns: [
         {
           "title": "Наименование СЗ",
-          "dataIndex": "name",
+          "dataIndex": "clinic.name",
           "width": 200,
           "isVisible": true
         },
         {
           "title": "БИН/ИИН СЗ",
-          "dataIndex": "iin",
+          "dataIndex": "clinic.bin",
           "width": 200,
           "isVisible": true
         },
         {
           "title": "Регион СЗ",
-          "dataIndex": "region",
+          "dataIndex": "clinic.region.nameRu",
           "width": 200,
           "isVisible": true
         },
         {
           "title": "Наименование медицинской услуги",
-          "dataIndex": "medname",
+          "dataIndex": "activityMeasureUnit.displayName",
           "width": 200,
           "isVisible": true
         },
         {
-          "title": "Форма и вид медицинской помощи",
+          "title": "Количество",
           "width": 200,
-          "dataIndex": "formtype",
+          "dataIndex": "value",
           "isVisible": true
         },
         {
           "title": "Стоимость медицинской услуги",
           "width": 200,
-          "dataIndex": "summ",
+          "dataIndex": "recordSum",
           "isVisible": true
         },
         {
@@ -78,18 +79,20 @@ class Medicine extends Component {
         {
           "title": "Дата начала лечения/оказания услуги",
           "width": 200,
-          "dataIndex": "typeStartDate",
+          "dataIndex": "dateBegin",
         },
         {
           "title": "Дата окончания лечения/оказания услуги",
           "width": 200,
-          "dataIndex": "typeEndDate",
+          "dataIndex": "dateEnd",
         },
         {
           "title": "Диагноз",
           "width": 200,
-          "dataIndex": "diagnoz",
-        },
+          "dataIndex": "diagnosis",
+        }
+        /*
+        ,
         {
           "title": "Результат обращения",
           "width": 200,
@@ -105,82 +108,64 @@ class Medicine extends Component {
           "width": 200,
           "dataIndex": "medPerson",
         },
+        */
       ],
       filterContainer: 0,
       searchButton: false,
       filterForm: [
         {
-          name:"refundId.mt102Id",
+          name:"clinic.name",
           label: "Наименование СЗ",
-          type: "text"
+          type: "textlike"
         },
         {
-          name:"refundId.mt102Id",
+          name:"clinic.bin",
           label: "БИН/ИИН СЗ",
           type: "text"
         },
         {
           label:"Регион СЗ",
-          name: "dappRefundStatus",
-          type: "text"
+          name: "clinic.region.nameRu",
+          type: "textlike"
         },
         {
-          name:"refundId.mt102Id",
+          name:"activityMeasureUnit.activity.name",
           label: "Наименование медицинской услуги;",
-          type: "text"
-        },
-        {
-          name:"refundId.mt102Id",
-          label: "Форма и вид медицинской помощи",
-          type: "text"
-        },
-        {
-          name:"refundId.mt102Id",
-          label: "Стоимость медицинской услуги",
-          type: "text"
+          type: "textlike"
         },
         {
           label:"Факт оплаты",
-          name: "dappRefundStatus",
-          type: "text"
+          name: "payFact",
+          type: "checkbox"
         },
         {
-          name: "refundId.gcvpOrderDate",
+          name: "dateBegin",
           label: "Дата начала услуги",
           type: "listbetweenDate"
         },
         {
-          name: "refundId.gcvpOrderDate",
+          name: "dateEnd",
           label: "Дата окончание услуги",
           type: "listbetweenDate"
         },
         {
           label:"Диагноз",
-          name: "dappRefundStatus",
-          type: "text"
-        },
-        {
-          name:"refundId.mt102Id",
-          label: "Результат обращения",
-          type: "text"
-        },
-        {
-          name:"refundId.mt102Id",
-          label: "Исход заболевания",
-          type: "text"
-        },
-        {
-          name:"refundId.mt102Id",
-          label: "Врач",
-          type: "text"
-        },
+          name: "diagnosis",
+          type: "textlike"
+        }
       ],
       pagingConfig: {
-        "start": 0,
-        "length": 15,
-        "entity": "refund_history",
-        "filter": {},
-        "sort": []
+        start: 0,
+        length: 15,
+        entity: "medicalRecordMain",
+        alias: "forView",
+        filter: { "person.iin": this.props.personiin},
+        sort: [
+          {
+            "field": "createDate",
+            "desc": true
+          }
+        ]  
       }
     };
   }
@@ -191,11 +176,17 @@ class Medicine extends Component {
   clearFilter = () => {
     this.setState({
       pagingConfig: {
-        "start": 0,
-        "length": 15,
-        "entity": "refund_history",
-        "filter": {},
-        "sort": []
+        start: 0,
+        length: 15,
+        entity: "medicalRecordMain",
+        alias: "forView",
+        filter: { "person.iin": this.props.personiin},
+        sort: [
+          {
+            "field": "createDate",
+            "desc": true
+          }
+        ] , 
       }
     }, () => {
       this.loadMainGridData();
@@ -206,11 +197,20 @@ class Medicine extends Component {
 
     this.setState({
       pagingConfig: {
-        "start": 0,
-        "length": this.state.pagingConfig.length,
-        "entity": "refund_history",
-        "filter": filters,
-        "sort": []
+        start: 0,
+        entity: "medicalRecordMain",
+        alias: "forView",
+        "length": this.state.pagingConfig.length,       
+        filter: {
+          ...filters,
+          "person.iin": this.props.personiin
+        },
+        sort: [
+          {
+            "field": "createDate",
+            "desc": true
+          }
+        ]  
       }
     }, () => {
       this.loadMainGridData();
@@ -220,11 +220,46 @@ class Medicine extends Component {
   };
 
   loadMainGridData = () => {
-
+    const { dispatch } = this.props;
+    if (this.props.personiin) {
+      this.setState({
+        personiin: this.props.personiin
+      })
+    }
+    //let sortField = this.state.sortedInfo;
+    dispatch({
+      type: "universal2/getList",
+      payload:    {
+        ...this.state.pagingConfig,
+        filter: {
+          ...this.state.pagingConfig.filter,
+          iin: this.props.onSearch
+        },
+        sort:[...this.state.pagingConfig.sort],
+      }
+    });
   };
 
   exportToExcel = () => {
-
+    request("/api/refund/exportToExcel", {
+      responseType: "blob",
+      method: "post",
+      body: {
+        "entityClass": this.state.pagingConfig.entity,
+        "fileName": this.props.personiin,
+        "src": {
+          "searched": true,
+          "data": this.state.pagingConfig.filter
+        },
+        "columns":  JSON.parse(localStorage.getItem("MedicinePageColumns")).filter(item => item.isVisible === "true" || item.isVisible === true) 
+      },
+      getResponse: (response) => {
+        if (response.status === 200) {
+          if (response.data && response.data.type)
+            saveAs(new Blob([response.data], { type: response.data.type }), Guid.newGuid());
+        }
+      }
+    });
 
   };
 
@@ -234,7 +269,31 @@ class Medicine extends Component {
   }
 
   onShowSizeChange = (current, pageSize) => {
-
+    const { dispatch } = this.props;
+    this.setState(prevState => ({
+      pagingConfig: {
+        ...prevState.pagingConfig,
+        filter: {
+          ...prevState.pagingConfig.filter,
+          personiin: this.props.personiin
+        },
+        sort:[...prevState.pagingConfig.sort],
+        start: current,
+        length: pageSize
+      }
+    }), () => dispatch({
+      
+        type: "universal2/getList",
+        payload:    {
+          ...this.state.pagingConfig,
+          filter: {
+            ...this.state.pagingConfig.filter,
+            personiin: this.props.personiin
+          },
+          sort:[...this.state.pagingConfig.sort]
+        }
+      
+    }));
   };
 
   refreshTable = () => {
@@ -249,13 +308,15 @@ class Medicine extends Component {
   };
 
   render() {
-    const { universal2 } = this.props;
-    const refundHistory = universal2.references[this.state.pagingConfig.entity];
 
-    const { dataStore, columns } = this.props.universal2;
+    const { universal2 } = this.props;
+    const dataStore = universal2.references[this.state.pagingConfig.entity];
+
+    const {columns } = this.props.universal2;
 
     const DataDiv = () => (
       <SmartGridView
+        scroll={{ x: "auto" }}
         name={"MedicinePageColumns"}
         searchButton={this.state.searchButton}
         fixedBody={true}
@@ -271,10 +332,10 @@ class Medicine extends Component {
         showExportBtn
         actionExport={() => this.exportToExcel()}
         dataSource={{
-          total:  0,
+          total:  dataStore && dataStore.totalPages ? dataStore.totalPages:0,
           pageSize: this.state.pagingConfig.length,
-          page: 1,
-          data: []
+          page: this.state.pagingConfig.start + 1,
+          data: dataStore ? dataStore.content:[]
         }}
         onShowSizeChange={(pageNumber, pageSize) => this.onShowSizeChange(pageNumber, pageSize)}
         onRefresh={() => {

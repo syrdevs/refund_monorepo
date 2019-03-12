@@ -326,6 +326,10 @@ class GridFilter extends Component {
           filterData[field] = fields[field].disabled ? null : formFilters[field] + " 00:00:00";
           return;
         }//
+        if (["textlike"].indexOf(fields[field].type) !== -1) {
+          filterData[field] = { "like": fields[field].disabled ? null : formFilters[field] };
+          return;
+        }//
 
         if (fields[field].type === "ButtonGroup" && formFilters[field].value !== null) {
           filterData[field] = formFilters[field].value;
@@ -732,6 +736,7 @@ class GridFilter extends Component {
           }}/>
         </div>);
       }
+      case "textlike":
       case "text": {
 
         let params = {};

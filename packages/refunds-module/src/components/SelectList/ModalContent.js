@@ -44,6 +44,7 @@ class ModalContent extends Component {
 
   componentDidMount() {
     const { dispatch } = this.props;
+
     dispatch({
       type: 'references/load',
       code: 'knp',
