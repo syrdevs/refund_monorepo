@@ -653,6 +653,7 @@ class GridFilter extends Component {
 
         return (<div key={_index} style={mBottom}>{filterItem.label}:
           <NumericInput
+            onKeyDown={this.onKeyPress}
             {...params}
             value={formFilters[filterItem.name]}
             onChange={(e) => {

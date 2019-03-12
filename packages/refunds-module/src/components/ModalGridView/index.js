@@ -219,7 +219,8 @@ class ModalGridView extends Component {
       body: {
         "searched": true,
         "data": {
-          ...this.state.filter.filter
+          ...this.state.filter.filter,
+          knpList: undefined,
         }
       },
       getResponse: (response) => {
