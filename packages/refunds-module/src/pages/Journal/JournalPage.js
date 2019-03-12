@@ -33,8 +33,17 @@ class JournalPage extends Component {
       sortedInfo: {},
       fcolumn: [
         {
+          "title": "ИИН",
+          order: 9,
+          key: "iin",
+          render: (item) => {
+            return item.refundId && item.refundId.personIin;
+          },
+          "width": 200
+        },
+        {
           title: "Потребитель",
-          order: 8,
+          order: 10,
           key: "fio",
           isVisible: true,
           width: 200,
@@ -106,7 +115,7 @@ class JournalPage extends Component {
           "width": 200,
           "dataIndex": "refundId.mt102Id",
           "isVisible": true
-        }
+        },
       ],
       filterContainer: 0,
       searchButton: false,
@@ -131,7 +140,14 @@ class JournalPage extends Component {
           name: "refundId.gcvpOrderDate",
           label: "Дата ПП ГК",
           type: "listbetweenDate"
-        }, {
+        },
+        {
+          name: "refundId.personIin",
+          label: "ИИН",
+          type: "numberInput",
+          withMax: 12
+        },
+        {
           name: "dappRefundStatus",
           label: "Действие",
           type: "multibox"

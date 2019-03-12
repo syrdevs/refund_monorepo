@@ -372,7 +372,7 @@ class MainView extends Component {
         "entity": "Refund",
         "start": 0,
         "length": 15,
-        "sort": [],
+        "sort": [{field: "createdOn", desc: true}],
         "filter": {}
       }
     };
@@ -665,8 +665,6 @@ class MainView extends Component {
         });
       });
   };
-
-
 
   hideleft() {
     if (!this.state.isHidden) {
