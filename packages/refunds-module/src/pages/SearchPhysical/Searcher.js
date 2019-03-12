@@ -908,6 +908,7 @@ class Searcher extends Component {
                                  onPressEnter={() => {
                                    this.applyFilter();
                                  }}
+                                         placeholder="Введите ИИН"
                                  onChange={(e) => {
                                    this.fieldOnChange("iin", e);
                                  }}/>
@@ -1121,7 +1122,9 @@ class Searcher extends Component {
               key="3"
               disabled={!personRPN.iin}
             >
-              <Medicine personiin={personRPN.iin}/>
+              <Medicine
+                eventManager={this.props.eventManager}
+                personiin={this.state.iin}/>
             </TabPane>
             <TabPane
               tab={"Список плательщиков"}

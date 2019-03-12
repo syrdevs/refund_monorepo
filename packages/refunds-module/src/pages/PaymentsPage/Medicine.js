@@ -20,6 +20,7 @@ import GridFilter from "../../components/GridFilter";
 import { Animated } from "react-animated-css";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
+import numberWithSpaces from "../../utils/numberFormat";
 
 const TabPane = Tabs.TabPane;
 const dateFormat = "YYYY/MM/DD";
@@ -32,8 +33,18 @@ class Medicine extends Component {
     this.state = {
       personiin:{},
       sortedInfo: {},      
-      fcolumn: [
-      ],
+      fcolumn: [{
+        "title": "Стоимость медицинской услуги",
+        "dataIndex": "recordSum",
+        "isVisible": "true",
+        render: (value) => {
+          if (value) {
+            return numberWithSpaces(value);
+          }
+
+          return "";
+        }
+      }],
       columns: [
         {
           "title": "Наименование СЗ",
@@ -65,12 +76,12 @@ class Medicine extends Component {
           "dataIndex": "value",
           "isVisible": true
         },
-        {
-          "title": "Стоимость медицинской услуги",
-          "width": 200,
-          "dataIndex": "recordSum",
-          "isVisible": true
-        },
+        // {
+        //   "title": "Стоимость медицинской услуги",
+        //   "width": 200,
+        //   "dataIndex": "recordSum",
+        //   "isVisible": true
+        // },
         {
           "title": "Факт оплаты",
           "width": 200,
@@ -121,7 +132,8 @@ class Medicine extends Component {
         {
           name:"clinic.bin",
           label: "БИН/ИИН СЗ",
-          type: "text"
+          type: "numberInput",
+          withMax: 12
         },
         {
           label:"Регион СЗ",
@@ -159,7 +171,7 @@ class Medicine extends Component {
         length: 15,
         entity: "medicalRecordMain",
         alias: "forView",
-        filter: { "person.iin": this.props.personiin},
+        filter: {},
         sort: [
           {
             "field": "createDate",
@@ -221,11 +233,8 @@ class Medicine extends Component {
 
   loadMainGridData = () => {
     const { dispatch } = this.props;
-    if (this.props.personiin) {
-      this.setState({
-        personiin: this.props.personiin
-      })
-    }
+
+
     //let sortField = this.state.sortedInfo;
     dispatch({
       type: "universal2/getList",
@@ -233,7 +242,7 @@ class Medicine extends Component {
         ...this.state.pagingConfig,
         filter: {
           ...this.state.pagingConfig.filter,
-          iin: this.props.onSearch
+          "person.iin": this.props.personiin
         },
         sort:[...this.state.pagingConfig.sort],
       }
@@ -266,6 +275,9 @@ class Medicine extends Component {
 
   componentDidMount() {
     this.loadMainGridData();
+    this.props.eventManager.subscribe("employeesRefreshGuid", (params) => {
+      this.loadMainGridData();
+    });
   }
 
   onShowSizeChange = (current, pageSize) => {

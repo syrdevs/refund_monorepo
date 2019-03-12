@@ -362,10 +362,14 @@ class SearcherJur extends Component {
               >
                 <div style={{ display: "block" }}>
                   <div style={{ float: "left", width: this.state.jur.senderBin ? "55%" : "55%" }}>
+                    <Row>
+                      <Col span={14}>
                     <NumericInput
                       value={this.state.jur.senderBin}
                       placeholder="Введите БИН/ИИН"
-                      enterButton={formatMessage({ id: "system.search" })}
+                      onPressEnter={() => {
+                        this.searchperson(this.state.jur.senderBin)
+                      }}
                       //size="large"
                       onChange={(e) => {
                         this.setState({
@@ -377,10 +381,21 @@ class SearcherJur extends Component {
                         //this.fieldOnChange("iin", e.target.value);
                       }}
                       maxLength={12}
-                      onSearch={value => this.searchperson(value)}
                     />
+                      </Col>
+                      <Col span={8}>
+                    <Button
+                      style={{ marginLeft: "5px" }}
+                      onClick={() => {
+                        this.searchperson(this.state.jur.senderBin)
+                      }}
+                    >
+                      Поиск
+                    </Button>
+                      </Col>
+                    </Row>
                   </div>
-                  {this.state.jur.senderBin && <div style={{ float: "left", width: "45%" }}>
+                  {this.state.jur.paymentCount && <div style={{ float: "left", width: "45%" }}>
                     <div
                       style={{ float: "left", width: "60%", paddingLeft: "10px" }}>
                       <Button

@@ -34,6 +34,7 @@ import "./Payments.css";
 import request from "../../utils/request";
 import Guid from "../../utils/Guid";
 import saveAs from "file-saver";
+import NumericInput from "../../components/GridFilter/NumericInput";
 
 const Search = Input.Search;
 const FormItem = Form.Item;
@@ -48,6 +49,7 @@ const formItemLayout = {
 class Consumer extends Component {
 
   state = {
+    iin:null,
     selectedRecord: null,
     parameters: {
       start: 0,
@@ -582,15 +584,48 @@ class Consumer extends Component {
           >
 
             <Col span={18}>
-              <Search
-                placeholder="Введите ИИН"
-                enterButton={"Сохранить"}
-                size="large"
-                maxLength={12}
-                style={{ width: 600 }}
-                onSearch={value => this.addSpecial(value)}
+              {/*<Search*/}
+                {/*placeholder="Введите ИИН"*/}
+                {/*enterButton={"Сохранить"}*/}
+                {/*size="large"*/}
+                {/*maxLength={12}*/}
+                {/*style={{ width: 600 }}*/}
+                {/*onSearch={value => this.addSpecial(value)}*/}
 
-              />
+              {/*/>*/}
+
+              <div>
+                <div style={{ width: "100%" }}>
+                  <Row>
+                    <Col span={14}>
+                      <NumericInput  style={{ width: "100%" }} value={this.state.iin}
+                                     onPressEnter={() => {
+                                       this.addSpecial(this.state.iin)
+                                     }}
+                                     placeholder="Введите ИИН"
+                                     onChange={(e) => {
+                        this.setState({
+                          iin:e
+                        })
+
+                        //this.fieldOnChange("iin", e.target.value);
+                      }}  maxLength={12}/>
+                    </Col>
+                    <Col span={8}>
+
+                      <Button
+                        style={{ marginLeft: "5px" }}
+                        onClick={() => {
+                          this.addSpecial(this.state.iin)
+                        }}
+                      >
+                        Сохранить
+                      </Button>
+
+                    </Col>
+                  </Row>
+                </div>
+              </div>
             </Col>
 
           </Card>

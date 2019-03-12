@@ -47,7 +47,7 @@ class NumericInput extends React.Component {
         onKeyDown={this.props.onKeyDown}
         onChange={this.onChange}
         onBlur={this.onBlur}
-        placeholder="Введите ИИН"
+        // placeholder="Введите ИИН"
         maxLength={12}
       />
     );
